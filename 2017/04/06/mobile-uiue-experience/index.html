@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSS,移动端,UI,自适应,rem," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。
+像素完美像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似background-image这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端页面切图自适应方案和体验优化经验">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/04/06/mobile-uiue-experience/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。
+像素完美像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似background-image这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应">
+<meta property="og:updated_time" content="2018-04-02T14:36:37.154Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="移动端页面切图自适应方案和体验优化经验">
+<meta name="twitter:description" content="最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。
+像素完美像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似background-image这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/04/06/mobile-uiue-experience/"/>
+
+
+
+
+
+  <title>移动端页面切图自适应方案和体验优化经验 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/06/mobile-uiue-experience/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">移动端页面切图自适应方案和体验优化经验</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T22:16:00+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/06/mobile-uiue-experience/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/06/mobile-uiue-experience/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。</p>
+<h3 id="像素完美"><a href="#像素完美" class="headerlink" title="像素完美"></a>像素完美</h3><p>像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似<code>background-image</code>这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应该出现的位置。在移动端设备宽度不一时，交互元素的位置如何保值像素完美的一致呢。</p>
+<p>最容易想到的方法是<strong>百分比布局</strong>，保证设计师设计的美美的UI界面可以自适应地等比扩充到整个页面。不过这样会让交互元素的位置摆放很难办，难以保证设备兼容性。<strong>flex布局</strong>也是种常见的解决方案，但距离像素完美还有距离。</p>
+<p>于是，我在上一次实践中，采用了<strong>固定宽度</strong>的处理方式（这并不是一种好的实践），CSS样式写起来大概是下面这样的。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.container</span> &#123;</div><div class="line">  <span class="attribute">display</span>: block;</div><div class="line">  <span class="attribute">width</span>: <span class="number">414px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.bkg</span> &#123;</div><div class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./bkg.png'</span>);</div><div class="line">  <span class="attribute">background-size</span>: <span class="number">100%</span>;</div><div class="line">  <span class="attribute">background-repeat</span>: repeat-y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>margin: 0 auto</code>是为了保证PC端居中的兼容性。这么写可以让交互元素定位时没有了设备宽度不同的后顾之忧。不过，在页面打开后，宽度较大使得页面出现横向滚动条，在绝大多数的移动端页面都不是种好的体验。的确，可以在<code>meta</code>标签中，设置<code>user-scalable=yes</code>来实现宽度上的自适应。但是，放开了页面缩放的限制也不是好的实践方式。</p>
+<p>这次活动页参考的使用<strong>rem</strong>的方式（淘宝最早实践的）是一种明显更好的方法。<code>rem</code>是CSS3中出现的新属性，它是root em的缩写。和<code>em</code>不同的是，<code>rem</code>使用整个html的<code>font-size</code>作为尺寸的参考。只需要改变html的<code>font-size</code>，所有使用了<code>rem</code>属性的元素大小都会等比例地变化。于是，下面的一段代码轻松地实现了<strong>移动端</strong>的自适应方案。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">win, doc</span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> docEl = doc.documentElement,</div><div class="line">    resizeEvt = <span class="string">'onorientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">    recalc = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> clientWidth = docEl.clientWidth;</div><div class="line">      <span class="keyword">if</span> (!clientWidth) <span class="keyword">return</span>;</div><div class="line">      <span class="keyword">if</span> (clientWidth &gt;= <span class="number">750</span>) &#123;</div><div class="line">       docEl.style.fontSize = <span class="string">'100px'</span>;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        docEl.style.fontSize = <span class="number">100</span> * (clientWidth / <span class="number">750</span>) + <span class="string">'px'</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  <span class="comment">//省去addEventListener兼容性处理</span></div><div class="line">  win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">  doc.addEventListener(<span class="string">'DOMContentLoaded'</span>, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="built_in">window</span>, <span class="built_in">document</span>);</div></pre></td></tr></table></figure>
+<p>代码里假设UI设计稿原始宽度为750px。大意是：</p>
+<ul>
+<li>页面宽度超过750px时，<code>document</code>的字体大小恒为100px，此时页面中涉及尺寸的CSS样式部分统统用<code>{像素值} / 100 rem</code>书写。之所以使用100px正是为了换算时方便</li>
+<li>页面宽度小于750px时，<code>document</code>等比缩小字体大小，页面中使用<code>rem</code>的元素都会等比缩小。从而保证交互元素不错位。</li>
+</ul>
+<p>效果类似<a href="https://m.taobao.com/#index" target="_blank" rel="external">淘宝手机站</a>。使用<code>rem</code>布局需要注意:</p>
+<ul>
+<li>在<code>&lt;head&gt;</code>中放置这段代码，保证在页面元素渲染前确定<code>font-size</code>大小，避免<em>闪屏</em>现象出现影响体验。</li>
+<li>PC端可以使用<a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries" target="_blank" rel="external">媒体查询</a>，<code>rem</code>在移动端使用较多</li>
+<li><code>rem</code>方案可以使用在页面的一部分，在宽度固定的元素中使用flex这样的方案</li>
+</ul>
+<h3 id="用户体验"><a href="#用户体验" class="headerlink" title="用户体验"></a>用户体验</h3><p>上个活动页中遇到了一些优化体验的小地方，列在下面。</p>
+<ul>
+<li><p>禁止用户选中页面元素。这么做可以避免长按屏幕的选中，很明显地提升体验。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line">  <span class="attribute">-moz-user-select</span>: none;</div><div class="line">  <span class="attribute">-webkit-user-select</span>: none;</div><div class="line">  <span class="attribute">-ms-user-select</span>: none;</div><div class="line">  <span class="attribute">-khtml-user-select</span>: none;</div><div class="line">  <span class="attribute">user-select</span>: none;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止一些手机上为手机号码和邮箱地址进行的特殊处理</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"email=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止页面缩放，很常见的需求</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>为二维码单独切图，可以解决长按二维码无法识别的问题</p>
+</li>
+<li>输入框获得焦点时自动上移。可以通过<code>document.scrollTop</code>或设置输入框部分<code>position:fixed</code>实现</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/CSS/" rel="tag"># CSS</a>
+          
+            <a href="/blog/tags/移动端/" rel="tag"># 移动端</a>
+          
+            <a href="/blog/tags/UI/" rel="tag"># UI</a>
+          
+            <a href="/blog/tags/自适应/" rel="tag"># 自适应</a>
+          
+            <a href="/blog/tags/rem/" rel="tag"># rem</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/04/05/vue-reactive-sourcecode/" rel="next" title="Vue2.0的响应式设计原理">
+                <i class="fa fa-chevron-left"></i> Vue2.0的响应式设计原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/04/10/how-browsers-work-1/" rel="prev" title="浏览器是如何工作的 上 解析与呈现">
+                浏览器是如何工作的 上 解析与呈现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#像素完美"><span class="nav-number">1.</span> <span class="nav-text">像素完美</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户体验"><span class="nav-number">2.</span> <span class="nav-text">用户体验</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2017/04/06/mobile-uiue-experience/';
+          this.page.identifier = '2017/04/06/mobile-uiue-experience/';
+          this.page.title = '移动端页面切图自适应方案和体验优化经验';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

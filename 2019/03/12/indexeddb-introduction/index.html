@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="electron,indexedDB," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="名谓扫盲，实则扫自己的盲
+
+选型要说到最近的一个个人项目calendone，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。
+SQLite
+关系型数据库，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。
+是node原生模块，需要重新编译，而且有坑
+
+NeDB
+NoSQL类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Electron应用数据库选型暨indexedDB扫盲">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/03/12/indexeddb-introduction/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="名谓扫盲，实则扫自己的盲
+
+选型要说到最近的一个个人项目calendone，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。
+SQLite
+关系型数据库，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。
+是node原生模块，需要重新编译，而且有坑
+
+NeDB
+NoSQL类型">
+<meta property="og:updated_time" content="2019-03-11T16:03:38.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Electron应用数据库选型暨indexedDB扫盲">
+<meta name="twitter:description" content="名谓扫盲，实则扫自己的盲
+
+选型要说到最近的一个个人项目calendone，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。
+SQLite
+关系型数据库，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。
+是node原生模块，需要重新编译，而且有坑
+
+NeDB
+NoSQL类型">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/03/12/indexeddb-introduction/"/>
+
+
+
+
+
+  <title>Electron应用数据库选型暨indexedDB扫盲 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2019/03/12/indexeddb-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Electron应用数据库选型暨indexedDB扫盲</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T00:01:59+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2019/03/12/indexeddb-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/03/12/indexeddb-introduction/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>名谓扫盲，实则扫自己的盲</p>
+</blockquote>
+<h2 id="选型"><a href="#选型" class="headerlink" title="选型"></a>选型</h2><p>要说到最近的一个个人项目<a href="https://github.com/shenlvmeng/calendone" target="_blank" rel="external">calendone</a>，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。</p>
+<h3 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h3><ul>
+<li><strong>关系型数据库</strong>，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。</li>
+<li>是node原生模块，需要重新编译，而且有坑</li>
+</ul>
+<h3 id="NeDB"><a href="#NeDB" class="headerlink" title="NeDB"></a>NeDB</h3><ul>
+<li><strong>NoSQL类型数据库</strong>，可以实现本地存储，也可以作为内存存储</li>
+<li><strong>API是MongoDB的一个子集</strong></li>
+<li>纯js实现，一个文件对应一张表</li>
+</ul>
+<h3 id="Leveldb"><a href="#Leveldb" class="headerlink" title="Leveldb"></a>Leveldb</h3><ul>
+<li><strong>NoSQL类型数据库</strong>，支持内存和持久化存储</li>
+<li><strong>没有事务机制</strong>，默认按key查询，没有索引</li>
+<li>默认保存的不是js对象，而是字符串。如果要保存为对象，可以在level函数第二个参数加入<code>{ valueEncoding: &quot;json&quot; }</code>来让保存的js对象以json的形式读取</li>
+</ul>
+<h3 id="Lowdb"><a href="#Lowdb" class="headerlink" title="Lowdb"></a>Lowdb</h3><ul>
+<li>基于Loadsh的<strong>纯JSON文件数据库</strong>，速度较慢</li>
+<li>不支持索引/事务/批量操作等数据库功能</li>
+</ul>
+<h3 id="indexedDB"><a href="#indexedDB" class="headerlink" title="indexedDB"></a>indexedDB</h3><ul>
+<li><strong>NoSQL数据库</strong>，浏览器自带，可以储存大量数据，容量为250MB以上</li>
+<li>支持事务，有版本号的概念。</li>
+<li>支持较多的字段类型</li>
+</ul>
+<p>综上考虑，最后采用浏览器自带的indexedDB，足够满足要求，漫游接入成本，升级方便，调试方便。</p>
+<h2 id="indexedDB介绍"><a href="#indexedDB介绍" class="headerlink" title="indexedDB介绍"></a>indexedDB介绍</h2><p>indexedDB脱胎于HTML本地存储。</p>
+<h3 id="HTML本地存储"><a href="#HTML本地存储" class="headerlink" title="HTML本地存储"></a>HTML本地存储</h3><p>上古时代中，HTML中持久化数据只有几种方法[1]：</p>
+<ul>
+<li>cookie。cookie的缺点很明显，最多只能存储4KB的数据，且会携带在同域名下每个HTTP请求的头部，明文传输（除非你使用SSL）。</li>
+<li>IE userData。微软在上世纪90年代的浏览器大战时推出的本地存储方案，允许每个页面最多存储64K数据，每个站点最多640K数据，它不是Web标准的一部分</li>
+<li>Flash cookie。它实际上和HTTP cookie并不是一回事，它的名字可能叫做”Flash本地存储”更为合适。考虑到Flash已经是要被淘汰的技术……</li>
+</ul>
+<p>本地存储出现后，有了下面一些标准化的更简单的方法：</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API" target="_blank" rel="external">Web Storage接口</a>，即localStorage和sessionStorage</li>
+<li>Web SQL，这是一个<strong>已经废弃</strong>的规范。就跟它的名字一样，它就是浏览器端的一个SQL数据库，可以执行SQL语句。由于语法和SQLite绑定过紧，后被标准组织废弃</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API" target="_blank" rel="external">indexedDB</a>，Web SQL的替代品，也是浏览器端的数据库，但他是No SQL的。有MongoDB使用体验的，对它就不会感到陌生。</li>
+</ul>
+<h3 id="indexedDB-1"><a href="#indexedDB-1" class="headerlink" title="indexedDB"></a>indexedDB</h3><p>indexedDB是浏览器提供的本地数据库，目标是持久化存储大量数据，提供类No SQL的增删改查体验。因此它有以下几点特色：</p>
+<ul>
+<li><strong>键值对存储</strong>，采用对象仓库（object store）存放数据，所有类型的数据都可以直接存入，包括 JavaScript 对象。</li>
+<li><strong>支持索引</strong>，indexedDB没有表列的概念，但可以建立索引，查询数据时使用id或索引搜索</li>
+<li><strong>支持事务</strong>，保证操作的原子性，事务中的任意一步失败，数据库都会回滚到操作事务前的状态</li>
+<li><strong>异步操作</strong>，indexedDB操作都是异步的，在执行数据增删改查时，不会影响界面性能。</li>
+<li><strong>同源限制</strong>，每一个数据库会关联创建它的域名。网页只能访问自身域名下的数据库，不能跨域访问数据库。</li>
+<li><strong>其他</strong>，包括存储空间大、支持二进制存储等…</li>
+</ul>
+<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
+<li><strong>数据库</strong>，IDBDatabase对象类型，每个域名（协议 + 域名 + 端口）可以新建任意多个数据库。</li>
+<li><strong>对象仓库</strong>，IDBObjectStore对象类型，一个数据库包含若干个对象仓库，类似于关系型数据库中的表</li>
+<li><strong>数据记录</strong>，类型于关系型数据库中的行，但是只有主键和数据体两部分。<strong>数据体可以是任意数据类型，不限于对象</strong>。</li>
+<li><strong>索引</strong>，IDBIndex对象类型，数据记录里除了主键以外的搜索参照</li>
+<li><strong>事务</strong>，IDBTransaction数据类型，对数据库的增删改查都需要通过事务进行，执行结果通过<code>error</code>，<code>success</code>，<code>abort</code>事件回调拿到</li>
+</ul>
+<p>indexedDB定义了许多对象接口，即API，除了上面介绍的一些，更完善的接口介绍可以参考MDN的介绍。</p>
+<h4 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h4><p>indexedDB 鼓励使用的基本模式如下所示：</p>
+<ol>
+<li>打开数据库。</li>
+<li>在数据库中创建一个对象仓库（object store）。</li>
+<li>启动一个事务，并发送一个请求来执行一些数据库操作，像增加或提取数据等。</li>
+<li>通过监听正确类型的DOM事件以等待操作完成。</li>
+<li>在操作结果上进行一些操作（可以在request对象中找到）</li>
+</ol>
+<p><strong>打开数据库</strong></p>
+<p>使用 IndexedDB 的第一步是打开数据库，使用indexedDB.open()方法如下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> request = <span class="built_in">window</span>.indexedDB.open(databaseName, version);</div></pre></td></tr></table></figure>
+<p>其中第一个参数为数据库名，第二个参数是数据库版本号。<code>indexedDB.open()</code>方法返回一个<code>IDBRequest</code>对象。这个对象通过三种事件error、success、upgradeneeded，处理打开数据库的操作结果。</p>
+<p>如果数据库不存在，open操作会创建该数据库，然后<code>onupgradeneeded</code>事件被触发，需要在该事件的处理函数中创建数据库模式。如果数据库已经存在，但指定了一个更高的数据库版本，会直接触发 <code>onupgradeneeded</code>事件，允许你在处理函数中更新数据库模式。</p>
+<p><strong>注意：这里的版本号是一个unsigned long long数字，使用浮点数是会被转化到最近的整数</strong></p>
+<p><strong>绑定处理函数</strong></p>
+<p>几乎所有我们产生的请求我们在处理的时候首先要做的就是添加成功和失败处理函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">request.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="comment">// Do something with request.errorCode!</span></div><div class="line">&#125;;</div><div class="line">request.onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="comment">// Do something with request.result!</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>如果一切顺利的话，相关request的<code>onsuccess()</code>处理函数就会被触发。如果不是所有事情都成功的话，<code>error</code>事件会在request上被触发。</p>
+<p><strong>新建数据库</strong></p>
+<p>新建数据库与打开数据库是同一个操作。不同之处在于，后续的操作主要在<code>upgradeneeded</code>事件的监听函数里面完成。通常新建数据库后，第一件事是新建对象仓库，即下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">request.onupgradeneeded = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  db = event.target.result;</div><div class="line">  <span class="keyword">var</span> objectStore;</div><div class="line">  <span class="keyword">if</span> (!db.objectStoreNames.contains(<span class="string">'person'</span>)) &#123;</div><div class="line">    objectStore = db.createObjectStore(<span class="string">'person'</span>, &#123; <span class="attr">keyPath</span>: <span class="string">'id'</span> &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面这段语句使用id作为对象仓库的主键，如果没有合适作为主键的属性，可以让indexedDB自动生成主键。为了便于查询，可以在数据仓库中建立索引。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> objectStore = db.createObjectStore(</div><div class="line">  <span class="string">'person'</span>,</div><div class="line">  &#123; <span class="attr">autoIncrement</span>: <span class="literal">true</span> &#125;</div><div class="line">);</div><div class="line">objectStore.createIndex(<span class="string">'name'</span>, <span class="string">'name'</span>, &#123; <span class="attr">unique</span>: <span class="literal">false</span> &#125;);</div><div class="line">objectStore.createIndex(<span class="string">'email'</span>, <span class="string">'email'</span>, &#123; <span class="attr">unique</span>: <span class="literal">true</span> &#125;);</div></pre></td></tr></table></figure>
+<p><strong>增删改查</strong></p>
+<p>增删改查都通过事务进行。事务来自于数据库对象，必须指定你想让这个事务跨越哪些对象仓库。事务中有三种模式，表示你想对数据库进行的操作类型：</p>
+<ul>
+<li><code>readonly</code> <strong>默认</strong>，只读</li>
+<li><code>readwrite</code> 读写操作</li>
+<li><code>versionchange</code> 修改数据库模式或结构</li>
+</ul>
+<p>只在必要时指定 readwrite 事务。你可以同时执行多个readonly事务，哪怕它们的作用域有重叠；但对于在一个对象仓库上只能运行一个readwrite事务。</p>
+<p>增加一条数据的语句如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> transaction = db.transaction([<span class="string">"person"</span>], <span class="string">"readwrite"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 在所有数据添加完毕后的处理</span></div><div class="line">transaction.oncomplete = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  alert(<span class="string">"成功"</span>);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">transaction.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  alert(<span class="string">"失败"</span>);</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> objectStore = transaction.objectStore(<span class="string">"person"</span>);</div><div class="line">    .add(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">'foo'</span>, <span class="attr">email</span>: <span class="string">'foo@bar.com'</span> &#125;);</div></pre></td></tr></table></figure>
+<p>在有了数据后，可以通过几种方法对它进行提取。首先是简单的 <code>get()</code>，通过键获得值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> transaction = db.transaction([<span class="string">"person"</span>]);</div><div class="line"><span class="keyword">var</span> objectStore = transaction.objectStore(<span class="string">"person"</span>);</div><div class="line"><span class="keyword">var</span> request = objectStore.get(<span class="number">1</span>);</div><div class="line">request.onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="comment">// 对 request.result 做些操作！</span></div><div class="line">  alert(request.result.name);</div><div class="line">&#125;;</div><div class="line">request.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  alert(<span class="string">'出错了'</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在很多场景下你并不知道数据的键，这时可以用索引找到你要的数据。例子中的<code>name</code>属性可能并不是唯一的，在这种情况下，你总是得到键值最小的那个。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 前提是你已经建立了name索引</span></div><div class="line"><span class="keyword">var</span> index = objectStore.index(<span class="string">"name"</span>);</div><div class="line"></div><div class="line">index.get(<span class="string">'foo'</span>).onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  alert(<span class="string">"foo's id is "</span> + event.target.result.id);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在需要遍历某一范围的数据集合时，也可以使用<strong>游标</strong>，这里要用到<code>openCursor</code>方法。比如查询整个数据对象存储。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">objectStore.openCursor().onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> cursor = event.target.result;</div><div class="line">  <span class="keyword">if</span> (cursor) &#123;</div><div class="line">    <span class="built_in">console</span>.log(cursor.value);</div><div class="line">    cursor.continue();</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> &#123;</div><div class="line">    alert(<span class="string">'遍历结束'</span>);</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><em>上面的功能也可以通过<code>getAll</code>完成，但是由于数据对象是懒生成的，<code>getAll</code>性能会有消耗。当然你如果想直接拿到整个数据组成的数组，还是<code>getAll</code>好点</em></p>
+<p>结合索引（IDBIndex）和游标（IDBCursor）可以查询指定索引的所有记录，方法<code>openCursor</code>和<code>openKeyCursor</code>分别返回不同的数据结构。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">index.openCursor().onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> cursor = event.target.result;</div><div class="line">  <span class="keyword">if</span> (cursor) &#123;</div><div class="line">    <span class="comment">// cursor.key 是一个 name, 就像 "Bill", 然后 cursor.value 是整个对象。</span></div><div class="line">    alert(<span class="string">"Name: "</span> + cursor.key + <span class="string">", email: "</span> + cursor.value.email);</div><div class="line">    cursor.continue();</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">index.openKeyCursor().onsuccess = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> cursor = event.target.result;</div><div class="line">  <span class="keyword">if</span> (cursor) &#123;</div><div class="line">    <span class="comment">// cursor.key 是一个 name, 就像 "Bill", 然后 cursor.value是主键的值。</span></div><div class="line">    <span class="comment">// 没办法得到存储对象的其余部分。</span></div><div class="line">    alert(<span class="string">"Name: "</span> + cursor.key + <span class="string">", id: "</span> + cursor.value);</div><div class="line">    cursor.continue();</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多游标设置参考<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB#%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%A0%87%E7%9A%84%E8%8C%83%E5%9B%B4%E5%92%8C%E6%96%B9%E5%90%91" target="_blank" rel="external">mdn</a>的介绍。</p>
+<p>更新和删除数据，分别使用<code>put</code>和<code>delete</code>方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> request = db.transaction([<span class="string">'person'</span>], <span class="string">'readwrite'</span>)</div><div class="line">  .objectStore(<span class="string">'person'</span>)</div><div class="line">  .put(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">'李四'</span>, <span class="attr">age</span>: <span class="number">35</span>, <span class="attr">email</span>: <span class="string">'lisi@example.com'</span> &#125;);</div><div class="line"></div><div class="line">request.onsuccess = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'数据更新成功'</span>);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">request.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'数据更新失败'</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> request = db.transaction([<span class="string">'person'</span>], <span class="string">'readwrite'</span>)</div><div class="line">  .objectStore(<span class="string">'person'</span>)</div><div class="line">  .delete(<span class="number">1</span>);</div><div class="line"> </div><div class="line">request.onsuccess = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'数据删除成功'</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其中put的数据为全量替换，可以通过get方法拿到数据后，修改特定值再交给put完成增量替换。</p>
+<h2 id="indexedDB封装库"><a href="#indexedDB封装库" class="headerlink" title="indexedDB封装库"></a>indexedDB封装库</h2><p>indexedDB虽然强大，但是有些API对于用户来说还是不够方便，下面是几个indexedDB的封装库：</p>
+<ul>
+<li><a href="https://localforage.github.io/localForage/" target="_blank" rel="external">localForage</a>，支持类Storage API语法的客户端数据存储polyfill，支持回退到Storage和Web SQL</li>
+<li><a href="https://dexie.org/" target="_blank" rel="external">dexie.js</a>，提供更友好和简单的语法便于快速的编码开发，<strong>有Typescript支持</strong>。</li>
+<li><a href="https://github.com/erikolson186/zangodb" target="_blank" rel="external">ZangoDB</a>，提供类MongoDB的接口实现，提供了许多MangoDB的特性实现</li>
+<li><a href="http://jsstore.net/" target="_blank" rel="external">JsStore</a>，提供基于indexedDB的类SQL的语法实现。</li>
+</ul>
+<p>综上，考虑到dexie.js的语法更加友善，文档页较完善。最终选择它作为客户端存储的实现。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://jiangzhenghua.iteye.com/blog/1225201" target="_blank" rel="external">HTML5本地存储不完全指南</a></li>
+<li><a href="https://wangdoc.com/javascript/bom/indexeddb.html" target="_blank" rel="external">IndexedDB API</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB" target="_blank" rel="external">使用 IndexedDB - Web API接口参考 | MDN</a></li>
+<li><a href="https://dexie.org/docs/API-Reference" target="_blank" rel="external">Dexie.js API Reference</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/electron/" rel="tag"># electron</a>
+          
+            <a href="/blog/tags/indexedDB/" rel="tag"># indexedDB</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2019/02/13/1587-a-year-of-no-significance/" rel="next" title="关于《万历十五年》的一些思考">
+                <i class="fa fa-chevron-left"></i> 关于《万历十五年》的一些思考
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2019/03/12/wisdom-of-life-pessimistic-life/" rel="prev" title="《人生的智慧》 ——幸福与人生">
+                《人生的智慧》 ——幸福与人生 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选型"><span class="nav-number">1.</span> <span class="nav-text">选型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite"><span class="nav-number">1.1.</span> <span class="nav-text">SQLite</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NeDB"><span class="nav-number">1.2.</span> <span class="nav-text">NeDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leveldb"><span class="nav-number">1.3.</span> <span class="nav-text">Leveldb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lowdb"><span class="nav-number">1.4.</span> <span class="nav-text">Lowdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexedDB"><span class="nav-number">1.5.</span> <span class="nav-text">indexedDB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#indexedDB介绍"><span class="nav-number">2.</span> <span class="nav-text">indexedDB介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML本地存储"><span class="nav-number">2.1.</span> <span class="nav-text">HTML本地存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexedDB-1"><span class="nav-number">2.2.</span> <span class="nav-text">indexedDB</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本概念"><span class="nav-number">2.2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作"><span class="nav-number">2.2.2.</span> <span class="nav-text">操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#indexedDB封装库"><span class="nav-number">3.</span> <span class="nav-text">indexedDB封装库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2019/03/12/indexeddb-introduction/';
+          this.page.identifier = '2019/03/12/indexeddb-introduction/';
+          this.page.title = 'Electron应用数据库选型暨indexedDB扫盲';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

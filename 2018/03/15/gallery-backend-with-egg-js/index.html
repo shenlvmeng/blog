@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="后端,管理后台,egg.js," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用
+
+用户管理数据库新建User表，填充表结构，至少包含账号和密码两个字段。
+Controller（Ajax）登录页面，对应login行为，处理登录请求，包括以下工作：
+
+调用服务匹配用户名密码
+（可选） 检查用户类型
+密码需要加密存储
+储存用户信息到session
+返回提示信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Photo Gallery中出现的常见需求解决方案">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/03/15/gallery-backend-with-egg-js/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用
+
+用户管理数据库新建User表，填充表结构，至少包含账号和密码两个字段。
+Controller（Ajax）登录页面，对应login行为，处理登录请求，包括以下工作：
+
+调用服务匹配用户名密码
+（可选） 检查用户类型
+密码需要加密存储
+储存用户信息到session
+返回提示信">
+<meta property="og:image" content="https://s2.ax1x.com/2019/04/07/Ahbr1x.png">
+<meta property="og:updated_time" content="2019-04-07T12:01:10.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Photo Gallery中出现的常见需求解决方案">
+<meta name="twitter:description" content="使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用
+
+用户管理数据库新建User表，填充表结构，至少包含账号和密码两个字段。
+Controller（Ajax）登录页面，对应login行为，处理登录请求，包括以下工作：
+
+调用服务匹配用户名密码
+（可选） 检查用户类型
+密码需要加密存储
+储存用户信息到session
+返回提示信">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/04/07/Ahbr1x.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/03/15/gallery-backend-with-egg-js/"/>
+
+
+
+
+
+  <title>Photo Gallery中出现的常见需求解决方案 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/03/15/gallery-backend-with-egg-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Photo Gallery中出现的常见需求解决方案</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T14:17:10+08:00">
+                2018-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/03/15/gallery-backend-with-egg-js/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/15/gallery-backend-with-egg-js/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://s2.ax1x.com/2019/04/07/Ahbr1x.png" alt="Ahbr1x.png"></p>
+<blockquote>
+<p>使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用</p>
+</blockquote>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>新建<code>User</code>表，填充表结构，至少包含<code>账号</code>和<code>密码</code>两个字段。</p>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p>（Ajax）登录页面，对应<code>login</code>行为，处理登录请求，包括以下工作：</p>
+<ul>
+<li>调用服务匹配用户名密码</li>
+<li><em>（可选）</em> 检查用户类型</li>
+<li>密码需要加密存储</li>
+<li>储存用户信息到session</li>
+<li>返回提示信息</li>
+</ul>
+<p>（Ajax）注册页面，对应<code>register</code>行为，处理注册请求，包括以下工作：</p>
+<ul>
+<li>寻找重名等逻辑</li>
+<li>调用服务创建用户</li>
+<li>密码需要加密存储</li>
+<li>储存用户信息到session</li>
+<li>返回提示信息</li>
+</ul>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>用户管理，和数据库连接。对应到controller中大多数是POST请求。</p>
+<ul>
+<li>新增用户</li>
+<li>获取用户</li>
+<li>用户资料修改</li>
+<li>用户删除（使用用户状态更新实现）</li>
+</ul>
+<h3 id="Router与中间件"><a href="#Router与中间件" class="headerlink" title="Router与中间件"></a>Router与中间件</h3><ul>
+<li>添加中间件检查是否有session，否则同一跳转<code>/login</code>（业务逻辑）</li>
+<li><em>（可选）</em> Router上使用重定向让path更友好</li>
+<li><strong>一定不要瞎用301状态码</strong></li>
+</ul>
+<h3 id="页面js"><a href="#页面js" class="headerlink" title="页面js"></a>页面js</h3><ul>
+<li>使用Ajax或jsonp请求</li>
+</ul>
+<hr>
+<h2 id="无限滚动"><a href="#无限滚动" class="headerlink" title="无限滚动"></a>无限滚动</h2><h3 id="HTML部分"><a href="#HTML部分" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
+<li>提前加载所有图片（后续API动态请求，DOM插入时间损耗太大）。</li>
+<li>前若干张图片（假设为K）正常展示</li>
+<li>后若干张容器使用<code>display:none</code>或<code>height: 0</code>等手段避免展示</li>
+<li>后若干张图片使用<code>data-src</code>存储真实路径，避免提前加载，影响首屏时间</li>
+</ul>
+<h3 id="JS部分"><a href="#JS部分" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
+<li>设置参数保存当前展示图片的数目</li>
+<li>判断是否滚动到底端</li>
+<li>上述情况下增加展示的图片数目，删除避免展示的<code>class</code>，替换真正的<code>src</code>加载图片</li>
+<li>使用节流，保证弱网络环境下，没有连续的过多图片加载，使用<code>flag</code>控制程序触发，在最后一张图片加载完成后，更新<code>flag</code>布尔值，开放权限</li>
+<li><em>（可选）</em>，网络环境很差时，可以考虑<code>setTimeout</code>兜底，但不推荐</li>
+<li>注意在所有图片都加载完成时，停止监听<code>scroll</code>事件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> figure = $($(<span class="string">'#figures'</span>).children()[index]);</div><div class="line">  <span class="keyword">if</span> (!figure) &#123;</div><div class="line">    $(<span class="built_in">window</span>).off(<span class="string">'scroll'</span>);</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><h3 id="HTML部分-1"><a href="#HTML部分-1" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
+<li>使用包裹<code>&lt;input type=&#39;file&#39;&gt;</code>的<code>&lt;form&gt;</code></li>
+<li><code>&lt;input type=&#39;file&#39;&gt;</code>使用<code>display: none</code>，通过更友好的方式trigger它的点击</li>
+<li><strong>注意：<code>type=file</code>的<code>input</code>标签一定要有<code>name</code>属性，否则不会被包裹在<code>FormData</code>中。</strong></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"upload"</span> <span class="attr">class</span>=<span class="string">"upload"</span>&gt;</span>+ 点击上传<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"upload-form"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span> </div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">accept</span>=<span class="string">"image/*"</span> <span class="attr">name</span>=<span class="string">"files"</span> <span class="attr">id</span>=<span class="string">"upload-file"</span> <span class="attr">multiple</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="JS部分-1"><a href="#JS部分-1" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
+<li>使用Ajax提交替换form表单替换，来实现更复杂的回调和逻辑控制</li>
+<li>通过构造<code>FormData</code>，提交域内文件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$(<span class="string">'#upload'</span>).on(<span class="string">'click'</span>, () =&gt; &#123;</div><div class="line">  $(<span class="string">'#upload-file'</span>).trigger(<span class="string">'click'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">$(<span class="string">'#upload-file'</span>).on(<span class="string">'change'</span>, () =&gt; &#123;</div><div class="line">  $.ajax(&#123;</div><div class="line">    <span class="attr">url</span>: <span class="string">'/gallery/upload'</span>,</div><div class="line">    <span class="attr">type</span>: <span class="string">'POST'</span></div><div class="line">    cache: <span class="literal">false</span>,</div><div class="line">    <span class="attr">data</span>: <span class="keyword">new</span> FormData($(<span class="string">'#upload-form'</span>)[<span class="number">0</span>]),</div><div class="line">    <span class="attr">processData</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">contentType</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">success</span>: <span class="function"><span class="params">data</span> =&gt;</span> &#123;</div><div class="line">      <span class="built_in">console</span>.log(data)</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="后台路由"><a href="#后台路由" class="headerlink" title="后台路由"></a>后台路由</h3><ul>
+<li>配置Ajax和jsonp安全检查</li>
+</ul>
+<h3 id="控制器端"><a href="#控制器端" class="headerlink" title="控制器端"></a>控制器端</h3><p>使用插件，参考<a href="https://github.com/eggjs/examples/blob/master/multipart/app/controller/multiple.js" target="_blank" rel="external">examples/multiple.js at master · eggjs/examples</a></p>
+<h2 id="HTML模板"><a href="#HTML模板" class="headerlink" title="HTML模板"></a>HTML模板</h2><p>使用ES6的模板字符串。</p>
+<p>已知问题：</p>
+<ul>
+<li>似乎有些视图、逻辑未分离</li>
+</ul>
+<h2 id="使用七牛API上传文件"><a href="#使用七牛API上传文件" class="headerlink" title="使用七牛API上传文件"></a>使用七牛API上传文件</h2><p>使用服务端上传，<a href="https://developer.qiniu.com/kodo/kb/1374/batch-upload-and-file-upload-more-resources" target="_blank" rel="external">一次只能单张上传</a>。官网API文档<a href="https://developer.qiniu.com/kodo/sdk/1289/nodejs" target="_blank" rel="external">Node.js版</a>描述的并不清楚，下面是上传的简单流程展示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> mac = <span class="keyword">new</span> qiniu.auth.digest.Mac(config.accessKey, config.secretKey);</div><div class="line"><span class="keyword">const</span> options = &#123;</div><div class="line">  <span class="attr">scope</span>: config.bucketName,</div><div class="line">&#125;;</div><div class="line"><span class="keyword">const</span> putPolicy = <span class="keyword">new</span> qiniu.rs.PutPolicy(options);</div><div class="line"><span class="keyword">const</span> uploadToken = putPolicy.uploadToken(mac);</div><div class="line"><span class="keyword">const</span> qiniuConfig = <span class="keyword">new</span> qiniu.conf.Config();</div><div class="line">qiniuConfig.zone = qiniu.zone.Zone_z1;</div><div class="line"><span class="keyword">const</span> formUploader = <span class="keyword">new</span> qiniu.form_up.FormUploader(qiniuConfig);</div><div class="line"><span class="keyword">const</span> putExtra = <span class="keyword">new</span> qiniu.form_up.PutExtra();</div><div class="line"></div><div class="line">formUploader.putFile(uploadToken, key, localFile, putExtra, <span class="function"><span class="keyword">function</span>(<span class="params">respErr, respBody, respInfo</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (respErr) &#123;&#125;</div><div class="line">  <span class="keyword">if</span> (respInfo.statusCode == <span class="number">200</span>) &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>多文件上传使用外部队列暂存所有任务，并和回调函数关联即可实现。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/后端/" rel="tag"># 后端</a>
+          
+            <a href="/blog/tags/管理后台/" rel="tag"># 管理后台</a>
+          
+            <a href="/blog/tags/egg-js/" rel="tag"># egg.js</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/02/06/my-first-electron-demo/" rel="next" title="我的第一个Electron应用">
+                <i class="fa fa-chevron-left"></i> 我的第一个Electron应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/04/14/image-render-md/" rel="prev" title="图片生成有感">
+                图片生成有感 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">1.</span> <span class="nav-text">用户管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库"><span class="nav-number">1.1.</span> <span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller"><span class="nav-number">1.2.</span> <span class="nav-text">Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service"><span class="nav-number">1.3.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Router与中间件"><span class="nav-number">1.4.</span> <span class="nav-text">Router与中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页面js"><span class="nav-number">1.5.</span> <span class="nav-text">页面js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无限滚动"><span class="nav-number">2.</span> <span class="nav-text">无限滚动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML部分"><span class="nav-number">2.1.</span> <span class="nav-text">HTML部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS部分"><span class="nav-number">2.2.</span> <span class="nav-text">JS部分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件上传"><span class="nav-number">3.</span> <span class="nav-text">文件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML部分-1"><span class="nav-number">3.1.</span> <span class="nav-text">HTML部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS部分-1"><span class="nav-number">3.2.</span> <span class="nav-text">JS部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后台路由"><span class="nav-number">3.3.</span> <span class="nav-text">后台路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制器端"><span class="nav-number">3.4.</span> <span class="nav-text">控制器端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML模板"><span class="nav-number">4.</span> <span class="nav-text">HTML模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用七牛API上传文件"><span class="nav-number">5.</span> <span class="nav-text">使用七牛API上传文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2018/03/15/gallery-backend-with-egg-js/';
+          this.page.identifier = '2018/03/15/gallery-backend-with-egg-js/';
+          this.page.title = 'Photo Gallery中出现的常见需求解决方案';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

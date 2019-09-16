@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CORS,跨域," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="说到CORS，要从下面是一段很常见的前端面试对话
+
+问: 之前实践中有遇到过跨域的需求吗？
+答: 遇到过。
+问: 那你是怎么解决的呢？
+答: 跨域吧，大概有8种方法，很平衡，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。
+
+jsonp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨域技法之CORS">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/04/18/cors/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="说到CORS，要从下面是一段很常见的前端面试对话
+
+问: 之前实践中有遇到过跨域的需求吗？
+答: 遇到过。
+问: 那你是怎么解决的呢？
+答: 跨域吧，大概有8种方法，很平衡，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。
+
+jsonp">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/cors_flow.png">
+<meta property="og:updated_time" content="2017-04-20T12:17:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跨域技法之CORS">
+<meta name="twitter:description" content="说到CORS，要从下面是一段很常见的前端面试对话
+
+问: 之前实践中有遇到过跨域的需求吗？
+答: 遇到过。
+问: 那你是怎么解决的呢？
+答: 跨域吧，大概有8种方法，很平衡，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。
+
+jsonp">
+<meta name="twitter:image" content="http://shenlvmeng.github.com/blog/blog/images/cors_flow.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/04/18/cors/"/>
+
+
+
+
+
+  <title>跨域技法之CORS | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/18/cors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">跨域技法之CORS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T20:44:38+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/18/cors/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/18/cors/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>说到CORS，要从下面是一段很常见的前端面试对话</p>
+<blockquote>
+<p>问: 之前实践中有遇到过跨域的需求吗？</p>
+<p>答: 遇到过。</p>
+<p>问: 那你是怎么解决的呢？</p>
+<p>答: 跨域吧，大概有8种方法，<del>很平衡</del>，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。</p>
+</blockquote>
+<h3 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h3><p>jsonp是此前最为常用的一种跨域方法，利用了<code>&lt;script&gt;</code>标签的非跨域性，实现起来大概是下面这样的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params">url, success</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> ud = <span class="string">'_'</span> + +<span class="keyword">new</span> <span class="built_in">Date</span>,</div><div class="line">      script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>),</div><div class="line">      head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>] </div><div class="line">          || <span class="built_in">document</span>.documentElement;</div><div class="line"></div><div class="line">  <span class="built_in">window</span>[ud] = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">    head.removeChild(script);</div><div class="line">    success &amp;&amp; success(data);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  script.src = url.replace(<span class="string">'callback=?'</span>, <span class="string">'callback='</span> + ud);</div><div class="line">  head.appendChild(script);</div><div class="line">&#125;</div><div class="line"></div><div class="line">jsonp(<span class="string">'http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h3><p>CORS（<a href="https://www.w3.org/TR/cors/" target="_blank" rel="external">Cross-Origin Resource Sharing</a>）是W3C规定的在客户端用来进行跨站通信的标准。随着XMLHttpRequest2的出现，大部分浏览器下，可以像普通同域那样使用xhr对象来发起跨域请求。</p>
+<h4 id="构造一个CORS请求"><a href="#构造一个CORS请求" class="headerlink" title="构造一个CORS请求"></a>构造一个CORS请求</h4><p>CORS被下列浏览器<a href="http://caniuse.com/#search=cors" target="_blank" rel="external">支持</a></p>
+<ul>
+<li>Chrome 3+</li>
+<li>Firefox 3.5+</li>
+<li>Opera 12+</li>
+<li>Safari 4+</li>
+<li>Internet Explorer 8+</li>
+</ul>
+<p>其中Chrome，FF，Opera，Safari都通过<a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2</a>对象来实现CORS。不一般的IE通过XDomainRequest对象实现，不过工作方式和xhr对象大同小异。Nicolas Zakas（《JavaScript高级程序设计》的作者）写了一个<a href="http://www.nczonline.net/blog/2010/05/25/cross-domain-ajax-with-cross-origin-resource-sharing/" target="_blank" rel="external">helper函数</a>，保证了浏览器兼容性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Check if the XMLHttpRequest object has a "withCredentials" property.</span></div><div class="line">    <span class="comment">// "withCredentials" only exists on XMLHTTPRequest2 objects.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, check if XDomainRequest.</span></div><div class="line">    <span class="comment">// XDomainRequest only exists in IE, and is IE's way of making CORS requests.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, CORS is not supported by the browser.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line"><span class="keyword">if</span> (!xhr) &#123;</div><div class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'CORS not supported'</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="withCredentials"><a href="#withCredentials" class="headerlink" title="withCredentials"></a>withCredentials</h4><p>标准的CORS请求默认不携带cookie，如果需要在请求中携带cookie信息，需要在为xhr对象指定<code>withCredentials</code>属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xhr.withCredentials = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>同时，服务器端也要在响应头上设置<code>Access-Control-Allow-Credentials</code>字段为<code>true</code>。像下面这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure>
+<p>值得注意的是，cookie同样遵守同源法则，即你的JS代码无法获取和设置远端的cookie。</p>
+<h4 id="发起CORS请求"><a href="#发起CORS请求" class="headerlink" title="发起CORS请求"></a>发起CORS请求</h4><p>CORS请求发起方式和xhr没有什么区别，调用<code>xhr.send()</code>即可。综合来看，一个End to End的例子像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Create the XHR object.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line">    <span class="comment">// XHR for Chrome/Firefox/Opera/Safari.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line">    <span class="comment">// XDomainRequest for IE.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// CORS not supported.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Helper method to parse the title tag from the response.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTitle</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> text.match(<span class="string">'&lt;title&gt;(.*)?&lt;/title&gt;'</span>)[<span class="number">1</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Make the actual CORS request.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeCorsRequest</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// This is a sample server that supports CORS.</span></div><div class="line">  <span class="keyword">var</span> url = <span class="string">'http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html'</span>;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">  <span class="keyword">if</span> (!xhr) &#123;</div><div class="line">    alert(<span class="string">'CORS not supported'</span>);</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Response handlers.</span></div><div class="line">  xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = xhr.responseText;</div><div class="line">    <span class="keyword">var</span> title = getTitle(text);</div><div class="line">    alert(<span class="string">'Response from CORS request to '</span> + url + <span class="string">': '</span> + title);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">'Woops, there was an error making the request.'</span>);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.send();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="背后"><a href="#背后" class="headerlink" title="背后"></a>背后</h4><p><img src="/blog/images/cors_flow.png" alt=""></p>
+<p>CORS背后的脏活累活包括额外的包头以及额外的报文，这些由浏览器帮我们代劳了。CORS请求分为“<em>简单的请求</em>”和“<em>没那么简单的请求</em>”。简单的请求包含下列特征：</p>
+<ul>
+<li>HTTP方法名是<code>GET</code>, <code>POST</code>, <code>HEAD</code>之一</li>
+<li>HTTP包头包括<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type为<code>application/x-www-form-urlencoded</code>或<code>multipart/form-data</code>或<code>text/plain</code></li>
+</ul>
+</li>
+</ul>
+<p>这种普通的CORS请求可以不必选择CORS，而可以通过jsonp或表单提交的方式解决。剩下的不那么简单的请求则需要浏览器和服务器进行额外的报文交换（prelight request）。</p>
+<p>我们先从一个简单的请求开始，利用上面封装好的函数，写出下面的一段代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com/cors"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
+<p>在它的背后的HTTP包头像下面这样，请注意其中的Origin字段。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GET /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
+<p>一个合理的CORS请求<strong>必须</strong>包含一个<strong>Origin</strong>包头。这个包头由浏览器添加，用户不可自行修改。这部分由协议，域名和端口三部分组成。三者任意一个与<strong>Host</strong>不一致就算做跨域。非跨域时，不同浏览器对这个字段的处理方式不同，如FF会省去Origin字段，Chrome和Safari会在POST/DELETE/PUT时包括这个字段。</p>
+<p>幸运的是，在跨域时一定会带上这个字段。支持CORS会根据客户端的Origin是否在allow list中做出回应。下面是一个样例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://appi.bob.com</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Expose-Headers: FooBar</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
+<p>其中前三个以<code>Access-Control-</code>开头的字段和CORS相关。</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须)，这个字段必须附加在合法的CORS响应中，像上面例子所写的那样，或是设置为<code>*</code>表示允许任意源的请求（不过一般不会这样设置）</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选)，默认情况下，cookie不被包含在CORS请求中，设置此字段为<code>true</code>表示包含cookie在请求中。这个字段需要和XMLHttpRequest2中的<code>withCredentials</code>属性配合保证成功。</li>
+<li><code>Access-Control-Expose-Headers</code>(可选)，XMLHttpRequest2的<code>getResponseHeader()</code>方法可以获取下面这些属性<ul>
+<li>Cache-Control</li>
+<li>Content-Language</li>
+<li>Content-Type</li>
+<li>Expires</li>
+<li>Last-Modified</li>
+<li>Pragma<br>如果想访问其他属性时，需要设置这个字段，属性间用逗号隔开。</li>
+</ul>
+</li>
+</ul>
+<p>当请求“没那么简单”时，比如徐需要使用PUT或DELETE，或是需要支持JSON的返回资源类型时，浏览器需要先发起一次<strong>prelight request</strong>。在收到服务器允许的回复后，真实的请求再发出。不过这个过程对于用户是透明的。下面是一个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'PUT'</span>, url);</div><div class="line">xhr.setRequestHeader(<span class="string">'X-Custom-Header'</span>, <span class="string">'value'</span>);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
+<p><code>Prelight request</code>如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Access-Control-Request-Method: PUT</div><div class="line">Access-Control-Request-Headers: X-Custom-Header</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
+<p>除了我们上面已经提过的<code>Origin</code>字段外，又新增了两个字段</p>
+<ul>
+<li><code>Access-Control-Request-Method</code> 真实的HTTP请求方法。是始终包含在包头的</li>
+<li><code>Access-Control-Request-Headers</code> 用逗号分隔的真实HTTP请求的包头。</li>
+</ul>
+<p>服务器接收到这些后，会根据方法和包头，结合<code>Origin</code>检验合法性。在验证合法后，返回<code>Prelight Response</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
+<p>它们的含义从名字中就可以推出一二</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须) 略</li>
+<li><code>Access-Control-Allow-Methods</code>(必须)，用逗号分隔的支持的HTTP方法列表。尽管可能请求中只写了一种方法。这么做避免了多次请求</li>
+<li><code>Access-Control-Allow-Headers</code> (若客户端填写对应的头部则为必须)，逗号分割的支持的所有头部类型</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选) 略</li>
+<li><code>Access-Control-Max-Age</code>(可选)，<code>prelight response</code>的缓存时间，以秒为单位。</li>
+</ul>
+<p>在<code>Prelight request</code>和<code>Prelight response</code>交换完成后，就是真正的请求和响应。此时的请求头部可以带上之前商议中所允许的字段，大致像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">PUT /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Host: api.alice.com</div><div class="line">X-Custom-Header: value</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure>
+<p>当请求成功发出时，可以在响应头部看到CORS相关的字段，如<code>Access-Control-Allow-Origin</code>。请求失败时，会在console上报错，但不会给出具体信息。</p>
+<h3 id="CORS-from-jQuery"><a href="#CORS-from-jQuery" class="headerlink" title="CORS from jQuery"></a>CORS from jQuery</h3><p>关于使用jQuery发起CORS请求，可以参加后文<a href="#refer">参考</a>的第一条或jQuery相关文档。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span id="refer"></span></p>
+<ul>
+<li><a href="https://www.html5rocks.com/en/tutorials/cors/" target="_blank" rel="external">Using CORS</a></li>
+<li><a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2 新技巧</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/CORS/" rel="tag"># CORS</a>
+          
+            <a href="/blog/tags/跨域/" rel="tag"># 跨域</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/04/13/project-habits/" rel="next" title="提升项目可维护性的一些习惯">
+                <i class="fa fa-chevron-left"></i> 提升项目可维护性的一些习惯
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/04/23/express-js/" rel="prev" title="Express源码阅读">
+                Express源码阅读 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#jsonp"><span class="nav-number">1.</span> <span class="nav-text">jsonp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CORS"><span class="nav-number">2.</span> <span class="nav-text">CORS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造一个CORS请求"><span class="nav-number">2.1.</span> <span class="nav-text">构造一个CORS请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#withCredentials"><span class="nav-number">2.2.</span> <span class="nav-text">withCredentials</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#发起CORS请求"><span class="nav-number">2.3.</span> <span class="nav-text">发起CORS请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#背后"><span class="nav-number">2.4.</span> <span class="nav-text">背后</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CORS-from-jQuery"><span class="nav-number">3.</span> <span class="nav-text">CORS from jQuery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2017/04/18/cors/';
+          this.page.identifier = '2017/04/18/cors/';
+          this.page.title = '跨域技法之CORS';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

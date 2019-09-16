@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="重构,技改,Vue,gulp,脚手架," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="构建工具升级因为要拆分代码，便于管理，需要使用import和export，因此必须要引入webpack这样的打包工具到gulp中，使用webpack-stream，具体使用方法和其他的gulp插件类似，在pipe在这样插入就行了.pipe(webpack())，配置方式和webpack一样。（webpack中引入babel-loader的过程就不赘述了）引入webpack后，开发流程和一起类似，g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Photogallery技术演进第2步">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/11/17/photogallery-improvement-2/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="构建工具升级因为要拆分代码，便于管理，需要使用import和export，因此必须要引入webpack这样的打包工具到gulp中，使用webpack-stream，具体使用方法和其他的gulp插件类似，在pipe在这样插入就行了.pipe(webpack())，配置方式和webpack一样。（webpack中引入babel-loader的过程就不赘述了）引入webpack后，开发流程和一起类似，g">
+<meta property="og:updated_time" content="2018-04-02T14:33:19.013Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Photogallery技术演进第2步">
+<meta name="twitter:description" content="构建工具升级因为要拆分代码，便于管理，需要使用import和export，因此必须要引入webpack这样的打包工具到gulp中，使用webpack-stream，具体使用方法和其他的gulp插件类似，在pipe在这样插入就行了.pipe(webpack())，配置方式和webpack一样。（webpack中引入babel-loader的过程就不赘述了）引入webpack后，开发流程和一起类似，g">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/11/17/photogallery-improvement-2/"/>
+
+
+
+
+
+  <title>Photogallery技术演进第2步 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/11/17/photogallery-improvement-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Photogallery技术演进第2步</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T20:56:12+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/11/17/photogallery-improvement-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/11/17/photogallery-improvement-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="构建工具升级"><a href="#构建工具升级" class="headerlink" title="构建工具升级"></a>构建工具升级</h2><p>因为要拆分代码，便于管理，需要使用<code>import</code>和<code>export</code>，因此必须要引入webpack这样的打包工具到gulp中，使用<a href="https://github.com/shama/webpack-stream" target="_blank" rel="external">webpack-stream</a>，具体使用方法和其他的gulp插件类似，在pipe在这样插入就行了<code>.pipe(webpack())</code>，配置方式和webpack一样。（webpack中引入babel-loader的过程就不赘述了）引入webpack后，开发流程和一起类似，<code>gulp</code>启动测试服务器，使用webpack通过<code>entry.js</code>打包代码，CSS和JSON相关流程不变。release时，增加了minify的流程，让js流程后的代码再压缩一遍。</p>
+<p>另外，引入babel后，可以用ES6语法改写<code>gulpfile.js</code>。最后的<code>gulpfile.babel.js</code>像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gulp <span class="keyword">from</span> <span class="string">'gulp'</span>;</div><div class="line"><span class="keyword">import</span> rename <span class="keyword">from</span> <span class="string">'gulp-rename'</span>;</div><div class="line"><span class="keyword">import</span> uglify <span class="keyword">from</span> <span class="string">'gulp-uglify'</span>;</div><div class="line"><span class="keyword">import</span> cleanCSS <span class="keyword">from</span> <span class="string">'gulp-clean-css'</span>;</div><div class="line"><span class="keyword">import</span> jsonminify <span class="keyword">from</span> <span class="string">'gulp-jsonminify'</span>;</div><div class="line"><span class="keyword">import</span> webserver <span class="keyword">from</span> <span class="string">'gulp-webserver'</span>;</div><div class="line"><span class="keyword">import</span> webpack <span class="keyword">from</span> <span class="string">'webpack-stream'</span>;</div><div class="line"></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/index.js'</span>)</div><div class="line">    .pipe(webpack(&#123;</div><div class="line">      <span class="attr">module</span>: &#123;</div><div class="line">        <span class="attr">rules</span>: [</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.js$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">"babel-loader"</span> &#125;</div><div class="line">        ]</div><div class="line">      &#125;</div><div class="line">    &#125;))</div><div class="line">    .pipe(rename(<span class="string">"index.js"</span>))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'minify'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'dist/index.js'</span>)</div><div class="line">    .pipe(uglify())</div><div class="line">    .pipe(rename(<span class="string">"index.min.js"</span>))</div><div class="line">    .pipe(gulp.dest(<span class="string">"dist"</span>));</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'css'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src([<span class="string">'src/index.css'</span>])</div><div class="line">		.pipe(cleanCSS(&#123;<span class="attr">compatibility</span>: <span class="string">'ie8'</span>&#125;))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'json'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/meta*.json'</span>)</div><div class="line">		.pipe(jsonminify())</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>))</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.src(<span class="string">'./'</span>)</div><div class="line">    .pipe(webserver(&#123;</div><div class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">open</span>: <span class="literal">true</span></div><div class="line">    &#125;));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch([<span class="string">'src/*.js'</span>, <span class="string">'src/**/*.js'</span>, <span class="string">'src/**/*.vue'</span>], [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'assets'</span>, [<span class="string">'json'</span>, <span class="string">'css'</span>, <span class="string">'js'</span>]);</div><div class="line">gulp.task(<span class="string">'default'</span>, [<span class="string">'assets'</span>, <span class="string">'webserver'</span>, <span class="string">'watch'</span>]);</div><div class="line">gulp.task(<span class="string">"release"</span>, [<span class="string">'assets'</span>, <span class="string">'minify'</span>]);</div></pre></td></tr></table></figure>
+<h2 id="使用单文件组件"><a href="#使用单文件组件" class="headerlink" title="使用单文件组件"></a>使用单文件组件</h2><p>引入webpack后，开始高高兴兴地分模块拆分代码，却发现分组件使用Vue时，不是单纯地定义组件配置信息，然后传给入口组件就行。必须要引入全家桶，<code>vue-loader</code>等工具，文件不得不用.vue这样的形式组织（现在开始觉得React组件的组织比Vue舒服了）。本来使用单文件的形式就是想尽量精简，可随着功能逐渐健全，看来重构也是避免不了的啊。在<a href="https://github.com/vuejs/vue-loader" target="_blank" rel="external">vue-loader</a>的介绍里，居然还要通过<code>vue-cli</code>来大一统，但是我一是想维持项目尽量轻量精简，使用gulp的工具链；二是项目已经写了很久了，全部迁移过去成本有些大。于是，通过<code>vue-cli</code>新建样本项目，对着<code>package.json</code>和<code>webpack.config.js</code>一抄了事。</p>
+<p>加上种种<code>.vue</code>文件的相关配置，<code>gulp.babel.js</code>最后长下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ...</span></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/index.js'</span>)</div><div class="line">    .pipe(webpack(&#123;</div><div class="line">      <span class="attr">module</span>: &#123;</div><div class="line">        <span class="attr">rules</span>: [</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.js$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">"babel-loader"</span> &#125;,</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.vue$/</span>, <span class="attr">loader</span>: <span class="string">'vue-loader'</span>&#125;,</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.(png|jpg|gif|svg)$/</span>, <span class="attr">loader</span>: <span class="string">'file-loader'</span>, <span class="attr">options</span>: &#123; <span class="attr">name</span>: <span class="string">'[name].[ext]?[hash]'</span> &#125; &#125;</div><div class="line">        ]</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">resolve</span>: &#123;</div><div class="line">        <span class="attr">alias</span>: &#123;</div><div class="line">          <span class="string">'vue$'</span>: <span class="string">'vue/dist/vue.esm.js'</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">extensions</span>: [<span class="string">'*'</span>, <span class="string">'.js'</span>, <span class="string">'.vue'</span>, <span class="string">'.json'</span>]</div><div class="line">      &#125;</div><div class="line">    &#125;))</div><div class="line">    .pipe(rename(<span class="string">"index.js"</span>))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p>下面需要开始拆分代码了。根据React/Vue这样框架通常的设计经验，需要下面一些组成：</p>
+<ul>
+<li><code>actions</code>  存储状态管理的动作</li>
+<li><code>components</code>  存储相互解耦的”dumb”组件，最好和业务无关</li>
+<li><code>constants</code>  存储全局常量</li>
+<li><code>containers</code>  存储组织<code>components</code>的业务容器组件</li>
+<li><code>entry</code>  存储入口文件</li>
+<li><code>helper</code>  存储工具函数</li>
+<li><code>reducers</code>  存储状态管理的reducers</li>
+<li><code>settings</code>  存储全局配置，通常用来初始化store</li>
+<li><code>store</code>  存储全局状态</li>
+<li><code>templates</code>  存储引入js的html文件</li>
+</ul>
+<p>我的项目比较简单，一没有状态管理（后面复杂了之后可能会引入😂），二只有三个组件，只要上面的<code>components</code>, <code>constants</code>, <code>containers</code>, <code>helper</code>的就够用了。最后src下的文件目录大概像下面这样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">├── App.vue</div><div class="line">├── components</div><div class="line">│   └── column</div><div class="line">│       └── Column.vue</div><div class="line">├── constants</div><div class="line">│   └── index.js</div><div class="line">├── containers</div><div class="line">│   ├── info</div><div class="line">│   │   └── Info.vue</div><div class="line">│   └── wall</div><div class="line">│       └── Wall.vue</div><div class="line">├── helper</div><div class="line">│   └── utils.js</div><div class="line">├── index.css</div><div class="line">└── index.js</div></pre></td></tr></table></figure>
+<p>在拆分时遇到了一些数据需要从最外层透传到子组件的情况，如<code>res</code>, <code>tag_list</code>, <code>tag_keys</code>。不过他们是只读的，而且数目很少，所以并不需要状态管理，只用通过props传下去就行了。</p>
+<h2 id="新功能"><a href="#新功能" class="headerlink" title="新功能"></a>新功能</h2><p>重构完之后，终于可以写新功能了。新功能主要是增加两个伪路由，方便页面的分享（这个需求我之前遇到过几次了）。页面是spa类型的，所以前端路由可以采用hash或history H5 API来实现。同时也有许多在这个基础上了前端路由库，提供一站式解决方案。我的需求目前其实不需要完整的路由方案：</p>
+<ul>
+<li>图片详情页可以分享</li>
+<li>搜索结果可以分享</li>
+</ul>
+<p>因此，设计上使用hash的方案，对于图片详情页，用<code>!</code>开头，后接图片序号。对于搜索结果页，则没有开头的<code>!</code>，仅使用<code>/</code>隔开每一个搜索关键字。对hash的读写上，没有什么困难的地方：</p>
+<ul>
+<li><strong>读</strong>：<code>App.vue</code>根据hash注入对应的数据，更改默认视图，对于图片详情页，更改展示组件</li>
+<li><strong>写</strong>：切换组件时，记录当前数据到<code>location.hash</code>，方便直接复制链接分享</li>
+</ul>
+<h2 id="后面的计划"><a href="#后面的计划" class="headerlink" title="后面的计划"></a>后面的计划</h2><p>现在网站还是有点单调了。只能自娱自乐，没有互动。后面应该会考虑在每张图片接入Disqus的问题。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/重构/" rel="tag"># 重构</a>
+          
+            <a href="/blog/tags/技改/" rel="tag"># 技改</a>
+          
+            <a href="/blog/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/blog/tags/gulp/" rel="tag"># gulp</a>
+          
+            <a href="/blog/tags/脚手架/" rel="tag"># 脚手架</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/11/04/sapiens-a-brief-history-of-humankind/" rel="next" title="《人类简史》读书笔记">
+                <i class="fa fa-chevron-left"></i> 《人类简史》读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/12/11/raven/" rel="prev" title="Sentry Raven.js学习">
+                Sentry Raven.js学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建工具升级"><span class="nav-number">1.</span> <span class="nav-text">构建工具升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用单文件组件"><span class="nav-number">2.</span> <span class="nav-text">使用单文件组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新功能"><span class="nav-number">3.</span> <span class="nav-text">新功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后面的计划"><span class="nav-number">4.</span> <span class="nav-text">后面的计划</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2017/11/17/photogallery-improvement-2/';
+          this.page.identifier = '2017/11/17/photogallery-improvement-2/';
+          this.page.title = 'Photogallery技术演进第2步';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="文本编辑器,quill,结构化数据," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="官网：https://quilljs.com
+
+quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。
+准备工作关于contenteditable属性，selection对象和range对象的介绍，可以参考这篇文章。
+配置123const editor = ne">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用quill搭建文本编辑器">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/04/17/quill-md/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="官网：https://quilljs.com
+
+quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。
+准备工作关于contenteditable属性，selection对象和range对象的介绍，可以参考这篇文章。
+配置123const editor = ne">
+<meta property="og:updated_time" content="2018-04-17T15:47:04.325Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用quill搭建文本编辑器">
+<meta name="twitter:description" content="官网：https://quilljs.com
+
+quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。
+准备工作关于contenteditable属性，selection对象和range对象的介绍，可以参考这篇文章。
+配置123const editor = ne">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/04/17/quill-md/"/>
+
+
+
+
+
+  <title>使用quill搭建文本编辑器 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/quill-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用quill搭建文本编辑器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T23:45:03+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/框架/" itemprop="url" rel="index">
+                    <span itemprop="name">框架</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/04/17/quill-md/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/17/quill-md/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>官网：<a href="https://quilljs.com" target="_blank" rel="external">https://quilljs.com</a></p>
+</blockquote>
+<p>quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>关于<code>contenteditable</code>属性，<code>selection</code>对象和<code>range</code>对象的介绍，可以参考<a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">这篇文章</a>。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">"#container"</span>);</div><div class="line"><span class="comment">// 或是直接传入DOM对象</span></div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="built_in">document</span>.body);</div></pre></td></tr></table></figure>
+<p>quill通常使用上面的方式初始化。在初始化时，支持用丰富的配置项定义生成的编辑器。下面是一个例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> options = &#123;</div><div class="line">    <span class="attr">debug</span>: <span class="string">'info'</span>,</div><div class="line">    <span class="attr">modules</span>: &#123;</div><div class="line">        <span class="attr">toolbar</span>: <span class="string">'#toolbar'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">placeholder</span>: <span class="string">'Tell a story...'</span>,</div><div class="line">    <span class="attr">readOnly</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">them</span>: <span class="string">'snow'</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">'#container'</span>, options);</div></pre></td></tr></table></figure>
+<p>Quill支持的配置项有：</p>
+<ul>
+<li><code>bounds</code>，Quill UI元素的限制范围，默认<code>document.body</code></li>
+<li><code>debug</code>，是<code>Quill.debug</code>的快捷方式，用于打印调试信息，默认级别为<code>warn</code></li>
+<li><code>formats</code>，Quill中允许出现的格式，默认为<a href="https://quilljs.com/docs/formats/" target="_blank" rel="external">所有格式</a>，它和toolbar是解耦的</li>
+<li><code>modules</code>，注册在Quill中的功能模块和与之对应的配置信息，Quill会有默认配置</li>
+<li><code>placeholder</code>，提示信息</li>
+<li><code>readOnly</code>，是否可写</li>
+<li><code>scrollContainer</code>，编辑器滚动条的父级，默认为编辑器本身</li>
+<li><code>strict</code>，版本更新配置，默认为<code>true</code></li>
+<li><code>theme</code>，整体外观，默认为<code>snow</code>，<code>bubble</code>可选</li>
+</ul>
+<h3 id="支持的文本格式"><a href="#支持的文本格式" class="headerlink" title="支持的文本格式"></a>支持的文本格式</h3><p>分为<strong>行内</strong>，<strong>块级</strong>，<strong>嵌入式</strong>三大类。</p>
+<ul>
+<li>行内：加粗/背景色/字体颜色/字体/行内代码/斜体/下划线/删除线/链接/字体大小/上、下标</li>
+<li>块级：引用/标题/行首缩进/有序、无序列表/对齐/文本方向/代码块</li>
+<li>嵌入式：音频/视频/公式</li>
+</ul>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p>按照由浅入深，分为<strong>修改内容</strong>，<strong>修改格式</strong>，<strong>选取</strong>，<strong>编辑器本身</strong>，<strong>事件</strong>，<strong>数据模型操作</strong>，<strong>拓展</strong>几大类。涉及到内容修改的都会返回代表更改的delta。</p>
+<h4 id="修改内容"><a href="#修改内容" class="headerlink" title="修改内容"></a>修改内容</h4><p>涉及到修改时，最后一个参数都可以选择<code>user</code>，<code>api</code>，<code>silent</code>。<code>user</code>类型下，disabled时会没有效果。</p>
+<ul>
+<li><code>deleteText</code>，输入起始点和长度，删除特定范围的内容，返回delta类型数据。如<code>quill.deleteText(6, 4)</code></li>
+<li><code>getContents</code>，获取delta格式的编辑器内容，如<code>quill.getContents()</code></li>
+<li><code>getLength</code>，获取文本长度，quill默认会有一个空行，所以默认返回1</li>
+<li><code>getText</code>，获取文本内容，跳过非文本如音视频元素，如<code>quill.getText(0, 10)</code></li>
+<li><code>insertEmbed</code>，输入位置，类型，值，插入嵌入式内容，如<code>quill.insertEmbed(10, &#39;image&#39;, &#39;https://quilljs.com/images/cloud.png&#39;)</code></li>
+<li><p><code>insertText</code>，插入文本，可带格式。如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Hello'</span>, <span class="string">'bold'</span>, <span class="literal">true</span>);</div><div class="line"></div><div class="line">quill.insertText(<span class="number">5</span>, <span class="string">'Quill'</span>, &#123;</div><div class="line">  <span class="string">'color'</span>: <span class="string">'#ffff00'</span>,</div><div class="line">  <span class="string">'italic'</span>: <span class="literal">true</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>setContent</code>，输入delta，重设编辑器内容，需以<code>\n</code>结尾。如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">quill.setContents([</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'Hello '</span> &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'World!'</span>, <span class="attr">attributes</span>: &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125; &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'\n'</span> &#125;</div><div class="line">]);</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>setText</code>，设置文本，返回代表改变的delta</p>
+</li>
+<li><code>updateContent</code>，输入delta，更新内容，返回代表更新的delta</li>
+</ul>
+<h4 id="修改格式"><a href="#修改格式" class="headerlink" title="修改格式"></a>修改格式</h4><ul>
+<li><code>format</code>，设置用户当前所选的文本格式，如<code>quill.format(&#39;color&#39;, &#39;red&#39;);</code></li>
+<li><code>formatLine</code>，设置给定选择当前整行样式，使用类似<code>format</code>的方法设置样式，也支持直接传入格式对象。类似<code>quill.formatLine(1, 2, { &#39;align&#39;: &#39;right&#39;})</code></li>
+<li><code>formatText</code>，设置给定范围内文本格式，类似<code>formatLine</code></li>
+<li><code>getFormat</code>，获取给定范围内的格式，没有输入时，返回当前选择的格式</li>
+<li><code>removeFormat</code>，移除范围内样式</li>
+</ul>
+<h4 id="选取"><a href="#选取" class="headerlink" title="选取"></a>选取</h4><ul>
+<li><code>getBounds(index, length = 0)</code>，返回的top、width、height、left相对于编辑器容器而言</li>
+<li><code>getSelection(focus = false)</code>，返回用户的选取范围，由index、length组成</li>
+<li><code>setSelection(index, length = 0)</code>，设置选区范围，会自动focus，输入null会自动blur</li>
+</ul>
+<h4 id="编辑器本身"><a href="#编辑器本身" class="headerlink" title="编辑器本身"></a>编辑器本身</h4><ul>
+<li><code>blur</code>，失焦</li>
+<li><code>disable</code>，禁用</li>
+<li><code>enable(enabled = false)</code>，启用</li>
+<li><code>focus</code>，聚焦</li>
+<li><code>hasFocus</code>，是否聚焦</li>
+<li><code>update</code>，同步用户改动，协同工作时常用</li>
+</ul>
+<h4 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h4><p>事件通过<code>on</code>方法绑定在quill对象上。</p>
+<ul>
+<li><code>text-change</code>，quill内的内容改变时触发，回调函数可以获取delta、oldContent，source。通常来自’user’，<code>source</code>为’silent’时，该事件不会触发。</li>
+<li><code>selection-change</code>，回调函数可以获取range，oldRange，source</li>
+<li><code>editor-change</code>，上述两个事件触发时触发，即使source为<code>silent</code></li>
+</ul>
+<p>除了<code>on</code>方法，还有<code>once</code>用于绑定一次和<code>off</code>方法解绑。</p>
+<h4 id="数据模型操作"><a href="#数据模型操作" class="headerlink" title="数据模型操作"></a>数据模型操作</h4><ul>
+<li><code>find</code>，寻找DOM节点对应的quill或Blot对象</li>
+<li><code>getIndex</code>，返回文档开头到给定Blot的偏移量</li>
+<li><code>getLeafBlot</code>，返回给定位置的Blot</li>
+<li><code>getLine</code>，返回给定位置整行的Blot</li>
+<li><code>getLines</code>，返回给定范围的Blot</li>
+</ul>
+<h4 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h4><ul>
+<li><code>debug</code>，设置调试信息级别，<code>info | log | warn | error</code></li>
+<li><p><code>import</code>，导出quill相关库，输入相对于quill的路径</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Parchment = Quill.import(<span class="string">'parchment'</span>);</div><div class="line"><span class="keyword">var</span> Delta = Quill.import(<span class="string">'delta'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> Toolbar = Quill.import(<span class="string">'modules/toolbar'</span>);</div><div class="line"><span class="keyword">var</span> Link = Quill.import(<span class="string">'formats/link'</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>register</code>，注册module到quill中，有下面几种用法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Quill.register(format: Attributor | BlotDefinintion, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(path: <span class="built_in">String</span>, <span class="attr">def</span>: any, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(defs: &#123; [<span class="built_in">String</span>]: any &#125;, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>addContainer</code>，新增容器并返回</p>
+</li>
+<li><code>enable/disable</code>，启用、禁用编辑器</li>
+</ul>
+<h3 id="delta"><a href="#delta" class="headerlink" title="delta"></a>delta</h3><p><a href="https://github.com/quilljs/delta" target="_blank" rel="external">delta</a>是quill中最重要的概念。据<a href="https://quilljs.com/guides/designing-the-delta-format/" target="_blank" rel="external">介绍</a>所说，quill是“第一个”使用delta（结构化数据）这个概念的。不同于其他大多数文本编辑器需要反复执行修改编辑器中的HTML文档。quill维护一个delta数组，使用JSON数据的方式描述了文档的内容。</p>
+<p>使用delta一词，并没有问题，因为可以理解成文档本身是由空内容 + delta一点点得到的。delta主要有两个特性：</p>
+<ul>
+<li>权威性，delta和对应的生成结果是一一对应的，没有歧义</li>
+<li>压缩性，delta中描述的操作是经过压缩后的</li>
+</ul>
+<p>delta中的操作可以分为增、删、修改格式，分别对应<code>insert</code>，<code>delete</code>和<code>retain</code>操作。对文本编辑器的一次改动（真实世界中的改动行为）只可能涉及上述三种行为的一种（Quill并不允许Ctrl多处选中）。其中retain的意义类似于光标的移动，它使得这三种操作并不需要使用index描述，便于Quill做优化和压缩。</p>
+<p>delta的操作实际上是对parchment进行的，它类似于vdom，使用JS的数据结构对文本编辑器中可能出现的各元素进行了抽象，称作Blot。Blot有scroll，inline、block、text，break几种。父Blot下必须包含至少一个子Blot，而所有的Blot都包含在一个scroll Blot下。文本编辑器中特定格式的文本块都用特定的Blot表示，每个这样的Blot都必须继承自上面的一种Blot类型。就像通过下面的方式继承了Blot，就可以使对应的行内元素得到对应的编辑器样式元素对应起来，并使用在后面的编辑器里。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> Inline = Quill.import(<span class="string">'blots/inline'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BoldBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">BoldBlot.blotName = <span class="string">'bold'</span>;</div><div class="line">BoldBlot.tagName = <span class="string">'strong'</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ItalicBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">ItalicBlot.blotName = <span class="string">'italic'</span>;</div><div class="line">ItalicBlot.tagName = <span class="string">'em'</span>;</div><div class="line"></div><div class="line">Quill.register(BoldBlot);</div><div class="line">Quill.register(ItalicBlot);</div><div class="line"></div><div class="line"><span class="comment">// in your editor</span></div><div class="line"></div><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Test'</span>, &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;);</div><div class="line">quill.formatText(<span class="number">0</span>, <span class="number">4</span>, <span class="string">'italic'</span>, <span class="literal">true</span>);</div></pre></td></tr></table></figure>
+<p>类似地，我们定义一个Link Blot。它相比bold，italic不同的是，它需要一个string而不是boolean初始化。因此需要定义<code>create</code>和<code>format</code>两个函数。其中create在构造Blot时使用，value即输入的href，formats将用户的format字段和真实DOM的字段相关联。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LinkBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    <span class="comment">// Sanitize url value if desired</span></div><div class="line">    node.setAttribute(<span class="string">'href'</span>, value);</div><div class="line">    <span class="comment">// Okay to set other non-format related attributes</span></div><div class="line">    <span class="comment">// These are invisible to Parchment so must be static</span></div><div class="line">    node.setAttribute(<span class="string">'target'</span>, <span class="string">'_blank'</span>);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="comment">// We will only be called with a node already</span></div><div class="line">    <span class="comment">// determined to be a Link blot, so we do</span></div><div class="line">    <span class="comment">// not need to check ourselves</span></div><div class="line">    <span class="keyword">return</span> node.getAttribute(<span class="string">'href'</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">LinkBlot.blotName = <span class="string">'link'</span>;</div><div class="line">LinkBlot.tagName = <span class="string">'a'</span>;</div><div class="line"></div><div class="line">Quill.register(LinkBlot);</div></pre></td></tr></table></figure>
+<p>定义引用这样的块级元素时，对应地继承Block Blot即可。和inline Blot不同的是，Block Blot无法嵌套，在对已有的块级元素应用时会替换而不是嵌套绑定在元素上。以Header元素为例，可以指定tagName为一个数组，可以在format时使用1、2的方式指定具体哪种tag。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeaderBlot</span> <span class="keyword">extends</span> <span class="title">Block</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="keyword">return</span> HeaderBlot.tagName.indexOf(node.tagName) + <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">HeaderBlot.blotName = <span class="string">'header'</span>;</div><div class="line"><span class="comment">// Medium only supports two header sizes, so we will only demonstrate two,</span></div><div class="line"><span class="comment">// but we could easily just add more tags into this array</span></div><div class="line">HeaderBlot.tagName = [<span class="string">'H1'</span>, <span class="string">'H2'</span>];</div></pre></td></tr></table></figure>
+<p>类似的，可以在插入embed Blot，这种类型效果是插入在元素中间的新的tag。如Image。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> BlockEmbed = Quill.import(<span class="string">'blots/block/embed'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImageBlot</span> <span class="keyword">extends</span> <span class="title">BlockEmbed</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    node.setAttribute(<span class="string">'alt'</span>, value.alt);</div><div class="line">    node.setAttribute(<span class="string">'src'</span>, value.url);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> value(node) &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">alt</span>: node.getAttribute(<span class="string">'alt'</span>),</div><div class="line">      <span class="attr">url</span>: node.getAttribute(<span class="string">'src'</span>)</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">ImageBlot.blotName = <span class="string">'image'</span>;</div><div class="line">ImageBlot.tagName = <span class="string">'img'</span>;</div><div class="line"></div><div class="line"><span class="comment">// 使用时</span></div><div class="line"><span class="keyword">let</span> range = quill.getSelection(<span class="literal">true</span>);</div><div class="line">quill.insertText(range.index, <span class="string">'\n'</span>, Quill.sources.USER);</div><div class="line">quill.insertEmbed(range.index + <span class="number">1</span>, <span class="string">'image'</span>, &#123;</div><div class="line">    <span class="attr">alt</span>: <span class="string">'Quill Cloud'</span>,</div><div class="line">    <span class="attr">url</span>: <span class="string">'https://quilljs.com/0.20/assets/images/cloud.png'</span></div><div class="line">&#125;, Quill.sources.USER);</div><div class="line">quill.setSelection(range.index + <span class="number">2</span>, Quill.sources.SILENT);</div></pre></td></tr></table></figure>
+<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h3><p>quill中的module位于quill的应用层。可以通过定制modules，利用quill的功能；或是更改quill内置module，修改quill本身的行为和功能。clipboard、keyboard、history三个module是quill默认加载的。用户完全可以根据业务需求定义自己的module。官网给了<a href="https://quilljs.com/guides/building-a-custom-module/" target="_blank" rel="external">简单的例子</a>展示了module的大致骨架：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Quill.register(<span class="string">'modules/counter'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">quill, options</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> container = <span class="built_in">document</span>.querySelector(options.container);</div><div class="line">  quill.on(<span class="string">'text-change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = quill.getText();</div><div class="line">    <span class="keyword">if</span> (options.unit === <span class="string">'word'</span>) &#123;</div><div class="line">      container.innerText = text.split(<span class="regexp">/\s+/</span>).length + <span class="string">' words'</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      container.innerText = text.length + <span class="string">' characters'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">counter</span>: &#123;</div><div class="line">      <span class="attr">container</span>: <span class="string">'#counter'</span>,</div><div class="line">      <span class="attr">unit</span>: <span class="string">'word'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>只需要定义一个可以接收quill对象的函数即可，在函数内部利用quill事件监听即可完成应用层的建设。</p>
+<h3 id="Toolbar和ClipBoard"><a href="#Toolbar和ClipBoard" class="headerlink" title="Toolbar和ClipBoard"></a>Toolbar和ClipBoard</h3><p><a href="https://quilljs.com/docs/modules/toolbar/" target="_blank" rel="external">Toolbar</a>和<a href="https://quilljs.com/docs/modules/clipboard/" target="_blank" rel="external">Clipboard</a>是Quill内置的两个module，对你构建自己的文本编辑器有很大的借鉴意义。</p>
+<p>Toolbar用来定制工具栏上的按钮，是自定义编辑器（尤其是业务相关的编辑器）逃不开的一部分。它有几个基本配置：</p>
+<ul>
+<li><code>container</code>，放置工具栏的DOM容器</li>
+<li><code>handler</code>，点击ToolBar图标时注册的函数，传入Blot的value，通过调用Quill的API完成功能。也可以通过下面方式注册。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Handlers can also be added post initialization</span></div><div class="line"><span class="keyword">var</span> toolbar = quill.getModule(<span class="string">'toolbar'</span>);</div><div class="line">toolbar.addHandler(<span class="string">'image'</span>, showImageUI);</div></pre></td></tr></table></figure>
+<p>在遇到从别的文本编辑器拷贝内容过来的情况时，需要修改ClipBoard Module中<code>addMatcher</code>的定义。这个方法向ClipBoard中注册了新的Matcher匹配拷贝过来的HTML文本，将之转换为对应的Blot。如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">quill.clipboard.addMatcher(Node.TEXT_NODE, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Delta().insert(node.data);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// Interpret a &lt;b&gt; tag as bold</span></div><div class="line">quill.clipboard.addMatcher(<span class="string">'.custom-class'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> delta.compose(<span class="keyword">new</span> Delta().retain(delta.length(), &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;));</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>或者在configuration中，注入新定义的matcher即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">clipboard</span>: &#123;</div><div class="line">      <span class="attr">matchers</span>: [</div><div class="line">        [<span class="string">'B'</span>, customMatcherA],</div><div class="line">        [Node.TEXT_NODE, customMatcherB]</div><div class="line">      ]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://quilljs.com/docs/" target="_blank" rel="external">Quill文档</a></li>
+<li><a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">利用javascript搭建富文本编辑器</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/文本编辑器/" rel="tag"># 文本编辑器</a>
+          
+            <a href="/blog/tags/quill/" rel="tag"># quill</a>
+          
+            <a href="/blog/tags/结构化数据/" rel="tag"># 结构化数据</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/04/14/image-render-md/" rel="next" title="图片生成有感">
+                <i class="fa fa-chevron-left"></i> 图片生成有感
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/04/17/some-tips-md/" rel="prev" title="工作中的遇到的一些小知识">
+                工作中的遇到的一些小知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持的文本格式"><span class="nav-number">3.</span> <span class="nav-text">支持的文本格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API"><span class="nav-number">4.</span> <span class="nav-text">API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改内容"><span class="nav-number">4.1.</span> <span class="nav-text">修改内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改格式"><span class="nav-number">4.2.</span> <span class="nav-text">修改格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选取"><span class="nav-number">4.3.</span> <span class="nav-text">选取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编辑器本身"><span class="nav-number">4.4.</span> <span class="nav-text">编辑器本身</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件"><span class="nav-number">4.5.</span> <span class="nav-text">事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据模型操作"><span class="nav-number">4.6.</span> <span class="nav-text">数据模型操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展"><span class="nav-number">4.7.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#delta"><span class="nav-number">5.</span> <span class="nav-text">delta</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modules"><span class="nav-number">6.</span> <span class="nav-text">modules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Toolbar和ClipBoard"><span class="nav-number">7.</span> <span class="nav-text">Toolbar和ClipBoard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2018/04/17/quill-md/';
+          this.page.identifier = '2018/04/17/quill-md/';
+          this.page.title = '使用quill搭建文本编辑器';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

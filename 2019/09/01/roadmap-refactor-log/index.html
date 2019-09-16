@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="TypeScript,路书,Electron,gpx解析,EXIF," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="roadmap最近使用typescript重构到了1.0.0版本，下面是一些记录
+
+1.0.0项目由两部分组成：Electron程序、web网页。两者不直接关联，通过配置文件roadmap.config.json解耦。
+另外，Electron程序和web网页属于两套开发流程，互不干扰，在使用配置文件作为接口的基础上，可以独立开发和升级。
+Electron程序提供给用户程序，通过输入地图配置、gp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="roadmap工程化改造">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/09/01/roadmap-refactor-log/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="roadmap最近使用typescript重构到了1.0.0版本，下面是一些记录
+
+1.0.0项目由两部分组成：Electron程序、web网页。两者不直接关联，通过配置文件roadmap.config.json解耦。
+另外，Electron程序和web网页属于两套开发流程，互不干扰，在使用配置文件作为接口的基础上，可以独立开发和升级。
+Electron程序提供给用户程序，通过输入地图配置、gp">
+<meta property="og:updated_time" content="2019-09-01T09:27:57.288Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="roadmap工程化改造">
+<meta name="twitter:description" content="roadmap最近使用typescript重构到了1.0.0版本，下面是一些记录
+
+1.0.0项目由两部分组成：Electron程序、web网页。两者不直接关联，通过配置文件roadmap.config.json解耦。
+另外，Electron程序和web网页属于两套开发流程，互不干扰，在使用配置文件作为接口的基础上，可以独立开发和升级。
+Electron程序提供给用户程序，通过输入地图配置、gp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/09/01/roadmap-refactor-log/"/>
+
+
+
+
+
+  <title>roadmap工程化改造 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2019/09/01/roadmap-refactor-log/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">roadmap工程化改造</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-01T17:25:31+08:00">
+                2019-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2019/09/01/roadmap-refactor-log/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/01/roadmap-refactor-log/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><a href="https://github.com/shenlvmeng/roadmap" target="_blank" rel="external">roadmap</a>最近使用typescript重构到了1.0.0版本，下面是一些记录</p>
+</blockquote>
+<p>1.0.0项目由两部分组成：<strong>Electron程序</strong>、<strong>web网页</strong>。两者不直接关联，通过配置文件<code>roadmap.config.json</code>解耦。</p>
+<p>另外，Electron程序和web网页属于两套开发流程，互不干扰，在使用配置文件作为接口的基础上，可以独立开发和升级。</p>
+<h2 id="Electron程序"><a href="#Electron程序" class="headerlink" title="Electron程序"></a>Electron程序</h2><p>提供给用户程序，通过输入地图配置、gpx文件、定位图片物料，产出<code>roadmap.config.json</code>。整体使用Electron + webpack + TypeScript的脚手架。</p>
+<p>Electron工作重点在gpx文件转换和图片压缩：</p>
+<ul>
+<li>gpx文件使用<code>parse-gpx</code>库解析，产出JSON字符串</li>
+<li>图片压缩，保留EXIF信息的图片压缩，产出压缩后的图片</li>
+</ul>
+<p>最后加上用户的输入，综合产出<code>roadmap.config.json</code>。</p>
+<h3 id="gpx解析"><a href="#gpx解析" class="headerlink" title="gpx解析"></a>gpx解析</h3><blockquote>
+<p>见src/main/gpx2json.ts</p>
+</blockquote>
+<p>使用<code>parse-gpx</code>库解析，将经纬度坐标换算到百度地图坐标，产出保留经纬度、海拔信息的结构体，储存为JSON文件，便于网页读取。</p>
+<h3 id="图片压缩"><a href="#图片压缩" class="headerlink" title="图片压缩"></a>图片压缩</h3><blockquote>
+<p>见src/renderer/image.ts</p>
+</blockquote>
+<p>带有EXIF信息的图片通常体积很大，不适合直接放在网页，会严重拖慢网页加载速度。而经过调研，常见的图片压缩工具都不会保留图片EXIF信息，即使保留也不会保留我们需要的经纬度、海拔信息。</p>
+<p>另外，满足要求的图片压缩工具（如Adobe PhotoShop）没法整合在整个流程中。因此需要自己实现。</p>
+<p>思路是：</p>
+<ul>
+<li>读取原始图片中的EXIF信息</li>
+<li>借助canvas压缩图片体积、同时调整图片尺寸</li>
+<li>再度组合EXIF信息和压缩后的图片，得到保留完整EXIF信息的压缩图片</li>
+</ul>
+<h3 id="网页模板"><a href="#网页模板" class="headerlink" title="网页模板"></a>网页模板</h3><p>使用<code>html-loader</code>加载已经产出好的<code>output.html</code>，读取为字符串，直接输出到指定目录即可。</p>
+<p>网页模板的开发流程见portal一节。</p>
+<h3 id="产物"><a href="#产物" class="headerlink" title="产物"></a>产物</h3><blockquote>
+<p>样例见src/test/portal</p>
+</blockquote>
+<p>产物生成在桌面的roadmap-output文件夹，<strong>新生成的文件夹会覆盖老的</strong>。内容如下：</p>
+<ul>
+<li><code>index.html</code> 目标网页</li>
+<li><code>roadmap.config.json</code> 配置信息</li>
+<li><code>data</code><ul>
+<li><code>xx.json</code> gpx内容</li>
+<li><code>images</code> 图片信息</li>
+</ul>
+</li>
+</ul>
+<h2 id="roadmap-config-json"><a href="#roadmap-config-json" class="headerlink" title="roadmap.config.json"></a>roadmap.config.json</h2><p>用于解耦。包含了基础的配置信息</p>
+<ul>
+<li>city 默认定位的中心城市</li>
+<li>title 网页标题</li>
+<li>gpxCount gpx路径数</li>
+<li>imgTitles 图片标题，不需要和图片一一对应</li>
+</ul>
+<h2 id="web网页（portal）"><a href="#web网页（portal）" class="headerlink" title="web网页（portal）"></a>web网页（portal）</h2><p>web网页为了便于迭代，使用了和Electron程序独立的webpack工程。在<code>config</code>中有独立的webpack配置，有独立的webpack调试、打包命令。</p>
+<p>工程位于<code>src/portal</code>，使用TypeScript。产物位于<code>portal</code>目录下，由Electron程序引用。</p>
+<p>在portal工程的webpack配置中：</p>
+<ul>
+<li>使用<code>MiniCssExtractPlugin</code>抽出css为css资源文件，加载时的避免样式闪动</li>
+<li>使用<code>HtmlWebpackInlineSourcePlugin</code>将引用的css和js文件inline，使得Electron程序只需引用一个HTML文件即可</li>
+<li>需要配置html-loader的<code>attr</code>，避免web网页在加载时，里面的<code>&lt;img&gt;</code>标签的<code>src</code>属性被解析</li>
+</ul>
+<h3 id="gps轨迹"><a href="#gps轨迹" class="headerlink" title="gps轨迹"></a>gps轨迹</h3><p>使用百度地图API绘制polyline实现，Electron程序生成的JSON中，已经提前转成百度地图坐标地址。</p>
+<h3 id="图床"><a href="#图床" class="headerlink" title="图床"></a>图床</h3><p>图片存储于免费的<a href="https://imgchr.com" target="_blank" rel="external">路过图床</a>，因为不支持自定义访问路径，因此需要将上传图床后的路径保存为图片的title，在网页加载时，通过压缩图的title找到图片在图床上的对应地址（这个地方的设计待优化，所以暂时未开放）。</p>
+<p>图片的位置使用EXIF.js读取压缩图片的EXIF信息拿到，转换坐标后绘制在地图上。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/TypeScript/" rel="tag"># TypeScript</a>
+          
+            <a href="/blog/tags/路书/" rel="tag"># 路书</a>
+          
+            <a href="/blog/tags/Electron/" rel="tag"># Electron</a>
+          
+            <a href="/blog/tags/gpx解析/" rel="tag"># gpx解析</a>
+          
+            <a href="/blog/tags/EXIF/" rel="tag"># EXIF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2019/08/25/async-hooks-and-cls/" rel="next" title="NodeJS async_hooks API与CLS（Continuation-local-storage）">
+                <i class="fa fa-chevron-left"></i> NodeJS async_hooks API与CLS（Continuation-local-storage）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2019/09/10/php-note/" rel="prev" title="（旧文）PHP语言介绍">
+                （旧文）PHP语言介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Electron程序"><span class="nav-number">1.</span> <span class="nav-text">Electron程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpx解析"><span class="nav-number">1.1.</span> <span class="nav-text">gpx解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片压缩"><span class="nav-number">1.2.</span> <span class="nav-text">图片压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网页模板"><span class="nav-number">1.3.</span> <span class="nav-text">网页模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#产物"><span class="nav-number">1.4.</span> <span class="nav-text">产物</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#roadmap-config-json"><span class="nav-number">2.</span> <span class="nav-text">roadmap.config.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web网页（portal）"><span class="nav-number">3.</span> <span class="nav-text">web网页（portal）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gps轨迹"><span class="nav-number">3.1.</span> <span class="nav-text">gps轨迹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图床"><span class="nav-number">3.2.</span> <span class="nav-text">图床</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2019/09/01/roadmap-refactor-log/';
+          this.page.identifier = '2019/09/01/roadmap-refactor-log/';
+          this.page.title = 'roadmap工程化改造';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

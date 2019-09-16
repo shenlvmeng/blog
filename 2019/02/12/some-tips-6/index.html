@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="React Hooks,Rollup,mouseout,mouseleave,lint-staged,吸顶,图片组件," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="React Hooks和React Hot Loader默认配置相冲突设置RHL的pureSFC配置为true，详见讨论。
+1setConfig(&amp;#123; pureSFC: true &amp;#125;)
+一个简单的rollup配置样例最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上rollup的发挥要优于webpack。刚好想用用试试，就用了rollup作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识 6">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/02/12/some-tips-6/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="React Hooks和React Hot Loader默认配置相冲突设置RHL的pureSFC配置为true，详见讨论。
+1setConfig(&amp;#123; pureSFC: true &amp;#125;)
+一个简单的rollup配置样例最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上rollup的发挥要优于webpack。刚好想用用试试，就用了rollup作">
+<meta property="og:updated_time" content="2019-02-12T14:48:15.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="工作中的遇到的一些小知识 6">
+<meta name="twitter:description" content="React Hooks和React Hot Loader默认配置相冲突设置RHL的pureSFC配置为true，详见讨论。
+1setConfig(&amp;#123; pureSFC: true &amp;#125;)
+一个简单的rollup配置样例最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上rollup的发挥要优于webpack。刚好想用用试试，就用了rollup作">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/02/12/some-tips-6/"/>
+
+
+
+
+
+  <title>工作中的遇到的一些小知识 6 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2019/02/12/some-tips-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">工作中的遇到的一些小知识 6</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T22:29:56+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2019/02/12/some-tips-6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/02/12/some-tips-6/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="React-Hooks和React-Hot-Loader默认配置相冲突"><a href="#React-Hooks和React-Hot-Loader默认配置相冲突" class="headerlink" title="React Hooks和React Hot Loader默认配置相冲突"></a>React Hooks和React Hot Loader默认配置相冲突</h2><p>设置RHL的<code>pureSFC</code>配置为true，详见<a href="https://github.com/gaearon/react-hot-loader/issues/1088#issuecomment-434862175" target="_blank" rel="external">讨论</a>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setConfig(&#123; pureSFC: true &#125;)</div></pre></td></tr></table></figure>
+<h2 id="一个简单的rollup配置样例"><a href="#一个简单的rollup配置样例" class="headerlink" title="一个简单的rollup配置样例"></a>一个简单的rollup配置样例</h2><p>最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上<a href="https://rollupjs.org/guide/en" target="_blank" rel="external">rollup</a>的发挥要优于webpack。刚好想用用试试，就用了rollup作为打包工具。因为场景比webpack更简单，配置上也比webpack好配很多，基本看看<a href="https://rollupjs.org/guide/zh#tutorial" target="_blank" rel="external">官方文档</a>就可以上手了。</p>
+<p>不过，文档里用的babel版本还是6.x，使用新版本babel后，配置文件<code>rollup.config.js</code>和<code>.babelrc</code>有些改动，这里列在下面。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// rollup.config.js</span></div><div class="line"><span class="keyword">import</span> resolve <span class="keyword">from</span> <span class="string">'rollup-plugin-node-resolve'</span>;</div><div class="line"><span class="keyword">import</span> commonjs <span class="keyword">from</span> <span class="string">'rollup-plugin-commonjs'</span>;</div><div class="line"><span class="keyword">import</span> babel <span class="keyword">from</span> <span class="string">'rollup-plugin-babel'</span>;</div><div class="line"><span class="keyword">import</span> &#123; terser &#125; <span class="keyword">from</span> <span class="string">"rollup-plugin-terser"</span>;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</div><div class="line">    <span class="attr">input</span>: <span class="string">'src/index.js'</span>,</div><div class="line">    <span class="attr">output</span>: &#123;</div><div class="line">        <span class="attr">file</span>: <span class="string">'index.js'</span>,</div><div class="line">        <span class="attr">format</span>: <span class="string">'es'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">plugins</span>: [</div><div class="line">        resolve(),</div><div class="line">        commonjs(),</div><div class="line">        babel(&#123;</div><div class="line">            <span class="attr">exclude</span>: <span class="string">'node_modules/**'</span></div><div class="line">        &#125;),</div><div class="line">        terser()</div><div class="line">    ]</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// .babelrc</span></div><div class="line">&#123;</div><div class="line">    <span class="attr">presets</span>: [</div><div class="line">        [</div><div class="line">            <span class="string">'@babel/env'</span>,</div><div class="line">            &#123;</div><div class="line">                <span class="attr">loose</span>: <span class="literal">true</span>,</div><div class="line">                <span class="attr">modules</span>: <span class="literal">false</span></div><div class="line">            &#125;</div><div class="line">        ]</div><div class="line">    ],</div><div class="line">    <span class="attr">plugins</span>: [</div><div class="line">        [<span class="string">'@babel/proposal-object-rest-spread'</span>, &#123; <span class="attr">loose</span>: <span class="literal">true</span> &#125;]</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="mouseout和mouseleave事件的区别"><a href="#mouseout和mouseleave事件的区别" class="headerlink" title="mouseout和mouseleave事件的区别"></a><code>mouseout</code>和<code>mouseleave</code>事件的区别</h2><blockquote>
+<p>mouseout: <a href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseout" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/Events/mouseout</a><br>mouseleave: <a href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseleave" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/Events/mouseleave</a></p>
+</blockquote>
+<ul>
+<li><code>mouseout</code>在鼠标离开该元素表面时触发，<strong>包括进入到该元素的子元素中</strong></li>
+<li><code>mouseleave</code>在鼠标离开该元素区域时触发，<strong>即离开该元素和所有子元素区域</strong></li>
+</ul>
+<h2 id="sublime-goto-definition-快捷键"><a href="#sublime-goto-definition-快捷键" class="headerlink" title="sublime goto definition 快捷键"></a>sublime goto definition 快捷键</h2><blockquote>
+<p>参考<a href="https://stackoverflow.com/questions/16235706/sublime-3-set-key-map-for-function-goto-definition" target="_blank" rel="external">这里</a></p>
+</blockquote>
+<h2 id="只lint-changed-file的脚本方案"><a href="#只lint-changed-file的脚本方案" class="headerlink" title="只lint changed file的脚本方案"></a>只lint changed file的脚本方案</h2><p>利用<code>git diff-index</code>。下面以tslint为例。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">files=$(git diff-index --relative --name-only --cached HEAD | grep <span class="_">-e</span> <span class="string">'\\.ts$'</span> <span class="_">-e</span> <span class="string">'\\.tsx$'</span>);</div><div class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n \<span class="string">"<span class="variable">$files</span>\";</span></div><div class="line">    then echo <span class="variable">$files</span> | xargs tslint --fix -t codeFrame;</div><div class="line">fi</div></pre></td></tr></table></figure>
+<h3 id="升级版"><a href="#升级版" class="headerlink" title="升级版"></a>升级版</h3><p>使用<a href="https://www.npmjs.com/package/lint-staged" target="_blank" rel="external">lint-staged</a>，只lint staged的文件内容，代替上面冗长的脚本。</p>
+<h2 id="吸顶样式效果"><a href="#吸顶样式效果" class="headerlink" title="吸顶样式效果"></a>吸顶样式效果</h2><h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><blockquote>
+<p>参考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/position" target="_blank" rel="external">MDN</a></p>
+</blockquote>
+<p>最简洁的实现方式，缺点是<a href="https://caniuse.com/#search=sticky" target="_blank" rel="external">支持度</a>较差，只在iOS平台支持度较好。除非做中后台，否则需要谨慎使用。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.stick</span> &#123;</div><div class="line">    <span class="attribute">position</span>: sticky;</div><div class="line">    <span class="attribute">top</span>: <span class="number">20px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h3><p>不用赘述，检查滚动元素的<code>scrollTop</code>属性做判断即可，在指定位置上，设置<code>position:fixed</code>配合<code>z-index</code>等实现吸顶。</p>
+<p>另外有意思的一点是，在<code>position:fixed</code>的情况下，<strong>如果没有设置<code>left</code>，<code>left</code>将相对当前元素相对定位</strong>。</p>
+<h2 id="一个更友好的图片加载组件"><a href="#一个更友好的图片加载组件" class="headerlink" title="一个更友好的图片加载组件"></a>一个更友好的图片加载组件</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>提供类似知乎App内的体验：</p>
+<ul>
+<li>在图片加载时有<strong>相同大小</strong>的占位图和文案提示</li>
+<li>图片加载失败后有<strong>相同大小</strong>的占位图和文案提示，点击文案可以重新加载图片</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>重点在需要图片大小相同的占位图，这通常意味着：</p>
+<ul>
+<li>图片的大小需要伴随图片下发</li>
+<li>客户端的图片宽度或高度固定（通常是宽度）</li>
+</ul>
+<p>点击重新加载可以通过在图片url后拼接每次不一样的参数实现，例如时间戳。</p>
+<p>遮罩可以用图片背景色 + <code>:after</code>伪元素或另外的元素实现。剩下的把loading、loaded、failed状态处理好，工作并不困难。</p>
+<p>下面是粗略实现的一个demo。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * @desc smart image provide more friendly image loading experience inspired by zhihu</div><div class="line"> * @author shenlvmeng&lt;xin_yuanming@163.com&gt;</div><div class="line"> */</div><div class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">'./index.less'</span>;</div><div class="line"></div><div class="line">interface IProps &#123;</div><div class="line">    <span class="attr">width</span>: number;</div><div class="line">    height: number;</div><div class="line">    src: string;</div><div class="line">    onLoad?: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">void</span>;</div><div class="line">    onError?: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">void</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">interface IState &#123;</div><div class="line">    <span class="attr">src</span>: string;</div><div class="line">    loaded: boolean;</div><div class="line">    failed: boolean;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SmartImage</span> <span class="keyword">extends</span> <span class="title">Component</span>&lt;<span class="title">IProps</span>, <span class="title">IState</span>&gt; </span>&#123;</div><div class="line">    public readonly state: IState = &#123;</div><div class="line">        <span class="attr">src</span>: <span class="keyword">this</span>.props.src,</div><div class="line">        <span class="attr">loaded</span>: <span class="literal">false</span>,</div><div class="line">        <span class="attr">failed</span>: <span class="literal">false</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    public render() &#123;</div><div class="line">        <span class="keyword">const</span> &#123; width, height &#125; = <span class="keyword">this</span>.props;</div><div class="line">        <span class="keyword">const</span> &#123; src, loaded, failed &#125; = <span class="keyword">this</span>.state;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"smart-image-container"</span>&gt;</span></span></div><div class="line">                <span class="tag">&lt;<span class="name">img</span></span></div><div class="line">                    <span class="attr">className</span>=<span class="string">"smart-image"</span></div><div class="line">                    <span class="attr">width</span>=<span class="string">&#123;750&#125;</span></div><div class="line">                    <span class="attr">height</span>=<span class="string">&#123;750</span> * <span class="attr">height</span> / <span class="attr">width</span>&#125;</div><div class="line">                    <span class="attr">src</span>=<span class="string">&#123;src&#125;</span></div><div class="line">                    <span class="attr">onLoad</span>=<span class="string">&#123;this.handleSuccess&#125;</span></div><div class="line">                    <span class="attr">onError</span>=<span class="string">&#123;this.handleError&#125;</span></div><div class="line">                /&gt;</div><div class="line">                &#123;!loaded</div><div class="line">                    ? (</div><div class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"smart-image-hint"</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleRetry&#125;</span>&gt;</span></div><div class="line">                            &#123;failed</div><div class="line">                                ? <span class="tag">&lt;<span class="name">span</span>&gt;</span>图片加载失败，点此重试<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                                : <span class="tag">&lt;<span class="name">span</span>&gt;</span>图片加载中...<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                            &#125;</div><div class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    )</div><div class="line">                    : null</div><div class="line">                &#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleSuccess = () =&gt; &#123;</div><div class="line">        this.setState(&#123;</div><div class="line">            failed: false,</div><div class="line">            loaded: true</div><div class="line">        &#125;);</div><div class="line">        if (this.props.onLoad) &#123;</div><div class="line">            this.props.onLoad();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleError = () =&gt; &#123;</div><div class="line">        this.setState(&#123; failed: true &#125;);</div><div class="line">        if (this.props.onError) &#123;</div><div class="line">            this.props.onError();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleRetry = () =&gt; &#123;</div><div class="line">        if (!this.props.src.startsWith('http') || !this.state.failed) &#123;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        this.setState(&#123;</div><div class="line">            failed: false,</div><div class="line">            src: `$&#123;this.props.src&#125;?ts=$&#123;Date.now()&#125;`</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export default SmartImage;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/React-Hooks/" rel="tag"># React Hooks</a>
+          
+            <a href="/blog/tags/Rollup/" rel="tag"># Rollup</a>
+          
+            <a href="/blog/tags/mouseout/" rel="tag"># mouseout</a>
+          
+            <a href="/blog/tags/mouseleave/" rel="tag"># mouseleave</a>
+          
+            <a href="/blog/tags/lint-staged/" rel="tag"># lint-staged</a>
+          
+            <a href="/blog/tags/吸顶/" rel="tag"># 吸顶</a>
+          
+            <a href="/blog/tags/图片组件/" rel="tag"># 图片组件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2019/01/21/how-to-do-things/" rel="next" title="《高效能人士的七个习惯》——自我管理的理想模型">
+                <i class="fa fa-chevron-left"></i> 《高效能人士的七个习惯》——自我管理的理想模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2019/02/13/1587-a-year-of-no-significance/" rel="prev" title="关于《万历十五年》的一些思考">
+                关于《万历十五年》的一些思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Hooks和React-Hot-Loader默认配置相冲突"><span class="nav-number">1.</span> <span class="nav-text">React Hooks和React Hot Loader默认配置相冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个简单的rollup配置样例"><span class="nav-number">2.</span> <span class="nav-text">一个简单的rollup配置样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mouseout和mouseleave事件的区别"><span class="nav-number">3.</span> <span class="nav-text">mouseout和mouseleave事件的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sublime-goto-definition-快捷键"><span class="nav-number">4.</span> <span class="nav-text">sublime goto definition 快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#只lint-changed-file的脚本方案"><span class="nav-number">5.</span> <span class="nav-text">只lint changed file的脚本方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#升级版"><span class="nav-number">5.1.</span> <span class="nav-text">升级版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#吸顶样式效果"><span class="nav-number">6.</span> <span class="nav-text">吸顶样式效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS"><span class="nav-number">6.1.</span> <span class="nav-text">CSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS"><span class="nav-number">6.2.</span> <span class="nav-text">JS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个更友好的图片加载组件"><span class="nav-number">7.</span> <span class="nav-text">一个更友好的图片加载组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求"><span class="nav-number">7.1.</span> <span class="nav-text">需求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">8.</span> <span class="nav-text">思路</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2019/02/12/some-tips-6/';
+          this.page.identifier = '2019/02/12/some-tips-6/';
+          this.page.title = '工作中的遇到的一些小知识 6';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

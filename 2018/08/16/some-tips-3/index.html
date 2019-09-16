@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="git,webpack,z-index,git submodule,object-fit,object-position,BroadcastChannel,extract-text-webpack-plugin," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="git case sensitivegit本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。
+123git mv file.txt temp.txtgit mv temp.txt File.txtgit commit -m &quot;Renamed file.txt to File.txt&quot;
+webpack的一些经验DefinePlugin
+允许创建一个在编译时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识 3">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/08/16/some-tips-3/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="git case sensitivegit本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。
+123git mv file.txt temp.txtgit mv temp.txt File.txtgit commit -m &quot;Renamed file.txt to File.txt&quot;
+webpack的一些经验DefinePlugin
+允许创建一个在编译时">
+<meta property="og:updated_time" content="2018-08-16T15:27:31.185Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="工作中的遇到的一些小知识 3">
+<meta name="twitter:description" content="git case sensitivegit本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。
+123git mv file.txt temp.txtgit mv temp.txt File.txtgit commit -m &quot;Renamed file.txt to File.txt&quot;
+webpack的一些经验DefinePlugin
+允许创建一个在编译时">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/08/16/some-tips-3/"/>
+
+
+
+
+
+  <title>工作中的遇到的一些小知识 3 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/08/16/some-tips-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">工作中的遇到的一些小知识 3</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-16T23:11:29+08:00">
+                2018-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/08/16/some-tips-3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/16/some-tips-3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="git-case-sensitive"><a href="#git-case-sensitive" class="headerlink" title="git case sensitive"></a>git case sensitive</h2><p>git本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git mv file.txt temp.txt</div><div class="line">git mv temp.txt File.txt</div><div class="line">git commit -m <span class="string">"Renamed file.txt to File.txt"</span></div></pre></td></tr></table></figure>
+<h2 id="webpack的一些经验"><a href="#webpack的一些经验" class="headerlink" title="webpack的一些经验"></a>webpack的一些经验</h2><p><strong>DefinePlugin</strong></p>
+<p>允许创建一个在编译时可以配置的全局常量。在构建区分环境的包时很有用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> webpack.DefinePlugin(&#123;</div><div class="line">  <span class="attr">PRODUCTION</span>: <span class="built_in">JSON</span>.stringify(<span class="literal">true</span>),</div><div class="line">  <span class="attr">VERSION</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"5fa3b9"</span>),</div><div class="line">  <span class="attr">BROWSER_SUPPORTS_HTML5</span>: <span class="literal">true</span>,</div><div class="line">  <span class="attr">TWO</span>: <span class="string">"1+1"</span>,</div><div class="line">  <span class="string">"typeof window"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"object"</span>)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>注意：这个插件直接执行文本替换。因此：</p>
+<ul>
+<li>如果这个值是一个字符串，它会被当作一个代码片段来使用。</li>
+<li>如果这个值不是字符串，它会被转化为字符串(包括函数)。</li>
+<li>如果这个值是一个对象，它所有的 key 会被同样的方式定义。</li>
+<li>如果在一个 key 前面加了 typeof,它会被定义为 typeof 调用</li>
+</ul>
+<p><strong>resolve alias</strong></p>
+<p>创建import或require的别名，来确保模块引入变得更简单。例如，一些位于 src/ 文件夹下的常用模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">alias: &#123;</div><div class="line">    @: path.resolve(__dirname, <span class="string">'src/'</span>),</div><div class="line">    <span class="attr">Utilities</span>: path.resolve(__dirname, <span class="string">'src/utilities/'</span>),</div><div class="line">    <span class="attr">Templates</span>: path.resolve(__dirname, <span class="string">'src/templates/'</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="z-index可能的坑"><a href="#z-index可能的坑" class="headerlink" title="z-index可能的坑"></a>z-index可能的坑</h2><p><strong>使用前提：z-index只能在position属性值为relative或absolute或fixed的元素上有效。</strong></p>
+<p>z-index值只决定同一父元素中的同级子元素的堆叠顺序。父元素的z-index值（如果有）为子元素定义了堆叠顺序（css版堆叠“拼爹”）。向上追溯找不到含有z-index值的父元素的情况下，则可以视为自由的z-index元素，它可以与父元素的同级兄弟定位元素或其他自由的定位元素来比较z-index的值，决定其堆叠顺序。同级元素的z-index值如果相同，则堆叠顺序由元素在文档中的先后位置决定，后出现的会在上面。</p>
+<h2 id="git-submodule"><a href="#git-submodule" class="headerlink" title="git submodule"></a>git submodule</h2><blockquote>
+<p>参考：<a href="https://yihui.name/cn/2017/03/git-submodule/" target="_blank" rel="external">GIT 子模块</a></p>
+</blockquote>
+<p>最新一个项目里要复用已有的一个git库的代码，具体来说就是要将之前在WebView的内容复刻到PC版完成（这个需求貌似应该还挺常见的）。为了保证代码复用性，选择了<code>git submodule</code>的方法。这也是我此前从没用过的一个命令。</p>
+<p>简单来说，是一个 GIT 仓库下面某个文件夹的来源可以跟本库的来源不同，这个文件夹连接着别的库，由别的库负责按本控制和管理。是不是和npm包管理的形式比较像。子模块可以手动添加，也可以在克隆一个主库的时候就直接实体化。具体来说，有四种情况：</p>
+<ul>
+<li>克隆库的时候要初始化子模块 =&gt; 加上<code>--recursive</code>参数 <code>git clone --recursive git@github.com:shenlvmeng/trace-maker.git</code></li>
+<li>初始化已有库的子模块 =&gt; <code>git submodule update --init --recursive</code></li>
+<li>从子模块的源更新该子模块 =&gt; <code>git submodule update --recursive --remote</code></li>
+<li>添加一个新的子模块 =&gt; <code>git submodule add &lt;git address&gt; &lt;folder address&gt;</code></li>
+</ul>
+<p>已有有git submodule的库内，<code>.gitmodules</code>是下面的样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[submodule &quot;wheel&quot;]</div><div class="line">    path = wheel</div><div class="line">    url = git@github.com:shenlvmeng/wheel.git</div></pre></td></tr></table></figure>
+<h2 id="npm-install"><a href="#npm-install" class="headerlink" title="npm install"></a>npm install</h2><p>npm install后跟的绝不仅仅只是包名，还可以通过ssh、http的形式引入npm包，唯一的要求是有<code>package.json</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">npm install (with no args, <span class="keyword">in</span> package dir)</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;tag&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version range&gt;</div><div class="line">npm install &lt;git-host&gt;:&lt;git-user&gt;/&lt;repo-name&gt;</div><div class="line">npm install &lt;git repo url&gt;</div><div class="line">npm install &lt;tarball file&gt;</div><div class="line">npm install &lt;tarball url&gt;</div><div class="line">npm install &lt;folder&gt;</div><div class="line"></div><div class="line"><span class="built_in">alias</span>: npm i</div></pre></td></tr></table></figure>
+<p>一个<strong>package</strong>可以是下面的形式：</p>
+<ol>
+<li>包含<code>package.json</code>的工程文件夹</li>
+<li>gzip过的“1”的压缩包</li>
+<li>指向“2”的url</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;registry&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;tag&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;</code>字符串(最新版本)</li>
+<li>一个指向“1”的合法git地址</li>
+</ol>
+<h2 id="cleave-js"><a href="#cleave-js" class="headerlink" title="cleave.js"></a>cleave.js</h2><p>一个自动格式化输入框的工具，有npm包、script标签等几种引用形式，还有react的使用方式。</p>
+<p>地址：<a href="https://nosir.github.io/cleave.js/" target="_blank" rel="external">Format your &lt;input/&gt; content when you are typing</a></p>
+<h2 id="object-fit-amp-object-position"><a href="#object-fit-amp-object-position" class="headerlink" title="object-fit &amp; object-position"></a>object-fit &amp; object-position</h2><p>这两个CSS属性分别用于指定替换元素在其盒模型内的覆盖大小和对齐方式。使用效果很类似<code>background-size</code>和<code>background-position</code>。替换元素即内容不受CSS视觉格式化控制的元素，如image、iframe、video、textarea等。</p>
+<p>这使得本来自己决定模型大小的元素可以受CSS控制决定位置排布和大小。在需要自适应元素大小的场景下很好用，比如用户头像展示等。</p>
+<p>唯一的小小缺憾可能是IE11还不支持这两个属性，以及Edge只支持对<code>&lt;img&gt;</code>使用。</p>
+<h2 id="移动端触摸默认行为优化"><a href="#移动端触摸默认行为优化" class="headerlink" title="移动端触摸默认行为优化"></a>移动端触摸默认行为优化</h2><ul>
+<li><code>user-select: none</code> 禁止用户选择</li>
+<li><code>-webkit-touch-callout: none</code> 防止长按contextmenu弹出。类似的还有<code>contextmenu</code>事件里的<code>e.preventDefault()</code></li>
+<li><code>-webkit-tap-highlight-color: transparent</code> 删除可点击元素默认的黑影</li>
+</ul>
+<h2 id="上传进度条"><a href="#上传进度条" class="headerlink" title="上传进度条"></a>上传进度条</h2><p>利用xhr事件的onprogress事件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">xhr.onprogress = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (e.lengthComputable) &#123;</div><div class="line">        <span class="built_in">console</span>.log(e.loaded+  <span class="string">" / "</span> + e.total)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">xhr.onloadstart = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"start"</span>)</div><div class="line">&#125;</div><div class="line">xhr.onloadend = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"end"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="不显示滚动条"><a href="#不显示滚动条" class="headerlink" title="不显示滚动条"></a>不显示滚动条</h2><p>基于Webkit的浏览器，可以使用CSS的方式隐藏滚动条。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&amp;<span class="selector-pseudo">::-webkit-scrollbar</span> &#123;</div><div class="line">      <span class="attribute">width</span>: <span class="number">0</span>;</div><div class="line">      <span class="attribute">height</span>: <span class="number">0</span>;</div><div class="line">      <span class="attribute">background</span>: transparent;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="keyup无法prevent-default"><a href="#keyup无法prevent-default" class="headerlink" title="keyup无法prevent default"></a>keyup无法prevent default</h2><blockquote>
+<p>keyup fires after the default action.</p>
+<p>keydown and keypress are where you can prevent the default.<br>If those aren’t stopped, then the default happens and keyup is fired.</p>
+</blockquote>
+<p>来源：<a href="https://stackoverflow.com/questions/16052592/javascript-prevent-default-for-keyup/16052627" target="_blank" rel="external">jquery - javascript prevent default for keyup - StackOverflow</a></p>
+<h2 id="mixin-in-react"><a href="#mixin-in-react" class="headerlink" title="mixin in react"></a>mixin in react</h2><p>版本16之前，可以用mixin特性。16之后使用高阶组件HOC + ES6 class语法实现。<a href="https://reactjs.org/docs/higher-order-components.html" target="_blank" rel="external">参考</a>。</p>
+<h2 id="user-select在Edge浏览器下的适配问题"><a href="#user-select在Edge浏览器下的适配问题" class="headerlink" title="user-select在Edge浏览器下的适配问题"></a><code>user-select</code>在Edge浏览器下的适配问题</h2><p>设置<code>user-select</code>为<code>none</code>在Edge浏览器下会导致input无法输入内容。可以用下面的写法，避免对<code>input</code>标签应用该属性。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">*<span class="selector-pseudo">:not(input)</span> &#123;</div><div class="line">  <span class="attribute">user-select</span>: none;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参考：<a href="https://stackoverflow.com/questions/49614065/cant-type-in-input-field-using-microsoft-edge-and-safari" target="_blank" rel="external">html - Can’t type in input field using Microsoft Edge and Safari - StackOverflow</a></p>
+<h2 id="浏览器跨tab通信"><a href="#浏览器跨tab通信" class="headerlink" title="浏览器跨tab通信"></a>浏览器跨tab通信</h2><p>最近业务遇到了一个需求：同一浏览器上多tab用户信息同步的问题，所有这个域名下的需要强制一样的用户信息，避免困惑。</p>
+<p>跨tab通信主流方案有两种：</p>
+<ul>
+<li>localStorage，利用window的<code>storage</code>事件，传递信息</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API" target="_blank" rel="external">BroadcastChannel</a>，新的API，通过<code>postMessage</code>和<code>onMessage</code>完成双向通讯</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> bc = <span class="keyword">new</span> BroadcastChannel(<span class="string">'test_channel'</span>);</div><div class="line">bc.postMessage(<span class="string">'This is a test message.'</span>); <span class="comment">/* send */</span></div><div class="line">bc.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123; <span class="built_in">console</span>.log(ev); &#125; <span class="comment">/* receive */</span></div></pre></td></tr></table></figure>
+<p>后者还未得到广泛支持，需要前者进行polyfill。</p>
+<h2 id="aos"><a href="#aos" class="headerlink" title="aos"></a>aos</h2><p>Animation on scroll。<a href="https://github.com/michalsnik/aos" target="_blank" rel="external">michalsnik/aos at master · Animate on scroll library</a>.元素滚动至中的CSS动画，适合实现官网、落地页等效果。</p>
+<h2 id="extract-text-webpack-plugin"><a href="#extract-text-webpack-plugin" class="headerlink" title="extract-text-webpack-plugin"></a>extract-text-webpack-plugin</h2><p>抽出CSS/Less/Sass等样式作为单独文件，用于那些需要提前加载样式的页面。详细用法见<a href="https://github.com/webpack-contrib/extract-text-webpack-plugin" target="_blank" rel="external">github</a></p>
+<p>坑：</p>
+<ol>
+<li>不支持webpack4.x，报内部错误（2018/07/30） =&gt; 使用@next下载最新版</li>
+<li>报错<code>Module build failed: ReferenceError: window is not defined</code> =&gt; style-loader在extract-text-webpack-plugin中只做fallback项使用，见<a href="https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/503" target="_blank" rel="external">issue#503</a></li>
+</ol>
+<h2 id="常见调试技巧"><a href="#常见调试技巧" class="headerlink" title="常见调试技巧"></a>常见调试技巧</h2><ul>
+<li>代码中插入debugger可以在该位置触发断点调试</li>
+<li><code>console.dir</code>可以打印对象结构，大多数情况和<code>console.log</code>表现一致，在document等DOM元素上表现不同</li>
+</ul>
+<h2 id="react组件复用设计思路"><a href="#react组件复用设计思路" class="headerlink" title="react组件复用设计思路"></a>react组件复用设计思路</h2><ul>
+<li>当设计的组件为自闭型时，通过传入数据（<strong>不要传入功能</strong>）props的方式定制组件</li>
+<li>当设计的组件在有些场景下需要外部传入功能才能完整时，使用继承的方式实现</li>
+<li>在可以拆分出原子组件，<strong>且有此必要的时候</strong>，使用原子组件拼装业务组件</li>
+<li>HOC优于mixin</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/git/" rel="tag"># git</a>
+          
+            <a href="/blog/tags/webpack/" rel="tag"># webpack</a>
+          
+            <a href="/blog/tags/z-index/" rel="tag"># z-index</a>
+          
+            <a href="/blog/tags/git-submodule/" rel="tag"># git submodule</a>
+          
+            <a href="/blog/tags/object-fit/" rel="tag"># object-fit</a>
+          
+            <a href="/blog/tags/object-position/" rel="tag"># object-position</a>
+          
+            <a href="/blog/tags/BroadcastChannel/" rel="tag"># BroadcastChannel</a>
+          
+            <a href="/blog/tags/extract-text-webpack-plugin/" rel="tag"># extract-text-webpack-plugin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/08/15/frontend-roadmap/" rel="next" title="frontend-roadmap">
+                <i class="fa fa-chevron-left"></i> frontend-roadmap
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/08/16/git-workflow/" rel="prev" title="git工作流最佳实践">
+                git工作流最佳实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-case-sensitive"><span class="nav-number">1.</span> <span class="nav-text">git case sensitive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack的一些经验"><span class="nav-number">2.</span> <span class="nav-text">webpack的一些经验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#z-index可能的坑"><span class="nav-number">3.</span> <span class="nav-text">z-index可能的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-submodule"><span class="nav-number">4.</span> <span class="nav-text">git submodule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm-install"><span class="nav-number">5.</span> <span class="nav-text">npm install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cleave-js"><span class="nav-number">6.</span> <span class="nav-text">cleave.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object-fit-amp-object-position"><span class="nav-number">7.</span> <span class="nav-text">object-fit & object-position</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动端触摸默认行为优化"><span class="nav-number">8.</span> <span class="nav-text">移动端触摸默认行为优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传进度条"><span class="nav-number">9.</span> <span class="nav-text">上传进度条</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不显示滚动条"><span class="nav-number">10.</span> <span class="nav-text">不显示滚动条</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keyup无法prevent-default"><span class="nav-number">11.</span> <span class="nav-text">keyup无法prevent default</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mixin-in-react"><span class="nav-number">12.</span> <span class="nav-text">mixin in react</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#user-select在Edge浏览器下的适配问题"><span class="nav-number">13.</span> <span class="nav-text">user-select在Edge浏览器下的适配问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器跨tab通信"><span class="nav-number">14.</span> <span class="nav-text">浏览器跨tab通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aos"><span class="nav-number">15.</span> <span class="nav-text">aos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#extract-text-webpack-plugin"><span class="nav-number">16.</span> <span class="nav-text">extract-text-webpack-plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见调试技巧"><span class="nav-number">17.</span> <span class="nav-text">常见调试技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react组件复用设计思路"><span class="nav-number">18.</span> <span class="nav-text">react组件复用设计思路</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2018/08/16/some-tips-3/';
+          this.page.identifier = '2018/08/16/some-tips-3/';
+          this.page.title = '工作中的遇到的一些小知识 3';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
