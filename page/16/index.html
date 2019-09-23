@@ -474,6 +474,214 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-2/" itemprop="url">JavaScript中的异步编程 下</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/03/29/javascript-async-programming-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/29/javascript-async-programming-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
+</blockquote>
+<p><span></span></p>
+<blockquote>
+<p>上篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/" target="_blank" rel="external">JavaScript中的异步编程 上</a></p>
+</blockquote>
+<p>上篇说到了使用回调的思路解决JavaScript中异步编程的难题。可不论是显式的指定回调函数，通过事件绑定响应还是通过事件订阅、promise.then，都和逃不出回调的思路。写起来仍不够自然，且在批次回调任务时难以解决。</p>
+<p>有没有办法能使我们像平时写同步代码那样，来书写异步代码呢？ES6出现后，Generator对象给了我们这个机会。</p>
+<h3 id="生成器函数"><a href="#生成器函数" class="headerlink" title="生成器函数"></a>生成器函数</h3><p>提到生成器函数前，需要提到<a href="https://en.wikipedia.org/wiki/Coroutine" target="_blank" rel="external">协程</a>(coroutine)这个概念。协程是轻量级用户态的线程。用户可以手动控制协程的暂停和继续，配合线程实现异步任务。协程间通过<code>yield</code>方式切换执行权，并交换信息。就像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asyncFunc</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="comment">// 执行someFunc后交出执行权</span></div><div class="line">    <span class="keyword">var</span> t = <span class="keyword">yield</span> someFunc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>协程在遇到<code>yield</code>关键字时交出自己的执行权，直到执行权返回。这里<code>someFunc</code>方法可以是一个异步操作。</p>
+<p>ES6中协程体现在Generator函数中。函数在<code>function</code>关键字后添加星号<code>*</code>以示和普通函数的区分。Generator函数是可以通过<code>yield</code>暂停执行的。比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="keyword">yield</span> i;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(); <span class="comment">// 2</span></div></pre></td></tr></table></figure>
+<p>Generator函数的调用通过<code>next</code>方法完成。每次调用后会将函数流程移动到下一个yield语句处。yield的返回包含两个属性<code>value</code>和<code>done</code>。前者代表yield的返回值，后者代表生成器函数是否已经执行完毕。</p>
+<p>同时，每次调用<code>next</code>方法时，可以输入参数作为上个异步任务的返回值。调用<code>throw</code>方法可以向生成器函数内抛出错误。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> <span class="number">1</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">yield</span> x;</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="built_in">console</span>.log(e);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(<span class="number">2</span>); <span class="comment">// 2</span></div><div class="line">g.throw(<span class="string">'some error'</span>) <span class="comment">// 'some error'</span></div></pre></td></tr></table></figure>
+<p>使用Generator函数封装一个异步操作，再通过执行器管理函数内部的异步流程。通过这种方式，在Generator函数中可以很方便地书写异步操作。例如，利用<a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="external">fetch API</a>发起一次跨域请求。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = <span class="keyword">yield</span> fetch(<span class="string">'http://www.example.org/data.json'</span>);</div><div class="line">    <span class="built_in">console</span>.log(text);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> data.json();</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>fetch API返回一个promise对象，通过为之指定<code>then</code>，处理fetch成功后的返回值。</p>
+<h3 id="co和koa"><a href="#co和koa" class="headerlink" title="co和koa"></a>co和koa</h3><p>我们上面提到了使用Generator还缺少的一样东西——执行器。使用Generator函数在其中通过yield返回Promise，但是外层还是需要在promise的then方法中书写<code>g.next(data)</code>来通知协程继续操作。<a href="https://github.com/tj/co" target="_blank" rel="external">co</a>函数库帮助我们<strong>完成了执行器的工作</strong>。</p>
+<p>以回调函数中完成读文件操作为例（注意：其中的readFile先被改写成返回thunk函数的格式，即只接收callback作为唯一的输入参数）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="keyword">var</span> co = <span class="built_in">require</span>(<span class="string">'co'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">        fs.readFile(path, &#123;<span class="attr">encoding</span>: <span class="string">'utf-8'</span>&#125;, cb);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line">co(gen);</div></pre></td></tr></table></figure>
+<p>上面的代码里，为<code>co</code>函数传入Generator函数，就会自动依次执行其中的异步任务，并在返回一个Promise对象。因此，可以给<code>co</code>函数通过<code>then</code>的方式添加回调函数。</p>
+<h4 id="co"><a href="#co" class="headerlink" title="co"></a>co</h4><p>co的代码并不复杂，核心代码只有数十行。摘录如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">  <span class="keyword">var</span> args = slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> gen === <span class="string">'function'</span>) gen = gen.apply(ctx, args);</div><div class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen.next !== <span class="string">'function'</span>) <span class="keyword">return</span> resolve(gen);</div><div class="line"></div><div class="line">    onFulfilled();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">res</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.next(res);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.throw(err);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">ret</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (ret.done) <span class="keyword">return</span> resolve(ret.value);</div><div class="line">      <span class="keyword">var</span> value = toPromise.call(ctx, ret.value);</div><div class="line">      <span class="keyword">if</span> (value &amp;&amp; isPromise(value)) <span class="keyword">return</span> value.then(onFulfilled, onRejected);</div><div class="line">      <span class="keyword">return</span> onRejected(<span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'You may only yield a function, promise, generator, array, or object, '</span></div><div class="line">        + <span class="string">'but the following object was passed: "'</span> + <span class="built_in">String</span>(ret.value) + <span class="string">'"'</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在看co的代码前，我们不妨先想一下它的原理。Generator 函数只是一个异步操作的容器，它的流程和控制是由外部机制完成的。而<strong>thunk函数（这个在下面介绍）和Promise对象恰恰可以方便得在回调函数和then方法中交还执行权给Generator函数</strong>。</p>
+<p>这么来看就简单了，<strong>co函数库针对thunk函数和Promise对象封装了执行器</strong>。以比较好理解的Promise对象为例（co在内部也会将thunk函数转为Promise对象）。</p>
+<p>首先将readFile的thunk函数转为Promise对象。其中ctx绑定到co函数体内。（co函数库的thunkToPromise函数）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> readFile = <span class="function"><span class="keyword">function</span> (<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span> (<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">        readFile.call(ctx, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>)</span>&#123;</div><div class="line">            <span class="keyword">if</span> (err) reject(err);</div><div class="line">            resolve(data);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之后同样使用上节中的生成器函数<code>gen()</code>，并手动执行下一步操作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line"></div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data).value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        g.next(data);</div><div class="line">    &#125;);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>发现规律了么？<strong>自动执行器实际上就是在<code>g.done == false</code>时，不断地在then方法中嵌套添加回调函数</strong>。结果呼之欲出。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">gen</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> g = gen;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> res = g.next(data);</div><div class="line">        <span class="keyword">if</span> (res.done) <span class="keyword">return</span> res.value;</div><div class="line">        res.value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            next(data);</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    next();</div><div class="line">&#125;</div><div class="line"></div><div class="line">run(gen);</div></pre></td></tr></table></figure>
+<p>每执行一次next，检查<code>done</code>的状态，若未结束则在then方法继续指定next方法，等待下一次返回结果。这也是co函数库的基本原理。</p>
+<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><p>理解了原理后，回头看co的源码，就比较好理解了。前6行对传入的<code>gen</code>检测是否为Generator类型。<code>onFulfilled</code>函数和<code>onRejected</code>函数对Generator函数原有的<code>next</code>和<code>throw</code>函数进行了封装，便于错误捕获和处理。</p>
+<p>在<code>next</code>方法中，主要做了下面的4步微小的工作：</p>
+<ol>
+<li>查是否已经到Generator函数的最后一步，如果是则返回</li>
+<li>确保每次<code>yield</code>返回值都是Promise对象</li>
+<li>通过<code>then</code>方法，为返回值添加回调函数，并在回调中再次调用自身</li>
+<li>对于类型不合适的<code>gen</code>，将状态修改为<code>rejected</code></li>
+</ol>
+<p>co能接收的yield返回值类型是有限的（尽管Generator函数中的yield后不限制返回值类型），有thunk函数，array，object，Promise对象。其中array和object使co可以胜任并发的操作，即可以在yield中返回多个异步操作任务。</p>
+<h4 id="koa"><a href="#koa" class="headerlink" title="koa"></a>koa</h4><p>koa是建立在generator和co之上的中间件框架，由Express开发人员打造。它通过组合不同的生成器函数，避免了繁杂易出错的回调函数嵌套。koa中没有绑定任何中间件，仅仅提供了一个轻量级函数库。</p>
+<blockquote>
+<p>Koa 中间件以一种更加传统的方式级联起来, 跟你在其他系统或工具中碰到的方式非常相似。 然而在以往的 Node 开发中, 级联是通过回调实现的, 想要开发用户友好的代码是非常困难的, Koa 借助 generators 实现了真正的中间件架构, 与 Connect 实现中间件的方法相对比，Koa 的做法不是简单的将控制权依次移交给一个又一个的方法直到某个结束，Koa 执行代码的方式有点像回形针，用户请求通过中间件，遇到 yield next 关键字时，会被传递到下游中间件（downstream），在 yield next 捕获不到下一个中间件时，逆序返回继续执行代码（upstream）。</p>
+</blockquote>
+<h3 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h3><p>上文中提到的thunk函数实际上由来已久，它是函数传名调用的一种实现方式，不同于函数的传值调用。就像下面的例子一样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a, b</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">f(x * <span class="number">3</span> + <span class="number">1</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 可以写成下面这样</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunk</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> x * <span class="number">3</span> + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">thunk, <span class="number">1</span></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> thunk() + <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>JavaScript中的thunk函数有着另外的意思，它替换的不是一个输入参数，而是<strong>将多参数的函数替换成单参数的版本，且只接受回调函数作为输入参数</strong>，正如之前写到的例子一样。</p>
+<p>一个简单的thunk函数转换器写起来并不复杂，像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> thunk = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">done</span>) </span>&#123;</div><div class="line">            args.push(done);</div><div class="line">            fn.apply(<span class="keyword">this</span>, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/tj/node-thunkify" target="_blank" rel="external">node-thunkify</a>模块对此又多了一些监测，如在最内层的function添加called变量确保回调函数只执行一次。Thunkify的源码相比co就更短了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunkify</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    assert(<span class="string">'function'</span> == <span class="keyword">typeof</span> fn, <span class="string">'function required'</span>);</div><div class="line">    <span class="comment">// 返回一个包含thunk函数的函数，返回的thunk函数用于执行yield，而外围这个函数用于给thunk函数传递参数</span></div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="built_in">arguments</span>.length);</div><div class="line">        <span class="comment">// 缓存当前上下文环境，给fn提供执行环境</span></div><div class="line">        <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line"> </div><div class="line">        <span class="comment">// 将参数类数组转化为数组（实现方式略显臃肿，可直接用Array.prototype.slice.call(arguments)实现）</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; args.length; ++i) &#123;</div><div class="line">            args[i] = <span class="built_in">arguments</span>[i];</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="comment">// 真正的thunk函数（有且只有一个参数是callback的函数，且callback的第一个参数为error）</span></div><div class="line">        <span class="comment">// 类似于：</span></div><div class="line">        <span class="comment">// function(cb) &#123;fs.readFile(path, &#123;encoding: 'utf8&#125;, cb)&#125;</span></div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> called;</div><div class="line"> </div><div class="line">            <span class="comment">// 将回调函数再包裹一层，避免重复调用；同时，将包裹了的真正的回调函数push进参数数组</span></div><div class="line">            args.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (called) <span class="keyword">return</span>;</div><div class="line">                called = <span class="literal">true</span>;</div><div class="line">                done.apply(<span class="literal">null</span>, <span class="built_in">arguments</span>);</div><div class="line">            &#125;);</div><div class="line"> </div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// 在ctx上下文执行fn（一般是异步函数，如：fs.readFile）</span></div><div class="line">                <span class="comment">// 并将执行thunkify之后返回的函数的参数（含done回调）传入，类似于执行：</span></div><div class="line">                <span class="comment">// fs.readFile(path, &#123;encoding: 'utf8&#125;, done)</span></div><div class="line">                <span class="comment">// 关于done是做什么用，则是在co库内</span></div><div class="line">                fn.apply(ctx, args);</div><div class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">                done(err);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>thunk函数的特点和Promise对象类似，就是将回调函数的绑定单独抽离出来，thunk函数结合Generator函数实现自动流程管理方法和Promise一样。</p>
+<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><p>从Promise对象到Generator函数，JavaScript中的异步编程越来越简单，但是还是有戴着镣铐跳舞的感觉，async函数的提出即将把这个镣铐摘掉。</p>
+<p>async函数的使用和Generator函数很像，我们改写之前的那个读取文件函数如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">await</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">await</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>虽然和Generator函数很像，但是它有着更清晰易懂的语法，更广的适用性（<code>await</code>后可以跟任何类型，在原始类型时等同于同步操作）。最关键的是，<strong>async函数自带执行器！！！</strong></p>
+<p>在实现上，async函数和Generator函数是一样的，不过是将执行器放在自身内部而已。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">args</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> spawn(<span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spawn</span> (<span class="params">genF, self</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> gen = genF.call(self);</div><div class="line">    step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(<span class="literal">undefined</span>));</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">step</span> (<span class="params">nextF</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> next;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        next = nextF();</div><div class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="comment">// finished with failure, reject the promise</span></div><div class="line">        reject(e);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (next.done) &#123;</div><div class="line">        <span class="comment">// finished with success, resolve the promise</span></div><div class="line">        resolve(next.value);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></div><div class="line">      <span class="built_in">Promise</span>.resolve(next.value).then(</div><div class="line">        <span class="function"><span class="params">v</span> =&gt;</span> step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(v)),</div><div class="line">        e =&gt; step(<span class="function"><span class="params">()</span> =&gt;</span> gen.throw(e))</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="external">This API is so Fetching!</a><br><a href="https://github.com/tj/co" target="_blank" rel="external">co</a><br><a href="https://nswbmw.github.io/N-club/1/1.3.html" target="_blank" rel="external">co和koa</a><br><a href="https://ponyfoo.com/articles/understanding-javascript-async-await" target="_blank" rel="external">Understanding JavaScript’s async await</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/20/domevent-elementsize-mediatag/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1130,170 +1338,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/09/js-function/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/09/js-function/" itemprop="url">JavaScript中的函数表达式与闭包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T20:43:41+08:00">
-                2017-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/09/js-function/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/09/js-function/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>函数是JavaScript中最有特色同时又容易让人困扰的特性。定义函数的方式有两种：函数声明和函数表达式。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//函数声明</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span> (<span class="params">arg0, arg1</span>) </span>&#123;</div><div class="line">    <span class="comment">//函数体</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//函数表达式</span></div><div class="line"><span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//函数体</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在非IE浏览器中，function都有非标准的name属性，属性值为function后的标识符或表达式的接收变量名。在<strong>函数声明</strong>里有一个重要特征——<strong>函数声明提升（function declaration hoisting）</strong>。这意味着函数声明可以放在调用它的语句后。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sayHi();</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sayHi</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">"Hi!"</span>); <span class="comment">// "Hi!"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>而函数表达式则不能这样使用，因为<strong>变量声明提升</strong>会将函数名提升，下面的代码将导致错误。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sayHi();</div><div class="line"><span class="keyword">var</span> sayHi = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">"Hi!"</span>); <span class="comment">// Error！</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>正确理解函数声明提升将会避免很多潜在的错误，<em>或者干脆养成好习惯——定义在前，调用在后</em>。</p>
-<h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><p>递归函数是一个函数通过调用自身得到的。如<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span> (<span class="params">num</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (num &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> num * factorial(num<span class="number">-1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这是一个经典的递归阶乘函数。不过当我们不知道函数名或者函数是匿名函数时，可以通过<code>arguments.callee</code>来调用自身。<br><code>argument.callee</code>是一个指向正在执行的函数的指针。</p>
-<div class="tip">在ES5的严格模式下，<code>arguments.callee</code>特性是禁止使用的。它将影响解释器的优化和运行效率。<br></div>
-
-<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p><strong>闭包</strong>几乎是前端面试必考的一个知识点。它的存在是JavaScript中作用域链带来的特性。<strong>闭包</strong>是指有权访问另一个函数<br>作用域中变量的函数。创建闭包最常用的方式就是在函数内部创建另一个函数。就像下面这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fatherFunction</span> (<span class="params">propertyName, value</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> sum = value;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">object1, object2</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> a = object1[propertyName],</div><div class="line">            b = object2[propertyName];</div><div class="line">        <span class="keyword">if</span> (a + b &gt; value) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">1</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到，在返回的函数中引用了外部函数的变量<code>propertyName</code>和<code>sum</code>。即使这个函数已经返回，只要内部函数还存在，那么这两个变量就仍然可以访问。这就是闭包的直观体现。</p>
-<p>解释闭包就要先理解JS中的<em>作用域链</em>。执行环境是JS中的一个关键概念。它定义了变量或函数可以访问的数据。全局执行环境是最外层的执行环境。根据ECMAScript实现宿主的不同，全局执行环境也各不相同。某个执行环境中的代码执行完毕后，环境被销毁，包括其中的所有变量和函数定义。<strong>JS中的每个函数都有自己的执行环境</strong>。执行流进入一个函数时，函数环境就被推入到环境栈中，待执行完毕后出栈。在执行环境中的代码时，会创建变量对象的作用域链，由当前的活动对象到外部环境变量对象一直到全局执行环境中的变量对象。内部环境可以通过作用域链访问所有外部环境，但是外部环境不能访问内部环境中的变量和函数。</p>
-<p>现在回过头看闭包。在函数执行过程中，为了读取和写入变量值，需要保存整个作用域链。因此，在<code>fatherFunction</code>中创建的匿名函数的作用域链实际上包含了<code>fantherFunction()</code>的活动对象（输入参数和变量）以及全局变量对象。在<code>fatherFunction()</code>返回时，匿名函数的作用域链仍然引用着它的活动对象，使其并不会被销毁，直到匿名函数被销毁。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建函数</span></div><div class="line"><span class="keyword">var</span> compare = fatherFunction(<span class="string">"value"</span>, <span class="number">0</span>);</div><div class="line"><span class="comment">// 调用函数</span></div><div class="line"><span class="keyword">var</span> res = compare(&#123;<span class="attr">value</span>: <span class="number">2</span>&#125;, &#123;<span class="attr">value</span>: <span class="number">-1</span>&#125;);</div><div class="line"><span class="comment">// 解除匿名函数的引用，释放内存</span></div><div class="line">compare = <span class="literal">null</span>;</div></pre></td></tr></table></figure></p>
-<div class="tip">由于闭包会携带包含它的函数作用域，过度使用闭包会导致内存占用过多。忘记解除匿名函数引用还会导致内存泄漏。<br></div>
-
-<h3 id="闭包与变量"><a href="#闭包与变量" class="headerlink" title="闭包与变量"></a>闭包与变量</h3><p>闭包可以取得父级函数的变量的<em>最终值</em>，因此配合for循环这样的结构就容易发生意外，就像下面的函数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bindClickFunctions</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> buttons = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'button'</span>);</div><div class="line">    <span class="comment">// 让我们假设length是20</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = buttons.length; i &lt; len; i++) &#123;</div><div class="line">        buttons[i].onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            alert(i);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面的函数会为所有的按钮绑定点击事件，不过效果却并不像预想中那样，不同的button弹出不同的值。结果是所有的button在点击后弹出的都是20。这是因为所有的匿名函数都使用着同一个外部函数的活动对象。可以通过在创建一层闭包来达到预期的目的。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bindClickFunctions</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> buttons = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'button'</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = buttons.length; i &lt; len; i++) &#123;</div><div class="line">        buttons[i].onclick = <span class="function"><span class="keyword">function</span> (<span class="params">i</span>) </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                alert(i);</div><div class="line">            &#125;</div><div class="line">        &#125;(i);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>我们在每层循环中创建了一个匿名函数，匿名函数包含一个输入参数<code>i</code>，再分别保存在内部函数的作用域链中，就可以使闭包间引用的i互不干扰了。</p>
-<h3 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h3><p>JavaScript中是没有块级作用域的。不过可以利用匿名函数的作用域模拟一个块级作用域出来。在其中定义的私有变量也不必担心与其他作用域的变量名相冲突。这种用法很常用于最外层的封装，用于隐藏代码中的变量，在一定程度上保证安全。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> foo = <span class="string">"You can see me, but you cannot touch me."</span></div><div class="line">    alert(foo);</div><div class="line">&#125;)()</div></pre></td></tr></table></figure></p>
-<h3 id="私有变量"><a href="#私有变量" class="headerlink" title="私有变量"></a>私有变量</h3><p>同样的，JavaScript中是没有私有成员的概念的。但是，利用闭包可以制造出私有变量。原理是，利用函数作用域隐藏其中的变量甚至输入参数，通过返回的闭包操作这些“私有”变量。如下面这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Stu</span> (<span class="params">name</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.getName = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">this</span>.setName = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</div><div class="line">        name = value;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> stu = <span class="keyword">new</span> Stu(<span class="string">"Shenlvmeng"</span>);</div><div class="line">alert(stu.getName());</div><div class="line">stu.setName(<span class="string">"Weii"</span>);</div><div class="line">alert(stu.getName());</div></pre></td></tr></table></figure></p>
-<p>这里只是一个很简单的展示，红宝书中还介绍了模块模式和增强模块模式，利用闭包的特点实现了单例的构造和特权方法。下面对上面的<code>Stu</code>函数进行改造，可以使得所有通过<code>Stu()</code>构造的对象都有相同的公有变量。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> name = <span class="string">''</span>;</div><div class="line"></div><div class="line">    Stu = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</div><div class="line">        name = value;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    Stu.prototype.getName = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    Stu.prototype.setName = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</div><div class="line">        name = value;</div><div class="line">    &#125;;</div><div class="line">&#125;)();</div><div class="line"></div><div class="line"><span class="keyword">var</span> stu1 = <span class="keyword">new</span> Stu(<span class="string">'shenlvmeng'</span>);</div><div class="line">alert(stu1.getName());</div><div class="line"><span class="keyword">var</span> stu2 = <span class="keyword">new</span> Stu(<span class="string">'weii'</span>);</div><div class="line">alert(stu2.getName());		<span class="comment">// "weii"</span></div><div class="line">alert(stu1.getName());		<span class="comment">// "weii"</span></div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1344,7 +1388,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">108</span>
+                <span class="site-state-item-count">109</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1366,7 +1410,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">303</span>
+                <span class="site-state-item-count">306</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
