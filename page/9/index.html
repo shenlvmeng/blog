@@ -296,6 +296,246 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/some-tips-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/04/17/some-tips-md/" itemprop="url">工作中的遇到的一些小知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T23:48:27+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/04/17/some-tips-md/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/17/some-tips-md/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><em>持续更新…</em></p>
+<h2 id="免密ssh步骤"><a href="#免密ssh步骤" class="headerlink" title="免密ssh步骤"></a>免密ssh步骤</h2><p>一句命令代替繁琐的ssh远程登录开发机。</p>
+<h3 id="Step-1：免密"><a href="#Step-1：免密" class="headerlink" title="Step 1：免密"></a>Step 1：免密</h3><ol>
+<li>ssh-keygen生成公钥。<code>ssh-keygen</code></li>
+<li>拷贝公钥。<code>ssh-copy-id -i ~/.ssh/id_rsa.pub &lt;your-remote-host&gt;</code></li>
+<li>免密登录。<code>ssh &lt;your-remote-host&gt;</code></li>
+</ol>
+<h3 id="Step-2：简化命令"><a href="#Step-2：简化命令" class="headerlink" title="Step 2：简化命令"></a>Step 2：简化命令</h3><p>使用<code>alias</code>，比如：<code>alias timetowork=&quot;ssh &lt;your-remote-host&gt;&quot;</code></p>
+<h3 id="Step-3：get-back-to-work"><a href="#Step-3：get-back-to-work" class="headerlink" title="Step 3：get back to work"></a>Step 3：get back to work</h3><p>输入<code>timetowork</code>。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id" target="_blank" rel="external">http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id</a>]</li>
+<li>[<a href="http://www.linfo.org/alias.html" target="_blank" rel="external">http://www.linfo.org/alias.html</a>]</li>
+</ul>
+<h2 id="fis-receiver"><a href="#fis-receiver" class="headerlink" title="fis-receiver"></a>fis-receiver</h2><p>简写为<code>fisrcv</code>。使用fis进行项目构建时，若需要release到远端开发机，可以通过配置<code>fis-conf.js</code>里的<code>deploy</code>项目实现，fis会通过HTTP的方式上传压缩过的代码到远端指定位置，这需要远端有receiver接收上传的文件。</p>
+<p>fis-receiver是在远端接收上传文件的服务端脚本，node、python、PHP等都可以。<code>fisrcv</code>实际上是使用node服务在远端接收deploy文件的服务端脚本而已。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/zhoujq/fis-receiver" target="_blank" rel="external">https://github.com/zhoujq/fis-receiver</a>]</li>
+<li>[<a href="http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6" target="_blank" rel="external">http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6</a>]</li>
+</ul>
+<h2 id="webpack-release"><a href="#webpack-release" class="headerlink" title="webpack-release"></a>webpack-release</h2><p>等同于webpack版的<code>fis release</code>，不过原先写在<code>fis-conf.js</code>中的部署设置，现在写在<code>webpack.config.js</code>中。<code>receiveUrl</code>和<code>remotePath</code>即远端开发机位置。实现上也采用HTTP POST的方式。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://www.npmjs.com/package/webpack-release" target="_blank" rel="external">https://www.npmjs.com/package/webpack-release</a>]</li>
+<li>[<a href="https://github.com/markate/webpack-release/blob/master/index.js" target="_blank" rel="external">https://github.com/markate/webpack-release/blob/master/index.js</a>]</li>
+</ul>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><p>tmux是终端复用工具，允许在单个终端下相互隔离地运行多个后台程序。甚至在关闭终端时可以让程序在后台运行。使用<code>tmux attach</code>和<code>tmux detach</code>进入和离开各个session。<code>attach</code>后还可以接<code>-t</code>指定连接的session。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/tmux/tmux/wiki" target="_blank" rel="external">https://github.com/tmux/tmux/wiki</a>]</li>
+</ul>
+<h2 id="HtmlWebpackPlugin"><a href="#HtmlWebpackPlugin" class="headerlink" title="HtmlWebpackPlugin"></a>HtmlWebpackPlugin</h2><p>把html和js或css文件对应组织起来，可以指定<code>filename</code>，<code>template</code>，<code>chunks</code>等。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/jantimon/html-webpack-plugin" target="_blank" rel="external">https://github.com/jantimon/html-webpack-plugin</a>]</li>
+</ul>
+<h2 id="encodeURI和encodeURIComponent"><a href="#encodeURI和encodeURIComponent" class="headerlink" title="encodeURI和encodeURIComponent"></a>encodeURI和encodeURIComponent</h2><p>前者用于对整段URI转码，后者用于对URI中被分割符隔开的部分进行边编码。因此，</p>
+<ul>
+<li><code>encodeURI</code>会忽略允许出现在URI的符号，包括特殊符号。对空格、中文等进行转码</li>
+<li><code>encodeURIComponent</code>也会转码特殊符号，如/，$，@，.等</li>
+</ul>
+<h2 id="origami"><a href="#origami" class="headerlink" title="origami"></a>origami</h2><p>origami是sublime中的一个拆分窗口的插件，用快捷键可以像在vim中一样方便地创建和转移到各个窗口编码。通过command + K开启快捷键。</p>
+<ul>
+<li>+up/down/left/right 转移到其他窗口</li>
+<li>+command+up/down/left/right 在该方向上打开新的工作窗口</li>
+<li>+shift+command+up/down/left/right 销毁该方向上的新窗口</li>
+</ul>
+<h2 id="nrm与n"><a href="#nrm与n" class="headerlink" title="nrm与n"></a>nrm与n</h2><p>npm registry管理工具nrm，能够查看和切换当前使用的registry，在切换和查看registry时非常有用。常用命令:</p>
+<ul>
+<li><code>nrm ls</code></li>
+<li><code>nrm use</code></li>
+<li><code>nrm help</code></li>
+<li><code>nrm home</code></li>
+<li><code>nrm add/delete</code> 增加和删除registry</li>
+<li><code>nrm test</code> 测速</li>
+</ul>
+<p><a href="https://www.npmjs.com/package/n" target="_blank" rel="external">n</a>是类似nvm的node.js版本管理工具。</p>
+<h2 id="Promise-then的链式调用"><a href="#Promise-then的链式调用" class="headerlink" title="Promise then的链式调用"></a>Promise then的链式调用</h2><p><code>then()</code>方法返回一个Promise 。它最多需要有两个参数：Promise的成功和失败情况的回调函数。</p>
+<p><code>then</code>方法会返回一个Promise，它的行为与then中指定的回调函数返回值有关：</p>
+<ul>
+<li>如果then中的回调函数<strong>返回一个值</strong>，那么then返回的Promise将会成为接受状态（即使原Promise始Rejected状态），并且将返回的值作为接受状态的回调函数的参数值。</li>
+<li>如果then中的回调函数<strong>抛出一个错误</strong>，那么then返回的Promise将会成为拒绝状态，并且将抛出的错误作为拒绝状态的回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个已经是接受状态的Promise，那么then返回的Promise也会成为接受状态，并且将那个Promise的接受状态的回调函数的参数值作为该被返回的Promise的接受状态回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个已经是拒绝状态的Promise，那么then返回的Promise也会成为拒绝状态，并且将那个Promise的拒绝状态的回调函数的参数值作为该被返回的Promise的拒绝状态回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个未定状态（pending）的Promise，那么then返回Promise的状态也是未定的，并且它的终态与那个Promise的终态相同；同时，它变为终态时调用的回调函数参数与那个Promise变为终态时的回调函数的参数是相同的。 </li>
+</ul>
+<p>下面是几个官网上的例子:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Promise</span>.resolve(<span class="string">"foo"</span>)</div><div class="line">  <span class="comment">// 1. 接收 "foo" 并与 "bar" 拼接，并将其结果做为下一个resolve返回。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        string += <span class="string">'bar'</span>;</div><div class="line">        resolve(string);</div><div class="line">      &#125;, <span class="number">1</span>);</div><div class="line">    &#125;);</div><div class="line">  &#125;)</div><div class="line">  <span class="comment">// 2. 接收 "foobar", 放入一个异步函数中处理该字符串</span></div><div class="line">  <span class="comment">// 并将其打印到控制台中, 但是不将处理后的字符串返回到下一个。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      string += <span class="string">'baz'</span>;</div><div class="line">      <span class="built_in">console</span>.log(string);</div><div class="line">    &#125;, <span class="number">1</span>)</div><div class="line">    <span class="keyword">return</span> string;</div><div class="line">  &#125;)</div><div class="line">  <span class="comment">// 3. 打印本节中代码将如何运行的帮助消息，</span></div><div class="line">  <span class="comment">// 字符串实际上是由上一个回调函数之前的那块异步代码处理的。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"Last Then:  oops... didn't bother to instantiate and return "</span> +</div><div class="line">                <span class="string">"a promise in the prior then so the sequence may be a bit "</span> +</div><div class="line">                <span class="string">"surprising"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 注意 `string` 这时不会存在 'baz'。</span></div><div class="line">    <span class="comment">// 因为这是发生在我们通过setTimeout模拟的异步函数中。</span></div><div class="line">    <span class="built_in">console</span>.log(string);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Promise</span>.resolve()</div><div class="line">  .then( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 使 .then() 返回一个 rejected promise</span></div><div class="line">    <span class="keyword">throw</span> <span class="string">'Oh no!'</span>;</div><div class="line">  &#125;)</div><div class="line">  .catch( <span class="function"><span class="params">reason</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.error( <span class="string">'onRejected function called: '</span>, reason );</div><div class="line">  &#125;)</div><div class="line">  .then( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log( <span class="string">"I am always called even if the prior then's promise rejects"</span> );</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<h2 id="SOLID原则"><a href="#SOLID原则" class="headerlink" title="SOLID原则"></a>SOLID原则</h2><p>程序设计领域，尤其是面向对象编程的优秀实践里，有着一些实现原则，如SOLID（单一功能、开闭原则、里氏替换、接口隔离、依赖翻转）。这些设计模式原则可以有助于编写可维护、可拓展、清晰可读的代码。</p>
+<ul>
+<li>S，Single Responsibility Principle，每个类都应有<strong>单一</strong>的功能，且被类封装起来。</li>
+<li>O，Open-Closed Principle，对象（类、接口、函数等）对于拓展是开放的，对于修改是封闭的。即易拓展、保证可靠。</li>
+<li>L，Liskov Substitution Principle，子类可以在不改变正确性的情况下替换父类</li>
+<li>I，Interface-segregation Principle，多个特定功能的接口好于单个宽泛功能的接口</li>
+<li>D，Dependency Inversion Principle，方法应该依赖于一个抽象（接口）而不是一个实例（类）</li>
+</ul>
+<h2 id="axios-mock-adpter"><a href="#axios-mock-adpter" class="headerlink" title="axios-mock-adpter"></a>axios-mock-adpter</h2><p>使用axios获取数据时，通过<code>axios-mock-adapter</code>mock数据。MockAdapter可以绑定在axios上，拦截通过绑定的axios发送的请求。使用方式如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> axios = <span class="built_in">require</span>(<span class="string">'axios'</span>);</div><div class="line"><span class="keyword">var</span> MockAdapter = <span class="built_in">require</span>(<span class="string">'axios-mock-adapter'</span>);</div><div class="line"></div><div class="line"><span class="comment">// This sets the mock adapter on the default instance</span></div><div class="line"><span class="keyword">var</span> mock = <span class="keyword">new</span> MockAdapter(axios);</div><div class="line"></div><div class="line"><span class="comment">// Mock any GET request to /users</span></div><div class="line"><span class="comment">// arguments for reply are (status, data, headers)</span></div><div class="line">mock.onGet(<span class="string">'/users'</span>).reply(<span class="number">200</span>, &#123;</div><div class="line">  <span class="attr">users</span>: [</div><div class="line">    &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">'John Smith'</span> &#125;</div><div class="line">  ]</div><div class="line">&#125;);</div><div class="line"></div><div class="line">axios.get(<span class="string">'/users'</span>)</div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(response.data);</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p>另外，可以用<code>mock.restore()</code>撤销所有mocking行为，或通过<code>mock.reset()</code>除去所有mocking的handler。通过<code>mock.on&lt;方法名&gt;</code>还可以链式调用其他方法：</p>
+<ul>
+<li><code>onAny()</code> 绑定任何方法</li>
+<li><code>networkError()</code> 返回网络错误</li>
+<li><code>timeout()</code> 返回请求超时</li>
+<li><code>passThrough()</code> 跳过mocking直接请求</li>
+</ul>
+<p>在reply中可以使用函数进行更复杂的操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> normalAxios = axios.create();</div><div class="line"><span class="keyword">var</span> mockAxios = axios.create();</div><div class="line"><span class="keyword">var</span> mock = MockAdapter(mockAxios);</div><div class="line"></div><div class="line">mock</div><div class="line">  .onGet(<span class="string">'/orders'</span>)</div><div class="line">  .reply(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">Promise</span>.all([</div><div class="line">      normalAxios</div><div class="line">        .get(<span class="string">'/api/v1/orders'</span>)</div><div class="line">        .then(<span class="function"><span class="params">resp</span> =&gt;</span> resp.data),</div><div class="line">      normalAxios</div><div class="line">        .get(<span class="string">'/api/v2/orders'</span>)</div><div class="line">        .then(<span class="function"><span class="params">resp</span> =&gt;</span> resp.data),</div><div class="line">      &#123; <span class="attr">id</span>: <span class="string">'-1'</span>, <span class="attr">content</span>: <span class="string">'extra row 1'</span> &#125;,</div><div class="line">      &#123; <span class="attr">id</span>: <span class="string">'-2'</span>, <span class="attr">content</span>: <span class="string">'extra row 2'</span> &#125;</div><div class="line">    ]).then(</div><div class="line">      <span class="function"><span class="params">sources</span> =&gt;</span> [<span class="number">200</span>, sources.reduce(<span class="function">(<span class="params">agg, source</span>) =&gt;</span> agg.concat(source))]</div><div class="line">    )</div><div class="line">  );</div></pre></td></tr></table></figure>
+<h2 id="移动端Charles调试经验"><a href="#移动端Charles调试经验" class="headerlink" title="移动端Charles调试经验"></a>移动端Charles调试经验</h2><ol>
+<li>设置http代理为8888端口</li>
+<li>设置SSL代理，填写对应的域名，设置端口为443，安装根证书</li>
+<li>手机打开无线设置，设置代理IP和端口8888</li>
+<li>打开<a href="http://chls.pro/ssl" target="_blank" rel="external">chls.pro/ssl</a>，安装根证书并信任</li>
+<li>使用Map remote访问开发机位置</li>
+<li>使用Map local可以劫持WebView中请求的JS等资源到本地，通过alert的方式打印调试信息，进行临时的线上Webview环境debug</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/quill-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1187,223 +1427,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/01/27/my-first-pwa-app/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/01/27/my-first-pwa-app/" itemprop="url">我的第一个PWA开发记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-27T16:14:11+08:00">
-                2018-01-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/01/27/my-first-pwa-app/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/27/my-first-pwa-app/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>注：本文主要记录了创建一个PWA应用的过程，方便日后再次开发类似应用时参考。<br>github链接：<a href="https://github.com/shenlvmeng/Distance" target="_blank" rel="external">shenlvmeng/Distance: 一次PWA的尝试</a></p>
-</blockquote>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>安装<a href="https://www.npmjs.com/package/http-server" target="_blank" rel="external">http-server</a>方便本地测试。</p>
-<p>本地开辟文件夹，加入<code>.editorconfig</code>和<code>.gitignore</code>（根据<a href="https://raw.github.com/github/gitignore/abad92dac5a4306f72242dae3bca6e277bce3615/Node.gitignore" target="_blank" rel="external">样例</a>适当修改）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># http://editorconfig.org</div><div class="line"></div><div class="line">root = true</div><div class="line"></div><div class="line">[*]</div><div class="line">charset = utf-8</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div><div class="line">end_of_line = lf</div><div class="line">insert_final_newline = true</div><div class="line">trim_trailing_whitespace = true</div></pre></td></tr></table></figure>
-<p>创建<code>index.html</code></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Away from home<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">href</span>=<span class="string">"./main.css"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>My first PWA Application<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>See console for more!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在目标文件夹路径下执行<code>http-server</code>，bingo！第一步完成</p>
-<h2 id="清单文件"><a href="#清单文件" class="headerlink" title="清单文件"></a>清单文件</h2><p>创建清单文件<code>manifest.json</code>，描述应用添加到主屏幕需要的信息。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"name"</span>: <span class="string">"Distance from Home"</span>,</div><div class="line">  <span class="attr">"short_name"</span>: <span class="string">"Distance"</span>,</div><div class="line">  <span class="attr">"display"</span>: <span class="string">"standalone"</span>,</div><div class="line">  <span class="attr">"start_url"</span>: <span class="string">"/"</span>,</div><div class="line">  <span class="attr">"theme_color"</span>: <span class="string">"#8888ff"</span>,</div><div class="line">  <span class="attr">"background_color"</span>: <span class="string">"#aaaaff"</span>,</div><div class="line">  <span class="attr">"icons"</span>: [</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"src"</span>: <span class="string">"compass.png"</span>,</div><div class="line">      <span class="attr">"sizes"</span>: <span class="string">"144x144"</span>,</div><div class="line">      <span class="attr">"type"</span>: <span class="string">"image/png"</span></div><div class="line">    &#125;</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>并在<code>index.html</code>中引入：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"manifest"</span> <span class="attr">href</span>=<span class="string">"manifest.json"</span>&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="添加Service-Worker"><a href="#添加Service-Worker" class="headerlink" title="添加Service Worker"></a>添加Service Worker</h2><p><a href="https://shenlvmeng.github.io/blog/2017/09/04/pwa-and-hybrid-brief/" target="_blank" rel="external">Service Worker</a>这个东西可以实现页面的缓存和离线访问，让应用逼近app的体验。</p>
-<p>可以在HTML里插入<code>&lt;script&gt;</code>标签引入，这里单独定义一个app.js。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// app.js</span></div><div class="line"></div><div class="line"><span class="comment">// Registering ServiceWorker</span></div><div class="line"><span class="keyword">if</span> ( <span class="string">'serviceWorker'</span> <span class="keyword">in</span> navigator ) &#123;</div><div class="line">  navigator.serviceWorker.register( <span class="string">'sw.js'</span> ).then(<span class="function"><span class="keyword">function</span>(<span class="params">registration</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Registration was successful</span></div><div class="line">    <span class="built_in">console</span>.log( <span class="string">'ServiceWorker registration successful. Scope: '</span> + registration.scope )</div><div class="line">  &#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Registration failed with error</span></div><div class="line">    <span class="built_in">console</span>.log( <span class="string">'ServiceWorker registration failed'</span> + err);</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在<code>index.html</code>中引用。</p>
-<p>下面实现service worker。主要是三个时机：</p>
-<ul>
-<li>脚本<strong>安装</strong>时，写入缓存</li>
-<li>脚本<strong>获取数据</strong>时，先查找缓存</li>
-<li>缓存<strong>更新版本</strong>时，删除原先版本的缓存</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 脚本安装时</span></div><div class="line">self.addEventListener(<span class="string">'install'</span>, event =&gt; &#123;</div><div class="line">  event.waitUntil(</div><div class="line">    caches.open(cacheStorageKey)</div><div class="line">      .then(<span class="function"><span class="params">cache</span> =&gt;</span> cache.addAll(cacheList))</div><div class="line">      <span class="comment">// 保证在页面更新过程中，新的Service Worker脚本能立即激活生效</span></div><div class="line">      .then(<span class="function"><span class="params">()</span> =&gt;</span> self.skipWaiting())</div><div class="line">  )</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 通过脚本fetch数据</span></div><div class="line">self.addEventListener(<span class="string">'fetch'</span>, event =&gt; &#123;</div><div class="line">  event.respondWith(</div><div class="line">    <span class="comment">// 先在cache中找</span></div><div class="line">    caches.match(event.request).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</div><div class="line">      <span class="comment">// cache中没有再使用fetch</span></div><div class="line">      <span class="keyword">return</span> res || fetch(event.request.url);</div><div class="line">    &#125;)</div><div class="line">  )</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 更新静态资源</span></div><div class="line">self.addEventListener(<span class="string">'activate'</span>, event =&gt; &#123;</div><div class="line">  event.waitUntil(</div><div class="line">    caches.keys().then(<span class="function"><span class="params">cacheNames</span> =&gt;</span> &#123;</div><div class="line">      <span class="keyword">return</span> <span class="built_in">Promise</span>.all(cacheNames.map(<span class="function"><span class="params">name</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (name !== cacheStorageKey) &#123;</div><div class="line">          <span class="keyword">return</span> caches.delete(name);</div><div class="line">        &#125;</div><div class="line">      &#125;));</div><div class="line">    &#125;)</div><div class="line">  );</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>其中，有下面一些名词：</p>
-<ul>
-<li><code>self</code>: Service Worker作用域, 也是全局变量</li>
-<li><code>caches</code>: 缓存接口</li>
-<li><code>waitUntil</code>，<code>ExtendableEvent.waitUntil()</code>方法——这会确保Service Worker 不会在<code>waitUntil()</code>里面的代码执行完毕之前安装完成。</li>
-<li><code>skipWait</code>，表示强制当前处在waiting状态的脚本进入activate状态</li>
-</ul>
-<p>在浏览器中打开<code>localhost:8080/</code>即可，注意PWA<strong>必须运行在HTTPS的环境下</strong>。</p>
-<h2 id="加入百度地图支持"><a href="#加入百度地图支持" class="headerlink" title="加入百度地图支持"></a>加入百度地图支持</h2><p>参考<a href="http://lbsyun.baidu.com/index.php?title=jspopular" target="_blank" rel="external">官方API接入支持</a>。</p>
-<p>添加文件<code>index.js</code>，写入如下内容：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> url4PC = <span class="string">'https://api.map.baidu.com/api?v=2.0&amp;ak=你的秘钥&amp;callback=init'</span>;</div><div class="line"><span class="keyword">const</span> init = <span class="built_in">window</span>.init;</div><div class="line"><span class="keyword">let</span> map = <span class="literal">null</span>;</div><div class="line"></div><div class="line"><span class="comment">// 为了能成功调用到callback</span></div><div class="line"><span class="built_in">window</span>.init = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">  map = <span class="keyword">new</span> BMap.Map(<span class="string">'map'</span>);</div><div class="line">  map.centerAndZoom(<span class="keyword">new</span> BMap.Point(<span class="number">121.491</span>, <span class="number">31.233</span>), <span class="number">11</span>);</div><div class="line">  map.enableScrollWheelZoom(<span class="literal">true</span>);</div><div class="line">  <span class="built_in">window</span>.init = init;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadMap</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">  script.src = url4PC;</div><div class="line">  <span class="built_in">document</span>.body.appendChild(script);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">window</span>.onload = loadMap;</div></pre></td></tr></table></figure>
-<p>当然需要添加一点CSS，这里从略。</p>
-<h2 id="Service-Worker支持跨域"><a href="#Service-Worker支持跨域" class="headerlink" title="Service Worker支持跨域"></a>Service Worker支持跨域</h2><p>接下来问题来了，打开网页测试，页面刷新时Service Worker会抛出跨域相关的错误。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahb0hR.png" alt="Ahb0hR.png"></p>
-<p>再正常不过了，未经配置的情况下，fetch是不允许跨域的。注意<code>sw.js</code>中的一段：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">caches.match(event.request).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</div><div class="line">  <span class="comment">// cache中没有再使用fetch</span></div><div class="line">  <span class="keyword">return</span> res || fetch(event.request.url);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>这里我们不仅有跨域请求，还使用着JSONP的方式。后续地图数据和地图图片的展示请求也比较复杂。再经过多次加入<code>respondWith()</code>响应块失败后，干脆跳过这部分跨域的处理。不过还是留下了一个函数，方便后面拓展。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isCORSRequest</span>(<span class="params">url</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> url.search(host) === <span class="number">-1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 并存该函数为日后拓展所用</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleFetchRequest</span>(<span class="params">req</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> request = isCORSRequest(req.url) ?</div><div class="line">    <span class="keyword">new</span> Request(req.url, &#123; <span class="attr">mode</span>: <span class="string">'cors'</span> &#125;)</div><div class="line">    : req;</div><div class="line">  fetch(req);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 通过脚本fetch数据</span></div><div class="line">self.addEventListener(<span class="string">'fetch'</span>, event =&gt; &#123;</div><div class="line">  <span class="keyword">if</span> (isCORSRequest(event.request.url)) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  event.respondWith(</div><div class="line">    <span class="comment">// 先在cache中找</span></div><div class="line">    caches.match(event.request).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</div><div class="line">      <span class="comment">// cache中没有再使用fetch</span></div><div class="line">      <span class="keyword">return</span> res || handleFetchRequest(event.request);</div><div class="line">    &#125;)</div><div class="line">  );</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h2 id="目标点管理"><a href="#目标点管理" class="headerlink" title="目标点管理"></a>目标点管理</h2><p>核心功能之一是，可以新增计算距离的目标点。在我的设计里，有两种用户友好的添加方式：</p>
-<ul>
-<li>找不到地点时，可以搜索出地点，通过搜索结果设置</li>
-<li>明确地图上位置时，直接通过鼠标操作设置</li>
-</ul>
-<p>前面的利用AutoComplete类，完成自动补全和搜索功能。值得注意的一个坑是，在初次设置好map对象后，每次的搜索结果都会以第一次初始化地点为中心搜索结果。解决方案是，每次<code>&lt;input&gt;</code>框聚焦时，重新构造一个AutoComplete类。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"search"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"searchbox"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"position"</span> <span class="attr">size</span>=<span class="string">"20"</span> <span class="attr">placeholder</span>=<span class="string">"输入地点或在地图上双击点选"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"searchBtn"</span> <span class="attr">class</span>=<span class="string">"searchBtn"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initSearchLocation</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// 工厂方法，每次聚焦时新创建一个AutoComplete对象</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">setAutoComplete</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">const</span> lastVal = doc.getElementById(<span class="string">'position'</span>).value.trim();</div><div class="line">      <span class="comment">// 建立一个自动完成的对象</span></div><div class="line">      <span class="keyword">const</span> searchBox = <span class="keyword">new</span> BMap.Autocomplete(&#123;</div><div class="line">        <span class="attr">input</span>: <span class="string">"position"</span>,</div><div class="line">        <span class="attr">location</span>: map</div><div class="line">      &#125;);</div><div class="line">      doc.getElementById(<span class="string">'position'</span>).value = lastVal;</div><div class="line"></div><div class="line">      <span class="comment">// 鼠标点击下拉列表后的事件</span></div><div class="line">      searchBox.addEventListener(<span class="string">"onconfirm"</span>, event =&gt; &#123;</div><div class="line">        <span class="keyword">const</span> value = event.item.value;</div><div class="line">        <span class="keyword">const</span> searchWord = <span class="string">`<span class="subst">$&#123;value.province&#125;</span><span class="subst">$&#123;value.city&#125;</span><span class="subst">$&#123;value.district&#125;</span><span class="subst">$&#123;value.street&#125;</span><span class="subst">$&#123;value.business&#125;</span>`</span>;</div><div class="line">        setPlace(searchWord);</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">setPlace</span>(<span class="params">searchWord</span>)</span>&#123;</div><div class="line">      map.clearOverlays();</div><div class="line">      <span class="comment">// 搜索</span></div><div class="line">      <span class="keyword">const</span> cleverSearch = <span class="keyword">new</span> BMap.LocalSearch(map, &#123;</div><div class="line">        <span class="attr">onSearchComplete</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">          pauseUpdate();</div><div class="line">          <span class="keyword">if</span> (!cleverSearch.getResults().getPoi(<span class="number">0</span>)) &#123;</div><div class="line">            alert(<span class="string">'未找到指定地点，换个关键词试试？'</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">          &#125;</div><div class="line">          <span class="comment">// 获取第一个智能搜索的结果</span></div><div class="line">          <span class="keyword">const</span> res = cleverSearch.getResults().getPoi(<span class="number">0</span>).point;</div><div class="line">          <span class="keyword">const</span> marker = <span class="keyword">new</span> BMap.Marker(res);</div><div class="line">          map.centerAndZoom(res, <span class="number">18</span>);</div><div class="line">          map.addOverlay(marker);</div><div class="line">          addToBeacons(marker);</div><div class="line">        &#125;</div><div class="line">      &#125;);</div><div class="line">      cleverSearch.search(searchWord);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 不使用自动补全，直接回车或点击图标</span></div><div class="line">    doc.getElementById(<span class="string">"position"</span>).addEventListener(<span class="string">"focus"</span>, event =&gt; &#123;</div><div class="line">      setAutoComplete();</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// 省略了其他的绑定事件</span></div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>下一步是支持标记点（BeaconNodes）的管理，离线持久化采用<code>localStorage</code>，技术上倒没有什么难度。用户交互上，考虑用右键点击（for PC）和长按操作（PC Mobile）添加，点击标记删除。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 从页面新增目标点</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addToBeacons</span>(<span class="params">point</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> tag = win.prompt(<span class="string">"给Beacon点起个名字吧"</span>);</div><div class="line">  <span class="keyword">if</span> (tag === <span class="literal">null</span>) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  tag = tag.trim().substr(<span class="number">0</span>, <span class="number">20</span>) || <span class="string">`未知地点#<span class="subst">$&#123;seq&#125;</span>`</span>;</div><div class="line">  <span class="comment">// 第一个点默认活跃</span></div><div class="line">  beaconNodes.push(&#123;</div><div class="line">    <span class="attr">id</span>: seq,</div><div class="line">    point,</div><div class="line">    tag,</div><div class="line">    <span class="attr">isActive</span>: !beaconNodes.length</div><div class="line">  &#125;);</div><div class="line">  addBeacon(seq, point, tag, beaconNodes.length === <span class="number">1</span>);</div><div class="line">  paintDropdown();</div><div class="line">  localStorage.setItem(STORAGE_KEY, <span class="built_in">JSON</span>.stringify(beaconNodes));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">removeFromBeacon</span>(<span class="params">id</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!beaconNodes.length) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  beaconNodes.splice(beaconNodes.findIndex(<span class="function"><span class="params">node</span> =&gt;</span> node.id == id), <span class="number">1</span>);</div><div class="line">  paintDropdown();</div><div class="line">  localStorage.setItem(STORAGE_KEY, <span class="built_in">JSON</span>.stringify(beaconNodes));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 在地图上新增目标点，方便复用</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addBeacon</span>(<span class="params">id, point, tag, isActive</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> icon = <span class="keyword">new</span> BMap.Icon(<span class="string">`imgs/location-<span class="subst">$&#123;<span class="number">2</span>-isActive&#125;</span>.png`</span>, <span class="keyword">new</span> BMap.Size(<span class="number">50</span>, <span class="number">50</span>));</div><div class="line">  <span class="keyword">const</span> mark = <span class="keyword">new</span> BMap.Marker(point, &#123; icon, <span class="attr">enableMassClear</span>: <span class="literal">false</span> &#125;);</div><div class="line">  <span class="keyword">const</span> label = <span class="keyword">new</span> BMap.Label(tag,&#123; <span class="attr">offset</span>: <span class="keyword">new</span> BMap.Size(<span class="number">32</span>, <span class="number">2</span>) &#125;);</div><div class="line">  label.setStyle(&#123;</div><div class="line">    <span class="attr">border</span>: <span class="string">"#dedede"</span>,</div><div class="line">    <span class="attr">padding</span>: <span class="string">"3px 5px"</span>,</div><div class="line">    <span class="string">"font-size"</span>: <span class="string">"14px"</span>,</div><div class="line">    <span class="string">"font-weight"</span>: <span class="string">"bold"</span></div><div class="line">  &#125;);</div><div class="line">  mark.setLabel(label); </div><div class="line">  mark.getLabel().setTitle(tag);</div><div class="line">  mark.addEventListener(<span class="string">'click'</span>, event =&gt; &#123;</div><div class="line">    <span class="keyword">if</span> (win.confirm(<span class="string">`确认要删除Beacon:<span class="subst">$&#123;mark.getLabel().getTitle()&#125;</span>`</span>)) &#123;</div><div class="line">      map.removeOverlay(mark);</div><div class="line">      removeFromBeacon(id);</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">  map.addOverlay(mark);</div><div class="line">  seq = id + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initMap</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// 根据storage填充地图</span></div><div class="line">  <span class="comment">// 注意这里必须使用Point类</span></div><div class="line">  beaconNodes.forEach(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</div><div class="line">    addBeacon(node.id, <span class="keyword">new</span> BMap.Point(node.point.lng, node.point.lat), node.tag, node.isActive);</div><div class="line">  &#125;);</div><div class="line">  <span class="comment">// ...</span></div><div class="line"></div><div class="line">  <span class="comment">// 避免和其他事件冲突，使用暂无占用的右键点击</span></div><div class="line">  map.addEventListener(<span class="string">"rightclick"</span>, event =&gt; &#123;</div><div class="line">    addToBeacons(event.point);</div><div class="line">  &#125;);</div><div class="line">  <span class="comment">// 支持移动设备，长按</span></div><div class="line">  map.addEventListener(<span class="string">"longpress"</span>, event =&gt; &#123;</div><div class="line">    addToBeacons(event.point);</div><div class="line">  &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在管理上，新增了下拉菜单管理当前所有节点，这里需要将离线的BeaconNodes映射成DOM结构，考虑到文件已略大，且这一部分比较繁琐，和业务关系不大，故单独抽出一个文件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// dom.js</span></div><div class="line"><span class="comment">/*</span></div><div class="line"> * 无状态，与业务弱相关</div><div class="line"> * 只渲染下拉菜单</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">renderDropdown</span>(<span class="params">obj, dom, isInit</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!obj) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  dom.innerText = <span class="string">""</span>;</div><div class="line">  <span class="comment">// render过程</span></div><div class="line">  <span class="keyword">const</span> fragment = <span class="built_in">document</span>.createDocumentFragment();</div><div class="line">  obj.map(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> div = <span class="built_in">document</span>.createElement(<span class="string">'DIV'</span>);</div><div class="line">    div.className = <span class="string">`node_wrapper<span class="subst">$&#123;node.isActive ? <span class="string">" active"</span> : <span class="string">""</span>&#125;</span>`</span>;</div><div class="line">    <span class="keyword">const</span> innerHTML = <span class="string">`&lt;span&gt;#<span class="subst">$&#123;node.id&#125;</span>&lt;/span&gt;&lt;span class="node-tag"&gt;<span class="subst">$&#123;node.tag&#125;</span>&lt;/span&gt;`</span>;</div><div class="line">    div.innerHTML = innerHTML;</div><div class="line">    <span class="keyword">const</span> operateBtn = <span class="built_in">document</span>.createElement(<span class="string">'DIV'</span>);</div><div class="line">    operateBtn.className = <span class="string">"operateBtn"</span>;</div><div class="line">    <span class="keyword">if</span> (node.isActive) &#123;</div><div class="line">      operateBtn.className += <span class="string">" active"</span></div><div class="line">      operateBtn.innerText = <span class="string">"Deactive!"</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      operateBtn.innerText = <span class="string">"Active!"</span></div><div class="line">    &#125;</div><div class="line">    div.appendChild(operateBtn);</div><div class="line">    <span class="comment">// 方便统一事件绑定</span></div><div class="line">    div.dataset.nid = node.id;</div><div class="line">    <span class="keyword">return</span> div;</div><div class="line">  &#125;).forEach(<span class="function"><span class="params">div</span> =&gt;</span> &#123;</div><div class="line">    fragment.appendChild(div);</div><div class="line">  &#125;);</div><div class="line">  dom.appendChild(fragment);</div><div class="line"></div><div class="line">  <span class="comment">// 多次调用只监听一次</span></div><div class="line">  <span class="keyword">if</span> (isInit) &#123;</div><div class="line">    <span class="comment">// 下拉事件</span></div><div class="line">    dom.parentNode.children[<span class="number">0</span>].addEventListener(<span class="string">"click"</span>, event =&gt; &#123;</div><div class="line">      <span class="keyword">if</span> (dom.parentNode.className.search(<span class="string">"hide"</span>) !== <span class="number">-1</span>) &#123;</div><div class="line">        dom.parentNode.className = <span class="string">"dropdown dropdown_container"</span>;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        dom.parentNode.className += <span class="string">" hide"</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>HTML和CSS部分就不再赘述了。</p>
-<p>在下拉菜单下，可以点击条目跳转到相应位置，以及点击按钮切换当前活动的BeaconNode。这部分实现如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initDropdown</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  paintDropdown(<span class="literal">true</span>);</div><div class="line">  <span class="comment">// 事件监听</span></div><div class="line">  <span class="keyword">const</span> dropdown = doc.getElementById(<span class="string">"dropdown"</span>);</div><div class="line">  dropdown.addEventListener(<span class="string">"click"</span>, event =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> nid = event.target.parentNode.dataset.nid || event.target.dataset.nid;</div><div class="line">    <span class="keyword">const</span> node = beaconNodes.find(<span class="function"><span class="params">node</span> =&gt;</span> node.id == nid);</div><div class="line">    <span class="keyword">if</span> (event.target.tagName.toLowerCase() === <span class="string">"div"</span>) &#123;</div><div class="line">      <span class="keyword">if</span> (node) &#123;</div><div class="line">        <span class="keyword">const</span> prev = beaconNodes.find(<span class="function"><span class="params">node</span> =&gt;</span> node.isActive);</div><div class="line">        <span class="keyword">if</span> (prev) &#123;</div><div class="line">          prev.isActive = <span class="literal">false</span>;</div><div class="line">          beaconMarkers[prev.id].setIcon(<span class="keyword">new</span> BMap.Icon(<span class="string">"imgs/location-2.png"</span>, <span class="keyword">new</span> BMap.Size(<span class="number">40</span>, <span class="number">40</span>)));</div><div class="line">        &#125;</div><div class="line">        node.isActive = <span class="literal">true</span>;</div><div class="line">        paintDropdown();</div><div class="line">        beaconMarkers[nid].setIcon(<span class="keyword">new</span> BMap.Icon(<span class="string">"imgs/location-1.png"</span>, <span class="keyword">new</span> BMap.Size(<span class="number">40</span>, <span class="number">40</span>)));</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      node &amp;&amp; map.panTo(<span class="keyword">new</span> BMap.Point(node.point.lng, node.point.lat));</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当然了，标记点的增删改查还剩下改没有实现，目前来看，和“改”相关的业务是能拖动标记点，方便用户随时更改标记点位置。在<code>addBeacon()</code>函数中新增相关代码。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mark.enableDragging();</div><div class="line"><span class="comment">// ...</span></div><div class="line">mark.addEventListener(<span class="string">'dragend'</span>, event =&gt; &#123;</div><div class="line">  editToBeacons(id, &#123; <span class="attr">point</span>: event.point &#125;);</div><div class="line">  paintDistance(lastPoint);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>而<code>editToBeacons()</code>函数设计如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">editToBeacons</span>(<span class="params">id, newProps</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> index = beaconNodes.findIndex(<span class="function"><span class="params">node</span> =&gt;</span> node.id == id);</div><div class="line">  <span class="built_in">Object</span>.assign(beaconNodes[index], newProps);</div><div class="line">  localStorage.setItem(STORAGE_KEY, <span class="built_in">JSON</span>.stringify(beaconNodes));</div><div class="line">  <span class="comment">// 不是所有的属性更改都有重绘，交给调用者处理重绘</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="计算距离"><a href="#计算距离" class="headerlink" title="计算距离"></a>计算距离</h2><p>计算距离包括距离和方向两部分，既然能拿到两点的经纬度信息，这两个值肯定可以计算出来。计算距离上利用百度地图的API，计算角度上，通过<code>Math.atan2</code>换算得到。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">function paintDistance(currentPoint) &#123;</div><div class="line">  let info;</div><div class="line">  let target = beaconNodes.find(node =&gt; node.isActive);</div><div class="line">  if (!target || !currentPoint) &#123;</div><div class="line">    info = "N/A , 未知方向";</div><div class="line">  &#125; else &#123;</div><div class="line">    let distance = map.getDistance(currentPoint, target.point) || "N/A";</div><div class="line">    if (distance &gt; 10000) &#123;</div><div class="line">      distance = `$&#123;(distance / 1000).toFixed(2)&#125;km`;</div><div class="line">    &#125; else if (distance &gt; 100) &#123;</div><div class="line">      distance = `$&#123;distance.toFixed(0)&#125;m`;</div><div class="line">    &#125; else &#123;</div><div class="line">      distance = `就在附近...`</div><div class="line">    &#125;</div><div class="line">    // 工具函数位于utils.js</div><div class="line">    const deg = getDirection(target.point, currentPoint);</div><div class="line">    info = `$&#123;distance&#125; , $&#123;deg&#125;点钟方向`</div><div class="line">  &#125;</div><div class="line">  // ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">function getDirection(p1, p2) &#123;</div><div class="line">  const pi = Math.PI;</div><div class="line">  const [x2, y2, x1, y1] = [p1.lng, p1.lat, p2.lng, p2.lat];</div><div class="line">  let rad = Math.atan2(y2 - y1, x2 - x1);</div><div class="line">  let absRad = Math.abs(rad);</div><div class="line">  let clockPointer;</div><div class="line">  if (absRad &lt; pi / 12) &#123;</div><div class="line">    clockPointer = 3;</div><div class="line">  &#125; else if (absRad &lt; pi / 4) &#123;</div><div class="line">    clockPointer = rad &gt; 0 ? 2 : 4;</div><div class="line">  &#125; else if (absRad &lt; pi * 5 / 12) &#123;</div><div class="line">    clockPointer = rad &gt; 0 ? 1 : 5;</div><div class="line">  &#125; else if (absRad &lt; pi * 7 / 12) &#123;</div><div class="line">    clockPointer = rad &gt; 0 ? 12 : 6;</div><div class="line">  &#125; else if (absRad &lt; pi * 3 / 4) &#123;</div><div class="line">    clockPointer = rad &gt; 0 ? 11 : 7;</div><div class="line">  &#125; else if (absRad &lt; pi * 11 / 12) &#123;</div><div class="line">    clockPointer = rad &gt; 0 ? 10 : 8;</div><div class="line">  &#125; else &#123;</div><div class="line">    clockPointer = 9;</div><div class="line">  &#125;</div><div class="line">  return clockPointer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://zhuanlan.zhihu.com/p/25459319" target="_blank" rel="external">PWA 入门: 写个非常简单的 PWA 页面</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/29570875" target="_blank" rel="external">轻松把你的项目升级到PWA</a></li>
-<li><a href="https://sii.im/playground/notes/" target="_blank" rel="external">Notes</a></li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Manifest" target="_blank" rel="external">Web App Manifest</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers" target="_blank" rel="external">使用 Service Workers</a></li>
-<li><a href="https://segmentfault.com/a/1190000008491458" target="_blank" rel="external">Service Workers 与离线缓存</a></li>
-<li><a href="http://lbsyun.baidu.com/jsdemo.htm" target="_blank" rel="external">地图API示例</a></li>
-<li><a href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html" target="_blank" rel="external">百度地图JSAPIv2.0类参考</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1454,7 +1477,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-count">110</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1476,7 +1499,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">306</span>
+                <span class="site-state-item-count">314</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
