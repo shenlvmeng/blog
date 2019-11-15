@@ -5,7 +5,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="http://shenlvmeng.github.com/blog/"/>
-  <updated>2019-10-31T14:15:15.787Z</updated>
+  <updated>2019-11-15T14:17:53.563Z</updated>
   <id>http://shenlvmeng.github.com/blog/</id>
   
   <author>
@@ -16,20 +16,297 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>degit认识和改造</title>
+    <link href="http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/"/>
+    <id>http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/</id>
+    <published>2019-11-15T13:51:58.000Z</published>
+    <updated>2019-11-15T14:17:53.563Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由于仓库本身的模板性质和git历史存在，并不合适使用npm分发或<code>git clone</code>快速搭建项目骨架。</p>
+<p>碰巧此前学习svelte的时候接触到了<a href="https://github.com/Rich-Harris/degit" target="_blank" rel="external">degit</a>，degit做的事很简单，<strong>复制git仓库代码</strong>。这也正是一个称职的boilerplate发挥光和热的方式。</p>
+<h2 id="degit使用"><a href="#degit使用" class="headerlink" title="degit使用"></a>degit使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">degit user/repo</div><div class="line"></div><div class="line"><span class="comment"># these commands are equivalent</span></div><div class="line">degit github:user/repo</div><div class="line">degit git@github.com:user/repo</div><div class="line">degit https://github.com/user/repo</div><div class="line"></div><div class="line">degit user/repo my-new-project</div></pre></td></tr></table></figure>
+<p>上面是一个degit的基本用法，类似<code>git clone</code>指定仓库地址和本地目录名，默认将项目当前<code>master</code>分支的代码拷贝到本地。还可以在仓库后使用<code>#</code>分隔，指定分支名、tag名或commit hash。目前（2019/11/12）degit支持github、gitlab、BitBucket以及Sourcehut，暂不支持私有仓库。</p>
+<p>在一些情况下，我们可能希望在拷贝完代码后进行一些后置操作，如拷贝关联仓库或删除不必要文件等。对此，degit设计了<strong>actions</strong>来支持，可以在当前目录的<code>degit.json</code>中声明。目前actions只有<code>clone</code>和<code>remove</code>两种。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// degit.json</span></div><div class="line">[</div><div class="line">    &#123;</div><div class="line">        <span class="string">"action"</span>: <span class="string">"clone"</span>,</div><div class="line">        <span class="string">"src"</span>: <span class="string">"user/another-repo"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">        <span class="string">"action"</span>: <span class="string">"remove"</span>,</div><div class="line">        <span class="string">"files"</span>: [<span class="string">"LICENSE"</span>]</div><div class="line">    &#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<h2 id="degit优势"><a href="#degit优势" class="headerlink" title="degit优势"></a>degit优势</h2><p>如README中提到的，degit和<code>git clone --depth 1</code>还是有所区别的：</p>
+<ul>
+<li><code>git clone</code>后，终归还是会有个<code>.git</code>目录，需要手动重置</li>
+<li>degit在实现时增加了缓存策略，在有些情况下不需要重复下载代码，速度更快</li>
+<li>“更少的字数”（<code>degit user/repo</code>而不是<code>git clone --depth 1 git@github.com:user/repo</code>）</li>
+<li>灵活度更高，如前后置操作如actions的支持</li>
+<li>更好的可扩展性，未来可以在degit基础上实现交互等更复杂的设计</li>
+</ul>
+<h2 id="degit原理"><a href="#degit原理" class="headerlink" title="degit原理"></a>degit原理</h2><p>那么degit快在哪里？它的思路借鉴于<a href="https://github.com/vutran/zel" target="_blank" rel="external">zel</a>和<a href="https://github.com/lukeed/gittar" target="_blank" rel="external">gittar</a>，即方便快捷地从git仓库中下载需要的源代码。原理上，<strong>利用某些git平台url的特定规则，从平台下载tar.gz包，再本地解压</strong>。</p>
+<p>degit实现集中在<code>src/index.js</code>中。<code>src/bin.js</code>只用来实现cli部分的入口代码，<code>src/utils.js</code>则包含了一些工具函数。</p>
+<h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><p>在<code>src/bin.js</code>中，流程分下面几步：</p>
+<ol>
+<li>利用<a href="https://github.com/lukeed/mri" target="_blank" rel="external">mri</a>做了基本的参数处理</li>
+<li>实例化Degit对象，注册logger的监听方法</li>
+<li>调用<code>clone</code>方法</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> d = degit(src, args);</div><div class="line"></div><div class="line">    d.on(<span class="string">'info'</span>, event =&gt; &#123;</div><div class="line">        <span class="built_in">console</span>.error(chalk.cyan(<span class="string">`&gt; <span class="subst">$&#123;event.message.replace(<span class="string">'options.'</span>, <span class="string">'--'</span>)&#125;</span>`</span>));</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    d.on(<span class="string">'warn'</span>, event =&gt; &#123;</div><div class="line">        <span class="built_in">console</span>.error(</div><div class="line">            chalk.magenta(<span class="string">`! <span class="subst">$&#123;event.message.replace(<span class="string">'options.'</span>, <span class="string">'--'</span>)&#125;</span>`</span>)</div><div class="line">        );</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    d.clone(dest)</div><div class="line">        <span class="comment">// .then(() =&gt; &#123;</span></div><div class="line"></div><div class="line">        <span class="comment">// &#125;)</span></div><div class="line">        .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</div><div class="line">            <span class="built_in">console</span>.error(chalk.red(<span class="string">`! <span class="subst">$&#123;err.message.replace(<span class="string">'options.'</span>, <span class="string">'--'</span>)&#125;</span>`</span>));</div><div class="line">            process.exit(<span class="number">1</span>);</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+<h3 id="Degit初始化"><a href="#Degit初始化" class="headerlink" title="Degit初始化"></a>Degit初始化</h3><p>对象实例包含下面几个成员，其中repo信息需要处理后才能拿到。</p>
+<ul>
+<li><code>src</code>，string，用户输入的仓库地址</li>
+<li><code>cache</code>，boolean，是否使用缓存，来自命令行<code>-c</code>或<code>--cache</code>参数</li>
+<li><code>force</code>，boolean，目标文件夹有内容时，是否覆盖，来自<code>-f</code>或<code>--force</code>参数</li>
+<li><code>verbose</code>，boolean，是否打印详细日志，来自<code>-v</code>或<code>--verbose</code>参数</li>
+<li><code>repo</code>，处理<code>src</code>拿到仓库的详情，包括<ul>
+<li><code>site</code>，网页域名</li>
+<li><code>user</code>，用户/组织名</li>
+<li><code>name</code>，仓库名</li>
+<li><code>ref</code>，分支、tag、commit hash</li>
+<li><code>url</code>，完整的HTTP url</li>
+</ul>
+</li>
+<li><code>directiveActions</code>，actions配置对应的处理函数，包含<ul>
+<li><code>clone</code>，递归处理src的仓库</li>
+<li><code>remove</code>，调用<code>remove</code>方法移除指定文件</li>
+</ul>
+</li>
+</ul>
+<p>repo信息来自src经过正则匹配出的详细信息。由于要利用一些git平台的url拼接规则，需要排除已知平台以外的url。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 支持的范围</span></div><div class="line"><span class="keyword">const</span> supported = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="string">'github'</span>, <span class="string">'gitlab'</span>, <span class="string">'bitbucket'</span>, <span class="string">'git.sr.ht'</span>]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">parse</span>(<span class="params">src</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> match = <span class="regexp">/^(?:https:\/\/([^/]+)\/|git@([^/]+)[:/]|([^/]+)[:/])?([^/\s]+)\/([^/\s#]+)(?:#(.+))?/</span>.exec(</div><div class="line">        src</div><div class="line">    );</div><div class="line">    <span class="keyword">if</span> (!match) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DegitError(<span class="string">`could not parse <span class="subst">$&#123;src&#125;</span>`</span>, &#123;</div><div class="line">            <span class="attr">code</span>: <span class="string">'BAD_SRC'</span>,</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> site = (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">'github'</span>).replace(</div><div class="line">        <span class="regexp">/\.(com|org)$/</span>,</div><div class="line">        <span class="string">''</span></div><div class="line">    );</div><div class="line">    <span class="comment">// 排除范围外的url</span></div><div class="line">    <span class="keyword">if</span> (!supported.has(site)) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DegitError(</div><div class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket`</span>,</div><div class="line">            &#123;</div><div class="line">                <span class="attr">code</span>: <span class="string">'UNSUPPORTED_HOST'</span>,</div><div class="line">            &#125;</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 匹配出用户名、仓库名、分支/tag/commit hash名</span></div><div class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</div><div class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].replace(<span class="regexp">/\.git$/</span>, <span class="string">''</span>);</div><div class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">'master'</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 完整的仓库地址，需要http开头的</span></div><div class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>.<span class="subst">$&#123;</span></span></div><div class="line">        site === <span class="string">'bitbucket'</span> ? <span class="string">'org'</span> : site === <span class="string">'git.sr.ht'</span> ? <span class="string">''</span> : <span class="string">'com'</span></div><div class="line">    &#125;/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="仓库下载"><a href="#仓库下载" class="headerlink" title="仓库下载"></a>仓库下载</h3><p>下载仓库流程如下：</p>
+<p><img src="https://s2.ax1x.com/2019/11/15/Mdbl6S.png" alt="degit流程"></p>
+<h4 id="获取缓存信息"><a href="#获取缓存信息" class="headerlink" title="获取缓存信息"></a>获取缓存信息</h4><p>degit的缓存放在<code>/home</code>或<code>/tmp</code>下的<code>.degit</code>目录下，按照<code>site/user/name</code>的目录组织。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 缓存目录</span></div><div class="line"><span class="keyword">const</span> base = path.join(homeOrTmp, <span class="string">'.degit'</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> dir = path.join(base, repo.site, repo.user, repo.name);</div><div class="line"><span class="keyword">const</span> cached = tryRequire(path.join(dir, <span class="string">'map.json'</span>)) || &#123;&#125;;</div></pre></td></tr></table></figure>
+<p>目录下有一个<code>map.json</code>和缓存的代码tar.gz包，包名格式为<code>&lt;commit-hash&gt;.tar.gz</code>。在map.json保存着此前使用过的分支名/tag名/简写commit名到commit hash的最新映射关系。形如下方：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"master"</span>: <span class="string">"4e3a4089b4f0275964eb10a432dc1c15526a0b4d"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这一步会尝试使用parse好的<code>site</code>、<code>user</code>、<code>name</code>属性找已有的缓存的<code>map.json</code>。没有找到时返回<code>{}</code>。</p>
+<h4 id="获取commit-hash"><a href="#获取commit-hash" class="headerlink" title="获取commit hash"></a>获取commit hash</h4><p>这一步分两种情况;</p>
+<ul>
+<li>使用缓存时，直接从上一步拿到的<code>map.json</code>里面找<code>ref</code>对应的commit hash</li>
+<li>不使用缓存时，需要从远端仓库拿分支名/tag名到commit hash的对应关系（使用<code>git ls-remote</code>完成）。之后格式化为结构化数据并从中寻找<code>ref</code>对应的commit hash。如果中途失败，则fallback到使用缓存的方式。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fetchRefs</span>(<span class="params">repo</span>) </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">const</span> &#123; stdout &#125; = <span class="keyword">await</span> exec(<span class="string">`git ls-remote <span class="subst">$&#123;repo.url&#125;</span>`</span>);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> stdout</div><div class="line">            .split(<span class="string">'\n'</span>)</div><div class="line">            .filter(<span class="built_in">Boolean</span>)</div><div class="line">            .map(<span class="function"><span class="params">row</span> =&gt;</span> &#123;</div><div class="line">                <span class="keyword">const</span> [hash, ref] = row.split(<span class="string">'\t'</span>);</div><div class="line"></div><div class="line">                <span class="comment">// 格式化过程</span></div><div class="line">                <span class="comment">// ...</span></div><div class="line">            &#125;);</div><div class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</div><div class="line">        <span class="comment">// 错误处理</span></div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这一步若未找到hash，则无法构造下载的url，从而需要抛出错误。</p>
+<h4 id="构造下载地址"><a href="#构造下载地址" class="headerlink" title="构造下载地址"></a>构造下载地址</h4><p>根据不同的git平台固定的源码tar.gz归档url规则，构造下载的url，这也是degit思路的基础。目前支持gitlab、bucket、github风格的url。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 即将下载的tar.gz文件路径</span></div><div class="line"><span class="keyword">const</span> file = <span class="string">`<span class="subst">$&#123;dir&#125;</span>/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</div><div class="line"><span class="comment">// 下载的url</span></div><div class="line"><span class="keyword">const</span> url =</div><div class="line">    repo.site === <span class="string">'gitlab'</span></div><div class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></div><div class="line">        : repo.site === <span class="string">'bitbucket'</span></div><div class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></div><div class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</div></pre></td></tr></table></figure>
+<h4 id="创建目录并下载"><a href="#创建目录并下载" class="headerlink" title="创建目录并下载"></a>创建目录并下载</h4><p>不使用缓存时，会在创建缓存目录并下载。另外，指定<code>-f</code>或<code>--force</code>参数，会覆盖已有文件路径。最后使用https模块下载文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.cache) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            fs.statSync(file);</div><div class="line">            <span class="comment">// ...</span></div><div class="line">        &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">            mkdirp(path.dirname(file));</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">await</span> fetch(url, file);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="comment">// 错误处理</span></div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="更新缓存"><a href="#更新缓存" class="headerlink" title="更新缓存"></a>更新缓存</h4><p>下载成功会更新本地缓存，保证以后使用缓存时能使用尽量新的包。</p>
+<ol>
+<li>当前使用包的commit hash如果和指定分支/tag/commit hash对应的hash一致，则不需要更新</li>
+<li>在需要更新时，检查老的hash是否还有使用，如果没有使用，则清除hash对应的tar.gz包</li>
+<li>更新map.json里的对应关系</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateCache</span>(<span class="params">dir, repo, hash, cached</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (cached[repo.ref] === hash) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> oldHash = cached[repo.ref];</div><div class="line">    <span class="keyword">if</span> (oldHash) &#123;</div><div class="line">        <span class="keyword">let</span> used = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> cached) &#123;</div><div class="line">            <span class="keyword">if</span> (cached[key] === hash) &#123;</div><div class="line">                used = <span class="literal">true</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!used) &#123;</div><div class="line">            <span class="comment">// we no longer need this tar file</span></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                fs.unlinkSync(path.join(dir, <span class="string">`<span class="subst">$&#123;oldHash&#125;</span>.tar.gz`</span>));</div><div class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">                <span class="comment">// ignore</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    cached[repo.ref] = hash;</div><div class="line">    fs.writeFileSync(</div><div class="line">        path.join(dir, <span class="string">'map.json'</span>),</div><div class="line">        <span class="built_in">JSON</span>.stringify(cached, <span class="literal">null</span>, <span class="string">'  '</span>)</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解压tar-gz包"><a href="#解压tar-gz包" class="headerlink" title="解压tar.gz包"></a>解压tar.gz包</h4><p>创建cli中输入的目标目录，并将已下载到缓存中tar.gz包解压到目标路径下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdirp(dest);</div><div class="line"><span class="keyword">await</span> untar(file, dest);</div></pre></td></tr></table></figure>
+<h4 id="actions处理"><a href="#actions处理" class="headerlink" title="actions处理"></a><code>actions</code>处理</h4><p>如果在当前目录下获取到了<code>degit.json</code>，则执行后续的<code>clone</code>或<code>remove</code>操作。</p>
+<ul>
+<li>clone，在目标目录下继续一遍clone流程</li>
+<li>remove，删除指定文件或文件夹</li>
+</ul>
+<h2 id="degit改造"><a href="#degit改造" class="headerlink" title="degit改造"></a>degit改造</h2><p>degit虽好，但从上面也可以看到，支持仓库比较有限，且不支持私有仓库。在公司内部，无法从url推断git仓库类型时，degit就无法工作了。不过，借助degit本身的设计，稍微改造上面提到的“degit初始化”，“构造下载地址”部分，就可以让degit通过传参url风格的形式支持私有仓库。</p>
+<ul>
+<li>新增<code>-s</code>或<code>--style</code>命令行入参，表示git仓库url的风格，目前设计有github、gitlab、bitbucket这几个degit原始就支持的形式。</li>
+<li>解析仓库地址信息时，若有style入参，则先判断是否在上述允许范围内；保留原有从域名解析style的部分，新增若未解析出style，则从入参里取；最后再抛出不支持的仓库地址错误</li>
+<li>解析返回数据结构中，新增<code>style</code>字段表示url风格，原有的<code>site</code>为避免歧义，直接使用域名代替原有的域名前缀</li>
+<li>在构造下载地址时，直接根据style字段拼接url</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">parse</span>(<span class="params">src, style</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (style &amp;&amp; !supportedGitStyle.has(style)) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DegitError(<span class="string">`degit supports styles of github, gitlab, bitbucket`</span>, &#123;</div><div class="line">            <span class="attr">code</span>: <span class="string">'UNSUPPORTED_STYLE'</span>,</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> site = match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">'github.com'</span>;</div><div class="line">    <span class="keyword">const</span> gitStyle =</div><div class="line">        style ||</div><div class="line">        (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">'gitlab'</span>).replace(<span class="regexp">/\.(com|org)$/</span>, <span class="string">''</span>);</div><div class="line">    <span class="keyword">if</span> (!supportedGitRepo.has(gitStyle)) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DegitError(</div><div class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket without -s/--style parameters`</span>,</div><div class="line">            &#123;</div><div class="line">                <span class="attr">code</span>: <span class="string">'UNSUPPORTED_HOST'</span>,</div><div class="line">            &#125;</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</div><div class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].replace(<span class="regexp">/\.git$/</span>, <span class="string">''</span>);</div><div class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">'master'</span>;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url, <span class="attr">style</span>: gitStyle &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 拼接url处</span></div><div class="line"><span class="keyword">const</span> url =</div><div class="line">    repo.style === <span class="string">'gitlab'</span></div><div class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></div><div class="line">        : repo.style === <span class="string">'bitbucket'</span></div><div class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></div><div class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</div></pre></td></tr></table></figure>
+<h3 id="可能存在的问题"><a href="#可能存在的问题" class="headerlink" title="可能存在的问题"></a>可能存在的问题</h3><p>绝大多数私有仓库，都会对用户身份做校验，直接访问tar.gz链接会报401错误。这需要根据不同的内部平台自己做处理了。</p>
+<p>因为特殊原因，改造后的包和代码不提供。</p>
+<p><em>–END–</em></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由
+    
+    </summary>
+    
+      <category term="工程" scheme="http://shenlvmeng.github.com/blog/categories/%E5%B7%A5%E7%A8%8B/"/>
+    
+    
+      <category term="git" scheme="http://shenlvmeng.github.com/blog/tags/git/"/>
+    
+      <category term="脚手架" scheme="http://shenlvmeng.github.com/blog/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/"/>
+    
+      <category term="degit" scheme="http://shenlvmeng.github.com/blog/tags/degit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>社会心理学 Part 4 - 应用</title>
+    <link href="http://shenlvmeng.github.com/blog/2019/11/02/social-psychology-part-4/"/>
+    <id>http://shenlvmeng.github.com/blog/2019/11/02/social-psychology-part-4/</id>
+    <published>2019-11-02T13:48:37.000Z</published>
+    <updated>2019-11-15T14:09:27.365Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>参考《社会心理学》 David G. Myers 第8版</p>
+<p><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/" target="_blank" rel="external">社会心理学 Part 1 - 导论 &amp; 社会思维</a><br><a href="https://shenlvmeng.github.io/blog/2019/08/07/social-psychology-part-2/" target="_blank" rel="external">社会心理学 Part 2 - 社会影响</a><br><a href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/" target="_blank" rel="external">社会心理学 Part 3 - 社会关系</a></p>
+</blockquote>
+<h2 id="临床领域的应用"><a href="#临床领域的应用" class="headerlink" title="临床领域的应用"></a>临床领域的应用</h2><p>有时候你会遭遇生活中不顺的事情，这时<em>关注自我的焦虑会让你的情绪更加糟糕</em>。临床心理学将社会心理学一些概念和社会中实际应用连接起来。</p>
+<h3 id="临床诊断的误差"><a href="#临床诊断的误差" class="headerlink" title="临床诊断的误差"></a>临床诊断的误差</h3><p>与非临床心理学家相比，临床心理学家更欢迎依赖于感受而非公式、统计分析的认识方式。<em>临床诊断</em>也是社会决策的一种，所以也会受到之前提到的错觉影响。我们需要提前了解可能导致错误印象的原因，以避免严重的误诊。</p>
+<ul>
+<li><strong>相关错觉</strong>，当研究领域难以做到定量时，就容易形成假相关性。查普曼等人的实验发现，假如学生或心理学家<strong>期望</strong>得到一种相关，那么他们大多数能得到这种相关。</li>
+<li><strong>事后聪明和过分自信</strong>，人们在先入为主时很容易陷入过分自信，另外人们很容易从结论倒推到线索，形成事后聪明；事先知道某人自杀的被试更倾向于从材料中<em>预见到</em>他的自杀行为。</li>
+<li><strong>自我证实的诊断</strong>，由于临床心理健康工作者可以自由选择询问问题，人们也往往会提供符合临床医生期望的信息。斯奈德和斯旺发现，人们总是寻找能够验证某一特质的信息来做测验，当面对一堆结构化的题目可以选择时，即使是最有经验的心理治疗师，在测验被试是否外向时，也会倾向于选择那些更容易引起外向行为的问题。</li>
+<li><strong>统计预测优于临床预测</strong>。面试就是一个例子。在能进行访谈的情况下，临床心理学家的预测会更为差劲。对此的一个解释是，<em>我们高估了自己的认知能力</em>。</li>
+</ul>
+<p>要避免上面的误区就要相信数据，依赖于记录而非记忆，结合科学方法来验证假设——系统的观察和实验。</p>
+<h3 id="心理问题"><a href="#心理问题" class="headerlink" title="心理问题"></a>心理问题</h3><h4 id="抑郁"><a href="#抑郁" class="headerlink" title="抑郁"></a>抑郁</h4><p>Alloy和Abramson的实验发现，抑郁的学生能准确地认识自己的控制程度。这种<strong>抑郁现实主义</strong>似乎说明，普通人往往夸大自己的能力和受欢迎程度，抑郁的人则有更清醒的认识，他们身份并没有体现出普通人的过分利己、控制错觉、对未来的不现实预期。良好的心理健康状况，正是建立在能把事情看得比实际好一些，并能在黯淡的现实中看到光明的能力上。</p>
+<p>抑郁还体现在<strong>消极的解释风格</strong>，抑郁的人更倾向于将失败和挫折的原因归结为<strong>稳定的</strong>、<strong>普遍的</strong>和<strong>内在的</strong>。抑郁心境带来负面思维，负面思维又可以导致抑郁心境，形成恶性循环。有时这种负面思维可以使我们在面对未来生活时采用更好的策略，而抑郁倾向的人则总是自我关注的反思和自责。</p>
+<p>压力导致的思虑受到消极归因的过滤和影响，很容易导致抑郁，有消极归因风格的人更容易在遇到不好的事情是变得抑郁。相反，当人们不那么关注自己而是将注意力集中在自身外的事情上时，会更容易得到快乐。抑郁是负性认知的原因和结果。</p>
+<h4 id="孤独"><a href="#孤独" class="headerlink" title="孤独"></a>孤独</h4><p>孤独不等于孤单。感到孤独是感到被一个群体排斥、不被周围人喜欢、不能分享自身感受、与周围环境格格不入。男性更容易在被群体孤立时感到孤独，女性则是在被剥夺了一段亲密关系后更容易感到孤独。这似乎也验证了，男性的关系往往是<strong>肩并肩</strong>的，而女性的关系往往是<strong>面对面</strong>的。</p>
+<p>孤独更容易让人产生负面认知，由于自我表露困难，他们蔑视自我表露太快太多的人，他们往往过度敏感，而且自尊较低。与不孤独的人相比，他们在和陌生人聊天时，更多谈论自己的事情而很少关心谈话对象的情况。</p>
+<h4 id="焦虑"><a href="#焦虑" class="headerlink" title="焦虑"></a>焦虑</h4><p>社会焦虑，即<em>当我们想给他人留下好印象，但又怀疑自己能否做到的时候，我们就会感到焦虑</em>。比如：</p>
+<ul>
+<li>和身居高位的人交往</li>
+<li>在一个评价场景下</li>
+<li>过分敏感</li>
+<li>身处一个新奇的没有概念的情境中，对社交规则并不熟悉</li>
+</ul>
+<p>这种情形下的自然倾向就是小心翼翼的自我保护：谨言慎行，不过分自信，和善且保持微笑。害羞是一种以过度敏感和担心别人想法为特征的社会焦虑。这种倾向的极端就是偏执狂，他们常常高估了其他人对自己的关注和评价程度。</p>
+<p>为了减少这种社会焦虑，有些人会求助于酒精，通过酒精降低自我意识而达到减轻焦虑的效果。酒精滥用和焦虑也可以具有自我保护的功能，为自己贴上焦虑、害羞、酗酒的标签，就能为失败提供借口。但如果我们给害羞的人提供另一种更为方便地解释他们焦虑和失败的说法，他们就很可能放弃上面那种策略，从而变得不再害羞。</p>
+<h4 id="疾病"><a href="#疾病" class="headerlink" title="疾病"></a>疾病</h4><p>在工业时代。至少一半的死亡和行为联系在一起。</p>
+<p><strong>对疾病的反应</strong></p>
+<ul>
+<li>一旦发现症状，我们通常会用熟悉的疾病模式去解释，医科学生有时候会把病人的症状归结为最近学习的疾病模式</li>
+<li>有些疾病是<strong>社会性构造</strong>的，如女性在经期前两三天，会更多感受到抑郁、紧张和易怒。实际上，这些感受会时常出现，但在生理周期临近时，就会被归结为经前综合征（PMS）。那些<strong>回忆</strong>自己经前情绪不佳的女性，在以记录的每日报告中并未表现出和其他时候的差别</li>
+<li>人们认为症状来自于身体而不是心理时，他们会更愿意寻求治疗。女性比男性更多地报告症状，一方面她们对自己的内在状况更关注，另一方面，她们更愿意承认自己是软弱的，并寻求帮助</li>
+<li>医生为病人开出的治疗方案更易理解时，病人更愿意接受治疗指示。如有40%存活几率就比有60%不能存活几率要更容易被接受</li>
+</ul>
+<p><strong>情绪与疾病</strong></p>
+<p>心脏病和一种好斗的、缺乏耐心的以及易怒（很重要的一点）的人格相关联。消极情绪导致了慢性病人中抑郁和焦虑的高发率。</p>
+<p>习得性无助的动物反应更消极，血液中检查表现出免疫反应更低。同样地，经受高度压力体验的人更易患病。</p>
+<p>乐观主义者——那些对好事有稳定、普遍、内在解释的人通常比悲观主义者活得长。健康行为——运动、良好的营养条件、不酗酒都是促进乐观主义者长寿的基本因素。有研究者相信，积极的、充满希望的归因放个是一剂良药，著名的<strong>安慰剂效应</strong>就是一个应用（你认为一种治疗会起作用，那么它就会起作用）。</p>
+<h3 id="社会心理治疗"><a href="#社会心理治疗" class="headerlink" title="社会心理治疗"></a>社会心理治疗</h3><p>社会心理学的治疗是不存在的，有的是利用社会心理学原则的现有治疗技术。下面是一些例子。</p>
+<h4 id="外显行为引发内在变化"><a href="#外显行为引发内在变化" class="headerlink" title="外显行为引发内在变化"></a>外显行为引发内在变化</h4><p>态度来源于行为。我们即使不能通过意志力控制我们的感情，也能够通过行为来间接影响它。实验发现，我们说过的有关自己的话，能够影响我们的感觉，被实验者引导写自我赞美散文的被试表现出了更高的自尊。</p>
+<p>对选择的知觉也很重要，被提醒是自愿选择减肥计划的儿童，表现出更高的责任感，也获得了更好的减肥效果。</p>
+<h4 id="打破恶性循环"><a href="#打破恶性循环" class="headerlink" title="打破恶性循环"></a>打破恶性循环</h4><p>通过改变环境，训练个体更加积极的行为方式，转变消极思维，可以改善抑郁、孤独、社会性焦虑等等情况。</p>
+<ul>
+<li><strong>社会技能训练</strong>让个体可以在安全情境下练习新的行为，随着个体开始享受应对自如的好处，一个更加积极的自我知觉就可以形成。在人们在被引导下做出改变，他们才会倾向于归因于<em>自己的努力</em>而非他人的帮助，从而认可自己是有社会能力的。而这是咨询做不到的。</li>
+<li>有些情况下，人们拥有社会技能，但是身边吹毛求疵的人是他们认为没有。<strong>解释风格疗法</strong>帮助他们通过每日记录，将成功的一部分归因于内在，失败的一部分归因于外在，从而利用改变归因改善了他们的消极情绪</li>
+</ul>
+<h4 id="利用内在归因"><a href="#利用内在归因" class="headerlink" title="利用内在归因"></a>利用内在归因</h4><p>一旦人们有所提高，将其归因于<strong>受自己控制</strong>的因素而非外在时，效果最为持久。相反，强制性手段会引发最强烈和迅速的行为改变，但是随着强制性手段消失，改变也会很快消失。</p>
+<p>在一个减肥计划的实验中，被要求将饮食计划归因于自己的一组在减肥后保持了减肥效果。因为他们<strong>相信自己做到了</strong>。</p>
+<h4 id="利用社会影响"><a href="#利用社会影响" class="headerlink" title="利用社会影响"></a>利用社会影响</h4><p>使用周到的<strong>中心途径</strong>提供更持久的态度和行为转变（说服）。因此，在治疗中，不要引起病人对专家表面上的同意，而是要改变病人自己的思维。治疗师的任务只是提供意见，给出有说服力的论证，并提出适当的问题来引导积极有利的想法。</p>
+<p>引用哲学家帕斯卡在1620年《思想录》中的一句话：</p>
+<blockquote>
+<p>人们通常对他们自己发现的道理，比由别人发现的更加深信不疑</p>
+</blockquote>
+<h3 id="社会关系促进心理健康"><a href="#社会关系促进心理健康" class="headerlink" title="社会关系促进心理健康"></a>社会关系促进心理健康</h3><p>亲密关系会更多带来健康和幸福，而不是疾病。</p>
+<p>亲密关系可以预测健康，那些给予最多社会支持的人寿命更长。这么来看，付出比仅仅是索取对自己更好。相反失去人际纽带则会增大患病可能性。在超过80个研究中，心血管及免疫系统的良好运行和社会支持呈现正相关。因此当我们遇到不快乐的事情时，朋友的建议、帮助、安慰的确是一剂良药。积极应对相比抑制情感，更有助于避开疾病风险。</p>
+<p>贫困和收入不平等的地区，人们的寿命也相对较短。</p>
+<p>除了健康，亲密关系也会带来幸福感。在个人主义国家中，那些报告集体主义倾向的人幸福感也相对较高。友谊和婚姻都能促进幸福感。大量的研究结果证明，大多数有依恋关系的人比没有的人更为幸福。已婚者报告感到更幸福，对生活的满意度也更高。当然，与是否结婚相比，更重要的是婚姻质量，幸运的是，大部分的已婚者婚姻是幸福的。</p>
+<p>为什么已婚的人普遍更加幸福？一方面，已婚者更可能享受一种<strong>持久的、支持性的、亲密的人际关系</strong>，且更少感到孤独；另一方面，婚姻提供了配偶和伴侣的角色，这可以提供<strong>自尊的额外来源</strong>。举例，当工作失败时，我们还可以认为自己是一个好丈夫和一个好父亲。</p>
+<p>提升幸福感有些可以考虑的地方：</p>
+<ul>
+<li><strong>控制你的时间</strong>，幸福的人感觉到他们能掌控自己的生命，这从他们对时间的掌握开始</li>
+<li><strong>寻找合适的工作和休闲，发挥你的技能</strong></li>
+<li>参加运动，获得健康身体</li>
+<li><strong>保证充足睡眠</strong>，从而获得积极和精力旺盛的生活</li>
+<li><strong>优先考虑亲密的人际关系</strong>，同时也要珍视这样的关系，不要认为他们对你好是理所当然</li>
+<li><strong>关注自我以外的事</strong>，向需要帮助的人伸出援手</li>
+<li>照顾自己的<strong>精神自我</strong></li>
+</ul>
+<h2 id="司法领域的应用"><a href="#司法领域的应用" class="headerlink" title="司法领域的应用"></a>司法领域的应用</h2><h3 id="目击者的证词可靠吗"><a href="#目击者的证词可靠吗" class="headerlink" title="目击者的证词可靠吗"></a>目击者的证词可靠吗</h3><p>证词的说服力受到生动性影响。</p>
+<ul>
+<li>生动的轶事和个人证词往往比强有力、抽象的信息更有说服力。实际上，目击者的生动解释很难被从陪审员的脑中抹除。</li>
+<li>但是，目击者描述的生动并不代表描述的正确性。甚至有时，对细节描述较差的目击者反而能提供最准确的信息。</li>
+</ul>
+<p>目击者证词并不总是正确的，在研究中证实，目击者常因过于自信而有失准确。而这种自信让陪审员觉得证词更可靠。除非条件非常合适，最烦外貌特征非常显著，否则目击者确信程度和证词准确性只有中等程度相关。毕竟人眼不是摄像机，在视角、表情、光线上的细微差别人是不易察觉到的；同时，我们的记忆也是我们当时所知觉到的，一部分是基于我们的预期、看法和当前知识。</p>
+<p>另外，在<strong>误导信息</strong>影响下，目击者可以回忆起错误的过去，并坚信记忆是真实的。<strong>重述</strong>也能使人们更容易相信回忆起来的东西，如接受了被告律师采访后，目击者给法官的证词更偏向被告。</p>
+<p>人的记忆是不准确的，给予目击者证词的不同反馈，也会影响之后目击者的认识和证词。</p>
+<h4 id="提高证词准确性"><a href="#提高证词准确性" class="headerlink" title="提高证词准确性"></a>提高证词准确性</h4><ul>
+<li>开放式、没有立场的答案很简单的问题</li>
+<li>充足的不受打断的时间回想</li>
+<li><strong>准确的辨识总是自动的涌现的不太费力的</strong></li>
+<li>在列队指认时明确他们看到的人可能在、也可能不在这个队列里，让目击者一次只看一个人，只给出“是”或“不是”这样简单的回答</li>
+<li>使用上面的经验训练陪审团</li>
+</ul>
+<h3 id="影响陪审团判断的因素"><a href="#影响陪审团判断的因素" class="headerlink" title="影响陪审团判断的因素"></a>影响陪审团判断的因素</h3><p>陪审团能撇开偏见，以事实为根据，达成一致的判决。此时，事实起决定性作用。但是在做<em>社会决策</em>时，如被告是否有意犯罪，就会受到其他因素影响。</p>
+<h4 id="被告特征"><a href="#被告特征" class="headerlink" title="被告特征"></a>被告特征</h4><ul>
+<li>地位较高的被告常得到更为宽大的处理</li>
+<li>漂亮的人们看起来更像好人</li>
+<li><strong>在证据不足或很模糊时</strong>，审判会受到被告外表的影响。如果被定罪，没有吸引力的人使人们觉得更加危险，特别是性侵犯案件</li>
+<li>和陪审团的相似性会带来好感，从而激发陪审团的同情心</li>
+</ul>
+<h4 id="法官指示"><a href="#法官指示" class="headerlink" title="法官指示"></a>法官指示</h4><ul>
+<li>法官给陪审团的提示可能并不会达到预期效果，如提醒陪审团忽略不被允许的证据，如被告此前的负面事件。即使陪审员事先发誓保证公正性也不能避免这种影响。</li>
+<li>有时，法官的声明反而会造成陪审员的逆反。</li>
+</ul>
+<p>所以法官通常会<strong>事先提醒</strong>陪审团注意某些特定类型的证据是无关的。</p>
+<h3 id="陪审员个体如何受影响"><a href="#陪审员个体如何受影响" class="headerlink" title="陪审员个体如何受影响"></a>陪审员个体如何受影响</h3><h4 id="陪审员的理解"><a href="#陪审员的理解" class="headerlink" title="陪审员的理解"></a>陪审员的理解</h4><ul>
+<li>律师以叙事这样生动的形式展示证据时，陪审员最易被说服</li>
+<li>法官给予的标准法律术语可能并不能让陪审员理解，从而易走说服外部途径的人容易感情用事，做出过早的判断</li>
+<li>陪审员对统计信息意义的理解有限</li>
+</ul>
+<h4 id="陪审团的选择"><a href="#陪审团的选择" class="headerlink" title="陪审团的选择"></a>陪审团的选择</h4><ul>
+<li>审讯律师可以通过排除对自己委托人有偏见的陪审员获得令人满意的审判结果。不过，正如全书最开始提到，态度和个人特征也并不总能预测判决</li>
+<li>陪审员公开做公正誓言和法官促使其公正的指示，都可以使绝大多数陪审员遵循公正准则</li>
+<li>只有证据模糊时，陪审员的个性和总体态度才产生影响</li>
+</ul>
+<h4 id="“死刑认定”陪审员"><a href="#“死刑认定”陪审员" class="headerlink" title="“死刑认定”陪审员"></a>“死刑认定”陪审员</h4><p>倾向于死刑定罪的陪审员往往更加专断——更加严厉和具有惩罚性，无视可以减轻罪责的情况，对社会底层的人也更加傲慢。</p>
+<h3 id="群体因素对陪审员的影响"><a href="#群体因素对陪审员的影响" class="headerlink" title="群体因素对陪审员的影响"></a>群体因素对陪审员的影响</h3><p>群体影响在陪审团中起着作用。群体裁决通常是最初被至少2/3陪审员支持的选择。没有达到时，陪审团往往会悬置不决。</p>
+<p>但少数派影响也是存在的。如果占少数的陪审员能够保持一致，坚持不懈，信心十足，他们将最有说服力，特别是在成功引起倒戈时。社会地位高的男性陪审员往往是其中最具有影响力的。另外，支持无罪的少数派会比支持顶嘴的少数派拥有更多成功机会。</p>
+<p>受到群体极化影响，高专断小组在最初建议建立惩罚时，商议后会更为严厉；相反，低专断小组商议后会更加宽大。</p>
+<h2 id="社会心理学和可持续发展的未来"><a href="#社会心理学和可持续发展的未来" class="headerlink" title="社会心理学和可持续发展的未来"></a>社会心理学和可持续发展的未来</h2><h3 id="全球危机"><a href="#全球危机" class="headerlink" title="全球危机"></a>全球危机</h3><p>人口爆炸、工业化导致的生态恶化带来全球危机，促使我们需要选择可持续发展的生活方式：</p>
+<ul>
+<li>提高科技效率和农业生产率，发展生态科技</li>
+<li>控制消费和人口数量，以公共利益取代走向极端的个人主义和物质主义。倡导公共的思维方式，鼓励学校个性化教育</li>
+</ul>
+<h3 id="物质主义和财富"><a href="#物质主义和财富" class="headerlink" title="物质主义和财富"></a>物质主义和财富</h3><p>我们大多数人都认为财富和幸福之间必然存在着某种联系。的确，当人们感到不确定、不安全和贫困时，物质主义，即崇尚金钱和财富的观念会比较流行。缺乏安全感时，人们在得到一些新的占有物时常常能获得暂时的情绪提升。70年代以来，物质主义日益膨胀，精神信仰在日益消退。</p>
+<p>然而幸福感和财富并不是严格挂钩的：</p>
+<ul>
+<li>发达国家中会有更多感到满意的人，但是人均GDP超过8000美元的国家中，国家财富和幸福感之间的关系就不存在了</li>
+<li>对于富有的人，金钱既可以增加快乐也可以减少快乐</li>
+<li>个人<strong>持久</strong>的幸福感并不随个人财富增多而增强。发达国家的经济增长并没有带来明显的民众信心提高</li>
+</ul>
+<h4 id="为何物质主义不能让人满意"><a href="#为何物质主义不能让人满意" class="headerlink" title="为何物质主义不能让人满意"></a>为何物质主义不能让人满意</h4><p>越是为财富努力奋斗的人体幸福感越低，转而<strong>追求亲密感，个人成长和为社会事业奋斗的人会体验更高质量的生活</strong>。为什么更优越的物质条件没有让我们更快乐呢？有两个主要原因。</p>
+<p>一是<strong>人类的适应能力</strong>，第一章中提到，我们通常会<strong>低估</strong>自己的适应能力。<strong>适应水平现象</strong>意味着成功和失败，满意和不满都是相对于当下状态而言的。如果我们不断成功，我们会很快适应成功，以前的良好事件现在会变成中性事件，以前的中性事件现在让人感到失落。Brickman和Campbell指出，“当我们沉浸在某总成就带来的满足感时，它会迅速消退，并以一种冷漠感和更高的努力程度取代”。</p>
+<blockquote>
+<p>支出增长以适应收入增长 —— 帕金森第二定律</p>
+</blockquote>
+<p>另一个是<strong>社会比较</strong>的广泛存在。就像高考和大学志愿一样，人类的判断是由比较得出的。我们感觉到的好坏也依赖于我们和谁比较。所以说，社会贫富差距较小时，收入更均等，身边没有人明显超过自己，人民幸福感会得到提升。<strong>向上社会比较</strong>又会带来相对剥夺，从而让人一直处于不满意的状态。</p>
+<h3 id="社会心理学给予的帮助"><a href="#社会心理学给予的帮助" class="headerlink" title="社会心理学给予的帮助"></a>社会心理学给予的帮助</h3><ul>
+<li>调整适应，正确认识社会比较，有时可以<strong>向下社会比较</strong></li>
+<li><strong>后物质主义</strong>逐渐显露，新一代人开始成熟起来，对人际关系、自然平衡的关注在逐渐增加。当今社会中出现了两大潮流：寻找精神港湾和更深入和有意义的追求。</li>
+<li>用行动提高生活质量<ul>
+<li>亲密、支持性的关系</li>
+<li>团体信仰</li>
+<li>积极的特质</li>
+<li>集中精力（投入精神）于热爱的事业或兴趣</li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;参考《社会心理学》 David G. Myers 第8版&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/&quot; target=
+    
+    </summary>
+    
+      <category term="思考" scheme="http://shenlvmeng.github.com/blog/categories/%E6%80%9D%E8%80%83/"/>
+    
+    
+      <category term="心理学" scheme="http://shenlvmeng.github.com/blog/tags/%E5%BF%83%E7%90%86%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
     <title>社会心理学 Part 3 - 社会关系</title>
     <link href="http://shenlvmeng.github.com/blog/2019/09/24/social-psychology-part-3/"/>
     <id>http://shenlvmeng.github.com/blog/2019/09/24/social-psychology-part-3/</id>
     <published>2019-09-24T14:56:20.000Z</published>
-    <updated>2019-10-31T14:15:15.787Z</updated>
+    <updated>2019-11-02T13:49:04.101Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>参考《社会心理学》 David G. Myers 第8版</p>
-<p><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/" target="_blank" rel="external">社会心理学 Part 1 - 导论 &amp; 社会思维</a><br><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-2/" target="_blank" rel="external">社会心理学 Part 2 - 社会影响</a></p>
+<p><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/" target="_blank" rel="external">社会心理学 Part 1 - 导论 &amp; 社会思维</a><br><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-2/" target="_blank" rel="external">社会心理学 Part 2 - 社会影响</a><br><a href="https://shenlvmeng.github.io/blog/2019/11/02/social-psychology-part-4/" target="_blank" rel="external">社会心理学 Part 4 - 应用</a></p>
 </blockquote>
 <p>这部分主要讨论社会中个体是如何联系的。</p>
 <h2 id="偏见"><a href="#偏见" class="headerlink" title="偏见"></a>偏见</h2><p><em>人们对于肥胖者就有明显的偏见：缺少魅力、不太聪明、不够成功、缺少修养。</em></p>
 <h3 id="界定偏见"><a href="#界定偏见" class="headerlink" title="界定偏见"></a>界定偏见</h3><ul>
-<li><strong>偏见</strong>即对一个群体机器个体成员预先的负面判断</li>
+<li><strong>偏见</strong>即对一个群体及其个体成员预先的负面判断</li>
 <li>它是一种<strong>态度</strong></li>
 <li><strong>负面评价是偏见的标志</strong></li>
 <li>它源于行为辩解的需要，或是负面的<strong>刻板印象</strong></li>
@@ -172,7 +449,7 @@
 <li>广告商和政治家们利用这个效应，即使人们对某商品或候选人没什么倾向性，仅仅通过简单的重复（电梯广告的病毒式营销），也可以增加商品销量或得票率。</li>
 <li>在广告或政治标语中，通常使用简短的slogan代替唱片大陆，突出候选人名字或商品关键价值</li>
 </ul>
-<p>Zajonc通过实验发现，人们的直接感受并不借助于意识存在。他认为，<strong>情绪相比于四位是更即时的东西，情绪半独立于思维，可以先于认知</strong>。曝光效应会引发愉快的情绪，但是当重复没完没了时也会引起兴趣减弱。</p>
+<p>Zajonc通过实验发现，人们的直接感受并不借助于意识存在。他认为，<strong>情绪相比于思维是更即时的东西，情绪半独立于思维，可以先于认知</strong>。曝光效应会引发愉快的情绪，但是当重复没完没了时也会引起兴趣减弱。</p>
 <p>1990华盛顿州的一次法官选举中，在没有开展竞选活动的情况下，名不见经传的候选人Charles Johnson因为姓名更熟悉战胜了Keith Carlo。</p>
 <h4 id="外表吸引力"><a href="#外表吸引力" class="headerlink" title="外表吸引力"></a>外表吸引力</h4><p>人们都说外貌不重要，但行为上却不总是这样。现在的很多研究表示：<em>外貌的确是很重要的</em>。从某个角度说，美貌的确是一种财富。</p>
 <p><strong>约会相关</strong></p>
@@ -647,13 +924,13 @@
     
       <category term="攻略" scheme="http://shenlvmeng.github.com/blog/tags/%E6%94%BB%E7%95%A5/"/>
     
-      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
-    
       <category term="云南" scheme="http://shenlvmeng.github.com/blog/tags/%E4%BA%91%E5%8D%97/"/>
     
       <category term="丽江" scheme="http://shenlvmeng.github.com/blog/tags/%E4%B8%BD%E6%B1%9F/"/>
     
       <category term="大理" scheme="http://shenlvmeng.github.com/blog/tags/%E5%A4%A7%E7%90%86/"/>
+    
+      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
@@ -1413,11 +1690,11 @@
     <link href="http://shenlvmeng.github.com/blog/2019/08/07/social-psychology-part-2/"/>
     <id>http://shenlvmeng.github.com/blog/2019/08/07/social-psychology-part-2/</id>
     <published>2019-08-06T16:13:53.000Z</published>
-    <updated>2019-09-24T14:58:38.117Z</updated>
+    <updated>2019-11-02T13:49:03.411Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>参考《社会心理学》 David G. Myers 第8版</p>
-<p><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/" target="_blank" rel="external">社会心理学 Part 1 - 导论 &amp; 社会思维</a><br><a href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/" target="_blank" rel="external">社会心理学 Part 3 - 社会关系</a></p>
+<p><a href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/" target="_blank" rel="external">社会心理学 Part 1 - 导论 &amp; 社会思维</a><br><a href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/" target="_blank" rel="external">社会心理学 Part 3 - 社会关系</a><br><a href="https://shenlvmeng.github.io/blog/2019/11/02/social-psychology-part-4/" target="_blank" rel="external">社会心理学 Part 4 - 应用</a></p>
 </blockquote>
 <p>这部分主要讨论社会给个人的影响。</p>
 <h2 id="基因、文化和性别"><a href="#基因、文化和性别" class="headerlink" title="基因、文化和性别"></a>基因、文化和性别</h2><h3 id="基因和文化的影响"><a href="#基因和文化的影响" class="headerlink" title="基因和文化的影响"></a>基因和文化的影响</h3><ul>
@@ -2232,11 +2509,11 @@
     <link href="http://shenlvmeng.github.com/blog/2019/07/26/social-psychology-part-1/"/>
     <id>http://shenlvmeng.github.com/blog/2019/07/26/social-psychology-part-1/</id>
     <published>2019-07-25T16:53:15.000Z</published>
-    <updated>2019-09-24T14:58:30.264Z</updated>
+    <updated>2019-11-02T13:48:50.925Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>参考《社会心理学》 David G. Myers 第8版</p>
-<p><a href="https://shenlvmeng.github.io/blog/2019/08/07/social-psychology-part-2/" target="_blank" rel="external">社会心理学 Part 2 - 社会影响</a><br><a href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/" target="_blank" rel="external">社会心理学 Part 3 - 社会关系</a></p>
+<p><a href="https://shenlvmeng.github.io/blog/2019/08/07/social-psychology-part-2/" target="_blank" rel="external">社会心理学 Part 2 - 社会影响</a><br><a href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/" target="_blank" rel="external">社会心理学 Part 3 - 社会关系</a><br><a href="https://shenlvmeng.github.io/blog/2019/11/02/social-psychology-part-4/" target="_blank" rel="external">社会心理学 Part 4 - 应用</a></p>
 </blockquote>
 <h2 id="导论"><a href="#导论" class="headerlink" title="导论"></a>导论</h2><h3 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h3><p>什么是社会心理学？社会心理学研究：</p>
 <ul>
@@ -4813,199 +5090,6 @@
       <category term="明朝" scheme="http://shenlvmeng.github.com/blog/tags/%E6%98%8E%E6%9C%9D/"/>
     
       <category term="读书笔记" scheme="http://shenlvmeng.github.com/blog/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>工作中的遇到的一些小知识 6</title>
-    <link href="http://shenlvmeng.github.com/blog/2019/02/12/some-tips-6/"/>
-    <id>http://shenlvmeng.github.com/blog/2019/02/12/some-tips-6/</id>
-    <published>2019-02-12T14:29:56.000Z</published>
-    <updated>2019-02-12T14:48:15.441Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="React-Hooks和React-Hot-Loader默认配置相冲突"><a href="#React-Hooks和React-Hot-Loader默认配置相冲突" class="headerlink" title="React Hooks和React Hot Loader默认配置相冲突"></a>React Hooks和React Hot Loader默认配置相冲突</h2><p>设置RHL的<code>pureSFC</code>配置为true，详见<a href="https://github.com/gaearon/react-hot-loader/issues/1088#issuecomment-434862175" target="_blank" rel="external">讨论</a>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setConfig(&#123; pureSFC: true &#125;)</div></pre></td></tr></table></figure>
-<h2 id="一个简单的rollup配置样例"><a href="#一个简单的rollup配置样例" class="headerlink" title="一个简单的rollup配置样例"></a>一个简单的rollup配置样例</h2><p>最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上<a href="https://rollupjs.org/guide/en" target="_blank" rel="external">rollup</a>的发挥要优于webpack。刚好想用用试试，就用了rollup作为打包工具。因为场景比webpack更简单，配置上也比webpack好配很多，基本看看<a href="https://rollupjs.org/guide/zh#tutorial" target="_blank" rel="external">官方文档</a>就可以上手了。</p>
-<p>不过，文档里用的babel版本还是6.x，使用新版本babel后，配置文件<code>rollup.config.js</code>和<code>.babelrc</code>有些改动，这里列在下面。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// rollup.config.js</span></div><div class="line"><span class="keyword">import</span> resolve <span class="keyword">from</span> <span class="string">'rollup-plugin-node-resolve'</span>;</div><div class="line"><span class="keyword">import</span> commonjs <span class="keyword">from</span> <span class="string">'rollup-plugin-commonjs'</span>;</div><div class="line"><span class="keyword">import</span> babel <span class="keyword">from</span> <span class="string">'rollup-plugin-babel'</span>;</div><div class="line"><span class="keyword">import</span> &#123; terser &#125; <span class="keyword">from</span> <span class="string">"rollup-plugin-terser"</span>;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</div><div class="line">    <span class="attr">input</span>: <span class="string">'src/index.js'</span>,</div><div class="line">    <span class="attr">output</span>: &#123;</div><div class="line">        <span class="attr">file</span>: <span class="string">'index.js'</span>,</div><div class="line">        <span class="attr">format</span>: <span class="string">'es'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">plugins</span>: [</div><div class="line">        resolve(),</div><div class="line">        commonjs(),</div><div class="line">        babel(&#123;</div><div class="line">            <span class="attr">exclude</span>: <span class="string">'node_modules/**'</span></div><div class="line">        &#125;),</div><div class="line">        terser()</div><div class="line">    ]</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// .babelrc</span></div><div class="line">&#123;</div><div class="line">    <span class="attr">presets</span>: [</div><div class="line">        [</div><div class="line">            <span class="string">'@babel/env'</span>,</div><div class="line">            &#123;</div><div class="line">                <span class="attr">loose</span>: <span class="literal">true</span>,</div><div class="line">                <span class="attr">modules</span>: <span class="literal">false</span></div><div class="line">            &#125;</div><div class="line">        ]</div><div class="line">    ],</div><div class="line">    <span class="attr">plugins</span>: [</div><div class="line">        [<span class="string">'@babel/proposal-object-rest-spread'</span>, &#123; <span class="attr">loose</span>: <span class="literal">true</span> &#125;]</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="mouseout和mouseleave事件的区别"><a href="#mouseout和mouseleave事件的区别" class="headerlink" title="mouseout和mouseleave事件的区别"></a><code>mouseout</code>和<code>mouseleave</code>事件的区别</h2><blockquote>
-<p>mouseout: <a href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseout" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/Events/mouseout</a><br>mouseleave: <a href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseleave" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/Events/mouseleave</a></p>
-</blockquote>
-<ul>
-<li><code>mouseout</code>在鼠标离开该元素表面时触发，<strong>包括进入到该元素的子元素中</strong></li>
-<li><code>mouseleave</code>在鼠标离开该元素区域时触发，<strong>即离开该元素和所有子元素区域</strong></li>
-</ul>
-<h2 id="sublime-goto-definition-快捷键"><a href="#sublime-goto-definition-快捷键" class="headerlink" title="sublime goto definition 快捷键"></a>sublime goto definition 快捷键</h2><blockquote>
-<p>参考<a href="https://stackoverflow.com/questions/16235706/sublime-3-set-key-map-for-function-goto-definition" target="_blank" rel="external">这里</a></p>
-</blockquote>
-<h2 id="只lint-changed-file的脚本方案"><a href="#只lint-changed-file的脚本方案" class="headerlink" title="只lint changed file的脚本方案"></a>只lint changed file的脚本方案</h2><p>利用<code>git diff-index</code>。下面以tslint为例。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">files=$(git diff-index --relative --name-only --cached HEAD | grep <span class="_">-e</span> <span class="string">'\\.ts$'</span> <span class="_">-e</span> <span class="string">'\\.tsx$'</span>);</div><div class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n \<span class="string">"<span class="variable">$files</span>\";</span></div><div class="line">    then echo <span class="variable">$files</span> | xargs tslint --fix -t codeFrame;</div><div class="line">fi</div></pre></td></tr></table></figure>
-<h3 id="升级版"><a href="#升级版" class="headerlink" title="升级版"></a>升级版</h3><p>使用<a href="https://www.npmjs.com/package/lint-staged" target="_blank" rel="external">lint-staged</a>，只lint staged的文件内容，代替上面冗长的脚本。</p>
-<h2 id="吸顶样式效果"><a href="#吸顶样式效果" class="headerlink" title="吸顶样式效果"></a>吸顶样式效果</h2><h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><blockquote>
-<p>参考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/position" target="_blank" rel="external">MDN</a></p>
-</blockquote>
-<p>最简洁的实现方式，缺点是<a href="https://caniuse.com/#search=sticky" target="_blank" rel="external">支持度</a>较差，只在iOS平台支持度较好。除非做中后台，否则需要谨慎使用。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.stick</span> &#123;</div><div class="line">    <span class="attribute">position</span>: sticky;</div><div class="line">    <span class="attribute">top</span>: <span class="number">20px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h3><p>不用赘述，检查滚动元素的<code>scrollTop</code>属性做判断即可，在指定位置上，设置<code>position:fixed</code>配合<code>z-index</code>等实现吸顶。</p>
-<p>另外有意思的一点是，在<code>position:fixed</code>的情况下，<strong>如果没有设置<code>left</code>，<code>left</code>将相对当前元素相对定位</strong>。</p>
-<h2 id="一个更友好的图片加载组件"><a href="#一个更友好的图片加载组件" class="headerlink" title="一个更友好的图片加载组件"></a>一个更友好的图片加载组件</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>提供类似知乎App内的体验：</p>
-<ul>
-<li>在图片加载时有<strong>相同大小</strong>的占位图和文案提示</li>
-<li>图片加载失败后有<strong>相同大小</strong>的占位图和文案提示，点击文案可以重新加载图片</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>重点在需要图片大小相同的占位图，这通常意味着：</p>
-<ul>
-<li>图片的大小需要伴随图片下发</li>
-<li>客户端的图片宽度或高度固定（通常是宽度）</li>
-</ul>
-<p>点击重新加载可以通过在图片url后拼接每次不一样的参数实现，例如时间戳。</p>
-<p>遮罩可以用图片背景色 + <code>:after</code>伪元素或另外的元素实现。剩下的把loading、loaded、failed状态处理好，工作并不困难。</p>
-<p>下面是粗略实现的一个demo。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * @desc smart image provide more friendly image loading experience inspired by zhihu</div><div class="line"> * @author shenlvmeng&lt;xin_yuanming@163.com&gt;</div><div class="line"> */</div><div class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">'./index.less'</span>;</div><div class="line"></div><div class="line">interface IProps &#123;</div><div class="line">    <span class="attr">width</span>: number;</div><div class="line">    height: number;</div><div class="line">    src: string;</div><div class="line">    onLoad?: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">void</span>;</div><div class="line">    onError?: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">void</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">interface IState &#123;</div><div class="line">    <span class="attr">src</span>: string;</div><div class="line">    loaded: boolean;</div><div class="line">    failed: boolean;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SmartImage</span> <span class="keyword">extends</span> <span class="title">Component</span>&lt;<span class="title">IProps</span>, <span class="title">IState</span>&gt; </span>&#123;</div><div class="line">    public readonly state: IState = &#123;</div><div class="line">        <span class="attr">src</span>: <span class="keyword">this</span>.props.src,</div><div class="line">        <span class="attr">loaded</span>: <span class="literal">false</span>,</div><div class="line">        <span class="attr">failed</span>: <span class="literal">false</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    public render() &#123;</div><div class="line">        <span class="keyword">const</span> &#123; width, height &#125; = <span class="keyword">this</span>.props;</div><div class="line">        <span class="keyword">const</span> &#123; src, loaded, failed &#125; = <span class="keyword">this</span>.state;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"smart-image-container"</span>&gt;</span></span></div><div class="line">                <span class="tag">&lt;<span class="name">img</span></span></div><div class="line">                    <span class="attr">className</span>=<span class="string">"smart-image"</span></div><div class="line">                    <span class="attr">width</span>=<span class="string">&#123;750&#125;</span></div><div class="line">                    <span class="attr">height</span>=<span class="string">&#123;750</span> * <span class="attr">height</span> / <span class="attr">width</span>&#125;</div><div class="line">                    <span class="attr">src</span>=<span class="string">&#123;src&#125;</span></div><div class="line">                    <span class="attr">onLoad</span>=<span class="string">&#123;this.handleSuccess&#125;</span></div><div class="line">                    <span class="attr">onError</span>=<span class="string">&#123;this.handleError&#125;</span></div><div class="line">                /&gt;</div><div class="line">                &#123;!loaded</div><div class="line">                    ? (</div><div class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"smart-image-hint"</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleRetry&#125;</span>&gt;</span></div><div class="line">                            &#123;failed</div><div class="line">                                ? <span class="tag">&lt;<span class="name">span</span>&gt;</span>图片加载失败，点此重试<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                                : <span class="tag">&lt;<span class="name">span</span>&gt;</span>图片加载中...<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                            &#125;</div><div class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    )</div><div class="line">                    : null</div><div class="line">                &#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleSuccess = () =&gt; &#123;</div><div class="line">        this.setState(&#123;</div><div class="line">            failed: false,</div><div class="line">            loaded: true</div><div class="line">        &#125;);</div><div class="line">        if (this.props.onLoad) &#123;</div><div class="line">            this.props.onLoad();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleError = () =&gt; &#123;</div><div class="line">        this.setState(&#123; failed: true &#125;);</div><div class="line">        if (this.props.onError) &#123;</div><div class="line">            this.props.onError();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private handleRetry = () =&gt; &#123;</div><div class="line">        if (!this.props.src.startsWith('http') || !this.state.failed) &#123;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        this.setState(&#123;</div><div class="line">            failed: false,</div><div class="line">            src: `$&#123;this.props.src&#125;?ts=$&#123;Date.now()&#125;`</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export default SmartImage;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;React-Hooks和React-Hot-Loader默认配置相冲突&quot;&gt;&lt;a href=&quot;#React-Hooks和React-Hot-Loader默认配置相冲突&quot; class=&quot;headerlink&quot; title=&quot;React Hooks和React Hot 
-    
-    </summary>
-    
-      <category term="工程" scheme="http://shenlvmeng.github.com/blog/categories/%E5%B7%A5%E7%A8%8B/"/>
-    
-    
-      <category term="React Hooks" scheme="http://shenlvmeng.github.com/blog/tags/React-Hooks/"/>
-    
-      <category term="Rollup" scheme="http://shenlvmeng.github.com/blog/tags/Rollup/"/>
-    
-      <category term="mouseout" scheme="http://shenlvmeng.github.com/blog/tags/mouseout/"/>
-    
-      <category term="mouseleave" scheme="http://shenlvmeng.github.com/blog/tags/mouseleave/"/>
-    
-      <category term="lint-staged" scheme="http://shenlvmeng.github.com/blog/tags/lint-staged/"/>
-    
-      <category term="吸顶" scheme="http://shenlvmeng.github.com/blog/tags/%E5%90%B8%E9%A1%B6/"/>
-    
-      <category term="图片组件" scheme="http://shenlvmeng.github.com/blog/tags/%E5%9B%BE%E7%89%87%E7%BB%84%E4%BB%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《高效能人士的七个习惯》——自我管理的理想模型</title>
-    <link href="http://shenlvmeng.github.com/blog/2019/01/21/how-to-do-things/"/>
-    <id>http://shenlvmeng.github.com/blog/2019/01/21/how-to-do-things/</id>
-    <published>2019-01-20T16:48:52.000Z</published>
-    <updated>2019-01-21T17:04:47.125Z</updated>
-    
-    <content type="html"><![CDATA[<p>《高效能人士的七个习惯》无论是从书名还是腰封的介绍，都给人一种浓浓的鸡汤学毒物的感觉。所幸，它不像曾经哄骗我的那些成功学书籍，言辞激烈却言之无物，给出许多看似有用的方法却缺少解释。书的前半部分讲述自我建设的部分还是很值得一读的，从根源出发，讲道理，有脉络地教你怎么操作，令人信服。到了后半段，介绍与人共赢的部分似乎没了前半段的严谨和冲劲，变得有些理想化。从整体来看，它告诉了你<strong>该怎么去做事</strong>，这也是它最精华的一部分。同时，它并没有告诉你应该<strong>选择成为什么样的人</strong>，以及<strong>做事时如何调整自己保持积极向上的心态</strong>。这两点因人而异，很可能没有标准答案。换句话说，它能帮你走向成功，但同时并没告诉你成功是什么，以及在走向成功时怎样忍受痛苦。</p>
-<p>下面把书中内容再次提炼，尝试用最朴素的语言，把道理再讲一遍，并做些评论。</p>
-<h2 id="基础认知"><a href="#基础认知" class="headerlink" title="基础认知"></a>基础认知</h2><p>谈及习惯前，我们需要先摒弃一些错误认知，重建基础认知。</p>
-<h3 id="由内而外"><a href="#由内而外" class="headerlink" title="由内而外"></a>由内而外</h3><blockquote>
-<p>凡是秉持自己的信念而活，就能产生自尊自重和自制力，并且内心平和。</p>
-</blockquote>
-<p>绝大多数的讨论成功因素的书籍都着重介绍<strong>“术”</strong>而非<strong>“道”</strong>，认为成功与否取决于个别习惯甚至有技巧可言。但是按“规矩”办事并非发自内心，只会暂时蒙混过关，只有“基本的品德”会伴随着你，不会随时间消逝。<strong>思维方式</strong>是行为和态度的源泉，离开的这个源泉就会表里不一、言不由衷。仅仅改变表面上的行为和态度。忽略源头的思维方式，那么改变成效一定有限。</p>
-<p>我们要认识到，<strong>原则并非实践</strong>，原则是可推广的，实践不是。秉持原则可以让我们自如面对种种外界环境，我们的行为会自然而然地以原则作为指引。因此，要想获得长久的可持续的进步和成功，需要<strong>以原则为中心，以品德为基础，“由内而外”地实现自我效能和人际效能</strong>。即从内心做起，包括自己的思维方式、品德操守和动机。</p>
-<h3 id="推己及人"><a href="#推己及人" class="headerlink" title="推己及人"></a>推己及人</h3><p>自我建设的过程是<strong>从依赖到独立，再到互赖，共同进步的过程</strong>。这道理再简单不过，生理上无法独立的人需要别人帮助；情感上不能独立的人，其价值和安全感都来自他人看法，一旦无法取悦他人就会极度沮丧；智力上无法独立的人需要他人帮助才可以解决问题。相反，生理独立让人自食其力；智力独立让人有自己的思想和世界观；情感独立的人信心十足，自我管理，不因他人好恶影响自我价值评价。<em>（相信这也是大多数人的理想状态）</em></p>
-<p>在自我独立后，互赖是一个更加成熟的状态。人是社群动物，自我改善的行动反馈也来自他人。做到互赖，与他人共同进步更能体现你在公众领域中的价值。不过只有独立的人才能选择互赖，尚未摆脱依赖性就无法谈及双赢和共同进步。</p>
-<h3 id="短期和长期投资"><a href="#短期和长期投资" class="headerlink" title="短期和长期投资"></a>短期和长期投资</h3><p>即书中所说的金蛋与鹅的寓言，这个比喻可能还不够清晰。更浅显地说，我们日常的努力分两种：<strong>产出性的</strong>和<strong>产能性的</strong>。前者即我们每天为实现既定目标投入的努力，它帮助我们得到产出（如砍柴）；后者是我们为保证后续产出投入的努力，它帮助我们维持固定的产出（如磨刀）。</p>
-<p>这两者的平衡可以帮助你走得更稳更远。</p>
-<h2 id="七个习惯"><a href="#七个习惯" class="headerlink" title="七个习惯"></a>七个习惯</h2><p>下面七个习惯帮助你从依赖走向独立在走向互赖。</p>
-<h3 id="积极主动"><a href="#积极主动" class="headerlink" title="积极主动"></a>积极主动</h3><blockquote>
-<p>最令人鼓舞的事实，莫过于人类确认能主动努力来提高生命价值</p>
-</blockquote>
-<p>人和其他动物一个很大的区别就是<strong>人有选择的自由</strong>。人有选择回应的能力，积极主动的人不会把自己的行为归咎于环境、外界条件或他人的影响。积极主动是人的天性，即使生活受到了外界条件的制约，<strong>那也是因为我们有意或无意地选择了被外界条件控制</strong>。积极主动的人理智胜于冲动，他们能谨慎思考，选择价值观而非外界条件作为自己行为的内在动机；而消极被动的人则感情用事，易受环境或条件作用的驱使。</p>
-<p>一个人关注的问题可以归为“关注圈”，关注圈内的可以被掌控的可以归为“影响圈”。积极主动的人专注于影响圈，专心做自己力所能及的事，并在做事过程中渐渐扩大了自己的影响圈和关注圈。消极被动的人往往过度关注关注圈，缺乏远见和判断力。说到这里我们不妨想想，我们日常生活的全部精力是不是都用在自己能影响的范围。是“如果”说得更多还是“我可以说得更多。</p>
-<p>我们日常中遇到的问题基本可以归类为：</p>
-<ul>
-<li>可以直接影响，可以通过自我独立的前三个习惯来解决</li>
-<li>可以间接控制，可以通过共同进步的后三个习惯来解决</li>
-<li>无法控制，泰然处之，不要被它控制</li>
-</ul>
-<p>把经历投入影响圈内，从小事做起，许下承诺并兑现；做照亮他人的蜡烛，而不是评判对错的法官；以身作则而不是一心挑错；解决问题，而不是制造事端。从自身出发，满意源自内心。</p>
-<p><strong>FAQ</strong></p>
-<p>Q: 可是我感觉天气下雨或者遇到倒霉的事情，心情就会自然糟糕啊，这和这条规则是不是违背了？</p>
-<p>A: 没有违背，在遇到天气不好或是倒霉的事情时，可以冷静下来，考虑自身能做什么努力改善心境，用积极主动的心态做事。当你选择行动而不是受天气影响时，你就迈出了第一步。</p>
-<p>Q: 可是不是所有事情我都能改变啊？</p>
-<p>A: 是的，你只能改变你影响圈范围内的事物，所以专注于它们。对于你直接、间接都影响不到的事情，就放宽心态吧。</p>
-<h3 id="明确原则"><a href="#明确原则" class="headerlink" title="明确原则"></a>明确原则</h3><p>在有了最基础的动机——“积极主动”后，你需要有一个自己的人生目标，自己的原则。你的一言一行，一举一动，无论何时何地都会遵循这个原则，即由个人的价值观决定一切。这道理也很简单，凡事都需要两个阶段——<strong>构思</strong>和<strong>实践</strong>。没有构思的实践就像无头苍蝇，很容易迷失。这两个阶段在企业里也有对应版本的一句话：“<strong>管理是正确地做事，领导则是做正确的事</strong>”。有些时候，我们更加迫切需要的是一个愿景、一套知道方针而不是路线图。很多人缺乏领导意识，连自己的价值观都没搞清楚，就忙于提高效率，制定计划和完成任务。</p>
-<p>明确原则意味着要带着清晰地方向和价值观做自己的家长。原则包括<strong>自己想成为什么样的人，成就什么样的事业，以及为之奠基的原则</strong>。现在就动手吧，心中秉持着持久不变的真理（个人认为，随着阅历变化，这个真理也会不断更新），才能屹立在动荡的环境中。<strong>真正的原则和价值观会在你的每一次举动中流露出来</strong>，这些行为绝不是刻意的，而是来自发自内心的动机。</p>
-<p><strong>以原则为中心生活</strong>，可以让你得到可预料的长期后果，对自己的选择胸有成竹，心安理得，心里没有羁绊。每个有良知和理智的人，都足以发现自己的特长和使命。当然追求什么样的使命和原则，书中并没有告诉你，也不是成功学的书里能告诉你的。你可能更应该从哲学家的作品里找找灵感。</p>
-<p><strong>FAQ</strong></p>
-<p>Q: 我感觉找到一个恒久的原则似乎是个很困难的挑战。</p>
-<p>A: 是的，这点书中似乎轻描淡写地略过了，但实际上找到自己真正的追求和原则是因人而异，没有方法论的。你甚至可能需要一些哲学家的帮助。另外，随着时间的推移，你社会阅历的积累，这个原则也应该会弹性地变化。</p>
-<p>Q: 我已经设定好我的原则了，但感觉并没有影响到我的日常生活呀</p>
-<p>A: 你需要潜移默化地向自己灌输定好的原则，等待着它一点点改变你的一举一动，前提是你定下的规则不是违心的，是你真正发自内心的，不要欺骗自己。</p>
-<h3 id="要事第一"><a href="#要事第一" class="headerlink" title="要事第一"></a>要事第一</h3><p>回顾下上面两个习惯，<strong>积极主动</strong>告诉你“人生由你做主”，<strong>明确原则</strong>告诉你“如何构思自己的人生”，而<strong>要事第一</strong>则告诉你如何实践。对于这个习惯来说，前两个习惯是必不可少的基础。有效的管理就是<strong>先做重要的事</strong>，以更直接的方式实现明确原则中定下的目标。横轴纵轴以重要和紧迫建立坐标系，<strong>位于重要、不紧迫的才是真正的要事</strong>。这些事务通常能够长远地解决你的许多其他问题，比如建立人际关系、规划长期目标、防患于未然等。高效能的人在解决问题的时候，总是带着预防性的思维方式。（当然同时也要避免“过早优化”，确保你做的是第二象限的事务）</p>
-<p>为了减少第三、四象限事务，甚至第一象限事务，授权是一个高效能的秘诀。授权分为两种：<strong>指令式</strong>和<strong>责任式</strong>。前者和事必躬亲没什么区别，授权的人只是为你代劳而已，你并没有充分认可他人的自我意识、想象力和独立意识。责任性授权在于<strong>关注最终结果而不是过程</strong>，允许他人自行选择做事方式，并为结果负责。当然这需要约定好预期结果，指导方针，并设置好context等。</p>
-<p>在平日做事时，试着为自己定每周计划，每日调整，逐渐一点点靠近要事第一的理念。</p>
-<p><strong>FAQ</strong></p>
-<p>Q: 我的生活几乎被第一象限的事务堆满了，完全不像书中说的还有做第二象限事务的时间</p>
-<p>A: 实际上，在做紧要且重要的第一象限事务时，也可以带着<strong>预防性</strong>的思路，渐渐培养要事第一、目光长远的素质。渐渐你会发现，空间会多起来。另外，在职责允许的情况下，善用<strong>责任式授权</strong>，在锻炼他人的同时，减轻自己的工作压力。</p>
-<p>Q: 我怎么衡量一件事够不够“第二象限事务”？</p>
-<p>A: 从上一节你的原则出发，这件事在<strong>长远角度</strong>上看是否更有意义。</p>
-<h3 id="双赢思维"><a href="#双赢思维" class="headerlink" title="双赢思维"></a>双赢思维</h3><p>个人独立不代表真正成功，圆满人生还需追求公众领域的成功。修身只是公众领域成功的基础。<strong>双赢思维是提高人际效率的一个习惯，同时也能保证自己情绪的积极向上</strong>。双赢者把生活看成一个合作的舞台，而非一个角斗场。</p>
-<p><em>注：当然双赢模式需要外界环境作为温床，鼓励合作双赢，不提倡损人利己或舍己为人。缺乏这个环境，双赢只是单方愿望的乌托邦。</em></p>
-<p>在与他人相处中，有这么些常见的交往模式可以选择：</p>
-<ul>
-<li>双赢</li>
-<li>两败俱伤</li>
-<li>损人利己</li>
-<li>舍己为人</li>
-<li>好聚好散</li>
-</ul>
-<p>最常见的是损人利己，在零和环境下，最容易出现这种模式。举个例子，学校，<strong>一个人的价值需要通过和他人比较来得以实现</strong>。不过也有很少数的人采取舍己为人，他们通常喜欢放低自己取悦他人，满足他人希望，通过别人的认同来吸取力量。因为前者损人利己是社会中绝大多数的情况，所以书中过度强调了要理解他人。但是不要做过头，<strong>与人相处如果不能双赢，就好聚好散</strong>。（当然这个模式并不总是对的，尤其在社交中）</p>
-<p>双赢思维的人通常具有下面一些特质，这些特质使他们具有足够的勇气和胸襟：</p>
-<ul>
-<li>诚信，正如公关的第一原则其实是“说实话”</li>
-<li>成熟，妥善处理好<strong>敢作敢为（主动：表达自己）</strong>和<strong>善解人意（被动：理解他人）</strong></li>
-<li>知足，富足的心态源自厚实的个人价值观和安全感，源于相信环境非零和</li>
-</ul>
-<p>在双赢思维下解决问题，会自然而然地<strong>坚持原则，而不是立场</strong>。双方注重利益而非立场，创造出双方都能获利的方法，且不违背双方认同的原则和标准。这是双赢模式下解决问题的理想情况，拆分来说，有下面几点：</p>
-<ul>
-<li>从对方角度看问题，理解对方想法</li>
-<li>认清主要问题和矛盾</li>
-<li>确认双方都能接受的结果</li>
-<li>寻找达到结果需要的种种路径</li>
-</ul>
-<p><strong>FAQ</strong></p>
-<p>Q: 这里说的双赢思维能用在普通社交中么？</p>
-<p>A: 可以，上面的陈述更多用来做事。但是<strong>做不到双赢就好聚好散</strong>这点，在社交做人中也许也是个不错的策略</p>
-<p>Q: 上面说的场景太理想化了，我日常面对的几乎都是“损人利己”型的人</p>
-<p>A: 做好自己，试图与他达成共赢的共识，否则<strong>如果不能双赢，就好聚好散</strong></p>
-<h3 id="知彼解己"><a href="#知彼解己" class="headerlink" title="知彼解己"></a>知彼解己</h3><p>人有表达自己的欲望，所有人都渴望自己被理解和被欣赏，却忘了在表达自己的同时，理解他人。在人际交往中，双方共同理解才是一个比较理想的状态。这就要求你能做到“知彼解己”，<strong>首先换位思考理解对方，再想办法表达自己</strong>。也许生活中前一种人太多，书中介绍“知彼”是有些矫枉过正的嫌疑，个人认为做到<strong>足够坦诚和尊重</strong>就够了。你是发自内心的尝试理解对方的思路，而不是装出一副倾听的假样子。“知彼”这一步对情感账户的投资有着极大的帮助。</p>
-<p>除了与朋友相处，在与同事、家人甚至陌生人交流，这个原则都是成立的。当你的子女向你抱怨“上学真是无聊透了”时，你的第一印象是“先教育他一顿，把他掰回正轨”，还是想想他或她为什么会这么想。在后者的思路下，双方就可以很轻易地做到交心的沟通。彼此坦诚，毫无矫饰，交流轻松而愉快。<strong>这种走心的交流对改善朋友、工作、亲子、夫妻关系大有裨益</strong>。</p>
-<p>遗憾的是，讲完“知彼”后，书中并未提到“解己”。毕竟不是所有人都善解人意、能换位思考，甚至只有很少人能做到，所以解己也是很必要的一部分。如何把自己说给别人听，这也很需要技巧。以我浅薄的认知看来，能做到<strong>足够坦诚</strong>就很不错了。</p>
-<p><strong>FAQ</strong></p>
-<p>Q: 我的身边似乎没有几个能真正知道和理解我想法的人，我一直在“知彼”，可却没人来了解我。</p>
-<p>A: 找到一个能理解并倾听你想法的朋友本来就是很看缘分的事情，所以遇到了就好好珍惜吧。不过能做到“知彼”已经让你在社交的情感账户中存有许多余额了，这是件值得高兴的事。</p>
-<p>Q: 交心的沟通中有什么禁忌么？</p>
-<p>A: 一是无论那个人露出了内心脆弱的一面，另一个人<strong>不要刨根问底</strong>；二是话题过于尖锐或痛苦时，要及时打住。晚些时候或当事人愿意时再说。</p>
-<h3 id="统合综效"><a href="#统合综效" class="headerlink" title="统合综效"></a>统合综效</h3><p>原文的内容感觉有些主旨不清，文风甚至有股传销的感觉。不过总结下来，主要说的一点是<strong>判断和尊重差异，取长补短</strong>。即在不断变化的外界环境中，<strong>求同存异，与人沟通交往时，取其精华去其糟粕，不断优化提升自己。同时，以双赢为出发点，促进双方共同进步</strong>。合作抑或社交都适用这个原则。</p>
-<h3 id="不断更新"><a href="#不断更新" class="headerlink" title="不断更新"></a>不断更新</h3><p>这个习惯主要在说，如何协调短期和长期投资。<strong>个人要在产出的同时不断审视并保持自己的产能</strong>。具体来说，有以下几个方面：</p>
-<ul>
-<li><strong>身体</strong>，你身体是否健康，是否能支持你继续产出。你有无锻炼、作息、营养如何</li>
-<li><strong>智力</strong>，在做业务的同时，有无阅读、学习、写作、总结，这些将开阔你的视野，成为你业务未来产出的推动力<em>（对应习惯三）</em></li>
-<li><strong>社会</strong>，社交进行的如何，是否过度关注自己，忽略了社交。在情感账户中投资可以提升你的安全感，让你没有后顾之忧<em>（对应习惯四五六）</em></li>
-<li><strong>精神</strong>，你的自我建设和认知进行的怎么样，有没有思考过自己的人生信条，这将为你指引人生方向<em>（对应习惯二）</em></li>
-</ul>
-<p>修身没有终点，日常生活就是一个学习、坚持、实践的过程。每周反思自己在各个领域的角色目标是否达到期望，调整反馈后，继续在上面4个方面努力。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><em>（私货时间）</em></p>
-<p>四个字：<strong>做个好人</strong>。修炼品德，由内而外的努力，可以借助上面提到的一些策略，一步步从依赖走向独立再走向公众领域的成功。自我成长的过程多半是痛苦的或至少是痛并快乐着的，肉体或心灵总有一个正受着煎熬。当肉体和心灵都很轻松自在时，正是你最快乐的时候，而缺乏思考的快乐不会带给你任何收获。</p>
-<p>以上就是这本书带给我的一些收获。</p>
-<p><em>–END–</em></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《高效能人士的七个习惯》无论是从书名还是腰封的介绍，都给人一种浓浓的鸡汤学毒物的感觉。所幸，它不像曾经哄骗我的那些成功学书籍，言辞激烈却言之无物，给出许多看似有用的方法却缺少解释。书的前半部分讲述自我建设的部分还是很值得一读的，从根源出发，讲道理，有脉络地教你怎么操作，令人
-    
-    </summary>
-    
-      <category term="思考" scheme="http://shenlvmeng.github.com/blog/categories/%E6%80%9D%E8%80%83/"/>
-    
-    
-      <category term="成功学" scheme="http://shenlvmeng.github.com/blog/tags/%E6%88%90%E5%8A%9F%E5%AD%A6/"/>
-    
-      <category term="自我建设" scheme="http://shenlvmeng.github.com/blog/tags/%E8%87%AA%E6%88%91%E5%BB%BA%E8%AE%BE/"/>
     
   </entry>
   

@@ -296,6 +296,456 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/08/16/some-tips-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/08/16/some-tips-3/" itemprop="url">工作中的遇到的一些小知识 3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-16T23:11:29+08:00">
+                2018-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/08/16/some-tips-3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/16/some-tips-3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="git-case-sensitive"><a href="#git-case-sensitive" class="headerlink" title="git case sensitive"></a>git case sensitive</h2><p>git本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git mv file.txt temp.txt</div><div class="line">git mv temp.txt File.txt</div><div class="line">git commit -m <span class="string">"Renamed file.txt to File.txt"</span></div></pre></td></tr></table></figure>
+<h2 id="webpack的一些经验"><a href="#webpack的一些经验" class="headerlink" title="webpack的一些经验"></a>webpack的一些经验</h2><p><strong>DefinePlugin</strong></p>
+<p>允许创建一个在编译时可以配置的全局常量。在构建区分环境的包时很有用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> webpack.DefinePlugin(&#123;</div><div class="line">  <span class="attr">PRODUCTION</span>: <span class="built_in">JSON</span>.stringify(<span class="literal">true</span>),</div><div class="line">  <span class="attr">VERSION</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"5fa3b9"</span>),</div><div class="line">  <span class="attr">BROWSER_SUPPORTS_HTML5</span>: <span class="literal">true</span>,</div><div class="line">  <span class="attr">TWO</span>: <span class="string">"1+1"</span>,</div><div class="line">  <span class="string">"typeof window"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"object"</span>)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>注意：这个插件直接执行文本替换。因此：</p>
+<ul>
+<li>如果这个值是一个字符串，它会被当作一个代码片段来使用。</li>
+<li>如果这个值不是字符串，它会被转化为字符串(包括函数)。</li>
+<li>如果这个值是一个对象，它所有的 key 会被同样的方式定义。</li>
+<li>如果在一个 key 前面加了 typeof,它会被定义为 typeof 调用</li>
+</ul>
+<p><strong>resolve alias</strong></p>
+<p>创建import或require的别名，来确保模块引入变得更简单。例如，一些位于 src/ 文件夹下的常用模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">alias: &#123;</div><div class="line">    @: path.resolve(__dirname, <span class="string">'src/'</span>),</div><div class="line">    <span class="attr">Utilities</span>: path.resolve(__dirname, <span class="string">'src/utilities/'</span>),</div><div class="line">    <span class="attr">Templates</span>: path.resolve(__dirname, <span class="string">'src/templates/'</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="z-index可能的坑"><a href="#z-index可能的坑" class="headerlink" title="z-index可能的坑"></a>z-index可能的坑</h2><p><strong>使用前提：z-index只能在position属性值为relative或absolute或fixed的元素上有效。</strong></p>
+<p>z-index值只决定同一父元素中的同级子元素的堆叠顺序。父元素的z-index值（如果有）为子元素定义了堆叠顺序（css版堆叠“拼爹”）。向上追溯找不到含有z-index值的父元素的情况下，则可以视为自由的z-index元素，它可以与父元素的同级兄弟定位元素或其他自由的定位元素来比较z-index的值，决定其堆叠顺序。同级元素的z-index值如果相同，则堆叠顺序由元素在文档中的先后位置决定，后出现的会在上面。</p>
+<h2 id="git-submodule"><a href="#git-submodule" class="headerlink" title="git submodule"></a>git submodule</h2><blockquote>
+<p>参考：<a href="https://yihui.name/cn/2017/03/git-submodule/" target="_blank" rel="external">GIT 子模块</a></p>
+</blockquote>
+<p>最新一个项目里要复用已有的一个git库的代码，具体来说就是要将之前在WebView的内容复刻到PC版完成（这个需求貌似应该还挺常见的）。为了保证代码复用性，选择了<code>git submodule</code>的方法。这也是我此前从没用过的一个命令。</p>
+<p>简单来说，是一个 GIT 仓库下面某个文件夹的来源可以跟本库的来源不同，这个文件夹连接着别的库，由别的库负责按本控制和管理。是不是和npm包管理的形式比较像。子模块可以手动添加，也可以在克隆一个主库的时候就直接实体化。具体来说，有四种情况：</p>
+<ul>
+<li>克隆库的时候要初始化子模块 =&gt; 加上<code>--recursive</code>参数 <code>git clone --recursive git@github.com:shenlvmeng/trace-maker.git</code></li>
+<li>初始化已有库的子模块 =&gt; <code>git submodule update --init --recursive</code></li>
+<li>从子模块的源更新该子模块 =&gt; <code>git submodule update --recursive --remote</code></li>
+<li>添加一个新的子模块 =&gt; <code>git submodule add &lt;git address&gt; &lt;folder address&gt;</code></li>
+</ul>
+<p>已有有git submodule的库内，<code>.gitmodules</code>是下面的样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[submodule &quot;wheel&quot;]</div><div class="line">    path = wheel</div><div class="line">    url = git@github.com:shenlvmeng/wheel.git</div></pre></td></tr></table></figure>
+<h2 id="npm-install"><a href="#npm-install" class="headerlink" title="npm install"></a>npm install</h2><p>npm install后跟的绝不仅仅只是包名，还可以通过ssh、http的形式引入npm包，唯一的要求是有<code>package.json</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">npm install (with no args, <span class="keyword">in</span> package dir)</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;tag&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version&gt;</div><div class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version range&gt;</div><div class="line">npm install &lt;git-host&gt;:&lt;git-user&gt;/&lt;repo-name&gt;</div><div class="line">npm install &lt;git repo url&gt;</div><div class="line">npm install &lt;tarball file&gt;</div><div class="line">npm install &lt;tarball url&gt;</div><div class="line">npm install &lt;folder&gt;</div><div class="line"></div><div class="line"><span class="built_in">alias</span>: npm i</div></pre></td></tr></table></figure>
+<p>一个<strong>package</strong>可以是下面的形式：</p>
+<ol>
+<li>包含<code>package.json</code>的工程文件夹</li>
+<li>gzip过的“1”的压缩包</li>
+<li>指向“2”的url</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;registry&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;tag&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;</code>字符串(最新版本)</li>
+<li>一个指向“1”的合法git地址</li>
+</ol>
+<h2 id="cleave-js"><a href="#cleave-js" class="headerlink" title="cleave.js"></a>cleave.js</h2><p>一个自动格式化输入框的工具，有npm包、script标签等几种引用形式，还有react的使用方式。</p>
+<p>地址：<a href="https://nosir.github.io/cleave.js/" target="_blank" rel="external">Format your &lt;input/&gt; content when you are typing</a></p>
+<h2 id="object-fit-amp-object-position"><a href="#object-fit-amp-object-position" class="headerlink" title="object-fit &amp; object-position"></a>object-fit &amp; object-position</h2><p>这两个CSS属性分别用于指定替换元素在其盒模型内的覆盖大小和对齐方式。使用效果很类似<code>background-size</code>和<code>background-position</code>。替换元素即内容不受CSS视觉格式化控制的元素，如image、iframe、video、textarea等。</p>
+<p>这使得本来自己决定模型大小的元素可以受CSS控制决定位置排布和大小。在需要自适应元素大小的场景下很好用，比如用户头像展示等。</p>
+<p>唯一的小小缺憾可能是IE11还不支持这两个属性，以及Edge只支持对<code>&lt;img&gt;</code>使用。</p>
+<h2 id="移动端触摸默认行为优化"><a href="#移动端触摸默认行为优化" class="headerlink" title="移动端触摸默认行为优化"></a>移动端触摸默认行为优化</h2><ul>
+<li><code>user-select: none</code> 禁止用户选择</li>
+<li><code>-webkit-touch-callout: none</code> 防止长按contextmenu弹出。类似的还有<code>contextmenu</code>事件里的<code>e.preventDefault()</code></li>
+<li><code>-webkit-tap-highlight-color: transparent</code> 删除可点击元素默认的黑影</li>
+</ul>
+<h2 id="上传进度条"><a href="#上传进度条" class="headerlink" title="上传进度条"></a>上传进度条</h2><p>利用xhr事件的onprogress事件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">xhr.onprogress = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (e.lengthComputable) &#123;</div><div class="line">        <span class="built_in">console</span>.log(e.loaded+  <span class="string">" / "</span> + e.total)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">xhr.onloadstart = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"start"</span>)</div><div class="line">&#125;</div><div class="line">xhr.onloadend = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"end"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="不显示滚动条"><a href="#不显示滚动条" class="headerlink" title="不显示滚动条"></a>不显示滚动条</h2><p>基于Webkit的浏览器，可以使用CSS的方式隐藏滚动条。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&amp;<span class="selector-pseudo">::-webkit-scrollbar</span> &#123;</div><div class="line">      <span class="attribute">width</span>: <span class="number">0</span>;</div><div class="line">      <span class="attribute">height</span>: <span class="number">0</span>;</div><div class="line">      <span class="attribute">background</span>: transparent;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="keyup无法prevent-default"><a href="#keyup无法prevent-default" class="headerlink" title="keyup无法prevent default"></a>keyup无法prevent default</h2><blockquote>
+<p>keyup fires after the default action.</p>
+<p>keydown and keypress are where you can prevent the default.<br>If those aren’t stopped, then the default happens and keyup is fired.</p>
+</blockquote>
+<p>来源：<a href="https://stackoverflow.com/questions/16052592/javascript-prevent-default-for-keyup/16052627" target="_blank" rel="external">jquery - javascript prevent default for keyup - StackOverflow</a></p>
+<h2 id="mixin-in-react"><a href="#mixin-in-react" class="headerlink" title="mixin in react"></a>mixin in react</h2><p>版本16之前，可以用mixin特性。16之后使用高阶组件HOC + ES6 class语法实现。<a href="https://reactjs.org/docs/higher-order-components.html" target="_blank" rel="external">参考</a>。</p>
+<h2 id="user-select在Edge浏览器下的适配问题"><a href="#user-select在Edge浏览器下的适配问题" class="headerlink" title="user-select在Edge浏览器下的适配问题"></a><code>user-select</code>在Edge浏览器下的适配问题</h2><p>设置<code>user-select</code>为<code>none</code>在Edge浏览器下会导致input无法输入内容。可以用下面的写法，避免对<code>input</code>标签应用该属性。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">*<span class="selector-pseudo">:not(input)</span> &#123;</div><div class="line">  <span class="attribute">user-select</span>: none;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参考：<a href="https://stackoverflow.com/questions/49614065/cant-type-in-input-field-using-microsoft-edge-and-safari" target="_blank" rel="external">html - Can’t type in input field using Microsoft Edge and Safari - StackOverflow</a></p>
+<h2 id="浏览器跨tab通信"><a href="#浏览器跨tab通信" class="headerlink" title="浏览器跨tab通信"></a>浏览器跨tab通信</h2><p>最近业务遇到了一个需求：同一浏览器上多tab用户信息同步的问题，所有这个域名下的需要强制一样的用户信息，避免困惑。</p>
+<p>跨tab通信主流方案有两种：</p>
+<ul>
+<li>localStorage，利用window的<code>storage</code>事件，传递信息</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API" target="_blank" rel="external">BroadcastChannel</a>，新的API，通过<code>postMessage</code>和<code>onMessage</code>完成双向通讯</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> bc = <span class="keyword">new</span> BroadcastChannel(<span class="string">'test_channel'</span>);</div><div class="line">bc.postMessage(<span class="string">'This is a test message.'</span>); <span class="comment">/* send */</span></div><div class="line">bc.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123; <span class="built_in">console</span>.log(ev); &#125; <span class="comment">/* receive */</span></div></pre></td></tr></table></figure>
+<p>后者还未得到广泛支持，需要前者进行polyfill。</p>
+<h2 id="aos"><a href="#aos" class="headerlink" title="aos"></a>aos</h2><p>Animation on scroll。<a href="https://github.com/michalsnik/aos" target="_blank" rel="external">michalsnik/aos at master · Animate on scroll library</a>.元素滚动至中的CSS动画，适合实现官网、落地页等效果。</p>
+<h2 id="extract-text-webpack-plugin"><a href="#extract-text-webpack-plugin" class="headerlink" title="extract-text-webpack-plugin"></a>extract-text-webpack-plugin</h2><p>抽出CSS/Less/Sass等样式作为单独文件，用于那些需要提前加载样式的页面。详细用法见<a href="https://github.com/webpack-contrib/extract-text-webpack-plugin" target="_blank" rel="external">github</a></p>
+<p>坑：</p>
+<ol>
+<li>不支持webpack4.x，报内部错误（2018/07/30） =&gt; 使用@next下载最新版</li>
+<li>报错<code>Module build failed: ReferenceError: window is not defined</code> =&gt; style-loader在extract-text-webpack-plugin中只做fallback项使用，见<a href="https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/503" target="_blank" rel="external">issue#503</a></li>
+</ol>
+<h2 id="常见调试技巧"><a href="#常见调试技巧" class="headerlink" title="常见调试技巧"></a>常见调试技巧</h2><ul>
+<li>代码中插入debugger可以在该位置触发断点调试</li>
+<li><code>console.dir</code>可以打印对象结构，大多数情况和<code>console.log</code>表现一致，在document等DOM元素上表现不同</li>
+</ul>
+<h2 id="react组件复用设计思路"><a href="#react组件复用设计思路" class="headerlink" title="react组件复用设计思路"></a>react组件复用设计思路</h2><ul>
+<li>当设计的组件为自闭型时，通过传入数据（<strong>不要传入功能</strong>）props的方式定制组件</li>
+<li>当设计的组件在有些场景下需要外部传入功能才能完整时，使用继承的方式实现</li>
+<li>在可以拆分出原子组件，<strong>且有此必要的时候</strong>，使用原子组件拼装业务组件</li>
+<li>HOC优于mixin</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/08/15/frontend-roadmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/08/15/frontend-roadmap/" itemprop="url">frontend-roadmap</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-15T23:52:55+08:00">
+                2018-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/08/15/frontend-roadmap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/15/frontend-roadmap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前端科技树探索之路"><a href="#前端科技树探索之路" class="headerlink" title="前端科技树探索之路"></a>前端科技树探索之路</h2><p>前端的涵盖范畴是和客户直接交互的部分。</p>
+<p>以下几个因素促进了前端在这些年差异化成一个需要专业人才的领域</p>
+<ul>
+<li>Web API不断丰富和更新，允许JS做更多的事情，同时也需要不停学习跟进</li>
+<li>语言规范赋予JS更多的特性和可能，允许专业的人做更专业的事</li>
+<li>Node等轮子的出现拓展了JS的应用场景，方向更加细化</li>
+<li>用户对界面要求越来越高，需要专门的人处理</li>
+</ul>
+<p>从而使前端渐渐分化出来成为一个面向复杂场景、承诺服务质量、进入工程领域的职业。</p>
+<p>更细化的说，面向复杂场景包括：</p>
+<ul>
+<li>浏览器应用、桌面应用、移动端应用、后端应用多宿主</li>
+<li>复杂的网络环境</li>
+<li>差异化巨大的浏览器和浏览器版本（所幸比以前好了很多）</li>
+<li>用户群体的不同</li>
+<li>……</li>
+</ul>
+<p>承诺服务质量包括：</p>
+<ul>
+<li>更快地渲染页面</li>
+<li>更美观的页面效果</li>
+<li>更流畅的用户交互体验</li>
+<li>更高的代码稳定性（对应着lint和debug能力）</li>
+<li>差异化环境的表现一致性</li>
+<li>……</li>
+</ul>
+<p>进入工程领域包括：</p>
+<ul>
+<li>更舒适的开发体验（设计模式与诸多轮子）</li>
+<li>更高的开发效率（如工作流的设计）</li>
+<li>更顺滑的团队间协作（如mock）</li>
+<li>版本控制</li>
+<li>……</li>
+</ul>
+<p>上面是作为一个技术的要求，在公司应用范畴，还需要考虑下面这些：</p>
+<ul>
+<li>产品设计</li>
+<li>团队建设</li>
+<li>人才培养</li>
+<li>项目管理</li>
+</ul>
+<ul>
+<li>立身之本<ul>
+<li>HTML</li>
+<li>DOM</li>
+<li>JavaScript基本语法</li>
+<li>CSS</li>
+</ul>
+</li>
+<li>关联技术<ul>
+<li>Web API</li>
+<li>ajax</li>
+<li>JSON</li>
+<li>正则</li>
+<li>SVG/Canvas/WebGL</li>
+<li>PWA</li>
+</ul>
+</li>
+<li>深入了解<ul>
+<li>ES6 ES7</li>
+<li>TypeScript</li>
+<li>CSS3</li>
+<li>SASS Less</li>
+</ul>
+</li>
+<li>现有轮子<ul>
+<li>NodeJS</li>
+<li>Electron</li>
+<li>React</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/06/26/canvas-flowchart-compare/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -973,495 +1423,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/01/sicp-note/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/05/01/sicp-note/" itemprop="url">SICP大纲</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T17:18:04+08:00">
-                2018-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/05/01/sicp-note/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/05/01/sicp-note/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文是《计算机程序的构造和解释》的笔记</p>
-</blockquote>
-<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>序中其实也包含了很多睿智的观点，值得细细体会。</p>
-<ul>
-<li>“每一个计算机程序都是现实中的或者精神中的某个过程的一个模型”</li>
-<li>“我们很少能通过自己的程序将这种过程模拟到永远令人满意的程度”</li>
-<li>“不幸的是，随着程序变得更大更复杂（实际上它们几乎总是如此），这种描述本身的适宜性，一致性和正确性也都变得非常值得怀疑了”</li>
-<li>“如何利用一些已经证明和有价值的组织技术，将这些结构组合成更大的结构，这些都是至关重要的”</li>
-<li>“将我们的Lisp程序变换到‘机器’程序的过程本身也是抽象模型，是通过程序设计做出来的。研究和构造它们，能使人更加深刻地理解与任何模型的程序设计有关的程序组织问题”</li>
-<li>“计算机永远都不够大也不够快。硬件技术的每一次突破都带来了更大规模的程序设计事业，新的组织原理，以及更加丰富的抽象模型。每个读者都应该反复问自己‘到哪里才是头儿，到哪里才是头儿’——但是不要问的过于频繁，以免忽略了程序设计的乐趣，使自己陷入一种喜忧参半的呆滞状态中”</li>
-<li>“Pascal是为了建造金字塔——壮丽辉煌，令人震撼，是由各就其位的沉重巨石筑起的静态结构，而Lisp则是为了构造有机体——同样壮丽辉煌并令人震撼，由各就其位但却永不静止的无数简单的有机体片段构成的动态结构”</li>
-<li>“Lisp程序大大抬高了函数库的地位，使其可用性超越了催生它们的那些具体应用”</li>
-<li>“采用100个函数在一种数据结构上操作，远远优于用10个函数在10个数据结构上操作。作为这些情况的必然后果，金字塔矗立在那里千年不变，而有机体则必须演化，否则会死亡”</li>
-<li>“在任何非常大的程序设计工作中，一条有用的组织原则就是通过发明新语言，去控制和隔离作业模块之间的信息流动”</li>
-</ul>
-<h2 id="过程抽象"><a href="#过程抽象" class="headerlink" title="过程抽象"></a>过程抽象</h2><ul>
-<li>应用序和正则序</li>
-<li>递归和迭代在展开式上的区分，以及尾递归</li>
-<li>过程（函数）作为入参、返回值</li>
-<li>匿名函数和高阶函数</li>
-</ul>
-<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><ul>
-<li>构造函数和方法函数</li>
-<li><code>cons</code>和<code>car</code>、<code>cdr</code></li>
-<li>序对和list（层次化数据）</li>
-<li>表操作和表映射</li>
-<li>序列化操作</li>
-<li>符号数据（类似字符串）</li>
-<li>数据的多种表示（类型）与通用操作</li>
-</ul>
-<h2 id="模块化、对象和状态"><a href="#模块化、对象和状态" class="headerlink" title="模块化、对象和状态"></a>模块化、对象和状态</h2><ul>
-<li>面向对象和面向流</li>
-<li>从时间角度理解赋值和局部状态</li>
-<li>赋值的利与弊</li>
-<li>赋值带来的环境模型解释（作用域、作用域链）<ul>
-<li>局部状态</li>
-<li>作用域模型的解释</li>
-</ul>
-</li>
-<li>变动的表<ul>
-<li>区分共享和相等（相同的指针、相同的值）</li>
-<li>队列与键值对</li>
-</ul>
-</li>
-<li>描述约束系统</li>
-<li>并发（交错进行的读写操作）<ul>
-<li>串行化和串行化组</li>
-<li>mutex(mutual exclusion)和实现</li>
-<li>死锁（多共享资源）<ul>
-<li>按顺序获取资源列表</li>
-<li>死锁恢复</li>
-<li>屏障同步</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>流<ul>
-<li>延时求值的表序列</li>
-<li>延时求值的原理</li>
-<li>无穷流的构造</li>
-<li>流操作和组合</li>
-</ul>
-</li>
-</ul>
-<h2 id="元语言设计"><a href="#元语言设计" class="headerlink" title="元语言设计"></a>元语言设计</h2><ul>
-<li>求值器（解释器）的工作与意义<ul>
-<li>在基本过程上提供组合与抽象构建一个语言<ul>
-<li>表达式的嵌套</li>
-<li>变量维护</li>
-<li>过程复合</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>求值器内核<ul>
-<li>eval 过程体解释</li>
-<li>apply 过程求值解释</li>
-<li>表达式规范化和实现 / 派生表达式</li>
-<li>环境模型的数据结构</li>
-<li>求值器程序初始化</li>
-</ul>
-</li>
-<li>数据即程序<ul>
-<li>图灵机和停机问题</li>
-</ul>
-</li>
-<li>内部定义<ul>
-<li>内部定义是否应该具有时序</li>
-<li>Y结合子与lambda演算</li>
-</ul>
-</li>
-<li>语法分析与执行分离</li>
-<li>惰性求值<ul>
-<li>thunk化，关联表达式和环境</li>
-<li>惰性的表</li>
-</ul>
-</li>
-<li>非确定性求值（满足约束的所有可行解）<ul>
-<li>amb和自动回溯</li>
-<li>amb实现，成功与失败继续过程</li>
-</ul>
-</li>
-<li>逻辑语言设计<ul>
-<li>类SQL语言基于amb的实现</li>
-</ul>
-</li>
-</ul>
-<h2 id="解释与编译"><a href="#解释与编译" class="headerlink" title="解释与编译"></a>解释与编译</h2><ul>
-<li>机器描述<ul>
-<li>基本指令与子程序（label）</li>
-<li>堆栈实现递归</li>
-</ul>
-</li>
-<li>基本指令的实现<ul>
-<li>类汇编语言</li>
-</ul>
-</li>
-<li>内存管理<ul>
-<li>表与堆栈的实现</li>
-<li>garbage collection机制</li>
-</ul>
-</li>
-<li>解释<ul>
-<li>基础操作实现</li>
-<li>尾递归优化解释</li>
-</ul>
-</li>
-<li>编译<ul>
-<li>与解释有何区别，各自优势</li>
-<li>env/argl/proc/val/continue寄存器</li>
-<li>编译器结构<ul>
-<li>语法分派</li>
-<li>入参：target（存储表达式值的寄存器）与linkage（continue寄存器）</li>
-<li>指令序列的结构与构造，分析指令序列，<code>preserving</code>机制避免无谓的堆栈操作</li>
-</ul>
-</li>
-<li>表达式的编译<ul>
-<li>linkage的编译，检查<code>next</code>或<code>return</code>的情况</li>
-<li>简单、条件表达式、表达式序列的编译</li>
-<li>lambda表达式的编译</li>
-</ul>
-</li>
-<li>过程的编译<ul>
-<li>入参的处理</li>
-<li>尾递归</li>
-</ul>
-</li>
-<li>指令序列的组合</li>
-<li>代码编译的实例</li>
-<li>优化变量查找<ul>
-<li>词法地址</li>
-</ul>
-</li>
-<li>解释与编译<ul>
-<li>解释：机器语言 -&gt; 用户程序</li>
-<li>编译：用户程序 -&gt; 机器语言</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>最后吐槽下，书是本好书，就是翻译的不太给力，在有些地方强行提高了理解难度。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/25/webrtc-practice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/04/25/webrtc-practice/" itemprop="url">webrtc学习笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T23:09:06+08:00">
-                2018-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/04/25/webrtc-practice/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/25/webrtc-practice/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>必读：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API" target="_blank" rel="external">WebRTC API - Web API接口 | MDN</a><br>必读：<a href="https://blog.coding.net/blog/getting-started-with-webrtc" target="_blank" rel="external">WebRTC的前世今生</a></p>
-</blockquote>
-<p>Web端用户视频推流使用webRTC方案，使用已有JS SDK（和<a href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web" target="_blank" rel="external">这个</a>兼容）。</p>
-<p>WebRTC由Google主推，全称Web Browser Real Time Communication。目标是希望在Web端进行点对点音视频通信。</p>
-<p>整个P2P过程很复杂，但是对于浏览器而言，WebRTC实际上只是提供了三个API：</p>
-<ul>
-<li><strong>MediaStream</strong>, 即getUserMedia（<code>navigator.getUserMedia</code>），获取媒体数据，如来自用户摄像头和麦克风的音视频流</li>
-<li><strong>RTCPeerConnection</strong>，用于peer跟peer之间呼叫和建立连接以便传输音视频数据流；这个不同浏览器的实现不同，官网推荐使用<code>adapter.js</code>进行适配</li>
-<li><strong>RTCDataChannel</strong>，用于peer跟peer之间传输音视频之外的一般数据。</li>
-</ul>
-<h2 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h2><p>参考<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream" target="_blank" rel="external">MDN</a>。来自<code>navigator.getUserMedia()</code>，这个方法接收三个参数：</p>
-<ul>
-<li>一个约束对象，如<code>{ audio: false, video: true }</code>，除了这两种，其他外设也可以作为输入</li>
-<li>一个成功回调</li>
-<li>一个失败回调</li>
-</ul>
-<p>返回的MediaStream对象有<code>addTrack</code>, <code>getAudioTracks</code>, <code>getVideoTracks</code>等方法。通过这些方法取出的MediaStreamTrack数组代表对应类型的流，可以把取出的这些流导入到<code>&lt;video&gt;</code>等标签输出。在Chrome或Opera中，<code>URL.createObjectURL()</code>方法可以转换一个MediaStream到一个Blob URL，可以被设置作为视频的源。除了这种方法，还可以使用<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" target="_blank" rel="external"><code>AudioContext</code></a>API，对音频做处理后输出。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">gotStream</span>(<span class="params">stream</span>) </span>&#123;</div><div class="line">    <span class="built_in">window</span>.AudioContext = <span class="built_in">window</span>.AudioContext || <span class="built_in">window</span>.webkitAudioContext;</div><div class="line">    <span class="keyword">var</span> audioContext = <span class="keyword">new</span> AudioContext();</div><div class="line"></div><div class="line">    <span class="comment">// Create an AudioNode from the stream</span></div><div class="line">    <span class="keyword">var</span> mediaStreamSource = audioContext.createMediaStreamSource(stream);</div><div class="line"></div><div class="line">    <span class="comment">// Connect it to destination to hear yourself</span></div><div class="line">    <span class="comment">// or any other node for processing!</span></div><div class="line">    mediaStreamSource.connect(audioContext.destination);</div><div class="line">&#125;</div><div class="line"></div><div class="line">navigator.getUserMedia(&#123;<span class="attr">audio</span>:<span class="literal">true</span>&#125;, gotStream);</div></pre></td></tr></table></figure>
-<p>使用HTTPS请求<code>getUserMedia</code>会向用户给出一次提示。不建议在HTTP环境下使用。</p>
-<p><a href="https://webrtc.github.io/samples/src/content/getusermedia/gum/" target="_blank" rel="external">这里</a>是一个demo，打开console，查看全局变量stream就明白MediaStream结构了。</p>
-<p>约束对象中可以商议视频分辨率等信息。它会影响获取到的视频流。</p>
-<h2 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h2><p>WebRTC使用RTCPeerConnection在浏览器间传递数据流，但在之前需要有一个交换信令的过程。这个过程不在WebRTC中定义，开发者可以使用任何想用的消息协议，比如WebSocket或XHR轮询什么的。信令过程需要传递三种信息：</p>
-<ul>
-<li>连接控制信息：初始化或者关闭连接报告错误。</li>
-<li>网络配置：对于外网，我们电脑的 IP 地址和端口？</li>
-<li>多媒体数据：使用什么编码解码器，浏览器可以处理什么信息</li>
-</ul>
-<p>点对点的连接需要ICE（Interactive Connectivity Establishment）的帮助，ICE靠STUN和TURN服务器处理NAT穿透等复杂问题。起初连接建立在UDP之上，STUN服务器让位于NAT中的client获知自己的公网IP和端口。如果UDP建立失败，考虑TCP连接，再考虑HTTP和HTTPS连接。否则使用TURN服务器做中转工作。</p>
-<p>W3C给了RTCPeerConnection的样例，</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> signalingChannel = <span class="keyword">new</span> SignalingChannel();</div><div class="line"><span class="keyword">var</span> configuration = &#123; <span class="string">"iceServers"</span>: [&#123; <span class="string">"url"</span>: <span class="string">"stun:stun.example.org"</span> &#125;] &#125;;</div><div class="line"><span class="keyword">var</span> pc;</div><div class="line"></div><div class="line"><span class="comment">// 调用start()建立连接</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">start</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  pc = <span class="keyword">new</span> RTCPeerConnection(configuration);</div><div class="line"></div><div class="line">  <span class="comment">// 有任何 ICE candidates 可用，</span></div><div class="line">  <span class="comment">// 通过signalingChannel传递candidate给对方</span></div><div class="line">  pc.onicecandidate = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (evt.candidate)</div><div class="line">      signalingChannel.send(<span class="built_in">JSON</span>.stringify(&#123; <span class="string">"candidate"</span>: evt.candidate &#125;));</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="comment">// let the "negotiationneeded" event trigger offer generation</span></div><div class="line">  pc.onnegotiationneeded = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    pc.createOffer(localDescCreated, logError);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 远端流到达时，在remoteView中做展示</span></div><div class="line">  pc.onaddstream = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">    remoteView.src = URL.createObjectURL(evt.stream);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="comment">// 获取本地流，展示并传递</span></div><div class="line">  navigator.getUserMedia(&#123; <span class="string">"audio"</span>: <span class="literal">true</span>, <span class="string">"video"</span>: <span class="literal">true</span> &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</div><div class="line">    selfView.src = URL.createObjectURL(stream);</div><div class="line">    pc.addStream(stream);</div><div class="line">  &#125;, logError);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">localDescCreated</span>(<span class="params">desc</span>) </span>&#123;</div><div class="line">  pc.setLocalDescription(desc, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    signalingChannel.send(<span class="built_in">JSON</span>.stringify(&#123; <span class="string">"sdp"</span>: pc.localDescription &#125;));</div><div class="line">  &#125;, logError);</div><div class="line">&#125;</div><div class="line"></div><div class="line">signalingChannel.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!pc)</div><div class="line">    start();</div><div class="line"></div><div class="line">  <span class="keyword">var</span> message = <span class="built_in">JSON</span>.parse(evt.data);</div><div class="line">  <span class="keyword">if</span> (message.sdp) &#123;</div><div class="line">    pc.setRemoteDescription(<span class="keyword">new</span> RTCSessionDescription(message.sdp), <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// 接收到offer时，回应一个answer</span></div><div class="line">      <span class="keyword">if</span> (pc.remoteDescription.type == <span class="string">"offer"</span>)</div><div class="line">        pc.createAnswer(localDescCreated, logError);</div><div class="line">    &#125;, logError);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 接收对方candidate并加入自己的RTCPeerConnection</span></div><div class="line">    pc.addIceCandidate(<span class="keyword">new</span> RTCIceCandidate(message.candidate));</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">logError</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">  log(error.name + <span class="string">": "</span> + error.message);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在开始建立连接时，调用<code>start()</code>，创建<code>RTCPeerConnection</code>对象，接着完成下面步骤：</p>
-<ul>
-<li><strong>交换网络信息</strong>，<code>onicecandidate</code>回调在有任何candidate出现时，将通过SignalChannel（使用额外方法创建，如WebSocket）传递给对方。同样地，在通过SignalChannel接收到对方发来的该信息时，加入这个candidate到RTCPeerConnection中。</li>
-<li><strong>交换多媒体信息</strong>，使用SDP（Session Description Protocol）与对端交换多媒体资讯，在<code>onnegotiationneeded</code>中，调用<code>createOffer</code>通过<code>setLocalDescription</code>创建<code>RTCSessionDecription</code>对象进行本地存储，并传给对方。接收方通过<code>setRemoteDescription</code>方法设定remote description。</li>
-</ul>
-<p>上述过程称为JavaScript Session Establishment Protocol（JSEP）。一旦这个signaling完成了，数据可以直接的在端到端之间进行数据传输。如果失败了，通过中介服务器relay服务进行转发。</p>
-<p>通常RTCPeerConnection的API太复杂，所以有很多在此基础上的库封装出了更加友善的API。</p>
-<h2 id="JS-SDK接入流程"><a href="#JS-SDK接入流程" class="headerlink" title="JS-SDK接入流程"></a>JS-SDK接入流程</h2><blockquote>
-<p>参考：<a href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web" target="_blank" rel="external">Agora：视频通话API</a></p>
-</blockquote>
-<ol>
-<li>准备工作，包括界面绘制等</li>
-<li>向远端注册当前用户，获取token，为后面做准备</li>
-<li>使用<code>createClient()</code>方法创建客户端</li>
-<li>指定回调，包括已订阅流、已添加流、移除、失败等生命周期事件的回调</li>
-<li>初始化客户端，传入appId和成功回调</li>
-<li>初始化成功后，调用join方法根据获取到的token加入指定房间（原理是WebRTC的stream有id）</li>
-<li>指定配置创建本地流（getUserMedia），发布本地流，播放本地流</li>
-</ol>
-<h2 id="RTMP相关"><a href="#RTMP相关" class="headerlink" title="RTMP相关"></a>RTMP相关</h2><blockquote>
-<p>必读：<a href="https://www.villainhr.com/page/2017/08/05/RTMP%20H5%20%E7%9B%B4%E6%92%AD%E6%B5%81%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90" target="_blank" rel="external">RTMP H5 直播流技术解析</a></p>
-</blockquote>
-<p>一次RTMP握手的模拟。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 握手协议模拟</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="keyword">constructor</span>(time, random) &#123;</div><div class="line">        <span class="keyword">this</span>.time = time || <span class="number">0</span>;</div><div class="line">        <span class="keyword">this</span>.random = random || Buffer.alloc(<span class="number">0</span>); <span class="comment">// Buffer类型</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    get C0() &#123;</div><div class="line">        <span class="keyword">const</span> buf = Buffer.alloc(<span class="number">1</span>, <span class="number">3</span>);</div><div class="line">        <span class="keyword">return</span> buf;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    get C1() &#123;</div><div class="line">        <span class="keyword">const</span> buf = Buffer.alloc(<span class="number">1536</span>);</div><div class="line">        <span class="keyword">return</span> buf;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * write C2</div><div class="line">     */</div><div class="line">    get C2() &#123;</div><div class="line">        <span class="keyword">let</span> buf = Buffer.alloc(<span class="number">1536</span>);</div><div class="line">        buf.writeUInt32BE(<span class="keyword">this</span>.time, <span class="number">4</span>);</div><div class="line">        <span class="keyword">this</span>.random.copy(buf, <span class="number">8</span>, <span class="number">0</span>, <span class="number">1528</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 客户端</span></div><div class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> net.socket();</div><div class="line"><span class="keyword">const</span> RTMP_C = <span class="keyword">new</span> C();</div><div class="line"></div><div class="line">client.connect(&#123;</div><div class="line">    <span class="attr">port</span>: <span class="number">1935</span>,</div><div class="line">    <span class="attr">host</span>: <span class="string">'example.live.com'</span>,</div><div class="line">    () =&gt; &#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'connected'</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">client.on(<span class="string">'data'</span>, (data) =&gt; &#123;</div><div class="line">    <span class="keyword">if</span> (!data) &#123;</div><div class="line">        <span class="built_in">console</span>.warn(<span class="string">'Empty Buffer.'</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S0 &amp;&amp; data.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        RTMP_C.S0 = data.readUInt8(<span class="number">0</span>);</div><div class="line">        data = data.slice(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S1 &amp;&amp; data.length &gt;= <span class="number">1536</span>) &#123;</div><div class="line">        RTMP_C.time = data.readUInt32BE(<span class="number">0</span>);</div><div class="line">        RTMP_C.random = data.slice(<span class="number">8</span>, <span class="number">1536</span>);</div><div class="line">        RTMP_C.S1 = <span class="literal">true</span>;</div><div class="line">        data = data.slice(<span class="number">1536</span>)</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'send C2'</span>);</div><div class="line">        client.write(RTMP_C.C2);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S2 &amp;&amp; data.length &gt;= <span class="number">1536</span>) &#123;</div><div class="line">        RTMP_C.S2 = <span class="literal">true</span>;</div><div class="line">        data = data.slice(<span class="number">1536</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/blog/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/22/">22</a><a class="extend next" rel="next" href="/blog/page/9/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/blog/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><a class="extend next" rel="next" href="/blog/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1507,7 +1473,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">112</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1529,7 +1495,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">314</span>
+                <span class="site-state-item-count">315</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
