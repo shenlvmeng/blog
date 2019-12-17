@@ -296,6 +296,169 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2016/05/16/binary-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2016/05/16/binary-tree/" itemprop="url">优化二叉搜索树的科普</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-16T12:36:51+08:00">
+                2016-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2016/05/16/binary-tree/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/16/binary-tree/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文目的在日后再看到这些名词时能有扫盲的作用，所以未做深入探讨。</p>
+<p>二叉搜索树的查询时间复杂度为O(h)，但是h的大小和数据密切相关，随机构建二叉搜索树可以保证期望高度h为O(lgn)，但是我们并不总能随机地构造二叉搜索树。所以就有二叉搜索树的变体来保证基本操作具有好的最坏情况性能，如AVL树，红黑树，treap树，splay树等。它们在二叉搜索树的基础上增加了额外的约束，操作更加复杂，但是保证最坏情况的动态集合操作时间复杂度为O(lgn)。下面按照时间介绍之。</p>
+<h2 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h2><p>AVL树是最早发明的自平衡二叉搜索树，查找、插入、删除在平均和最坏情况下都是O(lgn)，自平衡是通过插入和删除时一次或多次树旋转来完成的。节点的平衡因子是左子树减去右子树的高度，1、0、-1被认为是平衡的，-2或2被认为是不平衡的，需要重新平衡树。平衡因子储存在节点中，或是通过计算算出。</p>
+<p>根据不平衡的情况，AVL分成左左、右右、左右、右左四种情况，分别需要1、1、2、2次旋转调整。图略。</p>
+<p>由于AVL是高度平衡树，所以节点插入、删除后，重新平衡需要的旋转次数较多，但是因此带来的搜索效率更高。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>最常见的平衡二叉树，统计性能最好的二叉搜索树。红黑树是满足下列性质的二叉搜索树：</p>
+<ul>
+<li>每个节点都是黑色或是红色</li>
+<li>根节点是黑色</li>
+<li>每个叶节点都是黑色</li>
+<li>如果一个节点是红色，那么它的两个子节点都是黑色</li>
+<li>对于每个节点，从它到其所有子孙叶节点的路径包含的黑色节点数目相同</li>
+</ul>
+<p>由于没有AVL树对平衡的高度要求，红黑树在节点插入、删除时，只需最多3次旋转操作即可完成。虽然牺牲了查找效率，但是在经常改动的动态数据集合中，红黑树的性能要更好。可以说红黑树在复杂度和旋转次数上有比较好的折中，因此常用作数据结构的设计。</p>
+<h2 id="Treap树"><a href="#Treap树" class="headerlink" title="Treap树"></a>Treap树</h2><p>Treap树得名于搜索树trea和堆reap，是有一个附加域满足堆特征的二叉搜索树，结构相当于随机插入数据的二叉搜索树，相较其他平衡二叉树，特点是实现简单，且能基本实现随机平衡。</p>
+<p>在构成Treap树时，还需要满足堆特征，在插入、删除维护堆性质时，只需要两种旋转，相比Splay，编程复杂度要更小。性能在平衡二叉树和二叉搜索树之间。</p>
+<h2 id="Splay树"><a href="#Splay树" class="headerlink" title="Splay树"></a>Splay树</h2><p>Splay树又叫伸展树，发明于1985年。它是一种自调整形式的二叉搜索树，利用了频繁查找的数据集有限，在二叉搜索树的每次搜索后，将搜索条目通过一系列旋转搬移到离树根更近的地方。它的优势在于不需要记录平衡树的冗余信息，且编程复杂度小很多。</p>
+<p>Splay的操作为旋转，分单旋转、一字型、之字形几种。</p>
+<p>这些树的编码都较为复杂，这里略去。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2016/04/03/front-end-note-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1064,222 +1227,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2015/11/03/bloom-filter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2015/11/03/bloom-filter/" itemprop="url">海量字符串检索之二 布隆过滤器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-03T18:57:54+08:00">
-                2015-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2015/11/03/bloom-filter/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/11/03/bloom-filter/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>海量字符串检索是很考验算法效率的工作。Trie树和PAT树常用，但是内存占用严重。在垃圾邮件过滤或网络爬虫这种不要求检索结果完全正确的场景下，布隆过滤器是个很好的选择。</p>
-<h2 id="Hash函数"><a href="#Hash函数" class="headerlink" title="Hash函数"></a>Hash函数</h2><p>Hash（中译为哈希，或者散列）函数在计算机领域，尤其是数据快速查找领域，加密领域用的极广。其作用是将一个大的数据集映射到一个小的数据集上面（这些小的数据集叫做哈希值，或者散列值）。Hash table（散列表，也叫哈希表），是根据哈希值(Key value)而直接进行访问的数据结构。也就是说，它通过把哈希值映射到表中一个位置来访问记录，以加快查找的速度。时间复杂度只有O(1).</p>
-<p>哈希函数有以下两个特点：</p>
-<ul>
-<li>如果两个散列值是不相同的（根据同一函数），那么这两个散列值的原始输入也是不相同的。</li>
-<li>散列函数的输入和输出不是唯一对应关系的，如果两个散列值相同，两个输入值很可能是相同的。但也可能不同，这种情况称为“散列碰撞”（或者“散列冲突”）。<br>解决冲突的方法有许多，如向左或向右移位，拉链法等等。在数据量不大的情况下，Hash函数作为查找的解决方法看上去是很美好的。然而，数据量大了之后呢。不妨设想下面的应用场景。</li>
-</ul>
-<p>假设要你写一个网络蜘蛛（web crawler）。由于网络间的链接错综复杂，蜘蛛在网络间爬行很可能会形成“环”。为了避免形成“环”，就需要知道蜘蛛已经访问过那些URL。给一个URL，怎样知道蜘蛛是否已经访问过呢？稍微想想，就会有如下几种方案：</p>
-<ol>
-<li>将访问过的URL保存到数据库。</li>
-<li>用HashSet将访问过的URL保存起来。那只需接近O(1)的代价就可以查到一个URL是否被访问过了。</li>
-<li>URL经过MD5或SHA-1等单向哈希后再保存到HashSet或数据库。</li>
-<li>Bit-Map方法。建立一个BitSet，将每个URL经过一个哈希函数映射到某一位。</li>
-</ol>
-<p>以上方法在数据量较小的情况下都能完美解决问题，但是当数据量变得非常庞大时问题就来了。</p>
-<p>方法1的缺点：数据量变得非常庞大后关系型数据库查询的效率会变得很低。而且每来一个URL就启动一次数据库查询是不是太小题大做了？</p>
-<p>方法2的缺点：太消耗内存。随着URL的增多，占用的内存会越来越多。就算只有1亿个URL，每个URL只算50个字符，就需要5GB内存。</p>
-<p>方法3：由于字符串经过MD5处理后的信息摘要长度只有128Bit，SHA-1处理后也只有160Bit，因此方法3比方法2节省了好几倍的内存。</p>
-<p>方法4消耗内存是相对较少的，但缺点是单一哈希函数发生冲突的概率太高。还记得数据结构课上学过的Hash表冲突的各种解决方法么？若要降低冲突发生的概率到1%，就要将BitSet的长度设置为URL个数的100倍</p>
-<p>实质上上面的算法都忽略了一个重要的隐含条件：允许小概率的出错，不一定要100%准确！也就是说少量url实际上没有没网络蜘蛛访问，而将它们错判为已访问的代价是很小的——大不了少抓几个网页呗。</p>
-<p>上面所举的爬虫只是一个例子，在允许少量错误的情况下，布隆过滤器将是最好的选择。</p>
-<h2 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h2><p><img src="/blog/images/bloom-filter-1.png" alt=""></p>
-<p>布隆过滤器（Bloom Filter）是由布隆（Burton Howard Bloom）在1970年提出的。它实际上是由一个很长的二进制向量和一系列随机映射函数组成，布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都远远超过一般的算法，缺点是有一定的误识别率（假正例False positives，即Bloom Filter报告某一元素存在于某集合中，但是实际上该元素并不在集合中）和删除困难，但是没有识别错误的情形（即假反例False negatives，如果某个元素确实没有在该集合中，那么Bloom Filter 是不会报告该元素存在于集合中的，所以不会漏报）。</p>
-<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>如果想判断一个元素是不是在一个集合里，一般想到的是将所有元素保存起来，然后通过比较确定。链表，树等等数据结构都是这种思路. 但是随着集合中元素的增加，我们需要的存储空间越来越大，检索速度也越来越慢。不过世界上还有一种叫作散列表（又叫哈希表，Hash table）的数据结构。它可以通过一个Hash函数将一个元素映射成一个位阵列（Bit Array）中的一个点。这样一来，我们只要看看这个点是不是 1 就知道可以集合中有没有它了。这就是布隆过滤器的基本思想。</p>
-<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
-<li>优点——相比于其它的数据结构，布隆过滤器在空间和时间方面都有巨大的优势。布隆过滤器存储空间和插入/查询时间都是常数。另外, Hash 函数相互之间没有关系，方便由硬件并行实现。布隆过滤器不需要存储元素本身，在某些对保密要求非常严格的场合有优势。</li>
-<li>缺点——误算率（False Positive）是其中之一。随着存入的元素数量增加，误算率随之增加。但是如果元素数量太少，则使用散列表足矣。另外，一般情况下不能从布隆过滤器中删除元素. 我们很容易想到把位列阵变成整数数组，每插入一个元素相应的计数器加1, 这样删除元素时将计数器减掉就可以了。然而要保证安全的删除元素并非如此简单。</li>
-</ul>
-<h3 id="误算率（False-Positive）分析"><a href="#误算率（False-Positive）分析" class="headerlink" title="误算率（False Positive）分析"></a>误算率（False Positive）分析</h3><p>一个Bloom Filter有以下参数：</p>
-<p>m | bit数组的宽度（bit数）<br>n | 加入其中的key的数量<br>k | 使用的hash函数的个数<br>f | False Positive的比率</p>
-<p>假设 Hash 函数以等概率条件选择并设置 Bit Array 中的某一位，m 是该位数组的大小，k 是 Hash 函数的个数，那么位数组中某一特定的位在进行元素插入时的 Hash 操作中没有被置位的概率是：1 - 1/m</p>
-<p>那么在所有 k 次 Hash 操作后该位都没有被置 “1” 的概率是：(1 - 1 / m)^k</p>
-<p>如果我们插入了 n 个元素，那么某一位仍然为 “0” 的概率是：(1 - 1 / m) ^ k*n</p>
-<p>因而该位为 “1”的概率是：1 - (1 - 1 / m) ^ k*n</p>
-<p>现在检测某一元素是否在该集合中。标明某个元素是否在集合中所需的 k 个位置都按照如上的方法设置为 “1”，但是该方法可能会使算法错误的认为某一原本不在集合中的元素却被检测为在该集合中（False Positives），该概率由以下公式确定：</p>
-<p>1 - (1 - 1 / m) ^ k<em>n ≈ (1 - e ^ (-k </em> n / m)) ^ k</p>
-<p>其实上述结果是在假定由每个 Hash 计算出需要设置的位（bit） 的位置是相互独立为前提计算出来的，不难看出，随着 m （位数组大小）的增加，假正例（False Positives）的概率会下降，同时随着插入元素个数 n 的增加，False Positives的概率又会上升，对于给定的m，n，如何选择Hash函数个数 k 由以下公式确定：</p>
-<p>m / n <em> ln2 ≈ 0.7 </em> m / n</p>
-<p>此时False Positives的概率为：2 ^ -k ≈ 0.6185 ^ (m / n)</p>
-<p>而对于给定的False Positives概率 p，如何选择最优的位数组大小 m 呢，</p>
-<p>m = -n * lnp / (ln2) ^ 2</p>
-<p>上式表明，位数组的大小最好与插入元素的个数成线性关系，对于给定的 m，n，k，假正例概率最大为：(1 - e ^ (-k * (n + 0.5)/(m - 1))) ^ k</p>
-<p>值得注意的是，k值并非越大越好。可以证明，当 k = ln(2) * m/n 时出错的概率是最小的。</p>
-<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-加入字符串"><a href="#1-加入字符串" class="headerlink" title="1.加入字符串"></a>1.加入字符串</h4><p><img src="/blog/images/bloom-filter-2.jpg" alt=""></p>
-<p>为了表达S={x1, x2,…,xn}这样一个n个元素的集合，Bloom Filter使用k个相互独立的哈希函数（Hash Function），它们分别将集合中的每个元素映射到{1,…,m}的范围中。</p>
-<p>当我们往Bloom Filter中增加任意一个元素x时候，我们使用k个哈希函数得到k个哈希值，然后将数组中对应的比特位设置为1。即第i个哈希函数映射的位置hash<sub>i</sub>(x)就会被置为1（1≤i≤k）。</p>
-<p><strong>注意：</strong>如果一个位置多次被置为1，那么只有第一次会起作用，后面几次将没有任何效果。在下图中，k=3，且有两个哈希函数选中同一个位置（从左边数第五位，即第二个”1”处）。</p>
-<h4 id="2-检查字符串是否在集合中"><a href="#2-检查字符串是否在集合中" class="headerlink" title="2. 检查字符串是否在集合中"></a>2. 检查字符串是否在集合中</h4><p><img src="/blog/images/bloom-filter-3.jpg" alt=""></p>
-<p>在判断y是否属于这个集合时，我们只需要对y使用k个哈希函数得到k个哈希值，如果所有hash<sub>i</sub>(y)的位置都是1（1≤i≤k），即k个位置都被设置为1了，那么我们就认为y是集合中的元素，否则就认为y不是集合中的元素。下图中y<sub>1</sub>就不是集合中的元素（因为y1有一处指向了“0”位）。y<sub>2</sub>或者属于这个集合，或者刚好是一个false positive。</p>
-<h4 id="3-删除字符串"><a href="#3-删除字符串" class="headerlink" title="3. 删除字符串"></a>3. 删除字符串</h4><p><strong>通常</strong>，字符串加入了就被不能删除了，因为删除会影响到其他字符串，且无法判断删除字符串是否真在集合内。实在需要删除字符串的可以使用Counting bloomfilter(CBF)，这是一种基本Bloom Filter的变体，CBF将基本Bloom Filter每一个Bit改为一个计数器，这样就可以实现删除字符串的功能了。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>C语言内，并没有定义Bitmap这个容器，所以需要自己实现。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX 268435456</span></div><div class="line"></div><div class="line"><span class="comment">/*init bitmap*/</span></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">char</span> * <span class="title">bitmap_init</span><span class="params">(<span class="keyword">int</span> size)</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> bytes;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> * p = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">if</span>(size % <span class="number">8</span> == <span class="number">0</span>) </div><div class="line">		bytes = size / <span class="number">8</span>;</div><div class="line">	<span class="keyword">else</span> </div><div class="line">		bytes = size / <span class="number">8</span> + <span class="number">1</span>;</div><div class="line">	p = (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)<span class="built_in">malloc</span>(bytes);</div><div class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == p)</div><div class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">	<span class="built_in">memset</span>(p, <span class="number">0</span>, bytes);</div><div class="line">	<span class="keyword">return</span> p;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*set flag on a certain index bit*/</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitmap_set</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> * bitmap, <span class="keyword">int</span> index, <span class="keyword">int</span> flag)</span></span>&#123;</div><div class="line"><span class="comment">//index range should have been checked outside!</span></div><div class="line">	<span class="keyword">int</span> seg = index / <span class="number">8</span>;</div><div class="line">	<span class="keyword">int</span> off = index % <span class="number">8</span>;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> p =  <span class="number">0x1</span>&lt;&lt; off;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)</div><div class="line">		bitmap[seg] |= p;</div><div class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(flag == <span class="number">0</span>)</div><div class="line">		bitmap[seg] &amp;= ~p;</div><div class="line">	<span class="keyword">else</span></div><div class="line">		<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">	<span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*get flag on a certain index bit*/</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitmap_get</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> * bitmap, <span class="keyword">int</span> index)</span></span>&#123;</div><div class="line"><span class="comment">///check index range outside first!</span></div><div class="line">	<span class="keyword">int</span> seg = index / <span class="number">8</span>;</div><div class="line">	<span class="keyword">int</span> off = index % <span class="number">8</span>;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> p = <span class="number">0x1</span> &lt;&lt; off; 	<span class="keyword">int</span> tmp = bitmap[seg] &amp; p; 	<span class="keyword">return</span> tmp &gt; <span class="number">0</span> ? <span class="number">1</span> :<span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">/*free bitmap*/</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">bitmap_free</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> * bitmap)</span></span>&#123;</div><div class="line">	<span class="built_in">free</span>(bitmap);</div><div class="line">	*bitmap = <span class="literal">NULL</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>之后，通过位图的置位和取位即可完成Bloom Filter的插入和检测操作。Hash函数选取如下（实际上，可以通过一个函数生成k个独立的哈希函数，存在优化空间）<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">RSHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> b    = <span class="number">378551</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> a    = <span class="number">63689</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash = hash * a + (*str);</div><div class="line">      a = a * b;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of RS Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">JSHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">1315423911</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="function">fo <span class="title">r</span><span class="params">(i = <span class="number">0</span>; i &lt; len; str++, i++)</span></span></div><div class="line">   &#123;</div><div class="line">      hash ^= ((hash &lt;&lt; <span class="number">5</span>) + (*str) + (hash &gt;&gt; <span class="number">2</span>));</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of JS Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">PJWHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> BitsInUnsignedInt = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)(<span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>) * <span class="number">8</span>);</div><div class="line">   <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> ThreeQuarters     = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)((BitsInUnsignedInt  * <span class="number">3</span>) / <span class="number">4</span>);</div><div class="line">   <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> OneEighth         = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)(BitsInUnsignedInt / <span class="number">8</span>);</div><div class="line">   <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> HighBits          = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)(<span class="number">0xFFFFFFFF</span>) &lt;&lt; (BitsInUnsignedInt - OneEighth);</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> test = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++) &#123;</div><div class="line">      hash = (hash &lt;&lt; OneEighth) + (*str);</div><div class="line">      <span class="keyword">if</span>((test = hash &amp; HighBits) != <span class="number">0</span>) &#123;</div><div class="line">         hash = (( hash ^ (test &gt;&gt; ThreeQuarters)) &amp; (~HighBits));</div><div class="line">      &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of  P. J. Weinberger Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">ELFHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> x    = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; str++, i++) &#123;</div><div class="line">      hash = (hash &lt;&lt; <span class="number">4</span>) + (*str);</div><div class="line">      <span class="keyword">if</span> ((x = hash &amp; <span class="number">0xF0000000</span>L) != <span class="number">0</span>) &#123;</div><div class="line">         hash ^= (x &gt;&gt; <span class="number">24</span>);</div><div class="line">      &#125;</div><div class="line">      hash &amp;= ~x;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of ELF Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">BKDRHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> seed = <span class="number">131</span>; <span class="comment">/* 31 131 1313 13131 131313 etc.. */</span></div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++) &#123;</div><div class="line">      hash = (hash * seed) + (*str);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of BKDR Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">SDBMHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++) &#123;</div><div class="line">      hash = (*str) + (hash &lt;&lt; <span class="number">6</span>) + (hash &lt;&lt; <span class="number">16</span>) - hash;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of SDBM Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">DJBHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">5381</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash = ((hash &lt;&lt; <span class="number">5</span>) + hash) + (*str);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of DJB Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">DEKHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = len;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash = ((hash &lt;&lt; <span class="number">5</span>) ^ (hash &gt;&gt; <span class="number">27</span>)) ^ (*str);</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of DEK Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">BPHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash = hash &lt;&lt; <span class="number">7</span> ^ (*str);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of BP Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">FNVHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> fnv_prime = <span class="number">0x811C9DC5</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash      = <span class="number">0</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i         = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash *= fnv_prime;</div><div class="line">      hash ^= (*str);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of FNV Hash Function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">APHash</span><span class="params">(<span class="keyword">char</span>* str, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> hash = <span class="number">0xAAAAAAAA</span>;</div><div class="line">   <span class="keyword">unsigned</span> <span class="keyword">int</span> i    = <span class="number">0</span>;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; len; str++, i++)</div><div class="line">   &#123;</div><div class="line">      hash ^= ((i &amp; <span class="number">1</span>) == <span class="number">0</span>)</div><div class="line">         ? (  (hash &lt;&lt;  <span class="number">7</span>) ^ (*str) * (hash &gt;&gt; <span class="number">3</span>))</div><div class="line">         : (~((hash &lt;&lt; <span class="number">11</span>) + ((*str) ^ (hash &gt;&gt; <span class="number">5</span>))));</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> hash;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* End Of AP Hash Function */</span></div><div class="line"></div><div class="line"><span class="comment">/*Hash string with 11 different hash function(flag = 0)</span></div><div class="line">Or Search string in a maked bloom filter(flag = 1)</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bloomfilter_insert</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> * bitmap, <span class="keyword">char</span>* emailstring, <span class="keyword">int</span> flag)</span></span>&#123;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> index;</div><div class="line"></div><div class="line">	index = RSHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = JSHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = PJWHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = ELFHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = BKDRHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = SDBMHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = DJBHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = DEKHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = BPHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = FNVHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	index = APHash(emailstring,<span class="built_in">strlen</span>(emailstring)) % MAX;</div><div class="line">	<span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;<span class="keyword">if</span>(bitmap_get(bitmap,index) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;&#125;</div><div class="line">	<span class="keyword">else</span> bitmap_set(bitmap,index,<span class="number">1</span>);</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>测试部分略。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>实际操作中，Bloom Filter达到了和Trie一样的效果，且时间短，占用内存少。可见其效率。实际上，Bloom Filter已有诸多应用：</p>
-<ul>
-<li>Google 著名的分布式数据库 Bigtable 使用了布隆过滤器来查找不存在的行或列，以减少磁盘查找的IO次数。</li>
-<li>Squid 网页代理缓存服务器在 <a href="http://wiki.squid-cache.org/SquidFaq/CacheDigests" target="_blank" rel="external">cache digests</a>中使用了也布隆过滤器。</li>
-<li>Venti 文档存储系统也采用布隆过滤器来检测先前存储的数据。</li>
-<li>SPIN 模型检测器也使用布隆过滤器在大规模验证问题时跟踪可达状态空间。</li>
-<li>Google Chrome浏览器使用了布隆过滤器加速安全浏览服务。</li>
-</ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li><a href="http://zh.wikipedia.org/zh/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" target="_blank" rel="external">维基百科：布隆过滤器</a></li>
-<li><a href="http://www.google.com.hk/ggblog/googlechinablog/2007/07/bloom-filter_7469.html" target="_blank" rel="external">数学之美二十一：布隆过滤器（Bloom Filter）</a></li>
-<li><a href="http://www.cnblogs.com/haippy/archive/2012/07/13/2590351.html" target="_blank" rel="external">布隆过滤器(Bloom Filter)详解 - Haippy - 博客园</a></li>
-<li><a href="http://blog.csdn.net/hguisu/article/details/7866173" target="_blank" rel="external">海量数据处理算法—Bloom Filter</a></li>
-<li><a href="http://www.cnblogs.com/heaad/archive/2011/01/02/1924195.html" target="_blank" rel="external">那些优雅的数据结构(1) : BloomFilter——大规模数据处理利器</a></li>
-<li><a href="http://blog.csdn.net/lmh12506/article/details/7575651" target="_blank" rel="external">Bloom Filter算法详解及实例</a></li>
-<li><a href="http://blog.chinaunix.net/uid-22663647-id-1771837.html" target="_blank" rel="external">bitmap应用及C语言实现</a></li>
-<li><a href="http://www.oschina.net/code/snippet_1178986_47569" target="_blank" rel="external">bitmap C语言实现</a></li>
-<li><a href="http://www.partow.net/programming/hashfunctions/" target="_blank" rel="external">General Purpose Hash Function Algorithms</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1330,7 +1277,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">112</span>
+                <span class="site-state-item-count">113</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1352,7 +1299,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">315</span>
+                <span class="site-state-item-count">322</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

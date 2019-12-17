@@ -296,6 +296,183 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/11/17/photogallery-improvement-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/11/17/photogallery-improvement-2/" itemprop="url">Photogallery技术演进第2步</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T20:56:12+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/11/17/photogallery-improvement-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/11/17/photogallery-improvement-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="构建工具升级"><a href="#构建工具升级" class="headerlink" title="构建工具升级"></a>构建工具升级</h2><p>因为要拆分代码，便于管理，需要使用<code>import</code>和<code>export</code>，因此必须要引入webpack这样的打包工具到gulp中，使用<a href="https://github.com/shama/webpack-stream" target="_blank" rel="external">webpack-stream</a>，具体使用方法和其他的gulp插件类似，在pipe在这样插入就行了<code>.pipe(webpack())</code>，配置方式和webpack一样。（webpack中引入babel-loader的过程就不赘述了）引入webpack后，开发流程和一起类似，<code>gulp</code>启动测试服务器，使用webpack通过<code>entry.js</code>打包代码，CSS和JSON相关流程不变。release时，增加了minify的流程，让js流程后的代码再压缩一遍。</p>
+<p>另外，引入babel后，可以用ES6语法改写<code>gulpfile.js</code>。最后的<code>gulpfile.babel.js</code>像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gulp <span class="keyword">from</span> <span class="string">'gulp'</span>;</div><div class="line"><span class="keyword">import</span> rename <span class="keyword">from</span> <span class="string">'gulp-rename'</span>;</div><div class="line"><span class="keyword">import</span> uglify <span class="keyword">from</span> <span class="string">'gulp-uglify'</span>;</div><div class="line"><span class="keyword">import</span> cleanCSS <span class="keyword">from</span> <span class="string">'gulp-clean-css'</span>;</div><div class="line"><span class="keyword">import</span> jsonminify <span class="keyword">from</span> <span class="string">'gulp-jsonminify'</span>;</div><div class="line"><span class="keyword">import</span> webserver <span class="keyword">from</span> <span class="string">'gulp-webserver'</span>;</div><div class="line"><span class="keyword">import</span> webpack <span class="keyword">from</span> <span class="string">'webpack-stream'</span>;</div><div class="line"></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/index.js'</span>)</div><div class="line">    .pipe(webpack(&#123;</div><div class="line">      <span class="attr">module</span>: &#123;</div><div class="line">        <span class="attr">rules</span>: [</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.js$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">"babel-loader"</span> &#125;</div><div class="line">        ]</div><div class="line">      &#125;</div><div class="line">    &#125;))</div><div class="line">    .pipe(rename(<span class="string">"index.js"</span>))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'minify'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'dist/index.js'</span>)</div><div class="line">    .pipe(uglify())</div><div class="line">    .pipe(rename(<span class="string">"index.min.js"</span>))</div><div class="line">    .pipe(gulp.dest(<span class="string">"dist"</span>));</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'css'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src([<span class="string">'src/index.css'</span>])</div><div class="line">		.pipe(cleanCSS(&#123;<span class="attr">compatibility</span>: <span class="string">'ie8'</span>&#125;))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'json'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/meta*.json'</span>)</div><div class="line">		.pipe(jsonminify())</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>))</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.src(<span class="string">'./'</span>)</div><div class="line">    .pipe(webserver(&#123;</div><div class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">open</span>: <span class="literal">true</span></div><div class="line">    &#125;));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch([<span class="string">'src/*.js'</span>, <span class="string">'src/**/*.js'</span>, <span class="string">'src/**/*.vue'</span>], [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'assets'</span>, [<span class="string">'json'</span>, <span class="string">'css'</span>, <span class="string">'js'</span>]);</div><div class="line">gulp.task(<span class="string">'default'</span>, [<span class="string">'assets'</span>, <span class="string">'webserver'</span>, <span class="string">'watch'</span>]);</div><div class="line">gulp.task(<span class="string">"release"</span>, [<span class="string">'assets'</span>, <span class="string">'minify'</span>]);</div></pre></td></tr></table></figure>
+<h2 id="使用单文件组件"><a href="#使用单文件组件" class="headerlink" title="使用单文件组件"></a>使用单文件组件</h2><p>引入webpack后，开始高高兴兴地分模块拆分代码，却发现分组件使用Vue时，不是单纯地定义组件配置信息，然后传给入口组件就行。必须要引入全家桶，<code>vue-loader</code>等工具，文件不得不用.vue这样的形式组织（现在开始觉得React组件的组织比Vue舒服了）。本来使用单文件的形式就是想尽量精简，可随着功能逐渐健全，看来重构也是避免不了的啊。在<a href="https://github.com/vuejs/vue-loader" target="_blank" rel="external">vue-loader</a>的介绍里，居然还要通过<code>vue-cli</code>来大一统，但是我一是想维持项目尽量轻量精简，使用gulp的工具链；二是项目已经写了很久了，全部迁移过去成本有些大。于是，通过<code>vue-cli</code>新建样本项目，对着<code>package.json</code>和<code>webpack.config.js</code>一抄了事。</p>
+<p>加上种种<code>.vue</code>文件的相关配置，<code>gulp.babel.js</code>最后长下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ...</span></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">'src/index.js'</span>)</div><div class="line">    .pipe(webpack(&#123;</div><div class="line">      <span class="attr">module</span>: &#123;</div><div class="line">        <span class="attr">rules</span>: [</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.js$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">"babel-loader"</span> &#125;,</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.vue$/</span>, <span class="attr">loader</span>: <span class="string">'vue-loader'</span>&#125;,</div><div class="line">          &#123; <span class="attr">test</span>: <span class="regexp">/\.(png|jpg|gif|svg)$/</span>, <span class="attr">loader</span>: <span class="string">'file-loader'</span>, <span class="attr">options</span>: &#123; <span class="attr">name</span>: <span class="string">'[name].[ext]?[hash]'</span> &#125; &#125;</div><div class="line">        ]</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">resolve</span>: &#123;</div><div class="line">        <span class="attr">alias</span>: &#123;</div><div class="line">          <span class="string">'vue$'</span>: <span class="string">'vue/dist/vue.esm.js'</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">extensions</span>: [<span class="string">'*'</span>, <span class="string">'.js'</span>, <span class="string">'.vue'</span>, <span class="string">'.json'</span>]</div><div class="line">      &#125;</div><div class="line">    &#125;))</div><div class="line">    .pipe(rename(<span class="string">"index.js"</span>))</div><div class="line">		.pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p>下面需要开始拆分代码了。根据React/Vue这样框架通常的设计经验，需要下面一些组成：</p>
+<ul>
+<li><code>actions</code>  存储状态管理的动作</li>
+<li><code>components</code>  存储相互解耦的”dumb”组件，最好和业务无关</li>
+<li><code>constants</code>  存储全局常量</li>
+<li><code>containers</code>  存储组织<code>components</code>的业务容器组件</li>
+<li><code>entry</code>  存储入口文件</li>
+<li><code>helper</code>  存储工具函数</li>
+<li><code>reducers</code>  存储状态管理的reducers</li>
+<li><code>settings</code>  存储全局配置，通常用来初始化store</li>
+<li><code>store</code>  存储全局状态</li>
+<li><code>templates</code>  存储引入js的html文件</li>
+</ul>
+<p>我的项目比较简单，一没有状态管理（后面复杂了之后可能会引入😂），二只有三个组件，只要上面的<code>components</code>, <code>constants</code>, <code>containers</code>, <code>helper</code>的就够用了。最后src下的文件目录大概像下面这样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">├── App.vue</div><div class="line">├── components</div><div class="line">│   └── column</div><div class="line">│       └── Column.vue</div><div class="line">├── constants</div><div class="line">│   └── index.js</div><div class="line">├── containers</div><div class="line">│   ├── info</div><div class="line">│   │   └── Info.vue</div><div class="line">│   └── wall</div><div class="line">│       └── Wall.vue</div><div class="line">├── helper</div><div class="line">│   └── utils.js</div><div class="line">├── index.css</div><div class="line">└── index.js</div></pre></td></tr></table></figure>
+<p>在拆分时遇到了一些数据需要从最外层透传到子组件的情况，如<code>res</code>, <code>tag_list</code>, <code>tag_keys</code>。不过他们是只读的，而且数目很少，所以并不需要状态管理，只用通过props传下去就行了。</p>
+<h2 id="新功能"><a href="#新功能" class="headerlink" title="新功能"></a>新功能</h2><p>重构完之后，终于可以写新功能了。新功能主要是增加两个伪路由，方便页面的分享（这个需求我之前遇到过几次了）。页面是spa类型的，所以前端路由可以采用hash或history H5 API来实现。同时也有许多在这个基础上了前端路由库，提供一站式解决方案。我的需求目前其实不需要完整的路由方案：</p>
+<ul>
+<li>图片详情页可以分享</li>
+<li>搜索结果可以分享</li>
+</ul>
+<p>因此，设计上使用hash的方案，对于图片详情页，用<code>!</code>开头，后接图片序号。对于搜索结果页，则没有开头的<code>!</code>，仅使用<code>/</code>隔开每一个搜索关键字。对hash的读写上，没有什么困难的地方：</p>
+<ul>
+<li><strong>读</strong>：<code>App.vue</code>根据hash注入对应的数据，更改默认视图，对于图片详情页，更改展示组件</li>
+<li><strong>写</strong>：切换组件时，记录当前数据到<code>location.hash</code>，方便直接复制链接分享</li>
+</ul>
+<h2 id="后面的计划"><a href="#后面的计划" class="headerlink" title="后面的计划"></a>后面的计划</h2><p>现在网站还是有点单调了。只能自娱自乐，没有互动。后面应该会考虑在每张图片接入Disqus的问题。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/11/04/sapiens-a-brief-history-of-humankind/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1408,220 +1585,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/09/04/pwa-and-hybrid-brief/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/09/04/pwa-and-hybrid-brief/" itemprop="url">PWA以及Hybrid开发方案简介</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-04T17:59:00+08:00">
-                2017-09-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/09/04/pwa-and-hybrid-brief/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/04/pwa-and-hybrid-brief/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="PWA"><a href="#PWA" class="headerlink" title="PWA"></a>PWA</h2><p>PWA(Progressive Web App)渐进增强的Web App。最早提出在2015年，它最初的设计理念是，保留Web的精髓，让Web逐渐演进成App，而非现在Hybrid App（即现在最常用的UIWebView/WebView+前端）形式。</p>
-<ul>
-<li>可安装性</li>
-<li>离线能力</li>
-<li>推送能力</li>
-</ul>
-<p>在PWA的概念下，网页可以被添加到主屏同时支持全屏运行，在Service Worker帮助下可以离线运行，最后它仍是Web而并不用添加到App Store中。</p>
-<p>说到Service Worker很多人可能会想到Web Worker的概念。这两个看起来是包含关系的概念实际上有区别。</p>
-<ul>
-<li>Web Worker是JS多线程的一种实现方式，借助它可以让脚本在后台运行，worker对象和主线程通过message的方式交流，caniuse上的支持度为93%</li>
-<li>Service Worker是浏览器的一个新特性，配合PWA的概念一起使用，是PWA网络请求的代理，结合缓存管理等方案，提供很好的离线体验，caniuse支持度仅有73%</li>
-</ul>
-<p>一个<a href="https://nolanlawson.github.io/cascadia-2016/#/35" target="_blank" rel="external">介绍ppt</a>上展示了具体的区别：</p>
-<ul>
-<li>和tab的关系，Web Worker是一tab对多Web Worker，Service Worker则是多对一</li>
-<li>生命周期，Web Worker和选项卡同生共死，Service Worker则是完全独立的</li>
-<li>擅长场景，Web Worker用在多线程协同，Service Worker则可以提供很好的离线体验</li>
-<li>为保证安全Service Worker要求scheme为https</li>
-</ul>
-<p>Service Worker通过<code>navigator.serviceWorker.register(&#39;path&#39;).then</code>的方式注册，之后便能通过监听事件拿到所有scope里发生的请求，当然，可以在path后的第二个参数中显式地声明作用域（如<code>{scope: &#39;/js&#39;}</code>）。Service Worker可以监听它声明周期中的各事件</p>
-<ul>
-<li><strong>Install</strong> 发生在第一次注册和sw.js（这里的文件名只是举个例子）改变时，通常在这个阶段设定SW的初始状态和准备好缓存。缓存可以借助<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Cache" target="_blank" rel="external">caches API</a>完成。</li>
-<li><strong>Fetch</strong> 发生在网络请求产生时，任何匹配了Request的网络请求都会被拦截，并返回缓存数据。只有找不到存在的缓存，才会产生一个请求</li>
-<li><strong>Activate</strong> 发生在SW更新或网页关掉再重新打开时，触发在install之后</li>
-<li><strong>Sync</strong> 发生在用户有网络时，用在用户进行依赖网络的操作时，会推迟到有网络时再执行。简单来说，所有的依赖网络的操作，都需要使用sync事件</li>
-</ul>
-<p>除了Service Worker，Manifest也是很重要的一部分。它用来描述应用程序的各种信息。它包括下面一些成员</p>
-<ul>
-<li><strong>background-color</strong> 在css加载前用作应用背景颜色</li>
-<li><strong>name</strong> 应用名，<strong>short_name</strong>也是类似意思</li>
-<li><strong>description</strong> 应用描述</li>
-<li><strong>display</strong> 显示模式，有<code>fullscreen</code>, <code>standalone</code>, <code>minimal-ui</code>和<code>browser</code>几种可以选择</li>
-<li><strong>icons</strong> 应用图标，数组类型，每项包含<code>src</code>, <code>type</code>和<code>sizes</code>几个属性</li>
-<li><strong>orientation</strong> 默认的屏幕朝向</li>
-</ul>
-<p><a href="https://pwa.rocks/" target="_blank" rel="external">这里</a>有一个收集PWA酷站的地方。</p>
-<h2 id="Hybrid方案相关"><a href="#Hybrid方案相关" class="headerlink" title="Hybrid方案相关"></a>Hybrid方案相关</h2><p>离线包管理方案：</p>
-<ol>
-<li>本地开发测试，提交特性分支到远端，</li>
-<li>通过提MR的方式合并在当前迭代分支上，触发basement自动CI为zip格式，根据当前发包的状态，传递给NebulaMng管理</li>
-<li>NebulaMng基于zip生成版本号和配置文件，构建整个离线包，并推送给应用中心</li>
-<li>应用中心负责向客户端推送更新</li>
-<li>客户端根据策略拉取离线包、解压、渲染</li>
-</ol>
-<p>离线包本地渲染方案：</p>
-<ol>
-<li>加载公共资源包</li>
-<li>判断本地是否已安装该离线包，若有，则加载到内存，否则触发离线包下载</li>
-<li>WebView加载离线包url链接，加载前检查内存中是否存在页面数据，若有，从内存中取出并渲染，否则fallback到线上cdn地址</li>
-</ol>
-<p>离线包更新方案：</p>
-<ol>
-<li>应用中心广播或服务端发sync消息触发</li>
-<li>向wapcenter获取当前客户端下所有包信息</li>
-<li>在本地没有当前版本且WiFi条件或auto_install为1时更新本地包</li>
-</ol>
-<p>双向通信和JSBridge原理：</p>
-<ul>
-<li>WebView在载入页面时，注入JSBridge脚本。通过调用JSBridge.call，触发调用参数的序列化，并调用<code>console.log(h5container.message:xxx)</code>或<code>window.prompt</code>事件。WebView监听页面的console或prompt事件，解析传递的参数信息，然后通过NebulaService分发事件</li>
-<li>Service、Session、Page实例化时，内部都有一个H5PluginManager成员，通过类似EventEmitter的形式存储着一个action -&gt; plugin的map。每个plugin都有interceptEvent和handleEvent两个函数，处理事件的拦截和处理两个阶段</li>
-<li>WebView通过loadUrl(“javascript:JsBridge.callback”)的形式输入结果并运行回调</li>
-</ul>
-<p>实现上类似这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">;<span class="comment">//JsBridge</span></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">window</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> callbackList = &#123;&#125;;</div><div class="line"></div><div class="line">  <span class="built_in">window</span>.JsBridge = &#123;</div><div class="line">    <span class="comment">/* 参数说明</span></div><div class="line">     * @evt &#123;string&#125; 调用接口名称 (必须)</div><div class="line">     * @params &#123;object&#125; 配置参数 (可选)</div><div class="line">     * @callback &#123;function&#125; 回调函数 (可选)</div><div class="line">     */</div><div class="line">    call: <span class="function"><span class="keyword">function</span>(<span class="params">evt, params, callback</span>) </span>&#123;</div><div class="line">      <span class="comment">//第一个参数必须为string</span></div><div class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> evt != <span class="string">'string'</span>) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> params == <span class="string">'function'</span>) &#123;</div><div class="line">        callback = params;</div><div class="line">        params = <span class="literal">null</span>;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">typeof</span> params != <span class="string">'object'</span>) &#123;</div><div class="line">        params = <span class="literal">null</span>;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> callbackId = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime() + <span class="string">''</span>;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> callback == <span class="string">'function'</span>) &#123;</div><div class="line">        callbackList[callbackId] = callback;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> msg = &#123;</div><div class="line">        <span class="attr">callbackId</span>: callbackId,</div><div class="line">        <span class="attr">action</span>: evt,</div><div class="line">        <span class="attr">data</span>: params || &#123;&#125;</div><div class="line">      &#125;;</div><div class="line">      prompt(<span class="string">'JsBridgeCall'</span>, <span class="built_in">JSON</span>.stringify(msg));</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">/* 参数说明</span></div><div class="line">     * @params &#123;object&#125; 返回的数据 (必须)</div><div class="line">     * 数据示例：&#123; callbackId: 'xxx', data: '' &#125;</div><div class="line">     */</div><div class="line">    callback: <span class="function"><span class="keyword">function</span>(<span class="params">params</span>) </span>&#123;</div><div class="line">      <span class="comment">// params = JSON.parse(params);</span></div><div class="line">      <span class="keyword">var</span> callbackId = params.callbackId,</div><div class="line">        data = params.data,</div><div class="line">        callbackHandler = callbackList[callbackId];</div><div class="line">      callbackHandler &amp;&amp; callbackHandler.call(<span class="literal">null</span>, data);</div><div class="line">      <span class="keyword">delete</span> callbackList[callbackId]; <span class="comment">//删除回调</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;)(<span class="built_in">window</span>)</div><div class="line"></div><div class="line"></div><div class="line">;<span class="comment">//JsBridgeReady</span></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">document</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> evt = <span class="built_in">document</span>.createEvent(<span class="string">'HTMLEvents'</span>);</div><div class="line">  evt.initEvent(<span class="string">'JsBridgeReady'</span>, <span class="literal">false</span>, <span class="literal">false</span>);</div><div class="line">  <span class="built_in">document</span>.dispatchEvent(evt)</div><div class="line">&#125;)(<span class="built_in">document</span>);</div></pre></td></tr></table></figure>
-<p>native和H5混合方案：</p>
-<ul>
-<li>在RootView中创建离线包View再异步添加进来</li>
-<li>通过JSBridge进行交互</li>
-<li>提前拦截touch事件，防止冲突</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1672,7 +1635,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">112</span>
+                <span class="site-state-item-count">113</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1694,7 +1657,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">315</span>
+                <span class="site-state-item-count">322</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

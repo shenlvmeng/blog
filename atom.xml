@@ -5,7 +5,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="http://shenlvmeng.github.com/blog/"/>
-  <updated>2019-11-15T14:17:53.563Z</updated>
+  <updated>2019-12-17T14:43:32.048Z</updated>
   <id>http://shenlvmeng.github.com/blog/</id>
   
   <author>
@@ -14,6 +14,382 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《代码整洁之道》——有一个好的代码品味</title>
+    <link href="http://shenlvmeng.github.com/blog/2019/12/02/clean-code/"/>
+    <id>http://shenlvmeng.github.com/blog/2019/12/02/clean-code/</id>
+    <published>2019-12-02T15:08:32.000Z</published>
+    <updated>2019-12-17T14:43:32.048Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>The only valid measurement of code quality: WTFs/minute</p>
+</blockquote>
+<p>在成为一个程序员的初期，实现功能还需磕磕绊绊的阶段，我们大抵没有精力操心代码风格的问题；而在能够搞定环境和API使用的时间段，大部分人又会沉湎于使用一门语言让想象实现的成就感，而没有发现暗藏在迭代后的危机。往往迭代了一段时间后，才发现之前埋下的巨坑已经让自己无从下手。这时一部分人醒悟过来，意识到一个优良的代码风格对于项目推进的长远意义。这也是《Clean Code》这本书的宗旨。它较之《程序员修炼之道》更为具体，较之《重构》更为宏观。对于工作一段时间后的程序员来说，是一个很好的提醒和反思归纳的建议。让代码work的方式是千万种，而让代码可持续，可扩展，长久work的方式也许需要前辈指引些方法。</p>
+<h2 id="观念"><a href="#观念" class="headerlink" title="观念"></a>观念</h2><blockquote>
+<p>Later equals never —— Leblanc Law</p>
+</blockquote>
+<p>糟糕的代码会让人难以下手，拖慢进度，若无人着手改善，混乱会持续增加，进而降低团队生产力，降低人效，然后搞砸整个项目。为什么不一开始就打好基础，写出整洁代码呢？</p>
+<p>下面是一些大师对“整洁代码”的界定</p>
+<ul>
+<li>“代码逻辑直截了当，缺陷难以隐藏；减少依赖关系，从而便于维护；性能调优，省得引人做出没规矩的优化，干出蠢事；整洁的代码只干一件事” —— Bjarne Stroustrup</li>
+<li>“代码简单直接，如同优美的散文；从不隐藏设计者的意图，充满干净利落的抽象和直截了当的控制语句” —— Grady Booch</li>
+<li>“可由作者外的人阅读和扩展，应该有单元测试和验收测试；只使用有意义的命名；提供尽量正交的使用方法（一种而非多种做一件事的方法）；尽量少的API；尽量少的依赖关系，且要明确定义和清晰提供；代码应从字面意义上表达其含义” —— Dave Thomas</li>
+<li>“整洁的代码总是看起来像某位特别在意的人写的，几乎没有改进的余地，所有的改进都会回到原点” —— Michael Feather</li>
+<li>“能通过所有测试；没有重复代码，表达力强大；体现系统中的全部设计理念；包括尽量少的实体，如类、方法、函数。” —— Ron Jeffries</li>
+<li>“整洁代码让每个例程都深合己意；漂亮代码让语言看起来像是专门为解决那个问题而存在” —— Ward Cunningham</li>
+</ul>
+<p>编写代码的难度，取决于读周边代码的难度，要想干得快，就先让代码易读。</p>
+<blockquote>
+<p>让营地比你来时更干净 —— 童子军军规</p>
+</blockquote>
+<h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p>好的命名，可以让人一眼就明白代码的逻辑。看下面两段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> List&lt;<span class="keyword">int</span>[]&gt; getThem() &#123;</div><div class="line">  List&lt;<span class="keyword">int</span>[]&gt; list1 = <span class="keyword">new</span> ArrayList&lt;<span class="keyword">int</span>[]&gt;();</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span>[] x : theList)</div><div class="line">    <span class="keyword">if</span> (x[<span class="number">0</span>] == <span class="number">4</span>)</div><div class="line">      list1.add(x)</div><div class="line">  <span class="keyword">return</span> list1;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> List&lt;Cell&gt; <span class="title">getFlaggedCells</span><span class="params">()</span> </span>&#123;</div><div class="line">  List&lt;Cell&gt; flaggedCells = <span class="keyword">new</span> ArrayList&lt;Cell&gt;();</div><div class="line">  <span class="keyword">for</span> (Cell cell : gameBoard)</div><div class="line">    <span class="keyword">if</span> (cell.isFlagged)</div><div class="line">      flaggedCells.add(cell);</div><div class="line">  <span class="keyword">return</span> flaggedCells;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面是一些准则：</p>
+<ul>
+<li>名副其实，一旦发现更好的，就替换掉旧的。<strong>如果名称还需要注释补充，那就不算名副其实</strong></li>
+<li>避免误导，提防使用不同之处较小的名称，比如<code>UsernameListEmptyFilter</code>和<code>UsernameListNullFilter</code>，不要混用1和l，以及0和O</li>
+<li>做有意义的区分，少废话，反例是<code>a1</code>和<code>a2</code>，<code>nameString</code>和<code>name</code></li>
+<li>使用<strong>能读出来</strong>的名称，方便程序员的沟通</li>
+<li>使用<strong>可搜索</strong>的名称，仅在块作用域或短函数内使用单字母名称</li>
+<li>不把类型信息放在名称中</li>
+<li>减少不必要的前缀和后缀</li>
+<li>类名应该是名词，方法名应该是动词或动词短语</li>
+<li>别玩梗</li>
+<li>标准化语素，为每一个抽象概念选择一个统一的词</li>
+<li>别用有多重含义的词汇，这会增加使用者顾虑和理解成本</li>
+<li>只在没有明确定义的场景下使用语境（类，前缀……）</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>下面是一些准则：</p>
+<ul>
+<li><strong>短小，更短小</strong></li>
+<li><strong>只做一件事，只做一件事，只做一件事</strong>，重要的事情说三遍<ul>
+<li>还有一种方式可以帮助判断函数是不是只做了一件事：<strong>函数语句是否在一个抽象层级上</strong></li>
+<li>只做一件事的函数无法被继续合理拆分成多段</li>
+</ul>
+</li>
+<li>让代码拥有从上到下的自然的阅读顺序，尽量避免跳来跳去的阅读顺序</li>
+<li>为函数使用<strong>描述性</strong>的名称</li>
+<li>函数<strong>最多3个入参</strong>，最理想是没有参数，其次是1个，再其次是2个，要避免3个参数<ul>
+<li><strong>布尔类型的参数会让你的函数难以理解</strong></li>
+<li>使用二元参数时，最好保证前后顺序不敏感</li>
+<li>对于复杂的入参，可以用对象封装起来</li>
+</ul>
+</li>
+<li>函数要么只做副作用（<em>做什么事</em>），要么没有副作用（<em>回答什么事</em>），而且能从名称中一目了然地看到</li>
+<li>用异常代替错误码，错误处理也是一件事</li>
+<li><strong>别重复自己（Don’t repeat yourself, DRY）</strong>。重复是软件中一切邪恶的根源，软件开发领域的所有创新都在不断尝试从源代码中消灭重复</li>
+</ul>
+<p>函数是语言的动词，类是名词。大师级的程序员把系统当做故事来讲，而不是程序来写。他们使用特定编程语言提供的工具构建一种<strong>更丰富和更具表达力的语言</strong>。好的函数必须干净利落的组合在一起，形成清晰明确的语言，帮你<strong>讲好故事</strong>。这个过程不是一蹴而就的，你可以现象什么就写什么，然后一点点打磨它。</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><blockquote>
+<p>使用注释 = 承认自己无法用代码表达清楚意图</p>
+</blockquote>
+<p>列举注释的准则前，必须摆正观念。<strong>注释是一种必须的恶，如果编程语言足够有表达力，或你长于用语言表达自己的意图，那么就不需要注释。注释的恰当用法是弥补我们用代码表达意图时遭遇的失败。</strong>注释存在的时间越久，具体所描述的事实就越远。原因很简单，程序员不可能坚持维护注释。</p>
+<p>的确，程序员应该让注释保持可维护而精准，但最好能直接写清楚代码，保证无须编写注释。<strong>真实只在一处：代码</strong>，只有代码能忠实告诉你它做的事。</p>
+<ul>
+<li><strong>注释无法挽救糟糕的代码</strong>，预期为糟糕代码补充大量注释，不如花时间写出整洁有表达力的代码</li>
+<li><strong>用代码代替注释</strong></li>
+<li>有些无法避免且合理存在的注释<ul>
+<li>法律信息</li>
+<li>对函数名的补充</li>
+<li>对稍微反常规意图的解释，避免误解</li>
+<li>糟糕的代码来自外部库或外部API</li>
+<li>敏感代码的警告</li>
+<li>TODO、FIXME</li>
+<li>Javadoc</li>
+</ul>
+</li>
+<li>下面则是一些很常见的糟糕注释，它们只是糟糕代码的借口<ul>
+<li>只有自己看得懂的注释</li>
+<li>对函数名的复述</li>
+<li>误导性注释</li>
+<li>日志型注释，如Milestone记录</li>
+<li>废话</li>
+<li>位置标记，如<code>====================</code></li>
+<li>代码署名</li>
+<li><em>大多数</em>注释掉的代码</li>
+<li>百科式的介绍</li>
+<li>私有代码的Javadoc</li>
+</ul>
+</li>
+</ul>
+<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>格式即代码风格，可以利用lint这样的自动化工具完成，需要在团队内保持一致。</p>
+<h3 id="垂直格式"><a href="#垂直格式" class="headerlink" title="垂直格式"></a>垂直格式</h3><p>在从上到下的组织上，</p>
+<ul>
+<li>可以向报纸一样，先大纲，再粗线条概述，再给出细节，越往下细节越多</li>
+<li>用<strong>空行</strong>分隔概念</li>
+<li>靠近的代码行暗示了代码间的紧密关系</li>
+<li>应避免迫使读者在源文件和类之间跳来跳去<ul>
+<li>变量声明应尽量靠近使用位置</li>
+<li>循环中的控制变量总在循环语句中声明</li>
+<li>类成员在类顶部声明</li>
+<li>如果某个函数调用了另一个，就应该把它们放一起</li>
+<li>概念相关的代码应该放在一起，如<code>getHour</code>和<code>getMinute</code></li>
+<li>如果可以，最好把被调用的函数放在执行调用的函数下面</li>
+</ul>
+</li>
+</ul>
+<h3 id="横向格式"><a href="#横向格式" class="headerlink" title="横向格式"></a>横向格式</h3><ul>
+<li>水平字符的上限，100或120</li>
+<li>使用<strong>空格</strong>分隔概念</li>
+<li><strong>不需要水平对齐</strong>，以为从左到右的阅读顺序优先于从上到下</li>
+<li>学会用<strong>缩进</strong>表现层级</li>
+</ul>
+<h2 id="对象和数据结构"><a href="#对象和数据结构" class="headerlink" title="对象和数据结构"></a>对象和数据结构</h2><ul>
+<li><strong>对象</strong>把数据隐藏于抽象的后面，暴露操作数据的函数，<strong>数据结构</strong>暴露数据，不提供有意义的函数。</li>
+<li>过程式代码难以添加新的数据结构，因为必须修改所有函数；面向对象代码难以添加新函数，因为必须修改所有类</li>
+<li>得墨忒尔律：类C的方法f只应该调用以下对象的方法：<strong>C、f创建的对象、作为参数传给f的对象、C的成员所持有的对象</strong></li>
+<li><strong>数据结构</strong>只简单地拥有公有变量，没有函数；而<strong>对象</strong>则只拥有私有变量和函数。一半是对象一半是数据结构的混淆会增加添加新函数和数据结构的难度</li>
+<li>DTO（Data Transfer Objects，数据传输对象）就是只有公有变量，没有函数的类，Active Record就是DTO的一种</li>
+</ul>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>错误处理很重要，但要是它搞乱了代码逻辑，那就是错误的用法。</p>
+<ul>
+<li>返回异常而不是错误码</li>
+<li>try-catch-finally语句块就像事务，可以帮你定义用户应该期待些什么</li>
+<li>在Java中，可控异常违反开闭原则带来的成本要高于收益</li>
+<li>打包第三方API，一方面降低了依赖的覆盖面，另一方面也有助于模拟第三方调用</li>
+<li>可以把抛出错误封装成特定的函数</li>
+<li>别返回和传递null值</li>
+</ul>
+<h2 id="边界"><a href="#边界" class="headerlink" title="边界"></a>边界</h2><p>边界即我们代码和第三方代码的连接处。</p>
+<ul>
+<li>通过编写测试来概览和理解第三方代码的形式叫做<strong>学习性测试（learning tests）</strong>。它可以帮助我们快速试错和反馈，从而对第三方API快速上手。</li>
+<li>在第三方代码尚未就绪时，<strong>编写我们想要的接口</strong>，可以使我们能保持代码在自己控制中，并在未来通过编写adapter的形式无痛迁移</li>
+<li>应尽量避免过多依赖第三方的特定信息，更多依靠你能控制的东西，好过依靠你控制不了的东西，免得日后受其控制</li>
+</ul>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><ul>
+<li>TDD（Test-Driven Development）三定律<ul>
+<li>在编写不能通过的单元测试前，不编写生产代码</li>
+<li>只编写刚好无法通过的单元测试，不能编译也算</li>
+<li>只编写刚好足已通过失败测试的生产代码</li>
+</ul>
+</li>
+<li><strong>测试代码和生产代码一样重要</strong>。正是单元测试让你的代码可扩展、可维护、可复用</li>
+<li>整洁的测试代码一样要求<strong>可读性</strong>。大多数测试代码可以总结为构造-操作-检验（Build-Operate-Check）模式。第一个环节构造测试数据，第二个环节操作数据，第三个环节验证是否得到期望的结果</li>
+<li>每个测试中的断言数量应该尽量少，且只测试一个概念</li>
+<li>FIRST原则<ul>
+<li>Fast，测试应该能够快速运行</li>
+<li>Independent，测试间应该相互独立</li>
+<li>Repeatable，测试应该在任何环境下可重复通过</li>
+<li>Self-Validating，测试应该有布尔值输出</li>
+<li>Timely，测试应及时编写</li>
+</ul>
+</li>
+</ul>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li>类应该由一组成员开始，从静态到普通，从共有到私有。且很少会有公有成员。</li>
+<li>类应该短小，<strong>类的名称应该能描述其权责</strong>。类名无法精确明明时，类大概就太长了。类名越含糊，类越有可能拥有过多权责。类名应该控制在25个字母内，且不应该包含连词。</li>
+<li>单一权责原则（Single Responsibility Principle，SRP）认为，类和模块应有且仅有<strong>一条加以修改的原因</strong>。这个原则可以帮助创造更好的抽象。它也是OO设计中最重要的概念之一。</li>
+<li>内聚：类应该只有少量实体变量，且所有方法都应该操作其中一些。当类的每个变量都被每个方法使用时，我们认为该类具有最大的内聚性。当发现类逐渐丧失内聚性时，尽早拆分它！让它变成多个短小的类。这个拆分的过程也是权责的拆分过程。</li>
+<li>通过基类和子类，可以在不修改类的同时，保持类对新功能的开放。在理想系统中，我们通过扩展系统而非修改现有代码来添加新特性。可以通过抽象类和接口隔离细节修改带来的影响。</li>
+<li>降低类之间的连接耦合，可以采用依赖倒置原则（Dependency Inversion Principle，DIP），让类依赖于抽象（接口）而不是具体细节（自行构造类）</li>
+</ul>
+<h2 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h2><p><em>这一章的Java概念较多</em></p>
+<ul>
+<li>分开系统的构造和使用</li>
+<li><strong>依赖注入</strong>是控制反转的一种思路，它将第二权责从对象中拿出来，转移到专门的对象中去，从而遵循<strong>单一权责原则</strong></li>
+<li>我们应该专注于今天的用户故事，并且<strong>持续适当切分</strong>我们的关注面。书中举了Java AOP、AspectJ框架的例子</li>
+<li>实现时，使用<em>大致可工作的最简单方案</em>。只要软件构架有效切分了关注面，就比较好做根本性改动</li>
+</ul>
+<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>Kent Beck关于测试的4个原则：</p>
+<ul>
+<li>运行所有测试，全面测试并持续通过所有测试的系统，就是可测试的系统。测试也能减少重构时可能破坏代码的顾虑。</li>
+<li>不可重复，使用模板生成或继承等高级概念</li>
+<li>表达程序员的意图。代码应当清晰表达作者的意图。使用好名称、保持类和函数的短小，以及之前章节提到的各种方法</li>
+<li>尽可能减少类和方法的数目，避免前两条规范的矫枉过正</li>
+</ul>
+<h2 id="并发编程"><a href="#并发编程" class="headerlink" title="并发编程"></a>并发编程</h2><p>并发是一种解耦策略，帮助我们分解开<strong>做什么（目的）</strong>和<strong>何时（时机）</strong>。</p>
+<ul>
+<li>并发<strong>有时</strong>能改善性能，会在编写额外代码上带来额外开销</li>
+<li>正确的并发是复杂的</li>
+<li>并发会带来系统结构的变化</li>
+</ul>
+<p>有些防御并发代码问题的原则：</p>
+<ul>
+<li>单一权责：分离并发代码和其他代码</li>
+<li>限制对可能共享的数据的访问</li>
+<li>线程应尽可能独立</li>
+</ul>
+<p>并发执行模式：</p>
+<ul>
+<li>生产者-消费者模式：数据通过队列传递，队列本身是一种限定资源</li>
+<li>读者-作者模式</li>
+<li>宴席哲学家问题</li>
+</ul>
+<p>还有一些需要注意的事情：</p>
+<ul>
+<li>警惕同步方法间的依赖</li>
+<li>尽可能减小sychronized区域</li>
+<li>尽早考虑程序关闭问题</li>
+<li>测试线程代码</li>
+</ul>
+<h2 id="3个实例"><a href="#3个实例" class="headerlink" title="3个实例"></a>3个实例</h2><p>书中以三个实例的重构过程向我们表现了一些将之前思路应用于优化代码的方式。</p>
+<h3 id="命令行参数解析：args"><a href="#命令行参数解析：args" class="headerlink" title="命令行参数解析：args"></a>命令行参数解析：args</h3><blockquote>
+<p>编程是一种技术甚于科学的东西，要编写整洁代码，必须先写肮脏代码，然后再<strong>清理它</strong></p>
+</blockquote>
+<p>在你的初稿，当代码糟糕透顶时甚至是前几稿中，很可能还是会存在烂摊子：成员多得吓人，奇怪命名的魔法字符串，一大堆的try-catch-finally代码。程序员们不都是蠢人，这堆糟糕透顶的代码其实是从最初看起来很合理但是<strong>扩展性差</strong>的代码一步步演化来的。</p>
+<p>需要使用一些总结和抽象，来简明地表达你的目的。另外，在重构前，“我”（其实是作者）要不厌其烦地强调TDD的必要性，它能保证你重构的每一步，系统都可以工作。在重构过程中，放进拿出是常见的事，小步幅、保持测试通过，你可能会不断移动各种东西。</p>
+<p>优秀的代码设计，大都关乎<strong>分隔</strong>——创建合适的空间防止不同种类的代码。对关注面的分隔让代码更易于理解和维护（减少理解所需要的大脑缓存）</p>
+<h3 id="JUnit"><a href="#JUnit" class="headerlink" title="JUnit"></a>JUnit</h3><ul>
+<li>不必要的编码前缀（<code>f_</code>）</li>
+<li>未封装的条件判断</li>
+<li>建议使用肯定式代替否定式判断</li>
+<li>奇怪的不直观的函数名</li>
+<li>易造成理解困难的变量名</li>
+<li>拆分违反SRP原则的函数</li>
+<li>避免隐式时序耦合的函数，用hardcode的形式显示表现时序耦合</li>
+</ul>
+<h3 id="SerialDate重构"><a href="#SerialDate重构" class="headerlink" title="SerialDate重构"></a>SerialDate重构</h3><p>再强调一遍，<strong>重构前要有一个完整的验证可行性的测试</strong>。然后开始重构：</p>
+<ul>
+<li>没有描述力的类名和术语名</li>
+<li>使用枚举代替常量类</li>
+<li>抽象类中不应知道实现细节</li>
+<li>基类不宜知道子类的情况</li>
+<li>多余的注释</li>
+<li>变量声明应该放在尽量靠近使用的地方</li>
+<li>如果有专业术语，就不要自己命名了</li>
+<li>不要写无用的模板代码</li>
+<li>如果函数对成员进行操作，它就不应该是静态的</li>
+<li>用<strong>解释临时变量</strong>的方式，让大段的代码更为简化和有表达力</li>
+<li>消除魔术数</li>
+</ul>
+<h2 id="味道和启发"><a href="#味道和启发" class="headerlink" title="味道和启发"></a>味道和启发</h2><p>作者在这里对《重构：既有代码设计的改善》里提到的味道做了自己的一些扩充，也可以作为对上面章节的回顾。</p>
+<p><em>“味道”，即那些看起来不大对劲的代码</em></p>
+<h3 id="注释-1"><a href="#注释-1" class="headerlink" title="注释"></a>注释</h3><ul>
+<li>不恰当的信息，如修改记录</li>
+<li>过时的注释</li>
+<li>多余的废话</li>
+<li>错误的有误导性的注释</li>
+<li>注释掉的代码</li>
+</ul>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<li>多步才能完成的构建</li>
+<li>多步才能完成的测试</li>
+</ul>
+<h3 id="函数-1"><a href="#函数-1" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>过多的入参</li>
+<li>布尔类型参数</li>
+<li>从未被调用的函数</li>
+<li>用于返回的参数</li>
+</ul>
+<h3 id="一般性问题"><a href="#一般性问题" class="headerlink" title="一般性问题"></a>一般性问题</h3><ul>
+<li>源文件中有多种语言</li>
+<li>明显违背字面意义的直觉</li>
+<li>不考虑边界情况</li>
+<li>忽视安全问题</li>
+<li><strong>重复</strong>，这也是最常见的问题。每次看到重复代码都代表遗漏了抽象。有一些常见的设计模式可以帮助你。</li>
+<li>代码的抽象层级有问题，或混杂。抽象类用来容纳高层级概念，子类用来容纳低层级概念。不同层级概念放在不同容器中。</li>
+<li>基类依赖于子类。通常来说，基类对子类应该一无所知</li>
+<li>信息过多，违背SRP</li>
+<li>从未使用的代码</li>
+<li>不恰当的垂直分隔</li>
+<li>语素前后不一致</li>
+<li>基于巧合、预设假设的耦合。异或是两个没有直接目的之间的模块的耦合。</li>
+<li><strong>特性依恋</strong>，类的方法只应对自身的成员和方法感兴趣，不应关注其他类的成员和方法</li>
+<li>使用boolean或枚举参数让一个函数表现多态。使用多个函数通常由于向单个函数传递代码来选择函数行为</li>
+<li>晦涩的意图，如魔术数、魔术字符串、过度简写的表达式</li>
+<li>位置错误的权责</li>
+<li>不恰当的静态方法，如完全不需要多态的函数</li>
+<li>使用自解释的变量名</li>
+<li>使用自解释的函数名</li>
+<li>理解算法</li>
+<li>把逻辑依赖（脑海中的限制/已知条件）改为物理依赖</li>
+<li>使用if/else、switch前想想有没有多态的实现方法</li>
+<li>遵循团队lint规则</li>
+<li>足够准确</li>
+<li>未封装的条件判断</li>
+<li>未封装的边界条件检测</li>
+<li>避免否定性条件</li>
+<li><strong>函数应该只做一件事</strong></li>
+<li><strong>函数应该只在一个抽象层级上</strong></li>
+<li>隐蔽的时序性耦合</li>
+<li>别随意，先好好思考再下手</li>
+<li>应该在较高层级放置可配置数据</li>
+<li>避免传递浏览，即遵守德墨忒尔律</li>
+</ul>
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><ul>
+<li>使用通配符避免过长的导入清单</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">package</span>.*</div></pre></td></tr></table></figure>
+<ul>
+<li>不要继承<em>常量</em>，使用静态导入</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> EmployeeConstants.*</div></pre></td></tr></table></figure>
+<ul>
+<li>在可以的情况下，用枚举代替常量</li>
+</ul>
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><ul>
+<li>使用描述性名称</li>
+<li>名称应该与抽象层级相符</li>
+<li>使用标准化语素</li>
+<li>使用无歧义的名称</li>
+<li>在较大作用范围使用较长名称，较小作用范围<em>可以</em>使用较短名称</li>
+<li>名称应该明确说明有副作用存在</li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li>要有足够的测试</li>
+<li>使用覆盖率工具</li>
+<li>别放过小测试</li>
+<li>被忽略的测试是对不确定事物的疑问</li>
+<li>测试边界条件</li>
+<li>测试失败的模式（pattern）会有启发性</li>
+<li>测试覆盖率的模式会有启发性</li>
+<li>测试应该快速</li>
+</ul>
+<h2 id="并发编程示例"><a href="#并发编程示例" class="headerlink" title="并发编程示例"></a>并发编程示例</h2><h3 id="客户端-服务端"><a href="#客户端-服务端" class="headerlink" title="客户端/服务端"></a>客户端/服务端</h3><ul>
+<li>如果吞吐量与I/O有关，则并发编程可以提升运行效率</li>
+<li>保持并发系统整洁，把线程管理隔离到一个位置</li>
+</ul>
+<h3 id="可能的执行路径"><a href="#可能的执行路径" class="headerlink" title="可能的执行路径"></a>可能的执行路径</h3><p>深入到字节码和汇编语句的执行上，有些并非线程安全的操作中，不同的执行路径会带来不同结果。</p>
+<h3 id="了解类库"><a href="#了解类库" class="headerlink" title="了解类库"></a>了解类库</h3><ul>
+<li>Executor框架</li>
+<li>非锁定方案：AtomicBoolean，AtomicInteger和AtomicReference</li>
+<li>数据库连接、java.util中的容器、Servlet天生不是线程安全的</li>
+</ul>
+<h3 id="提升吞吐量"><a href="#提升吞吐量" class="headerlink" title="提升吞吐量"></a>提升吞吐量</h3><ul>
+<li>synchronized代码块最好能限制在小范围内</li>
+</ul>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>死锁需要满足4个条件：</p>
+<ul>
+<li><strong>互斥</strong>，即资源数量有限，或无法在同一时间为多个线程公用</li>
+<li><strong>上锁及等待</strong>，从线程获取资源到完成工作前，不会释放这个资源</li>
+<li><strong>无抢先机制</strong>，线程无法从其他线程处夺取资源</li>
+<li><strong>循环等待</strong></li>
+</ul>
+<p>相反地，有4种避免死锁的方式：</p>
+<ul>
+<li><strong>不互斥</strong>，使用允许同时使用的资源，或增加资源数目</li>
+<li><strong>不上锁及等待</strong>，如果有等待情况就释放所有资源从新来过</li>
+<li><strong>满足抢先机制</strong></li>
+<li><strong>不做循环等待</strong></li>
+</ul>
+<h3 id="测试多线程代码"><a href="#测试多线程代码" class="headerlink" title="测试多线程代码"></a>测试多线程代码</h3><ul>
+<li>复现问题可能很难，可以借助工具（如ConTest）帮助</li>
+</ul>
+<p><em>–END–</em></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;The only valid measurement of code quality: WTFs/minute&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在成为一个程序员的初期，实现功能还需磕磕绊绊的阶段，我们大抵没有精力操心代码风格的问题；而在能
+    
+    </summary>
+    
+      <category term="工程" scheme="http://shenlvmeng.github.com/blog/categories/%E5%B7%A5%E7%A8%8B/"/>
+    
+    
+      <category term="编程" scheme="http://shenlvmeng.github.com/blog/tags/%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="重构" scheme="http://shenlvmeng.github.com/blog/tags/%E9%87%8D%E6%9E%84/"/>
+    
+      <category term="代码" scheme="http://shenlvmeng.github.com/blog/tags/%E4%BB%A3%E7%A0%81/"/>
+    
+      <category term="代码风格" scheme="http://shenlvmeng.github.com/blog/tags/%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BC/"/>
+    
+  </entry>
   
   <entry>
     <title>degit认识和改造</title>
@@ -134,7 +510,7 @@
     <link href="http://shenlvmeng.github.com/blog/2019/11/02/social-psychology-part-4/"/>
     <id>http://shenlvmeng.github.com/blog/2019/11/02/social-psychology-part-4/</id>
     <published>2019-11-02T13:48:37.000Z</published>
-    <updated>2019-11-15T14:09:27.365Z</updated>
+    <updated>2019-11-15T14:26:05.206Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>参考《社会心理学》 David G. Myers 第8版</p>
@@ -289,6 +665,16 @@
     
     
       <category term="心理学" scheme="http://shenlvmeng.github.com/blog/tags/%E5%BF%83%E7%90%86%E5%AD%A6/"/>
+    
+      <category term="临床诊断" scheme="http://shenlvmeng.github.com/blog/tags/%E4%B8%B4%E5%BA%8A%E8%AF%8A%E6%96%AD/"/>
+    
+      <category term="陪审团" scheme="http://shenlvmeng.github.com/blog/tags/%E9%99%AA%E5%AE%A1%E5%9B%A2/"/>
+    
+      <category term="司法" scheme="http://shenlvmeng.github.com/blog/tags/%E5%8F%B8%E6%B3%95/"/>
+    
+      <category term="物质主义" scheme="http://shenlvmeng.github.com/blog/tags/%E7%89%A9%E8%B4%A8%E4%B8%BB%E4%B9%89/"/>
+    
+      <category term="健康" scheme="http://shenlvmeng.github.com/blog/tags/%E5%81%A5%E5%BA%B7/"/>
     
   </entry>
   
@@ -5009,87 +5395,6 @@
       <category term="electron" scheme="http://shenlvmeng.github.com/blog/tags/electron/"/>
     
       <category term="indexedDB" scheme="http://shenlvmeng.github.com/blog/tags/indexedDB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于《万历十五年》的一些思考</title>
-    <link href="http://shenlvmeng.github.com/blog/2019/02/13/1587-a-year-of-no-significance/"/>
-    <id>http://shenlvmeng.github.com/blog/2019/02/13/1587-a-year-of-no-significance/</id>
-    <published>2019-02-13T15:18:30.000Z</published>
-    <updated>2019-02-13T16:34:44.354Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>作为读书后的感受记录，照例先做概要，再谈感受。</p>
-</blockquote>
-<p>我是在大学阶段知道《万历十五年》这本书的，当时作为《形势与政策》课的读书笔记建议书目之一。可见尽管写的四百多年前的事，对于当今还是有参考意义。如作者所说，全书介于学术著作和商业书籍之间，用有趣的具有复古气息的口气，从点到面地讲述了万历年间的诸多史事和几个典型人物，由浅入深、抽丝剥茧地探讨了传统社会存在的僵化问题，并给出现代社会以经验和教训。读毕感叹黄仁宇先生功底之深厚，著学之审慎。</p>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
-<li>归根到底，还是过于依托世俗道德约束百官和平民，缺少法律的规矩约束，使得整个社会制度很容易跟不上经济发展和科学进步，而最终走向窠臼被淘汰。</li>
-<li>明朝的皇帝即使贵为天子，也不过是制度所需要的产物，他作为“天命”的象征，有天赋的最终仲裁和决定权，需要调和百官之间的关系；但同时也是传统道德的完美象征和百官楷模，需要严格依从传统和道德行事。</li>
-<li>文官们熟读孔孟之书，研究历史兴亡之道，从伦理道德出发解释日常事务，在面对违反伦常的虚伪矫情时，如果不力加诤谏而听之任之，必然会影响本朝安危</li>
-<li>宦官是皇帝和文官之间的协调者，一个优秀的皇帝会成为文官和太监间的平衡者，相互掣肘</li>
-</ul>
-<h2 id="申时行"><a href="#申时行" class="headerlink" title="申时行"></a>申时行</h2><ul>
-<li>在这种制度下，道德至高无上，它不仅可以指导行政，还可以代替行政</li>
-<li>一项政策能否付诸实施，实施后或成或败，全看它与所有文官的共同习惯是否相安无事。</li>
-<li>文官作为政策的实施者，朝廷最大的任务就是促进文官之间的互相信赖与和谐，鼓舞士气，发挥精神上的力量。</li>
-<li>理想和现实是脱节的，人们口头上的理想即为“阳”，人们不可告人的私欲即为“阴”，调节阴阳是一件麻烦事。因此，<strong>与其暴露各人的阴，毋宁提倡他们的阳</strong>。</li>
-<li>身为首辅最大的贡献，则在于是各种人才都能在政府中发挥长处，对他们起感化和领导的作用。</li>
-<li>申时行尽管意识到阴阳难以调节，问题症结所在，却没有能力改变制度。他决心做和事佬来调和阴阳，生平不愿宣扬别人的缺点，对于提拔自己的人，更不会妄加批判。</li>
-</ul>
-<h2 id="万历"><a href="#万历" class="headerlink" title="万历"></a>万历</h2><ul>
-<li>本朝的司法制度极为简单，缺乏判决争端的依据。以立储为例，假如帝国真正实行法治，继承皇位一事由一个独立性的法庭作出判决，那么皇帝委托律师根据文法和不成文法来做辩护，立幼而不立长是有胜诉可能的。但是<strong>本朝不是以法律治理臣民，而是以“四书”中的伦理作为主宰</strong>。</li>
-<li>文官已成一种强大的力量，强迫宝座上的皇帝在处理政务时摈弃他个人的意志，历任首辅又都以群臣的代言人自居。万历却无能为力，因为在制度中，皇帝作为仲裁者而非实施者，没有制定法律的力量，不能改造制度避免冲突发生。因此消极怠工的报复，目的并非恢复皇帝的权威而只是单纯发泄</li>
-<li>体制上有欠缺，文官们就需要精神力量来弥补组织上的不足。一方面，这些熟读经史的人以仁义道德相标榜，以治国平天下为己任；另一方面，体制上有存在如此多罅隙，给这些人强烈的引诱</li>
-<li><strong>长期的道德沦丧，即标志社会形态何其组织制度的脱节</strong></li>
-</ul>
-<h2 id="海瑞"><a href="#海瑞" class="headerlink" title="海瑞"></a>海瑞</h2><ul>
-<li><strong>海瑞的一生体现了一个有教养的读书人服务公众牺牲自我的精神，但这种精神的实际作用却至为微薄。</strong></li>
-<li>抽象的道德代替了法律，上至官僚下至村民，其判断是非的标准是“善恶”而非合法或非法。</li>
-<li>以熟读诗书的文人治理农民，他们不可能改进这个司法制度</li>
-<li>财政制度弊病在于缺乏弹性，不能适应环境而调整。政府不用技术和经济的力量来扶植民众，而单纯依靠政治上的压力和道德上的宣传，结果只能是事与愿违</li>
-<li>海瑞不相信为人处世应该有阴阳的分别，因此被称为奇特、怪僻而执拗。</li>
-</ul>
-<h2 id="戚继光"><a href="#戚继光" class="headerlink" title="戚继光"></a>戚继光</h2><ul>
-<li>明朝文官地位高于武官。大多数文官以中庸之道为处事的原则，标榜稳健和平，这和武官克敌制胜征战沙场的常态相矛盾。</li>
-<li>戚继光功成名遂，固然是本身的卓越才能使然，但是得到谭纶的支持也是必不可少的因素。</li>
-<li>戚继光是个复杂的人物，不能把她强行安放在用传统道德构成的标准框架里。他的天才，在于他发现面对落后的军事制度，帝国不允许也没有能力做全面的改革，能做的只有妥协；而他的成功也在于他善于在技术上调和各种矛盾，<strong>在组织制度上没办法，就在私人关系上寻找出路</strong>。</li>
-<li>戚继光的长处在于他没有把人事上的才能当成投机取巧和升官发财的本钱，而只是作为建立新军和保卫国家的手段</li>
-</ul>
-<h2 id="李贽"><a href="#李贽" class="headerlink" title="李贽"></a>李贽</h2><ul>
-<li>大凡高度的概括，总带有想象的成分</li>
-<li>李贽视舍小节而顾大局的作法为正当，其前提是以公共利益为依托，在伦理上的解释则是公众道德不同于私人道德，目的纯正不妨手段不纯</li>
-<li>李贽是提倡实践的理论家，但并不表示自己有意于实践；他攻击虚伪的伦理道德，也拒绝以传统的历史观为自己的历史观，但更广泛的范围里仍然是儒家的信徒。</li>
-<li>张居正意识到必须要在组织上作部分的调整和改革，但是在理论上找不到更好的学说，就只能以自己的一身挺立于合法合合理之间。</li>
-<li>混合阴阳，在长时间里造成了法律和道德的脱节</li>
-</ul>
-<p>当一个人口众多的国家，个人行动全凭儒家简单粗浅而又无法固定的原则所限制，法律又毫无创造性，则社会发展的程度必然受到限制。<strong>即使宗旨善良，也不能补助技术之不及</strong>。</p>
-<p><em>–END–</em></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;作为读书后的感受记录，照例先做概要，再谈感受。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;我是在大学阶段知道《万历十五年》这本书的，当时作为《形势与政策》课的读书笔记建议书目之一。可见尽管写的四百多年前的事，对于当今还是有参考意义。如作者所说，全书
-    
-    </summary>
-    
-      <category term="思考" scheme="http://shenlvmeng.github.com/blog/categories/%E6%80%9D%E8%80%83/"/>
-    
-    
-      <category term="制度" scheme="http://shenlvmeng.github.com/blog/tags/%E5%88%B6%E5%BA%A6/"/>
-    
-      <category term="道德" scheme="http://shenlvmeng.github.com/blog/tags/%E9%81%93%E5%BE%B7/"/>
-    
-      <category term="文官" scheme="http://shenlvmeng.github.com/blog/tags/%E6%96%87%E5%AE%98/"/>
-    
-      <category term="万历" scheme="http://shenlvmeng.github.com/blog/tags/%E4%B8%87%E5%8E%86/"/>
-    
-      <category term="明朝" scheme="http://shenlvmeng.github.com/blog/tags/%E6%98%8E%E6%9C%9D/"/>
-    
-      <category term="读书笔记" scheme="http://shenlvmeng.github.com/blog/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
