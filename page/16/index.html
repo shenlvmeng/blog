@@ -296,6 +296,498 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/18/cors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/18/cors/" itemprop="url">跨域技法之CORS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T20:44:38+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/18/cors/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/18/cors/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>说到CORS，要从下面是一段很常见的前端面试对话</p>
+<blockquote>
+<p>问: 之前实践中有遇到过跨域的需求吗？</p>
+<p>答: 遇到过。</p>
+<p>问: 那你是怎么解决的呢？</p>
+<p>答: 跨域吧，大概有8种方法，<del>很平衡</del>，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。</p>
+</blockquote>
+<h3 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h3><p>jsonp是此前最为常用的一种跨域方法，利用了<code>&lt;script&gt;</code>标签的非跨域性，实现起来大概是下面这样的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params">url, success</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> ud = <span class="string">'_'</span> + +<span class="keyword">new</span> <span class="built_in">Date</span>,</div><div class="line">      script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>),</div><div class="line">      head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>] </div><div class="line">          || <span class="built_in">document</span>.documentElement;</div><div class="line"></div><div class="line">  <span class="built_in">window</span>[ud] = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">    head.removeChild(script);</div><div class="line">    success &amp;&amp; success(data);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  script.src = url.replace(<span class="string">'callback=?'</span>, <span class="string">'callback='</span> + ud);</div><div class="line">  head.appendChild(script);</div><div class="line">&#125;</div><div class="line"></div><div class="line">jsonp(<span class="string">'http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h3><p>CORS（<a href="https://www.w3.org/TR/cors/" target="_blank" rel="external">Cross-Origin Resource Sharing</a>）是W3C规定的在客户端用来进行跨站通信的标准。随着XMLHttpRequest2的出现，大部分浏览器下，可以像普通同域那样使用xhr对象来发起跨域请求。</p>
+<h4 id="构造一个CORS请求"><a href="#构造一个CORS请求" class="headerlink" title="构造一个CORS请求"></a>构造一个CORS请求</h4><p>CORS被下列浏览器<a href="http://caniuse.com/#search=cors" target="_blank" rel="external">支持</a></p>
+<ul>
+<li>Chrome 3+</li>
+<li>Firefox 3.5+</li>
+<li>Opera 12+</li>
+<li>Safari 4+</li>
+<li>Internet Explorer 8+</li>
+</ul>
+<p>其中Chrome，FF，Opera，Safari都通过<a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2</a>对象来实现CORS。不一般的IE通过XDomainRequest对象实现，不过工作方式和xhr对象大同小异。Nicolas Zakas（《JavaScript高级程序设计》的作者）写了一个<a href="http://www.nczonline.net/blog/2010/05/25/cross-domain-ajax-with-cross-origin-resource-sharing/" target="_blank" rel="external">helper函数</a>，保证了浏览器兼容性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Check if the XMLHttpRequest object has a "withCredentials" property.</span></div><div class="line">    <span class="comment">// "withCredentials" only exists on XMLHTTPRequest2 objects.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, check if XDomainRequest.</span></div><div class="line">    <span class="comment">// XDomainRequest only exists in IE, and is IE's way of making CORS requests.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, CORS is not supported by the browser.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line"><span class="keyword">if</span> (!xhr) &#123;</div><div class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'CORS not supported'</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="withCredentials"><a href="#withCredentials" class="headerlink" title="withCredentials"></a>withCredentials</h4><p>标准的CORS请求默认不携带cookie，如果需要在请求中携带cookie信息，需要在为xhr对象指定<code>withCredentials</code>属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xhr.withCredentials = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>同时，服务器端也要在响应头上设置<code>Access-Control-Allow-Credentials</code>字段为<code>true</code>。像下面这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure>
+<p>值得注意的是，cookie同样遵守同源法则，即你的JS代码无法获取和设置远端的cookie。</p>
+<h4 id="发起CORS请求"><a href="#发起CORS请求" class="headerlink" title="发起CORS请求"></a>发起CORS请求</h4><p>CORS请求发起方式和xhr没有什么区别，调用<code>xhr.send()</code>即可。综合来看，一个End to End的例子像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Create the XHR object.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line">    <span class="comment">// XHR for Chrome/Firefox/Opera/Safari.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line">    <span class="comment">// XDomainRequest for IE.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// CORS not supported.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Helper method to parse the title tag from the response.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTitle</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> text.match(<span class="string">'&lt;title&gt;(.*)?&lt;/title&gt;'</span>)[<span class="number">1</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Make the actual CORS request.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeCorsRequest</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// This is a sample server that supports CORS.</span></div><div class="line">  <span class="keyword">var</span> url = <span class="string">'http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html'</span>;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">  <span class="keyword">if</span> (!xhr) &#123;</div><div class="line">    alert(<span class="string">'CORS not supported'</span>);</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Response handlers.</span></div><div class="line">  xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = xhr.responseText;</div><div class="line">    <span class="keyword">var</span> title = getTitle(text);</div><div class="line">    alert(<span class="string">'Response from CORS request to '</span> + url + <span class="string">': '</span> + title);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">'Woops, there was an error making the request.'</span>);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.send();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="背后"><a href="#背后" class="headerlink" title="背后"></a>背后</h4><p><img src="/blog/images/cors_flow.png" alt=""></p>
+<p>CORS背后的脏活累活包括额外的包头以及额外的报文，这些由浏览器帮我们代劳了。CORS请求分为“<em>简单的请求</em>”和“<em>没那么简单的请求</em>”。简单的请求包含下列特征：</p>
+<ul>
+<li>HTTP方法名是<code>GET</code>, <code>POST</code>, <code>HEAD</code>之一</li>
+<li>HTTP包头包括<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type为<code>application/x-www-form-urlencoded</code>或<code>multipart/form-data</code>或<code>text/plain</code></li>
+</ul>
+</li>
+</ul>
+<p>这种普通的CORS请求可以不必选择CORS，而可以通过jsonp或表单提交的方式解决。剩下的不那么简单的请求则需要浏览器和服务器进行额外的报文交换（prelight request）。</p>
+<p>我们先从一个简单的请求开始，利用上面封装好的函数，写出下面的一段代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com/cors"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
+<p>在它的背后的HTTP包头像下面这样，请注意其中的Origin字段。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GET /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
+<p>一个合理的CORS请求<strong>必须</strong>包含一个<strong>Origin</strong>包头。这个包头由浏览器添加，用户不可自行修改。这部分由协议，域名和端口三部分组成。三者任意一个与<strong>Host</strong>不一致就算做跨域。非跨域时，不同浏览器对这个字段的处理方式不同，如FF会省去Origin字段，Chrome和Safari会在POST/DELETE/PUT时包括这个字段。</p>
+<p>幸运的是，在跨域时一定会带上这个字段。支持CORS会根据客户端的Origin是否在allow list中做出回应。下面是一个样例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://appi.bob.com</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Expose-Headers: FooBar</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
+<p>其中前三个以<code>Access-Control-</code>开头的字段和CORS相关。</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须)，这个字段必须附加在合法的CORS响应中，像上面例子所写的那样，或是设置为<code>*</code>表示允许任意源的请求（不过一般不会这样设置）</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选)，默认情况下，cookie不被包含在CORS请求中，设置此字段为<code>true</code>表示包含cookie在请求中。这个字段需要和XMLHttpRequest2中的<code>withCredentials</code>属性配合保证成功。</li>
+<li><code>Access-Control-Expose-Headers</code>(可选)，XMLHttpRequest2的<code>getResponseHeader()</code>方法可以获取下面这些属性<ul>
+<li>Cache-Control</li>
+<li>Content-Language</li>
+<li>Content-Type</li>
+<li>Expires</li>
+<li>Last-Modified</li>
+<li>Pragma<br>如果想访问其他属性时，需要设置这个字段，属性间用逗号隔开。</li>
+</ul>
+</li>
+</ul>
+<p>当请求“没那么简单”时，比如徐需要使用PUT或DELETE，或是需要支持JSON的返回资源类型时，浏览器需要先发起一次<strong>prelight request</strong>。在收到服务器允许的回复后，真实的请求再发出。不过这个过程对于用户是透明的。下面是一个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'PUT'</span>, url);</div><div class="line">xhr.setRequestHeader(<span class="string">'X-Custom-Header'</span>, <span class="string">'value'</span>);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
+<p><code>Prelight request</code>如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Access-Control-Request-Method: PUT</div><div class="line">Access-Control-Request-Headers: X-Custom-Header</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
+<p>除了我们上面已经提过的<code>Origin</code>字段外，又新增了两个字段</p>
+<ul>
+<li><code>Access-Control-Request-Method</code> 真实的HTTP请求方法。是始终包含在包头的</li>
+<li><code>Access-Control-Request-Headers</code> 用逗号分隔的真实HTTP请求的包头。</li>
+</ul>
+<p>服务器接收到这些后，会根据方法和包头，结合<code>Origin</code>检验合法性。在验证合法后，返回<code>Prelight Response</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
+<p>它们的含义从名字中就可以推出一二</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须) 略</li>
+<li><code>Access-Control-Allow-Methods</code>(必须)，用逗号分隔的支持的HTTP方法列表。尽管可能请求中只写了一种方法。这么做避免了多次请求</li>
+<li><code>Access-Control-Allow-Headers</code> (若客户端填写对应的头部则为必须)，逗号分割的支持的所有头部类型</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选) 略</li>
+<li><code>Access-Control-Max-Age</code>(可选)，<code>prelight response</code>的缓存时间，以秒为单位。</li>
+</ul>
+<p>在<code>Prelight request</code>和<code>Prelight response</code>交换完成后，就是真正的请求和响应。此时的请求头部可以带上之前商议中所允许的字段，大致像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">PUT /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Host: api.alice.com</div><div class="line">X-Custom-Header: value</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure>
+<p>当请求成功发出时，可以在响应头部看到CORS相关的字段，如<code>Access-Control-Allow-Origin</code>。请求失败时，会在console上报错，但不会给出具体信息。</p>
+<h3 id="CORS-from-jQuery"><a href="#CORS-from-jQuery" class="headerlink" title="CORS from jQuery"></a>CORS from jQuery</h3><p>关于使用jQuery发起CORS请求，可以参加后文<a href="#refer">参考</a>的第一条或jQuery相关文档。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span id="refer"></span></p>
+<ul>
+<li><a href="https://www.html5rocks.com/en/tutorials/cors/" target="_blank" rel="external">Using CORS</a></li>
+<li><a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2 新技巧</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/13/project-habits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/13/project-habits/" itemprop="url">提升项目可维护性的一些习惯</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T17:42:38+08:00">
+                2017-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/13/project-habits/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/13/project-habits/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/blog/images/poster/project-habits.jpeg" alt=""></p>
+<blockquote><p>软件生命周期中80%的成本消耗在了维护上</p>
+<footer><strong>《Java语言编码规范》</strong></footer></blockquote>
+<p>在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。</p>
+<h3 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h3><p><img src="/blog/images/editorconfig.png" alt=""></p>
+<p><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a>是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由<code>.editorconfig</code>自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。</p>
+<p>EditorConfig的语法类似<code>.gitignore</code>，比较好理解。下面是官网给出了规定Python和JavaScript文件格式的<code>.editorconfig</code>文件样例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># EditorConfig is awesome: http://EditorConfig.org</div><div class="line"></div><div class="line"># top-most EditorConfig file</div><div class="line">root = true</div><div class="line"></div><div class="line"># Unix-style newlines with a newline ending every file</div><div class="line">[*]</div><div class="line">end_of_line = lf</div><div class="line">insert_final_newline = true</div><div class="line"></div><div class="line"># Matches multiple files with brace expansion notation</div><div class="line"># Set default charset</div><div class="line">[*.&#123;js,py&#125;]</div><div class="line">charset = utf-8</div><div class="line"></div><div class="line"># 4 space indentation</div><div class="line">[*.py]</div><div class="line">indent_style = space</div><div class="line">indent_size = 4</div><div class="line"></div><div class="line"># Tab indentation (no size specified)</div><div class="line">[Makefile]</div><div class="line">indent_style = tab</div><div class="line"></div><div class="line"># Indentation override for all JS under lib directory</div><div class="line">[lib/**.js]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div><div class="line"></div><div class="line"># Matches the exact files either package.json or .travis.yml</div><div class="line">[&#123;package.json,.travis.yml&#125;]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div></pre></td></tr></table></figure>
+<p>不过通常的项目用不到这么复杂的配置文件。<a href="https://github.com/angular/angular.js/blob/master/.editorconfig" target="_blank" rel="external">这里</a>是Angular的配置文件，<a href="https://github.com/vuejs/vue/blob/1.1/.editorconfig" target="_blank" rel="external">这里</a>是曾经Vue.js的配置文件。官网给出了完整的使用EditorConfig的<a href="https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig" target="_blank" rel="external">工程列表</a>。</p>
+<h4 id="存放位置"><a href="#存放位置" class="headerlink" title="存放位置"></a>存放位置</h4><p>打开一个文件时，EditorConfig插件会去打开文件的目录和其每一级父目录查找<code>.editorconfig</code>文件，直到有一个配置文件<code>root=true</code>。</p>
+<p>读取顺序从上到下，路径最短的文件最后被读取，优先级最高。</p>
+<h4 id="关于文件格式"><a href="#关于文件格式" class="headerlink" title="关于文件格式"></a>关于文件格式</h4><p>EditorConfig文件使用<a href="https://zh.wikipedia.org/wiki/INI%E6%96%87%E4%BB%B6" target="_blank" rel="external">INI格式</a>，目的是可以和<a href="https://docs.python.org/2/library/configparser.html" target="_blank" rel="external">Python Config Library</a>兼容。每个分段（原文：‘section’）由一个<a href="https://en.wikipedia.org/wiki/Glob_(programming" target="_blank" rel="external">globs</a>)开头。斜杠(<code>/</code>)作为路径分隔符，<code>#</code>或者<code>;</code>作为注释。注释应该单独占一行。EditorConfig文件使用UTF-8格式、CRLF或LF作为换行符。</p>
+<h5 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h5><p>EditorConfig目前支持下面这些通配符：</p>
+<ul>
+<li><code>*</code>    匹配除/之外的任意字符串</li>
+<li><code>**</code>    匹配任意字符串</li>
+<li><code>?</code>    匹配任意单个字符</li>
+<li><code>[name]</code>    匹配name字符</li>
+<li><code>[!name]</code>    匹配非name字符</li>
+<li><code>{s1,s3,s3}</code>    匹配任意给定的字符串（0.11.0起支持）</li>
+<li><code>{num1..num2}</code>匹配<em>num1</em>和<em>num2</em>间的整数</li>
+</ul>
+<p>最后特殊字符可以用<code>\</code>转义.</p>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>目前<a href="https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties" target="_blank" rel="external">普遍支持的属性</a>包括下面这些：</p>
+<ul>
+<li>root：表明是最顶层的配置文件，发现设为true时，才会停止查找.editorconfig文件。</li>
+<li>indent_style：可以选择tab或space</li>
+<li>indent_size：设置整数表示规定每级缩进的列数或空格数。如果设定为tab，则会使用tab_width的值（如果已指定）。</li>
+<li>tab_width：设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。</li>
+<li>end_of_line：定义换行符，支持lf、cr和crlf。</li>
+<li>charset：编码格式，支持latin1、utf-8、utf-8-bom、utf-16be和utf-16le，不建议使用uft-8-bom。</li>
+<li>trim_trailing_whitespace：设为true表示会除去换行行首的任意空白字符，false反之。</li>
+<li>insert_final_newline：设为true表明使文件以一个空白行结尾，false反之。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>目前已有大量的IDE或文本编辑器支持EditorConfig配置。有些不需要下载插件，有些则需要。详情可参见<a href="(http://editorconfig.org/">官网</a>。</p>
+<h3 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h3><p><a href="http://eslint.org/" target="_blank" rel="external">ESLint</a>是非常流行的一个JavaScript代码检查器。便于在运行前检查出代码中潜在的错误。它的作者是Nicholas Zakas，红宝书的作者。网站也有<a href="http://eslint.cn" target="_blank" rel="external">中译版</a>。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装eslint前，需要有node.js的环境，之后通过npm安装即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g eslint</div></pre></td></tr></table></figure>
+<p>当然也可以本地安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install eslint --save-dev</div></pre></td></tr></table></figure>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>安装完成后，需要在项目目录下生成<code>.eslintrc</code>配置文件才可以使用<code>eslint</code>命令。这一步可以通过<code>eslint --init</code>按着引导完成，也可以根据自己需要修改。eslint推荐使用了一些规则，可以通过下面这样开启（<code>extends</code>的属性还可以是<code>all</code>，即启用所有规则，<strong>不推荐使用</strong>）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"extends"</span>: [ <span class="string">"eslint:recommended"</span> ]</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置项里，还可以通过<code>env</code>指令<a href="http://eslint.cn/docs/user-guide/configuring#specifying-environments" target="_blank" rel="external">代码环境</a>，像下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"env"</span>: &#123;</div><div class="line">        <span class="attr">"browser"</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">"node"</span>: <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同样，具体的<a href="http://eslint.cn/docs/rules/" target="_blank" rel="external">规则</a>也是可以配置的，每个规则的配置项都有一个默认值，规则键对应的值为数值时，是下面的意思</p>
+<ul>
+<li>0 Disable the rule</li>
+<li>1 Warn about the rule</li>
+<li>2 Throw error about the rule</li>
+</ul>
+<p>对应的值为数组时，则会更改规则配置项的原默认值，如下面例子中的<code>quote</code>规则：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "rules": &#123;</div><div class="line">        // 使用默认的分号规则，违背时会有警告消息</div><div class="line">        "semi": 1</div><div class="line">        // 使用双引号包裹字符串，违背是会抛出错误</div><div class="line">        "quotes": [2, "double"],</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>关于eslint的更多配置项，可参考<a href="http://eslint.cn/docs/user-guide/configuring" target="_blank" rel="external">官网</a>。</p>
+<p>若项目中使用到了ES6语法，则还需要安装<code>babel-eslint</code>包，并指定<code>.eslintrc</code>中<code>parser</code>和<code>parseOptions</code>两项。具体的配置大概是下面这样：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "extends": [ "eslint:recommended" ],</div><div class="line">    "parser": "babel-eslint",</div><div class="line">    "parserOptions": &#123;</div><div class="line">        ecmaVersion: 6</div><div class="line">    &#125;,</div><div class="line">  	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ESLint 支持几种格式的配置文件：</p>
+<ul>
+<li>JavaScript - 使用<code>.eslintrc.js</code>然后输出一个配置对象。</li>
+<li>YAML - 使用<code>.eslintrc.yaml</code>或<code>.eslintrc.yml</code>去定义配置的结构。</li>
+<li>JSON - 使用<code>.eslintrc.json</code>去定义配置的结构ESLint的JSON文件允许JavaScript风格的注释。</li>
+<li>Deprecated - 使用<code>.eslintrc</code>，可以使JSON也可以是YAML。</li>
+<li>package.json - 在<code>package.json</code>里创建一个<code>eslintConfig</code>属性，在那里定义你的配置。</li>
+</ul>
+<p>如果同一个目录下有多个配置文件，ESLint只会使用一个，优先级是上面列表从上到下的顺序。</p>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>可以在文件中书写注释在运行时更改eslint的配置（实际上几乎所有的配置项都可以在注释中通过<code>eslint-xxx</code>这样的形式修改）。</p>
+<p>当文件中出现已考虑到的规则例外时，可以通过<code>/*eslint quotes: [&quot;error&quot;, &quot;double&quot;]*/</code>或<code>/*eslint eqeqeq: 0, curly: 2*/</code>这样的形式临时添加例外。</p>
+<p>当文件出现不想被检测到的规则例外时，可以通过<code>/*eslint-disable*/</code>和<code>/*eslint-enable*/</code>避免警告。单行例外可以使用<code>/*eslint-disable-line*/</code>更详细的配置可以参见<a href="http://eslint.cn/docs/user-guide/configuring#disabling-rules-with-inline-comments" target="_blank" rel="external">文档</a>。</p>
+<h4 id="sublime插件"><a href="#sublime插件" class="headerlink" title="sublime插件"></a>sublime插件</h4><p>上面说的这些工作，在配置完成后，需要在命令行中通过<code>eslint xxx.file</code>这样的形式lint。借助编辑器的插件可以获得可视化的lint结果，妈妈再也不用担心我的找不到错误了（误）。因为个人原因，下面仅以sublime为例。</p>
+<p>下载eslint for sublime插件前，需要下载Sublime-Linter。因为前者利用了后者作为lint的平台。在<code>Ctrl+Shift+P</code>找到<code>Package Controll: Install Packages</code>后（什么？你没有装Package Control？），搜索Sublime-Linter下载安装即可。完成后，可以在<code>Prefences -&gt; Package Settings</code>或<code>Tools</code>选项卡中找到Sublime Linter的身影。</p>
+<p>之后同样的方式搜索Sublime-contrib-eslint下载安装即可。建议在安装前去<a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">官网</a>看看，避免遇到不必要的问题。</p>
+<p>这些工作完成后了，可以选择SublimeLinter的mode为load/save，之后在文件载入和保存时都会对文件进行lint操作，并将违背规则的地方标出。</p>
+<h3 id="Commit-message规范"><a href="#Commit-message规范" class="headerlink" title="Commit message规范"></a>Commit message规范</h3><p><img src="/blog/images/git-commit.png" alt=""></p>
+<p>git每次修改后需要填写commit message才能提交。这一步可以通过给<code>git commit</code>添加<code>-m</code>参数完成，像下面那样，也可以在<code>git commit</code>打开的vi界面下填写多行文本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git commit -m <span class="string">'some commit message'</span></div></pre></td></tr></table></figure>
+<p>git并没有对commit message的风格做出规范，可以用中文，可以用英文，甚至当你不知道该写些什么的时候，还可以去某些<a href="http://whatthecommit.com/index.txt" target="_blank" rel="external">网站</a>参考。</p>
+<p>但是在团队协作中，还是建议清晰明了地书写此次commit的目的和做的修改。实际上，commit message规范这种事一直在做。比如<a href="https://eggjs.org/zh-cn/contributing.html#commit-提交规范" target="_blank" rel="external">egg.js</a>, <a href="https://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md" target="_blank" rel="external">Angular</a>或者更加简洁的规范：<a href="https://github.com/thoughtbot/dotfiles/blob/master/gitmessage" target="_blank" rel="external">这样</a>或<a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="external">这样</a>。其中Angular的规范应用较广，还有<a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">commitizen</a>工具帮助生成changelog和检查commit message样式。</p>
+<h5 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h5><p>根据Angular的规范，commmit message包括三个部分：<strong>Header</strong>, <strong>Body</strong>和<strong>Footer</strong>。其中Header是必需的，Body和Footer则不是。模板像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</div><div class="line">// 空行</div><div class="line">&lt;body&gt;</div><div class="line">// 空行</div><div class="line">&lt;footer&gt;</div></pre></td></tr></table></figure>
+<p>模板中，<strong>type</strong>为提交commit的类型，<strong>只有</strong>下面这些选择：</p>
+<ul>
+<li>feat: 新功能</li>
+<li>fix: 修复问题</li>
+<li>docs: 修改文档</li>
+<li>style: 修改代码格式，不影响代码逻辑</li>
+<li>refactor: 重构代码，理论上不影响现有功能</li>
+<li>perf: 提升性能</li>
+<li>test: 增加修改测试用例</li>
+<li>chore: 修改工具相关（包括但不限于文档、代码生成等）</li>
+<li>deps: 升级依赖</li>
+</ul>
+<p>其中前两种commit一定会出现在changelog中。</p>
+<p><strong>scope</strong>为修改文件的范围（包括但不限于doc, middleware, core, config, plugin）；<strong>subject</strong>用一句话清楚的描述这次提交做了什么，首字母小写；<strong>body</strong>作为subject的补充，增加原因和目的等具体内容，可以不写。</p>
+<p><strong>footer</strong>部分中，<strong>当有非兼容修改(Breaking Change)时必须在这里描述清楚</strong>，或者描述关联issue。下面是一个完整的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9</div><div class="line">Older IEs serialize html uppercased, but IE9 does not...</div><div class="line">Would be better to expect case insensitive, unfortunately jasmine does</div><div class="line">not allow to user regexps for throw expectations.</div><div class="line">Document change on eggjs/egg#123</div><div class="line">Closes #392</div><div class="line">BREAKING CHANGE:</div><div class="line">  Breaks foo.bar api, foo.baz should be used instead</div></pre></td></tr></table></figure>
+<p>代码用于撤销此前commit所做修改时，message用revert开头，后面跟着被撤销commit的Header。像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">revert: feat(pencil): add &apos;graphiteWidth&apos; option</div><div class="line"></div><div class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</div></pre></td></tr></table></figure>
+<p>如果当前commit与被撤销的commit，在同一个发布（release）里面，那么它们都不会出现在Change log中。</p>
+<h5 id="Commitizen"><a href="#Commitizen" class="headerlink" title="Commitizen"></a>Commitizen</h5><p><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a>就是方便你做出上面提交的工具，可以通过npm安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g commitizen</div></pre></td></tr></table></figure>
+<p>安装完成后，使用<code>git cz</code>代替<code>git commit</code>命令来提交改动。之后会出现指引帮助你完成一次合格的提交。</p>
+<p><img src="/blog/images/commitizen.png" alt=""></p>
+<p>commitizen的插件cz-conventional-changelog可以帮助我们完成commit message，首先通过下面的命令安装并配置cz-conventional-changelog。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install -g cz-conventional-changelog</div><div class="line"><span class="built_in">echo</span> <span class="string">'&#123; "path": "cz-conventional-changelog" &#125;'</span> &gt; ~/.czrc</div></pre></td></tr></table></figure>
+<p>之后运行下面的命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a></li>
+<li><a href="http://eslint.cn" target="_blank" rel="external">ESLint中文站</a></li>
+<li><a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">roadhump/SublimeLinter-eslint: This linter plugin for SublimeLinter provides an interface to ESLint</a></li>
+<li><a href="http://jonathancreamer.com/setup-eslint-with-es6-in-sublime-text/" target="_blank" rel="external">Setup ESLint with ES6 in Sublime Text</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html" target="_blank" rel="external">Commit message 和 Change log 编写指南</a></li>
+<li><a href="https://eggjs.org/zh-cn/contributing.html" target="_blank" rel="external">egg.js代码贡献规范</a></li>
+<li><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/11/how-browsers-work-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -989,453 +1481,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/05/vue-reactive-sourcecode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/04/05/vue-reactive-sourcecode/" itemprop="url">Vue2.0的响应式设计原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-05T15:12:20+08:00">
-                2017-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/04/05/vue-reactive-sourcecode/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/05/vue-reactive-sourcecode/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上周抽空看了看Vue的源码，设计的精巧让我这个鶸一时吸收不来。如果想写篇既大又全的文章，一劳永逸地介绍Vue2.0的源码，以我的水平显然是做不到的。于是就只取一瓢饮地，简单记录下Vue2.0在响应式原理上的设计。其他的部分等我功力深厚了（其实就是懒）再做总结吧。</p>
-<h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><p>这一部分是Vue响应式原理的基础。包含Observer类，Watcher类，Dep类，事件订阅模式，还有最关键的<code>Object.defineProperty</code>方法。</p>
-<h4 id="Object-defineProperty"><a href="#Object-defineProperty" class="headerlink" title="Object.defineProperty"></a>Object.defineProperty</h4><p>Vue实现数据绑定的方式和其他的MVVM同侪不同，React和backbone（这货不是MVVM）采用的是典型的发布订阅模式，Angular则采用的脏值检测。</p>
-<p>Vue使用了更为隐蔽和magical的<code>Object.defineProperty</code>设置对象访问器属性（这也意味着Vue只支持到IE9+）。</p>
-<blockquote><p>把一个普通 Javascript 对象传给 Vue 实例的 data 选项，Vue 将遍历此对象所有的属性，并使用 Object.defineProperty 把这些属性全部转为 getter/setter。Object.defineProperty 是仅 ES5 支持，且无法 shim 的特性，这也就是为什么 Vue 不支持 IE8 以及更低版本浏览器的原因。</p>
-</blockquote>
-<p><code>Object.defineProperty()</code>可以定义对象的访问器属性，关于访问器属性的更多介绍可以看<a href="https://shenlvmeng.github.io/blog/2017/03/13/js-object/" target="_blank" rel="external">这里</a>。其中<code>get</code>和<code>set</code>方法分别用来指定属性的getter和setter。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> person = &#123;</div><div class="line">  <span class="attr">_name</span>: <span class="string">''</span>,  <span class="comment">//`_`表示只能通过方法访问</span></div><div class="line">  nickname: <span class="string">'酱'</span></div><div class="line">&#125;;</div><div class="line"><span class="built_in">Object</span>.defineProperty(person, <span class="string">'name'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  get: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._name;</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.nickname = newValue + <span class="string">'酱'</span>;</div><div class="line">    <span class="keyword">this</span>._name = newValue;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>通过getter和setter实现数据劫持是Vue数据绑定的基础。</p>
-<h4 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h4><p><a href="https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F" target="_blank" rel="external">发布订阅</a>是JavaScript中事件机制的实现方式，也是<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/" target="_blank" rel="external">JavaScript异步编程</a>的实现方式之一。</p>
-<p>发布订阅模式中的角色主要有发布者、事件对象、订阅者。发布者和事件对象是一对多的关系，事件对象和订阅者又是一对多的关系。当发布者的状态改变触发事件对象时，相关的订阅者就会收到通知。实现起来就像下面这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">  <span class="comment">// 全局事件管理</span></div><div class="line">  <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">  <span class="comment">// 注册事件</span></div><div class="line">    on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">        events[type].push(handler);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        events[type] = [handler];</div><div class="line">      &#125;</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">    emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">          events[type][i];</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>Vue实现视图自动更新的原理也是如此，当然细节上就复杂多了。</p>
-<h4 id="Observer，Watcher，Dep"><a href="#Observer，Watcher，Dep" class="headerlink" title="Observer，Watcher，Dep"></a>Observer，Watcher，Dep</h4><p>这三个是相辅相成实现Vue数据绑定的组件。</p>
-<h5 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h5><p>Vue在组件(Component)初始化过程中，会将数据对象封装为Observer对象，便于监听数据的改变，并绑定依赖在上面。我们来看下<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L39-L53" target="_blank" rel="external">源码</a>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">constructor</span> (value: any) &#123;</div><div class="line">  <span class="keyword">this</span>.value = value</div><div class="line">  <span class="keyword">this</span>.dep = <span class="keyword">new</span> Dep()  <span class="comment">//一个 Dep对象实例，Watcher 和 Observer 之间的纽带</span></div><div class="line">  <span class="keyword">this</span>.vmCount = <span class="number">0</span></div><div class="line">  def(value, <span class="string">'__ob__'</span>, <span class="keyword">this</span>)  <span class="comment">//把自身 this 添加到 value 的 __ob__ 属性上</span></div><div class="line">  <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123; <span class="comment">//对 value 的类型进行判断</span></div><div class="line">    <span class="keyword">const</span> augment = hasProto</div><div class="line">      ? protoAugment</div><div class="line">      : copyAugment</div><div class="line">    augment(value, arrayMethods, arrayKeys) <span class="comment">// 数组增强方法</span></div><div class="line">    <span class="keyword">this</span>.observeArray(value) <span class="comment">//如果是数组则观察数组</span></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">this</span>.walk(value) <span class="comment">//否则观察单个元素。</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Observer对象储存在 <strong>ob</strong> 这个属性，这个属性保存了 Observer 对象自己本身。对象在转化为 Observer 对象的过程中是一个递归的过程，对象的子元素如果是对象或数组的话，也会转化为 Observer 对象。</p>
-<p>由于JavaScript本身的原因，Vue不能监测数组的变化，Vue采用的折中方法是增强数组的原生方法<code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>, <code>sort</code>, <code>reverse</code>，以及建议使用者通过Vue.set的方式显示调用。通过其他方式对数组进行的修改将无法被监听到。</p>
-<h5 id="Watcher"><a href="#Watcher" class="headerlink" title="Watcher"></a>Watcher</h5><p>Vue中，Watcher和模板渲染紧密相连，它将Observer发生的改变反映到模板内容上。它关键部分的<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/watcher.js#L39-L85" target="_blank" rel="external">源码</a>是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">constructor</span> (</div><div class="line">  vm: Component,</div><div class="line">  expOrFn: string | Function,</div><div class="line">  cb: Function,</div><div class="line">  options?: Object</div><div class="line">) &#123;</div><div class="line">  <span class="keyword">this</span>.vm = vm</div><div class="line">  vm._watchers.push(<span class="keyword">this</span>)<span class="comment">// 将当前 Watcher 类推送到对应的 Vue 实例中</span></div><div class="line">  ......</div><div class="line">  <span class="comment">// parse expression for getter</span></div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">'function'</span>) &#123;</div><div class="line">    <span class="comment">// 如果是函数，相当于指定了当前订阅者获取数据的方法，每次订阅者通过这个方法获取数据然后与之前的值进行对比</span></div><div class="line">    <span class="keyword">this</span>.getter = expOrFn</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">this</span>.getter = parsePath(expOrFn)<span class="comment">// 否则的话将表达式解析为可执行的函数</span></div><div class="line">    ......</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">this</span>.value = <span class="keyword">this</span>.lazy</div><div class="line">    ? <span class="literal">undefined</span></div><div class="line">    : <span class="keyword">this</span>.get()   <span class="comment">//如果 lazy 不为 true，则执行 get 函数进行依赖收集</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>其中输入参数<code>vm</code>是监听的组件，<code>expOrFn</code>最终将交给<code>getter</code>属性，<code>cb</code>是更新时的回调函数。最后一句中的<code>this.get()</code>完成了依赖的收集工作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Evaluate the getter, and re-collect dependencies.</div><div class="line"> */</div><div class="line">get () &#123;</div><div class="line">  pushTarget(<span class="keyword">this</span>)  <span class="comment">// 设置全局变量 Dep.target，将 Watcher 保存在这个全局变量中</span></div><div class="line">  <span class="keyword">const</span> value = <span class="keyword">this</span>.getter.call(<span class="keyword">this</span>.vm, <span class="keyword">this</span>.vm) <span class="comment">// 调用 getter 函数，进入 get 方法进行依赖收集操作</span></div><div class="line">  <span class="comment">// "touch" every property so they are all tracked as</span></div><div class="line">  <span class="comment">// dependencies for deep watching</span></div><div class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.deep) &#123;</div><div class="line">    traverse(value)</div><div class="line">  &#125;</div><div class="line">  popTarget()  <span class="comment">// 将全局变量 Dep.target 置为 null</span></div><div class="line">  <span class="keyword">this</span>.cleanupDeps()</div><div class="line">  <span class="keyword">return</span> value</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>第一句的<code>pushTarget(this)</code>设置了<code>Dep.target</code>，getter函数正是通过<code>Dep.target</code>是否为<code>null</code>，判断当前处于依赖收集阶段还是普通数据读取。后面的两句去<code>touch``expOrFn</code>涉及到的每个数据项。从而将<code>expOrFn</code>的依赖收集起来。最后将dep中的内容清空，为下次收集依赖做准备。</p>
-<h5 id="Dep"><a href="#Dep" class="headerlink" title="Dep"></a>Dep</h5><p>Dep类用于连接Watcher类和Observer类，每个Observer对象中都有一个Dep实例，其中存储了订阅者Watcher。<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/dep.js#L17-L20" target="_blank" rel="external">源码</a>如下: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//...</span></div><div class="line">  <span class="keyword">constructor</span> () &#123;</div><div class="line">    <span class="keyword">this</span>.id = uid++</div><div class="line">    <span class="keyword">this</span>.subs = [] <span class="comment">//存储 Watcher 实例的数组</span></div><div class="line">  &#125;</div><div class="line"><span class="comment">//...</span></div><div class="line">  depend () &#123;</div><div class="line">    <span class="keyword">if</span> (Dep.target) &#123;</div><div class="line">      Dep.target.addDep(<span class="keyword">this</span>)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  notify () &#123;</div><div class="line">    <span class="comment">// stablize the subscriber list first</span></div><div class="line">    <span class="keyword">const</span> subs = <span class="keyword">this</span>.subs.slice()</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.length; i &lt; l; i++) &#123;   <span class="comment">//遍历 Watcher 列表，调用 update 方法进行更新操作</span></div><div class="line">      subs[i].update()</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>Dep类比较简单，主要是一个存储Watcher实例的数组<code>this.subs</code>。<code>depend()</code>方法用于向Watcher对象中添加这个Dep。<code>notify()</code>方法将遍历Watcher列表，通知订阅者更新视图。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>下面从源码角度上看看Vue实现数据绑定的设计。</p>
-<h4 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h4><p>Vue核心部分的代码放在<code>src</code>目录。路径下还有下面这些子文件夹：</p>
-<ul>
-<li><code>entries</code> 入口文件，根据编译环境的不同，更改一些配置</li>
-<li><code>compiler</code> 编译模板，<code>render</code>函数的实现</li>
-<li><code>core</code> 关键部分代码</li>
-<li><code>core/observer</code> 响应式设计中的Observer对象实现</li>
-<li><code>core/vdom</code> 虚拟DOM，diff算法，patch函数实现</li>
-<li><code>core/instance</code> 组件实例生命周期实现，组件初始化入口</li>
-<li><code>core/components</code> 全局组件</li>
-<li><code>core/global-api</code> 全局API</li>
-<li><code>server</code> 服务端渲染</li>
-<li><code>platform</code> 平台特定代码，分为<code>web</code>和<code>weex</code></li>
-<li><code>sfc</code> 处理单文件组件 解析.vue文件</li>
-<li><code>share</code> 工具函数</li>
-</ul>
-<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p>关于Vue的<a href="https://vuejs.org/v2/guide/instance.html#Lifecycle-Diagram" target="_blank" rel="external">生命周期</a>，这里假设你已经熟悉，就不做介绍了。了解它也将帮助你了解Vue的工作流程。</p>
-<p>源码的入口从下面一行<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/index.js#L8-L14" target="_blank" rel="external">代码</a>开始：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Vue</span> (<span class="params">options</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp;</div><div class="line">    !(<span class="keyword">this</span> <span class="keyword">instanceof</span> Vue)) &#123;</div><div class="line">    warn(<span class="string">'Vue is a constructor and should be called with the `new` keyword'</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">this</span>._init(options) <span class="comment">//开始初始化步骤</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">initMixin(Vue) <span class="comment">//插入初始化代码</span></div><div class="line">stateMixin(Vue) <span class="comment">//插入数据绑定代码</span></div><div class="line">eventsMixin(Vue) <span class="comment">//插入事件相关代码</span></div><div class="line">lifecycleMixin(Vue) <span class="comment">//插入生命周期代码</span></div><div class="line">renderMixin(Vue) <span class="comment">//插入模板渲染代码</span></div></pre></td></tr></table></figure>
-<p>文件为<code>src/core/instance/index.js</code>，关键在于最后一句，通过调用<code>init.js</code>中定义的<code>_init(options)</code>方法初始化Vue实例。这个方法是在下面的<code>initMixin(Vue)</code>中导入的。这种mixin的方式不同于Vue1.x版本，更具模块化适合拓展（同时也增加了寻找代码的难度）。</p>
-<p>初始化相关的主要<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/init.js#L40-L48" target="_blank" rel="external">代码</a>如下；</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initMixin</span> (<span class="params">Vue: Class&lt;Component&gt;</span>) </span>&#123;</div><div class="line">  Vue.prototype._init = <span class="function"><span class="keyword">function</span> (<span class="params">options?: Object</span>) </span>&#123;</div><div class="line"><span class="comment">//...</span></div><div class="line">    initLifecycle(vm)   <span class="comment">//vm 的生命周期相关变量初始化</span></div><div class="line">    initEvents(vm)    <span class="comment">// vm 的事件监控初始化</span></div><div class="line">    initRender(vm)  <span class="comment">// 模板解析</span></div><div class="line">    callHook(vm, <span class="string">'beforeCreate'</span>)</div><div class="line">    initState(vm) <span class="comment">//vm 的状态初始化，prop/data/computed/method/watch 都在这里完成初始化</span></div><div class="line">    callHook(vm, <span class="string">'created'</span>)</div><div class="line">    <span class="keyword">if</span> (vm.$options.el) &#123;</div><div class="line">	  vm.$mount(vm.$options.el)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>initLifecycle</code>主要是初始化vm实例上的一些参数；<code>initEvents</code>是事件监控的初始化；<code>initRender</code>是模板解析，2.0的版本中这一块有很大的改动，1.0的版本中Vue使用的是<code>DocumentFragment</code>来进行模板解析，而 2.0 中作者采用的John Resig的HTML Parser将模板解析成可直接执行的<code>render</code>函数。<code>initState</code>是数据绑定的主战场，我们下一节会详细讲到。<code>callHook</code>执行生命周期的钩子函数。</p>
-<h4 id="initState"><a href="#initState" class="headerlink" title="initState"></a>initState</h4><p>在初始化中，<code>initState</code>函数承担了数据绑定中的最主要的脏活累活。它的<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/state.js#L24-L36" target="_blank" rel="external">源码</a>像下面这样:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initState</span> (<span class="params">vm: Component</span>) </span>&#123;</div><div class="line">  vm._watchers = []  <span class="comment">//新建一个订阅者列表</span></div><div class="line">  <span class="keyword">const</span> opts = vm.$options</div><div class="line">  <span class="keyword">if</span> (opts.props) initProps(vm, opts.props)  <span class="comment">// 初始化 Props，与 initData 差不多</span></div><div class="line">  <span class="keyword">if</span> (opts.methods) initMethods(vm, opts.methods)  <span class="comment">// 初始化 Methods，Methods 的初始化比较简单，就是作用域的重新绑定。</span></div><div class="line">  <span class="keyword">if</span> (opts.data) &#123;</div><div class="line">    initData(vm) <span class="comment">// 初始化 Data，响应式关键步</span></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    observe(vm._data = &#123;&#125;, <span class="literal">true</span> <span class="comment">/* asRootData */</span>) <span class="comment">//如果没有 data，则观察一个空对象</span></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (opts.computed) initComputed(vm, opts.computed)<span class="comment">// 初始化 computed，这部分会涉及 Watcher 类以及依赖收集，computed 其实本身也是一种特殊的 Watcher</span></div><div class="line">  <span class="keyword">if</span> (opts.watch) initWatch(vm, opts.watch)<span class="comment">// 初始化 watch，这部分会涉及 Watcher 类以及依赖收集</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，<code>initState</code>将工作拆解成观察<code>props</code>, <code>data</code>, <code>methods</code>, <code>computed</code>, <code>watch</code>几个关键部分。</p>
-<h4 id="initData"><a href="#initData" class="headerlink" title="initData"></a>initData</h4><p>以<code>initData</code>方法为例，它是如何使用上面提到的Observer, Dep, Watcher类的呢，我们看看<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/state.js#L74-L104" target="_blank" rel="external">源码</a>: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initData</span> (<span class="params">vm: Component</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> data = vm.$options.data</div><div class="line">  data = vm._data = <span class="keyword">typeof</span> data === <span class="string">'function'</span></div><div class="line">    ? data.call(vm)</div><div class="line">    : data || &#123;&#125;</div><div class="line">  <span class="keyword">if</span> (!isPlainObject(data)) &#123;<span class="comment">// 保证data必须为纯对象</span></div><div class="line">    ......</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// proxy data on instance</span></div><div class="line">  <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(data)</div><div class="line">  <span class="keyword">const</span> props = vm.$options.props</div><div class="line">  <span class="keyword">let</span> i = keys.length</div><div class="line">  <span class="keyword">while</span> (i--) &#123;</div><div class="line">    <span class="keyword">if</span> (props &amp;&amp; hasOwn(props, keys[i])) &#123;<span class="comment">// 是props，则不代理</span></div><div class="line">      ...... <span class="comment">//如果和 props 里面的变量重了，则抛出 Warning</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">// 否则将属性代理的 vm 上，这样就可以通过 vm.xx 访问到 vm._data.xx</span></div><div class="line">      proxy(vm, keys[i]) <span class="comment">//proxy方法遍历 data 的 key，把 data 上的属性代理到 vm 实例上</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// observe data</span></div><div class="line">  observe(data, <span class="literal">true</span> <span class="comment">/* asRootData */</span>)  <span class="comment">//关键一步，observe(data, this)方法来对 data 做监控</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，这个函数做了下面的工作：</p>
-<ul>
-<li>保证data为纯对象</li>
-<li>检查是否与<code>props</code>中属性有重复</li>
-<li>进行数据代理，便于我们直接通过vm.xxx的形式访问原本位于vm._data.xxx的属性。</li>
-<li>调用<code>observe</code>方法对<code>data</code>进行包装，使之具有响应式的特点。</li>
-</ul>
-<p>那我们看看<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L101-L126" target="_blank" rel="external">observe</a>方法是怎么写的吧</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Attempt to create an observer instance for a value,</div><div class="line"> * returns the new observer if successfully observed,</div><div class="line"> * or the existing observer if the value already has one.</div><div class="line"> * 返回一个 Observer 对象</div><div class="line"> */</div><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">observe</span> (<span class="params">value: any, asRootData: ?boolean</span>): <span class="title">Observer</span> | <span class="title">void</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!isObject(value)) &#123;  <span class="comment">//如果不是对象和数组则不监控，直接返回</span></div><div class="line">    <span class="keyword">return</span></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">let</span> ob: Observer | <span class="keyword">void</span></div><div class="line">  <span class="comment">//判断 value 是否已经添加了 __ob__ 属性，并且属性值是 Observer 对象的实例。避免重复引用导致的死循环</span></div><div class="line">  <span class="keyword">if</span> (hasOwn(value, <span class="string">'__ob__'</span>) &amp;&amp; value.__ob__ <span class="keyword">instanceof</span> Observer) &#123;    <span class="comment">//如果是就直接用</span></div><div class="line">    ob = value.__ob__</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (</div><div class="line">    observerState.shouldConvert &amp;&amp; <span class="comment">//只有 root instance props 需要创建 Observer 对象</span></div><div class="line">    !isServerRendering() &amp;&amp; <span class="comment">//不是服务端渲染</span></div><div class="line">    (<span class="built_in">Array</span>.isArray(value) || isPlainObject(value)) &amp;&amp; <span class="comment">//数组或者普通对象</span></div><div class="line">    <span class="built_in">Object</span>.isExtensible(value) &amp;&amp; <span class="comment">//可扩展对象</span></div><div class="line">    !value._isVue <span class="comment">// 非 Vue 组件</span></div><div class="line">  ) &#123;</div><div class="line">    ob = <span class="keyword">new</span> Observer(value)  <span class="comment">//关键步！在 value 满足上述条件的情况下创建一个 Observer 对象</span></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (asRootData &amp;&amp; ob) &#123;</div><div class="line">    ob.vmCount++</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> ob <span class="comment">// 返回一个 Observer 对象</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>observe方法主要就是判断value是否满足一些预设条件，并将这个对象转化为Observer对象。</p>
-<p>关于Observer类我们上面已经提到，它的构造函数做了下面几个工作：</p>
-<ul>
-<li>首先创建了一个Dep对象实例；</li>
-<li>然后把自身this添加到value的<code>__ob__</code>属性上；</li>
-<li>最后对value的类型进行判断，如果是数组则观察数组，否则观察单个元素（要理解这一步是个递归过程，即value的元素如果符合条件也需要转化为Observer对象）。</li>
-</ul>
-<p>不论是基础类型还是数组或对象，最终都会走入到<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L55-L65" target="_blank" rel="external">walk</a>方法，方法定义在<code>src/core/observer/index.js</code>中。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">walk (obj: <span class="built_in">Object</span>) &#123;</div><div class="line">  <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(obj)</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; keys.length; i++) &#123;</div><div class="line">    defineReactive(obj, keys[i], obj[keys[i]]) <span class="comment">//遍历对象，结合defineReactive方法地柜将属性转化为getter和setter</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="defineReactive"><a href="#defineReactive" class="headerlink" title="defineReactive"></a>defineReactive</h4><p>在经过一系列的准备工作和铺垫后，终于可以接触到数据绑定最核心部分的<code>defineReactive</code>函数。方法也定义在<code>src/core/observer/index.js</code>中，<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L128-L184" target="_blank" rel="external">源码</a>如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Define a reactive property on an Object.</div><div class="line"> */</div><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params"></span></span></div><div class="line">  obj: Object,</div><div class="line">  key: string,</div><div class="line">  val: any,</div><div class="line">  customSetter?: Function</div><div class="line">) &#123;</div><div class="line">  <span class="keyword">const</span> dep = <span class="keyword">new</span> Dep()  <span class="comment">//每个对象都会有一个 Dep 实例，用来保存依赖 (Watcher 对象)</span></div><div class="line">  ......</div><div class="line">  let childOb = observe(val)   <span class="comment">//结合 observe 函数进行将对象的对象也变成监控对象</span></div><div class="line">  <span class="comment">// 最重点、基石、核心的部分：通过调用 Object.defineProperty 给 data 的每个属性添加 getter 和 setter 方法。</span></div><div class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</div><div class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">const</span> value = getter ? getter.call(obj) : val</div><div class="line">      <span class="comment">// 依赖收集的重要步骤</span></div><div class="line">      <span class="keyword">if</span> (Dep.target) &#123;<span class="comment">//如果存在Dep.target这个全局变量不为空，表示是在新建Watcher的时候调用的，代码已经保证</span></div><div class="line">        dep.depend()    <span class="comment">// 依赖收集</span></div><div class="line">        <span class="keyword">if</span> (childOb) &#123;</div><div class="line">          childOb.dep.depend() <span class="comment">// 处理好子元素的依赖 watcher</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123; <span class="comment">// 如果是数组，进一步处理</span></div><div class="line">          dependArray(value)</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> value</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</div><div class="line">      <span class="keyword">const</span> value = getter ? getter.call(obj) : val</div><div class="line">      ......</div><div class="line">      childOb = observe(newVal)    <span class="comment">// 对新数据重新 observe，更新数据的依赖关系</span></div><div class="line">      dep.notify()   <span class="comment">// 通知dep进行数据更新，这个方法在前面的 Dep 类中讲过</span></div><div class="line">    &#125;</div><div class="line">  &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>defineReactive是对Object.defineProperty方法的包装，结合observe方法对数据项进行深入遍历，最终将所有的属性就转化为getter和setter。其中对于Dep的处理用于收集依赖<code>data</code>的Watcher对象。</p>
-<h4 id="依赖收集"><a href="#依赖收集" class="headerlink" title="依赖收集"></a>依赖收集</h4><p><img src="/blog/images/vue-reactive.jpg" alt=""></p>
-<p><code>data</code>的依赖收集是在getter函数中完成的。Observer和Dep是一对一的关系，Dep用来存储依赖Observer的Watcher。Dep和Watcher是多对多的关系，一个Dep中存储了若干Watcher，一个Watcher可能同时依赖于多个Observer。</p>
-<p>可以看到Dep是连接Observer（生产者）和Watcher（消费者）的关键纽带。Watcher通过getter函数建立起和Observer中Dep的关联。在Observer的setter函数中会触发<code>dep.notify()</code>方法，根据上文对该方法的讲解，它实际上对数组中每个Watcher执行了<code>update</code>方法。在方法中根据是否同步去执行<code>run</code>方法，这个方法中通过<a href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/watcher.js#L157-#L191" target="_blank" rel="external">源码</a>可以看到实际上正是通过<code>const value = this.get()</code>获取最新的value。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">update () &#123;</div><div class="line">  <span class="comment">/* istanbul ignore else */</span></div><div class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.lazy) &#123;</div><div class="line">    <span class="keyword">this</span>.dirty = <span class="literal">true</span></div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.sync) &#123;</div><div class="line">    <span class="keyword">this</span>.run()</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    queueWatcher(<span class="keyword">this</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<ol>
-<li>模板编译过程中的指令和数据绑定都会生成 Watcher实例，watch函数中的对象也会生成 Watcher实例，在实例化的过程中，会调用watcher.js中的get函数touch这个Watcher的表达式或函数涉及的所有属性；</li>
-<li>touch开始之前Watcher会设置Dep的静态属性Dep.target指向其自身，然后开始依赖收集；</li>
-<li>touch属性的过程中，属性的getter函数会被访问；</li>
-<li>属性gette 函数中会判断Dep.target（target中保存的是第2步中设置的Watcher实例）是否存在，若存在则将 getter函数所在的Observer 实例的Dep实例保存到Watcher的列表中，并在此Dep实例中添加Watcher为订阅者；</li>
-<li>重复上述过程直至Watcher的表达式或函数涉及的所有属性均touch结束（即表达式或函数中所有的数据的getter函数都已被触发），Dep.target被置为null，依赖收集完成；</li>
-</ol>
-</blockquote>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>上面尝试从源码角度对Vue2.0的响应式设计做了浅析。总结一下就是下面几点：</p>
-<ul>
-<li>在生命周期的initState方法中对<code>data</code>, <code>prop</code>, <code>method</code>, <code>computed</code>, <code>watch</code>方法中的数据进行劫持，通过<code>defineReactive</code>和<code>observe</code>将之转换为Observer对象</li>
-<li><code>initRender</code>函数中解析模板，新建Watcher对象通过Dep对象和对应数据建立了依赖关系，通过<code>Dep.target</code>这个全局对象判断是否是依赖收集阶段。</li>
-<li>数据变化时，通过<code>setter</code>函数中的<code>dep.notify</code>方法执行Watcher的<code>update</code>方法更新视图</li>
-</ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://www.zybuluo.com/zhouweicsu/note/682813" target="_blank" rel="external">Vue2.0 源码阅读：响应式原理</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-2/" itemprop="url">JavaScript中的异步编程 下</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/29/javascript-async-programming-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/29/javascript-async-programming-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>上篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/" target="_blank" rel="external">JavaScript中的异步编程 上</a></p>
-</blockquote>
-<p>上篇说到了使用回调的思路解决JavaScript中异步编程的难题。可不论是显式的指定回调函数，通过事件绑定响应还是通过事件订阅、promise.then，都和逃不出回调的思路。写起来仍不够自然，且在批次回调任务时难以解决。</p>
-<p>有没有办法能使我们像平时写同步代码那样，来书写异步代码呢？ES6出现后，Generator对象给了我们这个机会。</p>
-<h3 id="生成器函数"><a href="#生成器函数" class="headerlink" title="生成器函数"></a>生成器函数</h3><p>提到生成器函数前，需要提到<a href="https://en.wikipedia.org/wiki/Coroutine" target="_blank" rel="external">协程</a>(coroutine)这个概念。协程是轻量级用户态的线程。用户可以手动控制协程的暂停和继续，配合线程实现异步任务。协程间通过<code>yield</code>方式切换执行权，并交换信息。就像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asyncFunc</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="comment">// 执行someFunc后交出执行权</span></div><div class="line">    <span class="keyword">var</span> t = <span class="keyword">yield</span> someFunc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>协程在遇到<code>yield</code>关键字时交出自己的执行权，直到执行权返回。这里<code>someFunc</code>方法可以是一个异步操作。</p>
-<p>ES6中协程体现在Generator函数中。函数在<code>function</code>关键字后添加星号<code>*</code>以示和普通函数的区分。Generator函数是可以通过<code>yield</code>暂停执行的。比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="keyword">yield</span> i;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(); <span class="comment">// 2</span></div></pre></td></tr></table></figure>
-<p>Generator函数的调用通过<code>next</code>方法完成。每次调用后会将函数流程移动到下一个yield语句处。yield的返回包含两个属性<code>value</code>和<code>done</code>。前者代表yield的返回值，后者代表生成器函数是否已经执行完毕。</p>
-<p>同时，每次调用<code>next</code>方法时，可以输入参数作为上个异步任务的返回值。调用<code>throw</code>方法可以向生成器函数内抛出错误。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> <span class="number">1</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">yield</span> x;</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="built_in">console</span>.log(e);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(<span class="number">2</span>); <span class="comment">// 2</span></div><div class="line">g.throw(<span class="string">'some error'</span>) <span class="comment">// 'some error'</span></div></pre></td></tr></table></figure>
-<p>使用Generator函数封装一个异步操作，再通过执行器管理函数内部的异步流程。通过这种方式，在Generator函数中可以很方便地书写异步操作。例如，利用<a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="external">fetch API</a>发起一次跨域请求。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = <span class="keyword">yield</span> fetch(<span class="string">'http://www.example.org/data.json'</span>);</div><div class="line">    <span class="built_in">console</span>.log(text);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> data.json();</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>fetch API返回一个promise对象，通过为之指定<code>then</code>，处理fetch成功后的返回值。</p>
-<h3 id="co和koa"><a href="#co和koa" class="headerlink" title="co和koa"></a>co和koa</h3><p>我们上面提到了使用Generator还缺少的一样东西——执行器。使用Generator函数在其中通过yield返回Promise，但是外层还是需要在promise的then方法中书写<code>g.next(data)</code>来通知协程继续操作。<a href="https://github.com/tj/co" target="_blank" rel="external">co</a>函数库帮助我们<strong>完成了执行器的工作</strong>。</p>
-<p>以回调函数中完成读文件操作为例（注意：其中的readFile先被改写成返回thunk函数的格式，即只接收callback作为唯一的输入参数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="keyword">var</span> co = <span class="built_in">require</span>(<span class="string">'co'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">        fs.readFile(path, &#123;<span class="attr">encoding</span>: <span class="string">'utf-8'</span>&#125;, cb);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line">co(gen);</div></pre></td></tr></table></figure>
-<p>上面的代码里，为<code>co</code>函数传入Generator函数，就会自动依次执行其中的异步任务，并在返回一个Promise对象。因此，可以给<code>co</code>函数通过<code>then</code>的方式添加回调函数。</p>
-<h4 id="co"><a href="#co" class="headerlink" title="co"></a>co</h4><p>co的代码并不复杂，核心代码只有数十行。摘录如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">  <span class="keyword">var</span> args = slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> gen === <span class="string">'function'</span>) gen = gen.apply(ctx, args);</div><div class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen.next !== <span class="string">'function'</span>) <span class="keyword">return</span> resolve(gen);</div><div class="line"></div><div class="line">    onFulfilled();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">res</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.next(res);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.throw(err);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">ret</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (ret.done) <span class="keyword">return</span> resolve(ret.value);</div><div class="line">      <span class="keyword">var</span> value = toPromise.call(ctx, ret.value);</div><div class="line">      <span class="keyword">if</span> (value &amp;&amp; isPromise(value)) <span class="keyword">return</span> value.then(onFulfilled, onRejected);</div><div class="line">      <span class="keyword">return</span> onRejected(<span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'You may only yield a function, promise, generator, array, or object, '</span></div><div class="line">        + <span class="string">'but the following object was passed: "'</span> + <span class="built_in">String</span>(ret.value) + <span class="string">'"'</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在看co的代码前，我们不妨先想一下它的原理。Generator 函数只是一个异步操作的容器，它的流程和控制是由外部机制完成的。而<strong>thunk函数（这个在下面介绍）和Promise对象恰恰可以方便得在回调函数和then方法中交还执行权给Generator函数</strong>。</p>
-<p>这么来看就简单了，<strong>co函数库针对thunk函数和Promise对象封装了执行器</strong>。以比较好理解的Promise对象为例（co在内部也会将thunk函数转为Promise对象）。</p>
-<p>首先将readFile的thunk函数转为Promise对象。其中ctx绑定到co函数体内。（co函数库的thunkToPromise函数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> readFile = <span class="function"><span class="keyword">function</span> (<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span> (<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">        readFile.call(ctx, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>)</span>&#123;</div><div class="line">            <span class="keyword">if</span> (err) reject(err);</div><div class="line">            resolve(data);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>之后同样使用上节中的生成器函数<code>gen()</code>，并手动执行下一步操作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line"></div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data).value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        g.next(data);</div><div class="line">    &#125;);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>发现规律了么？<strong>自动执行器实际上就是在<code>g.done == false</code>时，不断地在then方法中嵌套添加回调函数</strong>。结果呼之欲出。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">gen</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> g = gen;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> res = g.next(data);</div><div class="line">        <span class="keyword">if</span> (res.done) <span class="keyword">return</span> res.value;</div><div class="line">        res.value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            next(data);</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    next();</div><div class="line">&#125;</div><div class="line"></div><div class="line">run(gen);</div></pre></td></tr></table></figure>
-<p>每执行一次next，检查<code>done</code>的状态，若未结束则在then方法继续指定next方法，等待下一次返回结果。这也是co函数库的基本原理。</p>
-<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><p>理解了原理后，回头看co的源码，就比较好理解了。前6行对传入的<code>gen</code>检测是否为Generator类型。<code>onFulfilled</code>函数和<code>onRejected</code>函数对Generator函数原有的<code>next</code>和<code>throw</code>函数进行了封装，便于错误捕获和处理。</p>
-<p>在<code>next</code>方法中，主要做了下面的4步微小的工作：</p>
-<ol>
-<li>查是否已经到Generator函数的最后一步，如果是则返回</li>
-<li>确保每次<code>yield</code>返回值都是Promise对象</li>
-<li>通过<code>then</code>方法，为返回值添加回调函数，并在回调中再次调用自身</li>
-<li>对于类型不合适的<code>gen</code>，将状态修改为<code>rejected</code></li>
-</ol>
-<p>co能接收的yield返回值类型是有限的（尽管Generator函数中的yield后不限制返回值类型），有thunk函数，array，object，Promise对象。其中array和object使co可以胜任并发的操作，即可以在yield中返回多个异步操作任务。</p>
-<h4 id="koa"><a href="#koa" class="headerlink" title="koa"></a>koa</h4><p>koa是建立在generator和co之上的中间件框架，由Express开发人员打造。它通过组合不同的生成器函数，避免了繁杂易出错的回调函数嵌套。koa中没有绑定任何中间件，仅仅提供了一个轻量级函数库。</p>
-<blockquote>
-<p>Koa 中间件以一种更加传统的方式级联起来, 跟你在其他系统或工具中碰到的方式非常相似。 然而在以往的 Node 开发中, 级联是通过回调实现的, 想要开发用户友好的代码是非常困难的, Koa 借助 generators 实现了真正的中间件架构, 与 Connect 实现中间件的方法相对比，Koa 的做法不是简单的将控制权依次移交给一个又一个的方法直到某个结束，Koa 执行代码的方式有点像回形针，用户请求通过中间件，遇到 yield next 关键字时，会被传递到下游中间件（downstream），在 yield next 捕获不到下一个中间件时，逆序返回继续执行代码（upstream）。</p>
-</blockquote>
-<h3 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h3><p>上文中提到的thunk函数实际上由来已久，它是函数传名调用的一种实现方式，不同于函数的传值调用。就像下面的例子一样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a, b</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">f(x * <span class="number">3</span> + <span class="number">1</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 可以写成下面这样</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunk</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> x * <span class="number">3</span> + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">thunk, <span class="number">1</span></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> thunk() + <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>JavaScript中的thunk函数有着另外的意思，它替换的不是一个输入参数，而是<strong>将多参数的函数替换成单参数的版本，且只接受回调函数作为输入参数</strong>，正如之前写到的例子一样。</p>
-<p>一个简单的thunk函数转换器写起来并不复杂，像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> thunk = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">done</span>) </span>&#123;</div><div class="line">            args.push(done);</div><div class="line">            fn.apply(<span class="keyword">this</span>, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><a href="https://github.com/tj/node-thunkify" target="_blank" rel="external">node-thunkify</a>模块对此又多了一些监测，如在最内层的function添加called变量确保回调函数只执行一次。Thunkify的源码相比co就更短了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunkify</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    assert(<span class="string">'function'</span> == <span class="keyword">typeof</span> fn, <span class="string">'function required'</span>);</div><div class="line">    <span class="comment">// 返回一个包含thunk函数的函数，返回的thunk函数用于执行yield，而外围这个函数用于给thunk函数传递参数</span></div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="built_in">arguments</span>.length);</div><div class="line">        <span class="comment">// 缓存当前上下文环境，给fn提供执行环境</span></div><div class="line">        <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line"> </div><div class="line">        <span class="comment">// 将参数类数组转化为数组（实现方式略显臃肿，可直接用Array.prototype.slice.call(arguments)实现）</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; args.length; ++i) &#123;</div><div class="line">            args[i] = <span class="built_in">arguments</span>[i];</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="comment">// 真正的thunk函数（有且只有一个参数是callback的函数，且callback的第一个参数为error）</span></div><div class="line">        <span class="comment">// 类似于：</span></div><div class="line">        <span class="comment">// function(cb) &#123;fs.readFile(path, &#123;encoding: 'utf8&#125;, cb)&#125;</span></div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> called;</div><div class="line"> </div><div class="line">            <span class="comment">// 将回调函数再包裹一层，避免重复调用；同时，将包裹了的真正的回调函数push进参数数组</span></div><div class="line">            args.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (called) <span class="keyword">return</span>;</div><div class="line">                called = <span class="literal">true</span>;</div><div class="line">                done.apply(<span class="literal">null</span>, <span class="built_in">arguments</span>);</div><div class="line">            &#125;);</div><div class="line"> </div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// 在ctx上下文执行fn（一般是异步函数，如：fs.readFile）</span></div><div class="line">                <span class="comment">// 并将执行thunkify之后返回的函数的参数（含done回调）传入，类似于执行：</span></div><div class="line">                <span class="comment">// fs.readFile(path, &#123;encoding: 'utf8&#125;, done)</span></div><div class="line">                <span class="comment">// 关于done是做什么用，则是在co库内</span></div><div class="line">                fn.apply(ctx, args);</div><div class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">                done(err);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>thunk函数的特点和Promise对象类似，就是将回调函数的绑定单独抽离出来，thunk函数结合Generator函数实现自动流程管理方法和Promise一样。</p>
-<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><p>从Promise对象到Generator函数，JavaScript中的异步编程越来越简单，但是还是有戴着镣铐跳舞的感觉，async函数的提出即将把这个镣铐摘掉。</p>
-<p>async函数的使用和Generator函数很像，我们改写之前的那个读取文件函数如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">await</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">await</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>虽然和Generator函数很像，但是它有着更清晰易懂的语法，更广的适用性（<code>await</code>后可以跟任何类型，在原始类型时等同于同步操作）。最关键的是，<strong>async函数自带执行器！！！</strong></p>
-<p>在实现上，async函数和Generator函数是一样的，不过是将执行器放在自身内部而已。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">args</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> spawn(<span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spawn</span> (<span class="params">genF, self</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> gen = genF.call(self);</div><div class="line">    step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(<span class="literal">undefined</span>));</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">step</span> (<span class="params">nextF</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> next;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        next = nextF();</div><div class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="comment">// finished with failure, reject the promise</span></div><div class="line">        reject(e);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (next.done) &#123;</div><div class="line">        <span class="comment">// finished with success, resolve the promise</span></div><div class="line">        resolve(next.value);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></div><div class="line">      <span class="built_in">Promise</span>.resolve(next.value).then(</div><div class="line">        <span class="function"><span class="params">v</span> =&gt;</span> step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(v)),</div><div class="line">        e =&gt; step(<span class="function"><span class="params">()</span> =&gt;</span> gen.throw(e))</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="external">This API is so Fetching!</a><br><a href="https://github.com/tj/co" target="_blank" rel="external">co</a><br><a href="https://nswbmw.github.io/N-club/1/1.3.html" target="_blank" rel="external">co和koa</a><br><a href="https://ponyfoo.com/articles/understanding-javascript-async-await" target="_blank" rel="external">Understanding JavaScript’s async await</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1486,7 +1531,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1508,7 +1553,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">322</span>
+                <span class="site-state-item-count">325</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1577,7 +1622,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-"></i>
   </span>

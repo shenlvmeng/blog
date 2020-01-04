@@ -296,6 +296,547 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/12/13/you-dont-know-js-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/12/13/you-dont-know-js-part1/" itemprop="url">《You don't know JS》 上（入门&作用域&对象）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-13T20:54:12+08:00">
+                2017-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/12/13/you-dont-know-js-part1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/12/13/you-dont-know-js-part1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>原作：<a href="https://github.com/getify/You-Dont-Know-JS" target="_blank" rel="external">You-Dont-Know-JS</a><br>本文的99.9%的内容都来自《You dont know JS》的<a href="https://github.com/getify/You-Dont-Know-JS/tree/1ed-zh-CN" target="_blank" rel="external">电子中文版</a></p>
+<p>传送门：<a href="https://shenlvmeng.github.io/blog/2017/12/15/you-dont-know-js-part2/" target="_blank" rel="external">《You don’t know JS》 下（类型文法&amp;异步&amp;ES6与未来）</a></p>
+</blockquote>
+<h2 id="入门与进阶"><a href="#入门与进阶" class="headerlink" title="入门与进阶"></a>入门与进阶</h2><h3 id="值和类型"><a href="#值和类型" class="headerlink" title="值和类型"></a>值和类型</h3><p>JavaScript只有带类型的值，没有带类型的变量。大家都知道JS的基本类型共6类：</p>
+<ul>
+<li>undefined</li>
+<li>null</li>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>object</li>
+</ul>
+<p>但是在ES6之后，需要新增一类<code>symbol</code>。另外，对null使用<code>typeof</code>将得到“object”的结果。</p>
+<p>JavaScript中对“falsy”的定义包括：</p>
+<ul>
+<li>“”</li>
+<li>0, -0, NaN</li>
+<li>null, undefined</li>
+<li>false</li>
+</ul>
+<p>除此之外的值都是truthy。</p>
+<p>关于JavaScript中的<code>==</code>和<code>===</code>，作者的看法是在必要的时候<code>==</code>会很好地改善程序。然而<code>==</code>的<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-11.9.3" target="_blank" rel="external">判断规则</a>比较复杂，可以总结出一些情况便于我们选择是否使用<code>==</code>：</p>
+<ul>
+<li>如果一个比较的两个值之一可能是<code>true</code>或<code>false</code>，避免==而使用===。</li>
+<li>如果一个比较的两个值之一可能是<code>0</code>/<code>&quot;&quot;</code>/<code>[]</code>，避免==而使用===。</li>
+<li>其他情况下，放心使用<code>==</code>。不仅安全，在许多情况下它可以简化你的代码并改善可读性。</li>
+</ul>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>一个变量标识符必须以a-z，A-Z，$，或<code>_</code>开头。它可以包含任意这些字符外加数字0-9，但不能使用保留字。</p>
+<p>变量作用域提升（var定义）和嵌套就不多说了。</p>
+<h3 id="Strict模式"><a href="#Strict模式" class="headerlink" title="Strict模式"></a>Strict模式</h3><p>让代码更严谨，同样可以选择用在全局或是函数中。</p>
+<h3 id="函数作为值"><a href="#函数作为值" class="headerlink" title="函数作为值"></a>函数作为值</h3><p><strong>IIFE</strong>（立即执行函数）和<strong>闭包</strong>是JS中值得玩味的特性。除了使用<code>()</code>包裹，还可以用<code>void</code>打头开始一个IIFE。</p>
+<p>闭包经常用来包装模块。</p>
+<h3 id="this指代和prototype"><a href="#this指代和prototype" class="headerlink" title="this指代和prototype"></a>this指代和prototype</h3><p>略</p>
+<h3 id="新的特性"><a href="#新的特性" class="headerlink" title="新的特性"></a>新的特性</h3><p>填充（polyfill）和转译（transpile）</p>
+<h2 id="作用域与闭包"><a href="#作用域与闭包" class="headerlink" title="作用域与闭包"></a>作用域与闭包</h2><h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>作用域与LHS，RHS。在非Strict模式下，如果到全局作用域还找不到变量，会在作用域内创建一个新的同名变量。在Strict模式下，不允许这种行为（意外地创建全局变量），此时会抛出ReferenceError，即找不到变量。如果找到了值，但是并不能对它做一些事情，就会抛出TypeError。</p>
+<h3 id="词法作用域"><a href="#词法作用域" class="headerlink" title="词法作用域"></a>词法作用域</h3><p>JavaScript使用词法作用域，即变量和作用域在编写代码阶段已经确定。JS引擎也可以在这个阶段针对作用域和变量对代码进行优化，但是<code>eval()</code>和<code>with()</code>会在代码中动态改变作用域，从而使得引擎无法进行优化，使代码运行得更慢。在strict模式下，<code>eval()</code>的不安全用法（修改作用域）以及<code>with()</code>都是不允许使用的。</p>
+<p>词法作用域是编写时的，而动态作用域（和this）是运行时的。词法作用域关心的是函数<strong>在何处被声明</strong>，但是动态作用域关心的是函数<strong>从何处被调用</strong>。</p>
+<p><code>this</code>在JS中始终是运行时的，即根据运行时的调用情况有不同的值。在<strong>箭头函数</strong>中则是词法this的，即声明时决定。</p>
+<h3 id="块作用域"><a href="#块作用域" class="headerlink" title="块作用域"></a>块作用域</h3><p>封装、匿名函数、IIFE。</p>
+<p>for循环、if、while、switch等流程控制语句的<code>{}</code>，都是<em>假的</em>块作用域，其中的内容都依附于外部的函数作用域。with（不建议使用），try catch，let，const可以形成新的块作用域。</p>
+<p>在ES6到ES5的转译时，具有块作用域的代码，会采用<code>try catch</code>来实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ES6</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</div><div class="line">    <span class="built_in">console</span>.log(a);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// ES5</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="literal">undefined</span>;</div><div class="line">&#125; <span class="keyword">catch</span>(a) &#123;</div><div class="line">    a = <span class="number">1</span>;</div><div class="line">    <span class="built_in">console</span>.log(a);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="提升"><a href="#提升" class="headerlink" title="提升"></a>提升</h3><ul>
+<li>在代码被执行前，所有的声明，变量和函数，都会首先被处理。处理的只有“声明”，而没有“赋值”。</li>
+<li>函数提升优先于变量的提升</li>
+<li>后续的提升会覆盖此前的同名提升</li>
+</ul>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><blockquote>
+<p>闭包就是函数能够记住并访问它的词法作用域，即使当这个函数在它的词法作用域之外执行时。</p>
+</blockquote>
+<p>循环加闭包会出现面试中的经典问题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">1</span>; i&lt;=<span class="number">5</span>; i++) &#123;</div><div class="line">    setTimeout( <span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log( i );</div><div class="line">    &#125;, i*<span class="number">1000</span> );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的代码为啥不好用？</p>
+<p>从之前关于作用域的讨论来看，每次setTimeout只是完成了函数声明，并丢进队列里而已。当定时器函数在其词法作用域外执行时，因为闭包的特点会保留有父级的作用域。而这5个函数都定义在同一个父级函数作用域内，对变量i的引用自然是同一个了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">1</span>; i&lt;=<span class="number">5</span>; i++) &#123;</div><div class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params">j</span>)</span>&#123;</div><div class="line">        setTimeout( <span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log( j );</div><div class="line">        &#125;, j*<span class="number">1000</span> );</div><div class="line">    &#125;)( i );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有IIFE的加持，父级作用域现在变成了每个IIFE而非for循环所在的作用域。即每个变量i来自不同的独立作用域，自然就可以得到理想的效果了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">1</span>; i&lt;=<span class="number">5</span>; i++) &#123;</div><div class="line">    setTimeout( <span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log( i );</div><div class="line">    &#125;, i*<span class="number">1000</span> );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不就是想要个块作用域嘛，使用<code>let</code>关键字后变量将不是只为循环声明一次，而是为每次迭代声明一次。每次都能得到一个新的块作用域，自然得到和IIFE一样的效果。</p>
+<h2 id="this与对象"><a href="#this与对象" class="headerlink" title="this与对象"></a><code>this</code>与对象</h2><h3 id="this是什么"><a href="#this是什么" class="headerlink" title="this是什么"></a><code>this</code>是什么</h3><p>也许JS已经入门的前端程序员们早就对this在不同环境下的不同值烂熟在心。但可能没有想过这种情况的本质：上一部分提到的<strong>JS中的this是运行时的</strong>，和作用域完全不一样。</p>
+<p>对比一下按照传统OOP理解下的JS代码，从不同的角度看，能进一步得到对this的认识：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">    <span class="keyword">this</span>.bar();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log( <span class="keyword">this</span>.a );</div><div class="line">&#125;</div><div class="line"></div><div class="line">foo(); <span class="comment">//undefined</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">num</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log( <span class="string">"foo: "</span> + num );</div><div class="line"></div><div class="line">    <span class="comment">// 追踪 `foo` 被调用了多少次</span></div><div class="line">    <span class="keyword">this</span>.count++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">foo.count = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span> i;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (i &gt; <span class="number">5</span>) &#123;</div><div class="line">        foo( i );</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// foo: 6</span></div><div class="line"><span class="comment">// foo: 7</span></div><div class="line"><span class="comment">// foo: 8</span></div><div class="line"><span class="comment">// foo: 9</span></div><div class="line"></div><div class="line"><span class="comment">// `foo` 被调用了多少次？</span></div><div class="line"><span class="built_in">console</span>.log( foo.count ); <span class="comment">// 0 -- 这他妈怎么回事……？</span></div></pre></td></tr></table></figure>
+<p>虽然看上去很愚蠢，但是从词法作用域的角度去理解，是不是能更清楚看到JS中<code>this</code>的特殊之处。</p>
+<h3 id="this豁然开朗"><a href="#this豁然开朗" class="headerlink" title="this豁然开朗"></a><code>this</code>豁然开朗</h3><p>根据上面的描述，<code>this</code>是根据调用点确定含义的。下面的4个规则，在准备JS面试的时候肯定都见过：</p>
+<ul>
+<li>默认绑定，独立函数调用。可以认为这种this规则是在没有其他规则适用时的默认规则。此时<code>this</code>指向全局对象，在strict mode下，<code>this</code>指向undefined。</li>
+<li><p>隐含绑定，调用点有一个环境对象，即作为函数方法，但是下面的情况下会回退到默认绑定，因为调用点实际位于独立函数内</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="built_in">console</span>.log( <span class="keyword">this</span>.a );</div><div class="line">    &#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> bar = obj.foo; <span class="comment">// 函数引用！</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> a = <span class="string">"oops, global"</span>; <span class="comment">// `a`也是一个全局对象的属性</span></div><div class="line"></div><div class="line">bar(); <span class="comment">// "oops, global"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log( <span class="keyword">this</span>.a );</div><div class="line">&#125;</div><div class="line"></div><div class="line">========</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">doFoo</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    <span class="comment">// `fn` 只不过 `foo` 的另一个引用</span></div><div class="line"></div><div class="line">    fn(); <span class="comment">// &lt;-- 调用点!</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> a = <span class="string">"oops, global"</span>; <span class="comment">// `a`也是一个全局对象的属性</span></div><div class="line"></div><div class="line">doFoo( obj.foo ); <span class="comment">// "oops, global"</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>显式绑定，<code>call</code>与<code>apply</code>可以显式attach context到函数上，使用<code>bind</code>可以避免前面那种<code>this</code>丢失的情况。</p>
+</li>
+<li>new绑定，函数作为构造函数调用时，<code>this</code>指向即将返回的新对象。</li>
+</ul>
+<p>从优先级上看，new &gt; 硬绑定 &gt; 隐含绑定 &gt; 默认绑定。其中“new &gt; 硬绑定”有趣的一点是，使用<code>bind</code>在第一个后的参数实际上会作为函数的默认入参（类似于函数柯里化），如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">p1,p2</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.val = p1 + p2;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 在这里使用 `null` 是因为在这种场景下我们不关心 `this` 的硬绑定</span></div><div class="line"><span class="comment">// 而且反正它将会被 `new` 调用覆盖掉！</span></div><div class="line"><span class="keyword">var</span> bar = foo.bind( <span class="literal">null</span>, <span class="string">"p1"</span> );</div><div class="line"></div><div class="line"><span class="keyword">var</span> baz = <span class="keyword">new</span> bar( <span class="string">"p2"</span> );</div><div class="line"></div><div class="line">baz.val; <span class="comment">// p1p2</span></div></pre></td></tr></table></figure>
+<p>除了上面的规则，还有一些特例：</p>
+<p>传递<code>null</code>或<code>undefined</code>给<code>call</code>，<code>apply</code>或<code>bind</code>时，那么这些值会被忽略掉，取而代之的是<strong>默认绑定</strong>规则将适用于这个调用。单纯使用apply数组化输入参数（现在已经可以用<code>[...foo]</code>了）和bind柯里化函数时常用到。</p>
+<p>不过，这么做还是有风险，建议用<code>Object.create(null)</code>创建的对象替代<code>null</code>，既能表示无意义的值，又能避免<strong>默认绑定</strong>的行为。</p>
+<p>作者给出了软绑定的工具方法，提高了硬绑定的灵活性，又避免了<strong>默认绑定</strong>的问题。逻辑是在绑定时检查<code>this</code>是否是全局对象，如果是才使用输入的<code>this</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.softBind) &#123;</div><div class="line">    <span class="built_in">Function</span>.prototype.softBind = <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> fn = <span class="keyword">this</span>,</div><div class="line">            curried = [].slice.call( <span class="built_in">arguments</span>, <span class="number">1</span> ),</div><div class="line">            bound = <span class="function"><span class="keyword">function</span> <span class="title">bound</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">return</span> fn.apply(</div><div class="line">                    (!<span class="keyword">this</span> ||</div><div class="line">                        (<span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">"undefined"</span> &amp;&amp;</div><div class="line">                            <span class="keyword">this</span> === <span class="built_in">window</span>) ||</div><div class="line">                        (<span class="keyword">typeof</span> global !== <span class="string">"undefined"</span> &amp;&amp;</div><div class="line">                            <span class="keyword">this</span> === global)</div><div class="line">                    ) ? obj : <span class="keyword">this</span>,</div><div class="line">                    curried.concat.apply( curried, <span class="built_in">arguments</span> )</div><div class="line">                );</div><div class="line">            &#125;;</div><div class="line">        bound.prototype = <span class="built_in">Object</span>.create( fn.prototype );</div><div class="line">        <span class="keyword">return</span> bound;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，前面提到的箭头函数具有词法<code>this</code>，等同在调用前声明<code>self = this</code>，再把<code>self</code>传入的效果。</p>
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><p>内建对象中，只有<code>Date()</code>是必须要使用<code>new</code>创建的。</p>
+<p>对象的属性有两种访问方法：<code>.</code>操作符或<code>[ ]</code>操作符。不同的是<code>.</code>操作符后只能使用标识符兼容的属性名，<code>[...]</code>操作符后可以使用任何合理的UTF-8的字符串。另外，对象的属性名总是字符串，如果使用了其他类型值，会进行强制转换：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myObject = &#123; &#125;;</div><div class="line"></div><div class="line">myObject[<span class="literal">true</span>] = <span class="string">"foo"</span>;</div><div class="line">myObject[<span class="number">3</span>] = <span class="string">"bar"</span>;</div><div class="line">myObject[myObject] = <span class="string">"baz"</span>;</div><div class="line"></div><div class="line">myObject[<span class="string">"true"</span>];               <span class="comment">// "foo"</span></div><div class="line">myObject[<span class="string">"3"</span>];                  <span class="comment">// "bar"</span></div><div class="line">myObject[<span class="string">"[object Object]"</span>];    <span class="comment">// "baz"</span></div></pre></td></tr></table></figure>
+<h4 id="计算型属性名"><a href="#计算型属性名" class="headerlink" title="计算型属性名"></a>计算型属性名</h4><p>ES6中新增了<em>计算型属性名</em>，允许使用表达式作为一个键名称，表达式用<code>[ ]</code>括起来。像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> prefix = <span class="string">"foo"</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span> myObject = &#123;</div><div class="line">    [prefix + <span class="string">"bar"</span>]: <span class="string">"hello"</span>,</div><div class="line">    [prefix + <span class="string">"baz"</span>]: <span class="string">"world"</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">myObject[<span class="string">"foobar"</span>]; <span class="comment">// hello</span></div><div class="line">myObject[<span class="string">"foobaz"</span>]; <span class="comment">// world</span></div></pre></td></tr></table></figure>
+<p>深、浅复制与对象属性描述符（description），<code>writable</code>和<code>configurable</code>，<code>getOwnPropertyDescriptor()</code>与<code>defineProperty()</code>。在JS中，<code>delete</code>仅用于直接从目标对象移除该对象的（可以被移除的）属性，与释放内存并无直接关系。</p>
+<h4 id="Immutability"><a href="#Immutability" class="headerlink" title="Immutability"></a>Immutability</h4><p><strong>注意：所有这些方法创建的都是浅不可变性。也就是，它们仅影响对象和它的直属属性的性质。如果对象拥有对其他对象（数组、对象、函数等）的引用，那个对象的内容不会受影响，任然保持可变</strong>。</p>
+<p>属性描述符里的<code>writable</code>和<code>configuratable</code>限制了对属性和属性值的修改。<code>preventExtensions()</code>方法可以防止对象被添加新属性。</p>
+<ul>
+<li><code>seal()</code> = <code>configuratable: false</code> + <code>preventExtensions()</code></li>
+<li><code>freeze()</code> = <code>seal()</code> + <code>writable: false</code></li>
+</ul>
+<h4 id="getter与setter"><a href="#getter与setter" class="headerlink" title="getter与setter"></a>getter与setter</h4><p>除了使用<code>defineProperty</code>外，可以直接用字面量的形式，通过<code>get prop1()</code>或<code>set prop1(val)</code>的形式设置getter和setter。</p>
+<p><code>for in</code>和<code>for of</code>。</p>
+<h3 id="混合（淆）“类”的对象"><a href="#混合（淆）“类”的对象" class="headerlink" title="混合（淆）“类”的对象"></a>混合（淆）“类”的对象</h3><blockquote>
+<p>有些语言（比如Java）不给你选择，所以这根本没什么 选择性 —— 一切都是类。其他语言如C/C++或PHP同时给你过程式和面向类的语法，在使用哪种风格合适或混合风格上，留给开发者更多选择。</p>
+</blockquote>
+<p><strong>类意味着拷贝。</strong></p>
+<p>当一个传统的类被实例化时，就发生了类的行为向实例中拷贝。当类被继承时，也发生父类的行为向子类的拷贝。多态也是拷贝行为的结果。</p>
+<p>但是：</p>
+<ul>
+<li>第一，JavaScript并<strong>不会</strong>自动地 （像类那样）在对象间创建拷贝；</li>
+<li>第二，显式mixin只能复制函数或对象的<strong>引用</strong>，而不是自身。</li>
+</ul>
+<blockquote>
+<p>正如我们在第四章讲解的，在 JavaScript 中，对于对象来说没有抽象模式/蓝图，即没有面向类的语言中那样的称为类的东西。JavaScript 只有 对象。</p>
+<p>实际上，在所有语言中，JavaScript 几乎是独一无二的，也许是唯一的可以被称为“面向对象”的语言，因为可以根本没有类而直接创建对象的语言很少，而 JavaScript 就是其中之一。</p>
+<p>在 JavaScript 中，类不能（因为根本不存在）描述对象可以做什么。对象直接定义它自己的行为。这里 仅有 对象。</p>
+<p>总之，JavaScript中面向对象的部分和大多数OOP语言不完全一样。这使得在JS中模拟类编程将既累又会埋下很多坑。</p>
+</blockquote>
+<h3 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h3><p>使用<code>[[get]]</code>查询属性时，也会在<code>[[prototype]]</code>链上寻找，因此修改对象属性的时候，应该注意<strong>属性遮蔽</strong>（即在<code>[[prototype]]</code>中找到）的情况。它会增加代码的复杂度和可读性，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> anotherObject = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> myObject = <span class="built_in">Object</span>.create( anotherObject );</div><div class="line"></div><div class="line">anotherObject.a; <span class="comment">// 2</span></div><div class="line">myObject.a; <span class="comment">// 2</span></div><div class="line"></div><div class="line">anotherObject.hasOwnProperty( <span class="string">"a"</span> ); <span class="comment">// true</span></div><div class="line">myObject.hasOwnProperty( <span class="string">"a"</span> ); <span class="comment">// false</span></div><div class="line"></div><div class="line">myObject.a++; <span class="comment">// 噢，隐式遮蔽！</span></div><div class="line"></div><div class="line">anotherObject.a; <span class="comment">// 2</span></div><div class="line">myObject.a; <span class="comment">// 3</span></div><div class="line"></div><div class="line">myObject.hasOwnProperty( <span class="string">"a"</span> ); <span class="comment">// true</span></div></pre></td></tr></table></figure>
+<p>在<code>for in</code>循环中，同样注意用<code>hasOwnProperty()</code>排除<code>[[prototype]]</code>上的属性。</p>
+<p>所有用<code>constructor</code>构建的对象都有所指向的prototype，而在prototype中的<code>.constructor</code>又会指回<code>constructor</code>。但是这个关系是可以被覆盖的。</p>
+<h3 id="原型继承"><a href="#原型继承" class="headerlink" title="原型继承"></a>原型继承</h3><p>作者认为，JS中的对象是通过链接组织起来的。说是原型继承，实际上就是在两个原型间建立了<code>[[prototype]]</code>的关系。这个关系的建立方法很多，各有优劣。最简单的还是用ES5提供的<code>Object.create()</code>方法，对<code>__proto__</code>和<code>constructor</code>等视而不见。它的polyfill像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (!<span class="built_in">Object</span>.create) &#123;</div><div class="line">    <span class="built_in">Object</span>.create = <span class="function"><span class="keyword">function</span>(<span class="params">o</span>) </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>)</span>&#123;&#125;</div><div class="line">        F.prototype = o;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> F();</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，<code>Object.create()</code>第一个后面的参数可以用来声明对象属性描述符，不过用得不多。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<p>虽然这些JavaScript机制看起来和传统面向类语言的“初始化类”和“类继承”类似，而在JavaScript中的关键区别是，没有拷贝发生。取而代之的是对象最终通过<code>[[Prototype]]</code>链链接在一起。</p>
+<p>相反，“委托”是一个更确切的术语，因为这些关系不是拷贝而是委托链接。</p>
+</blockquote>
+<p>从这个角度去看<code>new Foo()</code>过程中发生的事，除了返回一个新的对象外，<code>Foo()</code>还会将这个对象和<code>Foo.prototype</code>链接起来（通过指定<code>[[prototype]]</code>），<code>Foo.prototype</code>和别的对象并没有本质区别。</p>
+<h3 id="行为委托"><a href="#行为委托" class="headerlink" title="行为委托"></a>行为委托</h3><p>在上面一章提到，<code>[[prototype]]</code>是存在于对象内部的引用另一个对象的内部连接。当一个属性/方法引用在一个对象上发生，而这样的属性/方法又不存在时，这个链接就会被使用。在这种情况下，<code>[[Prototype]]</code>链接告诉引擎去那个被链接的对象上寻找该属性/方法。接下来，如果那个对象也不能满足查询，就沿着它的<code>[[Prototype]]</code>查询，如此继续。这种对象间的一系列链接构成了所谓的“原形链”。</p>
+<p>其重要的实质<strong>全部在于被连接到其他对象的对象</strong>。</p>
+<p>下面是一段OLOO（链接到其他对象的对象）风格的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Task = &#123;</div><div class="line">    <span class="attr">setID</span>: <span class="function"><span class="keyword">function</span>(<span class="params">ID</span>) </span>&#123; <span class="keyword">this</span>.id = ID; &#125;,</div><div class="line">    <span class="attr">outputID</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log( <span class="keyword">this</span>.id ); &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 使 `XYZ` 委托到 `Task`</span></div><div class="line"><span class="keyword">var</span> XYZ = <span class="built_in">Object</span>.create( Task );</div><div class="line"></div><div class="line">XYZ.prepareTask = <span class="function"><span class="keyword">function</span>(<span class="params">ID,Label</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.setID( ID );</div><div class="line">    <span class="keyword">this</span>.label = Label;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">XYZ.outputTaskDetails = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.outputID();</div><div class="line">    <span class="built_in">console</span>.log( <span class="keyword">this</span>.label );</div><div class="line">&#125;;</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p>它的特点在于：</p>
+<ul>
+<li>状态保留在委托者上</li>
+<li>避免<code>[[prototype]]</code>链上的重复命名</li>
+<li>行为委托用在内部实现，避免暴露在API的设计上</li>
+</ul>
+<p><strong>思维的转变</strong></p>
+<p>放弃传统OO思路在JS中的蹩脚实现（像下面这样），抓住<code>[[prototype]]</code>链接对象以及“原型链”的特殊性，可以让思路更加自然且符合JS的特点（像下面的下面那样）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params">who</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.me = who;</div><div class="line">&#125;</div><div class="line">Foo.prototype.identify = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">"I am "</span> + <span class="keyword">this</span>.me;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Bar</span>(<span class="params">who</span>) </span>&#123;</div><div class="line">    Foo.call( <span class="keyword">this</span>, who );</div><div class="line">&#125;</div><div class="line">Bar.prototype = <span class="built_in">Object</span>.create( Foo.prototype );</div><div class="line"></div><div class="line">Bar.prototype.speak = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert( <span class="string">"Hello, "</span> + <span class="keyword">this</span>.identify() + <span class="string">"."</span> );</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> b1 = <span class="keyword">new</span> Bar( <span class="string">"b1"</span> );</div><div class="line"><span class="keyword">var</span> b2 = <span class="keyword">new</span> Bar( <span class="string">"b2"</span> );</div><div class="line"></div><div class="line">b1.speak();</div><div class="line">b2.speak();</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Foo = &#123;</div><div class="line">    <span class="attr">init</span>: <span class="function"><span class="keyword">function</span>(<span class="params">who</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.me = who;</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">identify</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"I am "</span> + <span class="keyword">this</span>.me;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> Bar = <span class="built_in">Object</span>.create( Foo );</div><div class="line"></div><div class="line">Bar.speak = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert( <span class="string">"Hello, "</span> + <span class="keyword">this</span>.identify() + <span class="string">"."</span> );</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> b1 = <span class="built_in">Object</span>.create( Bar );</div><div class="line">b1.init( <span class="string">"b1"</span> );</div><div class="line"><span class="keyword">var</span> b2 = <span class="built_in">Object</span>.create( Bar );</div><div class="line">b2.init( <span class="string">"b2"</span> );</div><div class="line"></div><div class="line">b1.speak();</div><div class="line">b2.speak();</div></pre></td></tr></table></figure>
+<p>在这种委托的思路下，不存在严格的父子关系，甚至不存在继承和类的说法。全程通过<code>Object.create()</code>建立起对象和对象的联系，连<code>new</code>也是不建议使用的。</p>
+<p>但是这种思路也有个明显的问题，“子类”没法定义“父类”的同名方法，因为整个程序建立在<code>[[prototype]]</code>联系的基础上，重复命名将会隔断连接。</p>
+<p>作者并不推荐匿名函数的使用，认为：1，追踪调试栈困难；2，难以自引用；3，代码变得不好理解。这点上我是保留意见的。</p>
+<h3 id="类型自省"><a href="#类型自省" class="headerlink" title="类型自省"></a>类型自省</h3><p>类型自省即<code>instanceof</code>，而这个操作符是依赖于<code>[[prototype]]</code>中的constructor属性的，这个属性除了不可枚举外，相较其他属性并没有特别之处。重写或者<code>[[prototype]]</code>的改变就可以改变它。因此，<code>instanceof</code>在很多情况下可能并不会那么可靠。</p>
+<p>使用鸭子类型的类型自省就更加不可靠了。</p>
+<p>在作者提出的OLOO范式中，采取<code>isPrototypeOf()</code>和<code>Object.getPrototypeOf()</code>进行类型自省。</p>
+<h3 id="新的class关键字"><a href="#新的class关键字" class="headerlink" title="新的class关键字"></a>新的<code>class</code>关键字</h3><p>为了便于“类”思维编程者，<code>class</code>可以说是一大福音。</p>
+<ul>
+<li>不再有<code>.prototype</code>的困扰</li>
+<li><code>extends</code>一键式继承</li>
+<li><code>super</code>对多态的支持</li>
+<li>语法上使用更加贴近OOP语言</li>
+</ul>
+<p>但实际上，这里的<code>class</code>只是语法糖，它还是没实现从类（“蓝图”）到实例（“建筑”）以及从父类到子类的复制，还建立在<code>[[prototype]]</code>的基础上。<a href="https://github.com/getify/You-Dont-Know-JS/blob/1ed-zh-CN/this%20%26%20object%20prototypes/apA.md" target="_blank" rel="external">原文</a>给出了很多例子说明这点。</p>
+<blockquote>
+<p>在传统面向类的语言中，你从不会在晚些时候调整类的定义，所以类设计模式不提供这样的能力。但是JS的一个最强大的部分就是它是动态的，而且任何对象的定义都是（除非你将它设定为不可变）不固定的可变的东西。</p>
+<p>换句话说，class 好像在告诉你：“动态太坏了，所以这可能不是一个好主意。这里有看似静态语法，把你的东西静态编码。”</p>
+<p>关于 JavaScript 的评论是多么悲伤啊：动态太难了，让我们假装成（但实际上不是！）静态吧。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/12/11/raven/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/12/11/raven/" itemprop="url">Sentry Raven.js学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T23:03:47+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/12/11/raven/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/12/11/raven/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近看看要不要在网上学习下性能监测和告警的解决方案，加在项目里。已经调研了一下才发现，项目里已经用上Raven.js了。实际上，各大公司也都有自己的实现方式，除了sentry的Raven.js外，还有腾讯的badjs，淘宝的JSTracker，阿里巴巴的FdSafe，支付宝的saijs等。早在几年前，就已经有许多解决方案了。</p>
+<p>异常监测和信息采集的需要实现的主要功能点包括：</p>
+<ul>
+<li>前端SDK实现包括错误拦截和监控，错误信息包装、信息上报、API设计等</li>
+<li>提供一个可视化的管理后台</li>
+<li>可以正确定位错误位置</li>
+<li>可以对上报的日志进行筛选、查询、聚类等操作</li>
+<li>可以用邮件、短信或集成在其他平台中通知开发者</li>
+</ul>
+<p>从一个前端初学者的角度，下面更多聊一下前端SDK的细节。</p>
+<h3 id="前端SDK实现"><a href="#前端SDK实现" class="headerlink" title="前端SDK实现"></a>前端SDK实现</h3><p>前端实现上的技术重点有三：<strong>错误捕获和封装</strong>，<strong>AJAX上报</strong>和<strong>JSON字符串化参数</strong>。</p>
+<p>在raven-js的<code>vendor</code>目录下，引用<code>json-stringify-safe</code>和<code>Tracekit</code>。前者为了避免<code>JSON.stringify</code>中出现的循环引用的情况，下面主要介绍后者。</p>
+<h4 id="Tracekit"><a href="#Tracekit" class="headerlink" title="Tracekit"></a>Tracekit</h4><p>常见的方案就是拦截<code>window.onerror</code>方法，在做完自己的工作后，调用原来的<code>window.onerror</code>。自己的工作里包括对错误信息的同一美化和包装。raven.js在这里是借助Tracekit.js完成的。</p>
+<p>Tracekit主要分为两部分，<code>Tracekit.report()</code>和<code>Tracekit.computeStackTraceWrapper()</code>。前者主要用来绑定和解绑错误监听函数、拦截错误；后者主要用来格式化错误信息。</p>
+<p><strong><code>Tracekit.report()</code></strong></p>
+<p>在<code>report()</code>里，整体的设计和基本的观察者设计模式一样，内部成员<code>handlers</code>保存所有的事件消费者，与事件处理函数相关的有四个：</p>
+<ul>
+<li><code>subscribe()</code>，绑定一个监听错误的函数，并在绑定第一个函数时替换原有的<code>window.onerror</code></li>
+<li><code>unsubscribe()</code>，解绑一个监听错误的函数，需要提供函数的引用</li>
+<li><code>unsubscribeAll()</code>，解绑所有监听错误的函数，还原原有的<code>window.onerror</code></li>
+<li><code>notifyHandlers()</code>，触发错误时，将处理过的错误分发给各handlers</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">notifyHandlers</span>(<span class="params">stack, isWindowError</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> exception = <span class="literal">null</span>;</div><div class="line">    <span class="keyword">if</span> (isWindowError &amp;&amp; !TraceKit.collectWindowErrors) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> handlers) &#123;</div><div class="line">        <span class="keyword">if</span> (handlers.hasOwnProperty(i)) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                handlers[i].apply(<span class="literal">null</span>, [stack].concat(_slice.call(<span class="built_in">arguments</span>, <span class="number">2</span>)));</div><div class="line">            &#125; <span class="keyword">catch</span> (inner) &#123;</div><div class="line">                exception = inner;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (exception) &#123;</div><div class="line">        <span class="keyword">throw</span> exception;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，函数<code>installGlobalHandler()</code>和<code>uninstallGlobalHandler()</code>就是上文中用来拦截<code>window.onerror</code>的函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">installGlobalHandler</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (_onErrorHandlerInstalled) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    _oldOnerrorHandler = _window.onerror;</div><div class="line">    _window.onerror = traceKitWindowOnError;</div><div class="line">    _onErrorHandlerInstalled = <span class="literal">true</span>;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">uninstallGlobalHandler</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!_onErrorHandlerInstalled) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    _window.onerror = _oldOnerrorHandler;</div><div class="line">    _onErrorHandlerInstalled = <span class="literal">false</span>;</div><div class="line">    _oldOnerrorHandler = <span class="literal">undefined</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>report()</code>中最主要的函数是<code>traceKitWindowOnError()</code>。它的工作流程如下：</p>
+<ol>
+<li>查看lastException是否有正在处理的error，如果有则说明是当前错误引起的，使用<code>computeStackTrace.augmentStackTraceWithInitialElement()</code>追加到当前的错误栈前。调用<code>processLastException()</code>，将lastException的信息交给handler处理，并将lastException置空。</li>
+<li>如果lastException为空，且Error为错误对象，使用<code>computeStackTrace()</code>格式化错误信息，再交给错误消费者。</li>
+<li>如果lastException为空，且Error不是错误对象（如字符串），则自行包装错误信息，交给消费者</li>
+<li>使用原来的<code>window.onerror()</code>处理事件</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">traceKitWindowOnError</span>(<span class="params">message, url, lineNo, colNo, ex</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> stack = <span class="literal">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (lastExceptionStack) &#123;</div><div class="line">        TraceKit.computeStackTrace.augmentStackTraceWithInitialElement(</div><div class="line">            lastExceptionStack,</div><div class="line">            url,</div><div class="line">            lineNo,</div><div class="line">            message</div><div class="line">        );</div><div class="line">        processLastException();</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ex &amp;&amp; utils.isError(ex)) &#123;</div><div class="line">        <span class="comment">// non-string `ex` arg; attempt to extract stack trace</span></div><div class="line">        stack = TraceKit.computeStackTrace(ex);</div><div class="line">        notifyHandlers(stack, <span class="literal">true</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 自行封装</span></div><div class="line">        <span class="comment">// ...</span></div><div class="line">        notifyHandlers(stack, <span class="literal">true</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_oldOnerrorHandler) &#123;</div><div class="line">        <span class="keyword">return</span> _oldOnerrorHandler.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Tracekit.computeStackTraceWrapper()</strong></p>
+<p>这一部分主要由下面几个函数组成：</p>
+<ul>
+<li><code>computeStackTraceFromStackProp()</code>，处理Chrome和Gecko浏览器下的错误信息格式化</li>
+<li><code>computeStackTraceByWalkingCallerChain()</code>，处理IE和Safari浏览器下的错误信息格式化</li>
+<li><code>augmentStackTraceWithInitialElement()</code>，在当前错误栈底新增新的错误信息，用于<code>computeStackTraceByWalkingCallerChain()</code>和第一部分的<code>processLastException()</code></li>
+<li><code>computeStackTrace()</code>，格式化错误栈信息</li>
+</ul>
+<p>其中<code>computeStackTraceFromStackProp()</code>通过换行符得到stack信息，并通过正则格式化所需要的错误信息，<code>computeStackTraceByWalkingCallerChain()</code>是利用<code>arguments.caller</code>得到错误栈信息并格式化。</p>
+<p><code>computeStackTrace()</code>代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">computeStackTrace</span>(<span class="params">ex, depth</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> stack = <span class="literal">null</span>;</div><div class="line">    depth = depth == <span class="literal">null</span> ? <span class="number">0</span> : +depth;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        stack = computeStackTraceFromStackProp(ex);</div><div class="line">        <span class="keyword">if</span> (stack) &#123;</div><div class="line">            <span class="keyword">return</span> stack;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">if</span> (TraceKit.debug) &#123;</div><div class="line">            <span class="keyword">throw</span> e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        stack = computeStackTraceByWalkingCallerChain(ex, depth + <span class="number">1</span>);</div><div class="line">        <span class="keyword">if</span> (stack) &#123;</div><div class="line">            <span class="keyword">return</span> stack;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">if</span> (TraceKit.debug) &#123;</div><div class="line">            <span class="keyword">throw</span> e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">name</span>: ex.name,</div><div class="line">        <span class="attr">message</span>: ex.message,</div><div class="line">        <span class="attr">url</span>: getLocationHref()</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了Tracekit所做的工作外，raven本身也对console的log/warning/assert/error方法，<code>setTimeout</code>，<code>setInterval</code>,<code>requestAnimationFrame()</code>以及各种事件handler进行了拦截。</p>
+<p>这里有个坑，跨域的问题无法拦截错误，解决办法就是对跨域的script标签加入crossorigin属性，并在后台配置<code>Access-Control-Allow-Origin=*</code></p>
+<h4 id="Raven"><a href="#Raven" class="headerlink" title="Raven"></a>Raven</h4><p>实际上，Tracekit本身已经完成对<strong>错误捕获和封装</strong>。Raven为了便于在管理后台展示和管理，进一步提出了DSN、context等设计。raven-js的源码主要在<code>src/raven.js</code>中。剩下两部分也是在其中实现的。下面分部分介绍一些：</p>
+<p><strong>DSN</strong></p>
+<p>DSN（Data Source Name）是Sentry对一个项目的定义。它由协议、端口、用户、密码、后台Sentry服务器地址、项目名组成。通过<code>Raven.config()</code>设置。在<code>config()</code>中通过正则匹配用户输入的DSN字符串，得到后台地址。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">config: <span class="function"><span class="keyword">function</span>(<span class="params">dsn, options</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">if</span> (!dsn) <span class="keyword">return</span> self;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> globalOptions = self._globalOptions;</div><div class="line"></div><div class="line">    <span class="comment">// 设置全局参数</span></div><div class="line">    <span class="keyword">if</span> (options) &#123;</div><div class="line">      each(options, <span class="function"><span class="keyword">function</span>(<span class="params">key, value</span>) </span>&#123;</div><div class="line">        <span class="comment">// tags and extra are special and need to be put into context</span></div><div class="line">        <span class="keyword">if</span> (key === <span class="string">'tags'</span> || key === <span class="string">'extra'</span> || key === <span class="string">'user'</span>) &#123;</div><div class="line">          self._globalContext[key] = value;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          globalOptions[key] = value;</div><div class="line">        &#125;</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    self.setDSN(dsn);</div><div class="line"></div><div class="line">    <span class="comment">// 屏蔽跨域的无效错误</span></div><div class="line">    globalOptions.ignoreErrors.push(<span class="regexp">/^Script error\.?$/</span>);</div><div class="line">    globalOptions.ignoreErrors.push(<span class="regexp">/^Javascript error: Script error\.? on line 0$/</span>);</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="comment">// return for chaining</span></div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
+<p><strong>安装和卸载</strong></p>
+<p>在<code>install()</code>和<code>uninstall()</code>函数中完成。</p>
+<p><code>install()</code>中完成了下面的工作：</p>
+<ul>
+<li>借助Tracekit监听了全局的错误事件</li>
+<li>监听try catch和一些浏览器事件过程（如console，click，fetch等）中的信息</li>
+<li>安装插件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">install: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">if</span> (self.isSetup() &amp;&amp; !self._isRavenInstalled) &#123;</div><div class="line">        <span class="comment">// 订阅所有错误事件</span></div><div class="line">        TraceKit.report.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            self._handleOnErrorStackInfo.apply(self, <span class="built_in">arguments</span>);</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="comment">// 下方的函数会修改原回调函数</span></div><div class="line">        <span class="comment">// 需要修改函数的toString方法</span></div><div class="line">        self._patchFunctionToString();</div><div class="line"></div><div class="line">        <span class="comment">// 封装定时器和事件回调函数以提供更好的错误监控</span></div><div class="line">        <span class="keyword">if</span> (self._globalOptions.instrument &amp;&amp; self._globalOptions.instrument.tryCatch) &#123;</div><div class="line">            self._instrumentTryCatch();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 一些浏览器原生方法的封装，以捕获事件</span></div><div class="line">        <span class="comment">// 设置里可关闭</span></div><div class="line">        <span class="keyword">if</span> (self._globalOptions.autoBreadcrumbs) self._instrumentBreadcrumbs();</div><div class="line"></div><div class="line">        <span class="comment">// 安装所有插件</span></div><div class="line">        self._drainPlugins();</div><div class="line"></div><div class="line">        <span class="comment">// 更新状态</span></div><div class="line">        self._isRavenInstalled = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">Error</span>.stackTraceLimit = self._globalOptions.stackTraceLimit;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>uninstall</code>中还原了对浏览器原方法的修改，并卸载了Tracekit的report。</p>
+<p><strong>封装函数</strong></p>
+<p>相关函数：<code>context()</code>和<code>wrap()</code>。完成的主要工作是对浏览器原生方法的拦截，使得能更好地捕获其中的错误，在对象内部使用。</p>
+<p><strong>capture相关</strong></p>
+<p>用来捕获事件，有三种用法。</p>
+<ul>
+<li><code>captureException()</code>，最典型的用法，借助Tracekit捕获页面的异常，之后进一步封装成frame后交给<code>_send()</code>发送</li>
+<li><code>captureMessage()</code>，最常用的用法，类似埋点，将信息封装成frame后交给<code>_send()</code>发送</li>
+<li><code>captureBreadcrumb</code>，类似<code>captureMessage()</code>，不过储存信息在<code>this._breadcrumbs</code>，并不交给<code>_send()</code></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">captureException: <span class="function"><span class="keyword">function</span>(<span class="params">ex, options</span>) </span>&#123;</div><div class="line">    <span class="comment">// ex不是错误时的处理</span></div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="comment">// Get actual Error from ErrorEvent</span></div><div class="line">    <span class="keyword">if</span> (isErrorEvent(ex)) ex = ex.error;</div><div class="line"></div><div class="line">    <span class="comment">// Store the raw exception object for potential debugging and introspection</span></div><div class="line">    <span class="keyword">this</span>._lastCapturedException = ex;</div><div class="line"></div><div class="line">    <span class="comment">// TraceKit.report will re-raise any exception passed to it,</span></div><div class="line">    <span class="comment">// which means you have to wrap it in try/catch. Instead, we</span></div><div class="line">    <span class="comment">// can wrap it here and only re-raise if TraceKit.report</span></div><div class="line">    <span class="comment">// raises an exception different from the one we asked to</span></div><div class="line">    <span class="comment">// report on.</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">var</span> stack = TraceKit.computeStackTrace(ex);</div><div class="line">        <span class="keyword">this</span>._handleStackInfo(stack, options);</div><div class="line">    &#125; <span class="keyword">catch</span> (ex1) &#123;</div><div class="line">        <span class="keyword">if</span> (ex !== ex1) &#123;</div><div class="line">            <span class="keyword">throw</span> ex1;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>值得注意的是<code>captureMessage</code>中可以设置rate，使一些消息不上报。白名单、正则过滤也是在这里完成的。<code>captureException</code>则是在<code>_processException</code>中完成的。</p>
+<p><strong>设置context</strong></p>
+<p>context包括三部分：</p>
+<ul>
+<li>tags，用于从不同维度标识错误或信息，使用<code>setTagsContext()</code>全局配置</li>
+<li>users，用于标识错误来源，使用<code>setUsersContext()</code>配置</li>
+<li>extra，用来携带额外的信息，这部分信息不会被索引，使用<code>setExtraContext()</code>配置</li>
+</ul>
+<p>它们都放在<code>Raven._globalContext</code>中。涉及的函数还有<code>clearContext()</code>和<code>getContext()</code>。</p>
+<p>同时<code>environment</code>和<code>release</code>也放在<code>Raven._globalContext</code>中，可以通过<code>setEnvironment</code>和<code>setRelease</code>设置</p>
+<p><strong>BreadCrumb</strong></p>
+<p>这部分功能是在<code>_instrumentTryCatch</code>和<code>_instrumentBreadcrumbs</code>方法里实现的。它们通过重写原方法，捕获其中的错误和事件。在卸载时，通过<code>restoreBuiltin</code>还原。</p>
+<p><strong>发送</strong></p>
+<ul>
+<li>在<code>send()</code>方法中，会使用封装好的数据附加上<code>_globalOptions</code>中的数据，附带浏览器的状态信息（<code>_getHttpdata()</code>中实现）之后交由<code>_sendProcessedPayload()</code>。</li>
+<li>在<code>_sendProcessedPayload()</code>中，会裁剪过长的信息（message, stack, url, referer等）添加请求头，设置发送目标，传入成功和失败回调调用发送函数<code>_makeRequest()</code>。</li>
+<li>在<code>_makeRequest()</code>中，为了跨域发送，会优先尝试fetch，然后尝试带有withCredentials字段的XMLHttpRequest，最后采用XDomainRequest对象发送。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">_makeRequest: <span class="function"><span class="keyword">function</span>(<span class="params">opts</span>) </span>&#123;</div><div class="line">    <span class="comment">// Auth is intentionally sent as part of query string (NOT as custom HTTP header) to avoid preflight CORS requests</span></div><div class="line">    <span class="keyword">var</span> url = opts.url + <span class="string">'?'</span> + urlencode(opts.auth);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (supportsFetch()) &#123;</div><div class="line">        <span class="keyword">return</span> _window</div><div class="line">            .fetch(url, &#123;</div><div class="line">                <span class="attr">method</span>: <span class="string">'POST'</span>,</div><div class="line">                <span class="attr">body</span>: stringify(opts.data)</div><div class="line">            &#125;)</div><div class="line">            .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (response.ok) &#123;</div><div class="line">                    opts.onSuccess &amp;&amp; opts.onSuccess();</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// ..</span></div><div class="line">                &#125;</div><div class="line">            &#125;)</div><div class="line">            [<span class="string">'catch'</span>](<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                opts.onError &amp;&amp;</div><div class="line">                    opts.onError(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Sentry error code: network unavailable'</span>));</div><div class="line">            &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> request = _window.XMLHttpRequest &amp;&amp; <span class="keyword">new</span> _window.XMLHttpRequest();</div><div class="line">    <span class="keyword">if</span> (!request) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    <span class="comment">// if browser doesn't support CORS (e.g. IE7), we are out of luck</span></div><div class="line">    <span class="keyword">var</span> hasCORS = <span class="string">'withCredentials'</span> <span class="keyword">in</span> request || <span class="keyword">typeof</span> XDomainRequest !== <span class="string">'undefined'</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!hasCORS) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (<span class="string">'withCredentials'</span> <span class="keyword">in</span> request) &#123;</div><div class="line">        request.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (request.readyState !== <span class="number">4</span>) &#123;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (request.status === <span class="number">200</span>) &#123;</div><div class="line">                opts.onSuccess &amp;&amp; opts.onSuccess();</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (opts.onError) &#123;</div><div class="line">                <span class="keyword">var</span> err = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Sentry error code: '</span> + request.status);</div><div class="line">                err.request = request;</div><div class="line">                opts.onError(err);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        request = <span class="keyword">new</span> XDomainRequest();</div><div class="line">        <span class="comment">// xdomainrequest cannot go http -&gt; https (or vice versa),</span></div><div class="line">        <span class="comment">// so always use protocol relative</span></div><div class="line">        url = url.replace(<span class="regexp">/^https?:/</span>, <span class="string">''</span>);</div><div class="line"></div><div class="line">        <span class="comment">// onreadystatechange not supported by XDomainRequest</span></div><div class="line">        <span class="keyword">if</span> (opts.onSuccess) &#123;</div><div class="line">            request.onload = opts.onSuccess;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (opts.onError) &#123;</div><div class="line">            request.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">var</span> err = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Sentry error code: XDomainRequest'</span>);</div><div class="line">                err.request = request;</div><div class="line">                opts.onError(err);</div><div class="line">            &#125;;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    request.open(<span class="string">'POST'</span>, url);</div><div class="line">    request.send(stringify(opts.data));</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>至此，<strong>错误捕获和封装</strong>，<strong>AJAX上报</strong>和<strong>JSON字符串化参数</strong>都已完成。</p>
+<h3 id="可视化后台"><a href="#可视化后台" class="headerlink" title="可视化后台"></a>可视化后台</h3><p>在自己设计异常监控系统时，需要和后台商量好接口的设定。用Express + React/Vue等方案快速搭建。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://sentry.io" target="_blank" rel="external">sentry.io</a></li>
+<li><a href="https://github.com/getsentry/raven-js" target="_blank" rel="external">getsentry/raven-js</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/26085642" target="_blank" rel="external">前端异常监控系统的落地</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/11/17/photogallery-improvement-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -915,676 +1456,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/10/13/css-definitive-guide-content/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/10/13/css-definitive-guide-content/" itemprop="url">《CSS权威指南》脉络</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-13T13:56:33+08:00">
-                2017-10-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/语言/" itemprop="url" rel="index">
-                    <span itemprop="name">语言</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/10/13/css-definitive-guide-content/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/10/13/css-definitive-guide-content/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="CSS和文档"><a href="#CSS和文档" class="headerlink" title="CSS和文档"></a>CSS和文档</h3><ul>
-<li>CSS的出现和特点</li>
-<li><code>&lt;link&gt;</code>、<code>&lt;style&gt;</code>和<code>@import</code></li>
-<li>CSS注释</li>
-<li>内联样式</li>
-</ul>
-<ul>
-<li><code>@import</code>必须写在CSS文档的开头</li>
-</ul>
-<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><ul>
-<li>基本结构</li>
-<li>元素选择器（分组选择器、通配选择器）</li>
-<li>类选择器/ID选择器</li>
-<li>属性选择器（具体属性、部分属性）</li>
-<li>后代选择器、兄弟选择器（<code>&gt;</code>, <code>+</code>）</li>
-<li>伪类/伪元素选择器</li>
-</ul>
-<ul>
-<li><code>^=</code>, <code>$=</code>, <code>~=</code>, <code>*=</code>, <code>|=</code>用在属性选择中的部分匹配里，eg：<code>span[class~=&quot;bar&quot;]</code>，<br>其中<code>~=</code>匹配空格隔开的字符，<code>*=</code>匹配部分字符串，<code>|=</code>匹配完整字符串或以字符串开头</li>
-<li>常用的伪类选择器有<ul>
-<li><code>:link</code> 拥有<code>href</code>属性的<strong>未访问</strong>地址</li>
-<li><code>:visited</code></li>
-<li><code>:focus</code> 当前获得输入焦点的元素</li>
-<li><code>:hover</code></li>
-<li><code>:active</code> 被用户激活的元素</li>
-<li><code>:first-child</code> 第一个子元素，类似地还有<code>:last-child</code>和<code>nth-child()</code></li>
-<li><code>:lang()</code> 根据语言选择</li>
-<li><code>:first-letter</code>和<code>first-line</code>针对元素第一个字母和第一行文本</li>
-<li><code>:before</code>和<code>:after</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="层叠关系"><a href="#层叠关系" class="headerlink" title="层叠关系"></a>层叠关系</h3><ul>
-<li>优先级顺序（ID &gt; 类、属性、伪类 &gt; 元素、伪元素 &gt; 通配或结合符<code>,</code> &gt; 继承的属性）</li>
-<li>内联样式和<code>!important</code>的特殊性</li>
-<li>继承</li>
-<li>层叠规则</li>
-<li>来源权重关系（读者重要声明 &gt; 创作者的重要声明 &gt; 创作者正常声明 &gt; 读者正常声明 &gt; 用户代理声明）</li>
-<li>LVHA（<code>:link</code> - <code>:visited</code> - <code>:hover</code> - <code>:active</code>的声明顺序）</li>
-</ul>
-<ul>
-<li>一个声明出现的越后，它的权重越大</li>
-</ul>
-<h3 id="值和单位"><a href="#值和单位" class="headerlink" title="值和单位"></a>值和单位</h3><ul>
-<li>数字</li>
-<li>百分数</li>
-<li>颜色（具名、rgb/rgba、十六进制）、Web安全颜色</li>
-<li>长度单位（in/cm/mm/pt/pc/px，em/ex/rem/vw/vh/vmin/vmax）</li>
-<li>URL（<code>url(protocol://server/pathname)</code>或<code>url(pathname)</code>）</li>
-<li>关键字</li>
-<li>角度/时间/频率</li>
-</ul>
-<ul>
-<li>CSS2.1中有一个所有属性共有的关键字：<code>inherit</code></li>
-</ul>
-<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><ul>
-<li>通用字体（serif/sans-serif/monospace/cursive/fantasy）</li>
-<li>指定字体</li>
-<li>字体加粗（100~900，lighter/bolder）</li>
-<li>字体大小（xx-small ~ xx-large；绝对大小；百分数）</li>
-<li>字体风格和变形（font-style，font-variant）</li>
-<li><code>font</code>属性（<code>[&lt;font-style&gt; || &lt;font-variant&gt; || &lt;font-weight&gt;]?&lt;font-size&gt;[/&lt;line-height&gt;]?&lt;font-family&gt;</code>）</li>
-<li><code>font-face</code>规则（<code>font-family</code>，<code>font-style</code>，<code>src</code>等）</li>
-</ul>
-<ul>
-<li>衬线字体包括Times，Georgia；非衬线字体包括Helvetiva，Geneva，Verdana，Arial；Monospace字体包括Courier，Courier New</li>
-<li>字体名称中包含空格或特殊字符时，建议用引号包裹</li>
-<li>一般地，400对应normal，700对应bold</li>
-<li>字体大小是可以继承的，不过继承的是计算值而不是百分数</li>
-<li><code>italic</code>是单独的字体风格，<code>oblique</code>则是正常文本的倾斜版本</li>
-<li><code>small-caps</code>表示小型大写字母</li>
-</ul>
-<h3 id="文本属性"><a href="#文本属性" class="headerlink" title="文本属性"></a>文本属性</h3><ul>
-<li>缩进（<code>text-indent</code>）</li>
-<li>水平对齐（<code>text-align</code>）</li>
-<li>垂直对齐（<code>line-height</code>和<code>vertical-align</code>）</li>
-<li>字间隔和字母间隔（<code>word-spacing</code>和<code>letter-spacing</code>）</li>
-<li>文本转换（<code>text-transfrom</code>）</li>
-<li>文本装饰（<code>text-decoration</code>）</li>
-<li>文本阴影（<code>text-shadow</code>）</li>
-<li>空白符处理（<code>white-space</code>）</li>
-<li>文本方向（<code>direction</code>和<code>unicode-bidi</code>）</li>
-</ul>
-<ul>
-<li><code>text-indent</code>为负值时表示悬挂缩进效果</li>
-<li><code>line-height</code>有继承性，表示文本基线（baseline）间的距离，继承的仍然是计算值</li>
-<li>行内元素的行框由行间距和内容区组成</li>
-<li><code>vertical-align</code>只应用于行内元素、替换元素和单元格，且不能继承。它可以取百分数和长度值，相对于自身line-height计算。<ul>
-<li>在基线对齐时，将元素的<strong>底部</strong>和行框的基线对齐</li>
-<li>取值为<code>sub</code>或<code>super</code>时，元素的基线（或底端）将升高或降低</li>
-<li>取值<code>bottom</code>或<code>top</code>时，相对行框的顶端和底端</li>
-<li>取值为<code>middle</code>时，会把行内元素的中点与行框基线上方0.5ex（约为0.25em，因x-height而异）处对齐</li>
-<li>取值为数值时，会相对于父元素行框基线升高<br>最后，父元素的行框的行高会因此做调整</li>
-</ul>
-</li>
-<li><code>text-transform</code>有<code>uppercase</code>, <code>lowercase</code>, <code>capitalize</code>等几种选择，有继承性</li>
-<li><code>text-decoration</code>有<code>underline</code>, <code>overline</code>, <code>line-through</code>, <code>blink</code>等几种选择，没有继承性</li>
-<li><code>text-shadow</code>先确定阴影颜色，前两个长度值确定偏移距离，第三个值确定模糊半径，可以同时设置多个阴影效果</li>
-<li><code>white-space</code>行为如下表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>空白符</th>
-<th>换行符</th>
-<th>自动换行</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>  pre-line</td>
-<td>合并</td>
-<td>保留</td>
-<td>允许</td>
-</tr>
-<tr>
-<td>  normal</td>
-<td>合并</td>
-<td>忽略</td>
-<td>允许</td>
-</tr>
-<tr>
-<td>  nowrap</td>
-<td>合并</td>
-<td>忽略</td>
-<td>不允许</td>
-</tr>
-<tr>
-<td>  pre</td>
-<td>保留</td>
-<td>保留</td>
-<td>不允许</td>
-</tr>
-<tr>
-<td>  pre-wrap</td>
-<td>保留</td>
-<td>保留</td>
-<td>允许</td>
-</tr>
-</tbody>
-</table>
-<h3 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h3><ul>
-<li>基本框与包含块</li>
-<li>正常流/非替换元素/替换元素/块级元素/行内元素</li>
-<li>水平属性（<code>width</code>，<code>margin/border/padding-left/right</code>）</li>
-<li>垂直属性（<code>height</code>，<code>margin/border/padding-top/bottom</code>）</li>
-<li>行内元素（em框、内容区、行间距、行内框、行框）</li>
-<li>元素的显示方式（<code>display</code>，<code>inline-block</code>和<code>run-in</code>）</li>
-</ul>
-<ul>
-<li>在水平属性中只有<code>width</code>和外边距可以设置为<code>auto</code>，其余属性必须设置为特定的值或默认为0。使用<code>auto</code>将会弥补实际值和所需总和的差距，当格式化属性过度受限时，会强制把<code>margin-right</code>设置为<code>auto</code>。相反，不止一个<code>auto</code>出现时，若<code>width</code>不为<code>auto</code>，则会将元素居中，出现三个<code>auto</code>时，外边距都会设置为0。</li>
-<li>垂直属性类似上面，不一样的是，元素间的外边距会合并，留下较大的外边距。</li>
-<li>对于非替换元素，元素行内框高度等于<code>line-height</code>的值；对于替换元素，则由内容区高度决定</li>
-<li>行内元素的边框边界由<code>font-size</code>决定，与<code>line-height</code>无关。类似，内外边距不会影响行框的形成和布局。</li>
-<li>行内替换元素并没有自己的基线，所以说相对较好的方案是将其行内框底部和基线对齐。</li>
-<li><code>inline-block</code>元素的<code>width</code>未定义或声明为<code>auto</code>时，元素会收缩来适应到框宽度刚好足够包含该内容</li>
-</ul>
-<h3 id="边距和边框"><a href="#边距和边框" class="headerlink" title="边距和边框"></a>边距和边框</h3><ul>
-<li>基本元素框</li>
-<li>外边距（负外边距和垂直外边距合并）</li>
-<li>行内元素的外边距</li>
-<li>边框</li>
-<li>内边距</li>
-<li>行内元素的内边距</li>
-</ul>
-<ul>
-<li>外边距的空白不能放置其他元素</li>
-<li>内外边距设置为百分数时，相对于父元素的<strong>宽度</strong>计算，这样做是为了避免高度上导致无限循环</li>
-<li>对于行内元素，只有<code>line-height</code>，<code>font-size</code>和<code>vertical-align</code>可以改变元素行高，为替换元素设置的外边距会影响行高</li>
-<li>边框的默认属性为<code>none medium &lt;color&gt;</code></li>
-<li>元素的背景会延伸到内边距</li>
-<li>左内/外边距应用到行内元素开始处，右内/外边距应用到行内元素结束处</li>
-</ul>
-<h3 id="背景与颜色"><a href="#背景与颜色" class="headerlink" title="背景与颜色"></a>背景与颜色</h3><ul>
-<li>前景色（<code>color</code>）</li>
-<li>背景色</li>
-<li>背景图片</li>
-<li>背景重复、背景定位（<code>background-position</code>）</li>
-<li>背景大小（<code>background-size</code>，CSS3新增）</li>
-</ul>
-<ul>
-<li>一般来说，前景包括元素的<strong>文本和边框</strong></li>
-<li>前景色属性可以继承</li>
-<li><strong>所有背景属性都不可继承</strong></li>
-<li>背景图像放在指定的背景色之上</li>
-<li><code>background</code>简写属性为<code>background-color || background-image || background-repeat || background-attachment || background-position</code></li>
-</ul>
-<h3 id="浮动和定位"><a href="#浮动和定位" class="headerlink" title="浮动和定位"></a>浮动和定位</h3><ul>
-<li>浮动元素</li>
-<li>浮动定位规则</li>
-<li>浮动行为和浮动内容的的重叠</li>
-<li>清除（<code>clear</code>）</li>
-<li>定位类型（<code>position</code>）</li>
-<li>宽高限制（<code>max/min-width</code>和<code>max/min-height</code>）</li>
-<li>内容溢出（<code>overflow</code>和<code>clip</code>）</li>
-<li>元素可见性（<code>visibility</code>）</li>
-<li>绝对定位、固定定位、相对定位</li>
-<li><code>z-index</code></li>
-</ul>
-<ul>
-<li>浮动元素的外边距不会合并</li>
-<li>浮动的非替换元素需要指定<code>width</code>，否则宽度将趋于0</li>
-<li>浮动元素的包含块为距离最近的块级祖先元素</li>
-<li>行内框和浮动元素重叠时，边框和内容都在浮动内容之上；块级元素重叠时，内容在之上，边框和背景在之下显示</li>
-<li><code>clear</code>只应用于块级元素，清除区域不允许浮动元素进入</li>
-<li><code>absolute</code>元素会形成一个块级框</li>
-<li><code>top</code>等属性应用在<code>absolute</code>元素时，描述其距离<strong>外边距边界</strong>的距离</li>
-<li>可以通过<code>top</code>, <code>left</code>, <code>right</code>, <code>bottom</code>这样的定位信息确定绝对定位元素的内容区大小</li>
-<li><code>clip</code>通过<code>rect(top,right,bottom,left)</code>确定绝对定位元素的剪裁区域</li>
-<li>绝对定位元素的静态位置为其<code>position</code>为<code>static</code>时的位置</li>
-<li>对于绝对定位元素，垂直方向或水平方向设置<code>auto</code>可以垂直或水平居中</li>
-<li>对于相对定位，如遇到过度受限的情况，一个值会设置为另一个的相反数，保证自洽。</li>
-</ul>
-<h3 id="表布局"><a href="#表布局" class="headerlink" title="表布局"></a>表布局</h3><ul>
-<li>表显示值（即相关<code>display</code>）</li>
-<li>以行为主</li>
-<li>匿名表对象插入法则</li>
-<li>表标题</li>
-<li>表单元格（<code>border-collapse</code>, <code>border-spacing</code>, <code>empty-cells</code>）</li>
-<li>单元格边框合并</li>
-<li>表大小（<code>table-layout</code>, 高度, 对齐）</li>
-</ul>
-<ul>
-<li>CSS的列和列组只能接受<code>border</code>，<code>background</code>，<code>width</code>，<code>visibility</code>四种属性</li>
-<li>单元格垂直对齐有4种可选值，<code>top</code>, <code>bottom</code>, <code>middle</code>, <code>baseline</code></li>
-</ul>
-<h3 id="列表和生成内容"><a href="#列表和生成内容" class="headerlink" title="列表和生成内容"></a>列表和生成内容</h3><ul>
-<li>列表类型、列表项图像、列表标志位置</li>
-<li>插入生成内容（<code>content</code>，<code>attr(xxx)</code>, <code>quote</code>）</li>
-<li>计数器（<code>counter-reset</code>, <code>counter-increment</code>）</li>
-</ul>
-<ul>
-<li>列表样式可以简写为<code>&lt;list-style-type&gt; | &lt;list-style-image&gt; | &lt;list-style-position&gt;</code></li>
-<li>在<code>quote</code>属性里指定开闭字符串后，可以通过content，结合<code>:before</code>，<code>:after</code>伪类插入开闭quote的标记</li>
-</ul>
-<h3 id="用户界面样式"><a href="#用户界面样式" class="headerlink" title="用户界面样式"></a>用户界面样式</h3><ul>
-<li>系统字体（如<code>caption</code>等）</li>
-<li>系统颜色（已废弃）</li>
-<li>光标（<code>cursor</code>）</li>
-<li>轮廓（<code>outline</code>）</li>
-</ul>
-<ul>
-<li><code>cursor</code>有下面一些常见的值<ul>
-<li><code>pointer</code> 用在超链接上</li>
-<li><code>text</code> 用来纯文本上</li>
-<li><code>move</code> 用来指示目标可以被拖动，相关的还有<code>e-resize</code>, <code>ne-resize</code>, <code>se-resize</code>等边缘的拖动标记</li>
-<li><code>crosshair</code> 用来指示可以选取范围，类似截屏的光标效果</li>
-<li><code>wait</code> 显示等待标记</li>
-<li><code>progress</code> 指示等待的状态，同时表示可以进行其他操作</li>
-<li><code>help</code> 显示帮助光标</li>
-<li><code>url()</code> 自定义光标图像，建议设置缺省值</li>
-</ul>
-</li>
-<li><code>outline</code>的设置类似<code>border</code>，由<code>outline-color</code>, <code>outline-style</code>, <code>outline-width</code>组成</li>
-</ul>
-<h3 id="非屏幕媒体"><a href="#非屏幕媒体" class="headerlink" title="非屏幕媒体"></a>非屏幕媒体</h3><ul>
-<li>分页媒体（<code>size</code>和<code>page</code>等）</li>
-<li>投影样式</li>
-<li>声音样式（<code>speak</code>，<code>stress</code>，<code>richness</code>等）</li>
-</ul>
-<ul>
-<li>可以在<code>&lt;link&gt;</code>标签的<code>media</code>属性里指定媒体类型，或是在CSS文件中通过<code>@media xxx {}</code>的形式指定</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/09/08/photogallery-improvement/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/09/08/photogallery-improvement/" itemprop="url">PhotoGallery技术改造</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-08T19:31:17+08:00">
-                2017-09-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/09/08/photogallery-improvement/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/08/photogallery-improvement/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/blog/images/photogallery.png" alt=""></p>
-<p>最近离职后除了准备面试，多了许多时间对以往的前端个人项目进行改造。<a href="http://shenlvmeng.github.io/gallery/index.html" target="_blank" rel="external">PhotoGallery</a>就是其中一个个人很喜欢，但由于技术原因没做到完美的例子。最近准备抽出时间进行完善。</p>
-<p>PhotoGallery是一个使用瀑布流展示电影海报以及花絮（当然都是个人比较心水的）的展示型页面。所有的电影图片也是从大一就开始收集的，一直囤积在人人上。页面的诸多功能是根据个人爱好设计的，如</p>
-<ul>
-<li>根据标签搜索</li>
-<li>相似图片</li>
-<li>基于tag的推荐等</li>
-</ul>
-<p>总体来说，就是一个展示、介绍、推荐电影的地方。内容上还是很不错的。但是，去年寒假码代码时，前端技术还有待提高，很多地方写得并不严谨甚至比较丑陋。功能上也有些影响体验必须解决的痛点。大概有下面这些</p>
-<ul>
-<li><strong>首屏渲染时间糟糕</strong>，这是因为图片过多（个人看的太多），又使用了Vue。同时Vue这种MVVM框架和精细化DOM操作一山不容二虎，因此，结合懒加载，效果依然不理想</li>
-<li><strong>图片的时序排布并不自然</strong>，当时图省事，使用纯CSS方案实现瀑布流，牺牲了图片排序。图片只能从上到下再从左到右排序，和正常的阅读顺序并不一致。同时，最老的图片在最前，也不合理</li>
-<li><strong>新增图片困难</strong>，这是由于github.io的纯静态的限制，当时采用了静态图片+meta存数据的方式来实现，后面看了电影再往里加图步骤繁琐，没有人性化的办法</li>
-<li>样式老气，细节粗糙</li>
-<li><strong>本地调试困难</strong>，只使用了gulp来压缩js，css和json代码（代码少，不需要打包），不是全家桶脚手架，本地调试困难，且不能使用ES6语法</li>
-<li><strong>代码语法和风格上不严谨</strong>，考虑结合在公司的规矩规范</li>
-</ul>
-<p>针对上面大大小小几点，以及实际情况（比如只能使用github.io），考虑像下面这样优化</p>
-<h3 id="瀑布流布局实现方式待优化"><a href="#瀑布流布局实现方式待优化" class="headerlink" title="瀑布流布局实现方式待优化"></a>瀑布流布局实现方式待优化</h3><p>放弃使用column-count的方案。原因有二：</p>
-<ol>
-<li>排布顺序是从上到下，再从左到右，和日常经验相悖。类似地，使用flex的方案也不行</li>
-<li>本身和懒加载的设计兼容性并不好，懒加载的新图片会导致整个页面的布局完全改变。类似地，使用grid的方案也不适合</li>
-</ol>
-<p>因此考虑借鉴<a href="http://www.zhangxinxu.com/wordpress/2012/03/%E5%A4%9A%E6%A0%8F%E5%88%97%E8%A1%A8%E5%8E%9F%E7%90%86%E4%B8%8B%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80-waterfall-layout/" target="_blank" rel="external">张鑫旭大神的方案</a>，综合CSS和JS实现懒加载的滚动式瀑布流布局。</p>
-<p><img src="http://image.zhangxinxu.com/image/blog/201203/2012-03-23_233114.png" alt=""></p>
-<p>首先，根据屏幕宽度设置合理的列数，再逐列插入5张新图片，作为初始情况，同时，使用<code>flex</code>布局，设置<code>flex-grow</code>和<code>justify-content</code>等属性。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> Wall = &#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  data() &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">columns</span>: <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth),</div><div class="line">      <span class="attr">lastFlag</span>: <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth) * <span class="number">5</span> - <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  computed: &#123;</div><div class="line">    items() &#123;</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    itemsForColumns() &#123;</div><div class="line">      <span class="keyword">let</span> ret = <span class="built_in">Array</span>.apply(<span class="literal">null</span>, <span class="built_in">Array</span>(<span class="keyword">this</span>.columns)).map(<span class="function"><span class="params">()</span> =&gt;</span> []);</div><div class="line">      <span class="keyword">this</span>.items.slice(<span class="number">0</span>, <span class="keyword">this</span>.lastFlag + <span class="number">1</span>).forEach(<span class="function">(<span class="params">item, i</span>) =&gt;</span> &#123;</div><div class="line">        ret[i % <span class="keyword">this</span>.columns].push(item);</div><div class="line">      &#125;)</div><div class="line">      <span class="comment">// 每列先只加载5个</span></div><div class="line">      <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#photos</span> &#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-flow</span>: row wrap;</div><div class="line">  <span class="attribute">align-items</span>: flex-start;</div><div class="line">  <span class="attribute">justify-content</span>: space-around;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.wall-column</span> &#123;</div><div class="line">  <span class="attribute">display</span>: inline-block;</div><div class="line">  <span class="attribute">width</span>: <span class="number">250px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">8px</span>;</div><div class="line">  <span class="attribute">vertical-align</span>: top;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>之后，监听可能会改变布局的所有情况，在我这个场景下，大概有三种：</p>
-<ul>
-<li>滚动（scroll）事件</li>
-<li>缩放事件（resize）事件</li>
-<li>筛选图片，在改变筛选条件，会导致图片数目的变化</li>
-</ul>
-<p>下面分情况解决之。</p>
-<p><strong>resize时</strong></p>
-<p>监听<code>window</code>的<code>resize</code>事件，当最后一列的位置变化时，意味着布局已经改变，需要触发重排。可以看到上面的<code>itemForColumns</code>中依赖<code>columns</code>和<code>lastFlag</code>两个状态。这里我们利用MVVM框架的优势，维护这两个值，就可以让Vue帮我们完成重排这样的繁琐操作。如下，当<code>columns</code>改变时，才会触发重绘。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"resize"</span>, e =&gt; &#123;</div><div class="line">  <span class="keyword">this</span>.columns = <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth);</div><div class="line">  <span class="comment">// 已经展示过的图片就不要隐藏了</span></div><div class="line">  <span class="keyword">this</span>.lastFlag = <span class="built_in">Math</span>.max(<span class="keyword">this</span>.columns * <span class="number">5</span> - <span class="number">1</span>, <span class="keyword">this</span>.lastFlag);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p><strong>筛选图片时</strong></p>
-<p>同理，通过关键词筛选图片时，改变了传入Wall的prop <code>factor</code>。会同步更新依赖<code>factor</code>的<code>item</code>，触发重排。有一点有注意的是，<strong><code>lastFlag</code>需要重新开始累加</strong>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">watch: &#123;</div><div class="line">  items() &#123;</div><div class="line">    <span class="comment">// 设置了筛选条件后，lastFlag需要重新开始累加</span></div><div class="line">    <span class="keyword">this</span>.lastFlag = <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth) * <span class="number">5</span> - <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>scroll时</strong></p>
-<p>页面滚动时，需要加入新的图片到column中，我们要做的只是更改<code>lastFlag</code>即可，Vue会帮我们自动完成依赖<code>lastFlag</code>的<code>itemForColumns</code>更新。重点在，我们如何知道lastFlag应该增加到多少。</p>
-<p>我们回看下<code>itemForColumns</code>的逻辑，可以发现<strong>新增的图片是循环摆放的</strong>。这里额外说一句，尽管新图片放在最短列是最合理的，但是工程上并不合算（一是Vue下做这么精细的DOM操作不合适，二是获知最短列意味着DOM操作已经发生，即会有频繁的回流和重绘，这会影响渲染时间）。我们循环考虑每一列的最底部位置，如果在视口内，将图片更新到该列，直到所有列底部都在视口外。直到图片加载完毕。</p>
-<p>另外，在实践时还发现一个问题，<code>handleScroll</code>里更改了<code>lastFlag</code>后，Vue本身有batch的优化，会在microtask栈空后，才会进行耗时的DOM操作。循环添加图片时，需要通过setTimeout异步完成，避免误判，在一次递归中加载了所有图片。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">handleScroll(top) &#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.items.length &lt;= <span class="keyword">this</span>.lastFlag) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">let</span> delta = <span class="number">-1</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.columns; i++) &#123;</div><div class="line">    <span class="keyword">let</span> col = <span class="built_in">document</span>.getElementById(<span class="string">`wall-<span class="subst">$&#123;i&#125;</span>`</span>);</div><div class="line">    <span class="keyword">if</span> (col &amp;&amp; col.offsetTop + col.clientHeight &lt; top + (<span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight)) &#123;</div><div class="line">      delta = i;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (!!++delta) &#123;</div><div class="line">    <span class="keyword">this</span>.lastFlag += delta;</div><div class="line">    <span class="comment">// 直到所有列下沿都不在视口内，</span></div><div class="line">    <span class="comment">// 同时，设置时延，保证DOM操作完成后再继续handleScroll</span></div><div class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;  <span class="keyword">this</span>.handleScroll(top); &#125;, <span class="number">0</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="新增图片困难"><a href="#新增图片困难" class="headerlink" title="新增图片困难"></a>新增图片困难</h3><p><del>由于github.io是纯静态的页面，我并没有后台环境，这个痛点短期内只能缓解不能根除。不过后面考虑将所有图片迁移到图床上，毕竟把图片数据也存在github上感觉还是……有点怪怪的。日后新增图片应该还是通过上传图片，更新<code>meta.json</code>的形式完成。</del></p>
-<p>目前已将所有图片迁移到图床上，图床选择上参考了知乎上的推荐，使用<a href="https://www.qiniu.com/" target="_blank" rel="external">七牛云存储</a>，在个人实名认证后，免费部分有每月10G国内和国外下载流量，100万次GET和PUT请求次数，和10G存储空间。同时，它还提供对图片的压缩等管理，尽量减少流量。</p>
-<p>迁移之后，仓库体积大大减小。之后日常更新时，图片单独上传，根据外链固定前缀得到最终路径。</p>
-<p><del><code>meta.json</code>的更新上，考虑自己写一个工具，根据新看的电影生成新的content。</del></p>
-<p>已完成自动生成<code>meta.json</code>的<a href="https://shenlvmeng.github.io/meta-maker.html" target="_blank" rel="external">小工具</a>，原理很简单，就不再介绍了。</p>
-<h3 id="细节美化"><a href="#细节美化" class="headerlink" title="细节美化"></a>细节美化</h3><p>点比较细碎。整体借鉴了<a href="https://material.io/guidelines/material-design/introduction.html#introduction-goals" target="_blank" rel="external">material design</a>的思想。</p>
-<p><strong>影片详细信息的遮罩</strong></p>
-<p>考虑使用100%的遮罩，同时禁止背景滚动的形式展示图片的详细信息。起初打算用js去实现，后来发现下面的两点使得方案并不简单</p>
-<ul>
-<li>scroll事件不能被cancel，这意味着不能打断默认的滚动行为</li>
-<li>从Mouse，Keyboard，Touch相关触发scroll事件的事件劫持滚动行为倒是可以，不过要监听的事件太多</li>
-</ul>
-<p>只好作罢，通过纯CSS的方式，弹出浮层时，为body指定<code>noscroll</code>的类名。让浮层的<code>overflow</code>属性为<code>scroll</code>即可，同时设置浮层<code>position</code>属性为<code>fixed</code>即可。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#display</span> &#123;</div><div class="line">  <span class="attribute">position</span>: fixed;</div><div class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</div><div class="line">  <span class="comment">/*...*/</span></div><div class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</div><div class="line">  <span class="attribute">overflow-y</span>: scroll;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>使用缓动函数改进回到开头</strong></p>
-<p>这里使用定义域和值域都是<code>[0,1]</code>的<code>easeInOutCubic</code>函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> easeInOutCubic = <span class="function"><span class="params">t</span> =&gt;</span> (t&lt;<span class="number">.5</span> ? <span class="number">4</span>*t*t*t : (t<span class="number">-1</span>)*(<span class="number">2</span>*t<span class="number">-2</span>)*(<span class="number">2</span>*t<span class="number">-2</span>)+<span class="number">1</span>);</div></pre></td></tr></table></figure>
-<p>有了缓动函数后，使用<code>requestAnimationFrame</code>即可高效率地绘制JS动画。这里封装了一个<code>animate</code>函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> animate = <span class="function">(<span class="params">obj, prop, end, time, ease</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">if</span> (!obj || !obj[prop] || time &lt; <span class="number">100</span>) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">let</span> start = obj[prop],</div><div class="line">      k = end - start,</div><div class="line">      timer = <span class="literal">null</span>,</div><div class="line">      tick = <span class="function"><span class="params">timestamp</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (timer === <span class="literal">null</span>) &#123;</div><div class="line">          timer = timestamp;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">let</span> progress = timestamp - timer;</div><div class="line">        obj[prop] = start + ease(progress / time) * k;</div><div class="line">        <span class="keyword">if</span> (progress &lt; time) &#123;</div><div class="line">          requestAnimationFrame(tick);</div><div class="line">        &#125;</div><div class="line">      &#125;;</div><div class="line"></div><div class="line">  requestAnimationFrame(tick);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>后面直接使用<code>animate(document.body, &quot;scrollTop&quot;, 0, 1000, easeInOutCubic)</code>就可以圆滑地上移了。</p>
-<p><strong>移动端的优化</strong></p>
-<ul>
-<li>使用媒体查询，在屏幕宽度更改时，隐藏一些元素</li>
-<li>在UA为移动端设备时，给出提醒</li>
-</ul>
-<p><strong>loading样式</strong></p>
-<p>在改变筛选条件时，设置loading样式提升用户体验。通过积累onload的计数和初始加载图片值进行对比，在达到该值时清除遮罩。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ...</span></div><div class="line">loadedCount(newCount) &#123;</div><div class="line">  <span class="keyword">if</span> (newCount &gt;= <span class="built_in">Math</span>.min(<span class="keyword">this</span>.lastFlag + <span class="number">1</span>, <span class="keyword">this</span>.items.length)) &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"全部加载完成"</span>);</div><div class="line">    <span class="keyword">this</span>.isHidden = <span class="literal">true</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// console.log("Loading...");</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
-<p><strong>杂项</strong></p>
-<ul>
-<li>导航条交互优化</li>
-<li>导航条部分设置阴影，更改部分字体颜色和背景色</li>
-<li>修改触发分类方式，由<code>click</code>改为<code>mousemove</code></li>
-<li>修改tab的样式</li>
-<li>将vue和lodash的js文件下载到本地，避免CDN失效的问题（之前已经遇到过一次），增加可靠性</li>
-<li>搜索条件不区分大小写</li>
-</ul>
-<h3 id="本地调试困难"><a href="#本地调试困难" class="headerlink" title="本地调试困难"></a>本地调试困难</h3><p>因为代码较少，也只有一个文件，用不着webpack这样的全套解决方案。小巧易用的gulp就够了。针对我们需要的ES6转码，替换minify方案，本地调试等需要，都有对应的gulp插件解决问题。</p>
-<h4 id="gulp-babel"><a href="#gulp-babel" class="headerlink" title="gulp-babel"></a>gulp-babel</h4><p>使用<a href="https://babeljs.io/" target="_blank" rel="external">babel</a>来转码，<code>gulp-babel</code>依赖<code>babel-core@6</code>或以上版本，同时设置<code>preset</code>为<code>es2015</code>或ES7相关版本时也需要下载对应module。</p>
-<p>我只需要es2015即可。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install --save-dev babel-core gulp-babel babel-preset-es2015</div></pre></td></tr></table></figure>
-<p>React和ES7的各阶段可以像下面这样选择安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ npm install --save-dev babel-preset-react</div><div class="line">$ npm install --save-dev babel-preset-stage-0</div><div class="line">$ npm install --save-dev babel-preset-stage-1</div><div class="line">$ npm install --save-dev babel-preset-stage-2</div><div class="line">$ npm install --save-dev babel-preset-stage-3</div></pre></td></tr></table></figure>
-<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><ul>
-<li><strong><a href="https://www.npmjs.com/package/gulp-uglify" target="_blank" rel="external">gulp-uglify</a></strong>，压缩代码</li>
-<li><strong>gulp-rename</strong>，为压缩出的js重命名</li>
-<li><strong><a href="https://www.npmjs.com/package/gulp-webserver" target="_blank" rel="external">gulp-webserver</a></strong>，开启本地服务，方便本地调试</li>
-</ul>
-<p>上面这些插件按照文档操作即可，坑比较少，使用webserver时的<code>gulp.src()</code>入参通常为<code>./</code>，指以当前目录为服务器根目录。</p>
-<p>最后还需要加一个watch，方便在调试时的修改能同步转码压缩。像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.js'</span>, [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>最后整个<code>gulpfile.js</code>是下面的样子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>),</div><div class="line">    babel = <span class="built_in">require</span>(<span class="string">'gulp-babel'</span>),</div><div class="line">    uglify = <span class="built_in">require</span>(<span class="string">'gulp-uglify'</span>),</div><div class="line">    rename = <span class="built_in">require</span>(<span class="string">'gulp-rename'</span>),</div><div class="line">    cleanCSS = <span class="built_in">require</span>(<span class="string">'gulp-clean-css'</span>),</div><div class="line">    jsonminify = <span class="built_in">require</span>(<span class="string">'gulp-jsonminify'</span>),</div><div class="line">    webserver = <span class="built_in">require</span>(<span class="string">'gulp-webserver'</span>);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'assets/src/*.js'</span>)</div><div class="line">    .pipe(babel(&#123;</div><div class="line">      <span class="attr">presets</span>: [<span class="string">'es2015'</span>]</div><div class="line">    &#125;))</div><div class="line">    .pipe(uglify())</div><div class="line">    .pipe(rename(&#123; <span class="attr">suffix</span>: <span class="string">'.min'</span> &#125;))</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'css'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src([<span class="string">'assets/src/*.css'</span>])</div><div class="line">    .pipe(cleanCSS(&#123;<span class="attr">compatibility</span>: <span class="string">'ie8'</span>&#125;))</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'json'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'assets/src/meta.json'</span>)</div><div class="line">    .pipe(jsonminify())</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>))</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.src(<span class="string">'./'</span>)</div><div class="line">    .pipe(webserver(&#123;</div><div class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">open</span>: <span class="literal">true</span></div><div class="line">    &#125;));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.js'</span>, [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'dev'</span>, [<span class="string">'default'</span>, <span class="string">'webserver'</span>, <span class="string">'watch'</span>]);</div><div class="line">gulp.task(<span class="string">"default"</span>, [<span class="string">'json'</span>, <span class="string">'css'</span>, <span class="string">'js'</span>]);</div></pre></td></tr></table></figure></p>
-<h3 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h3><p>从略。HTML和CSS部分参照以往写的<a href="https://shenlvmeng.github.io/blog/2017/06/23/HTML-CSS-code-style-guide/" target="_blank" rel="external">建议</a>即可。除此以外，优化了下面的部分：</p>
-<ul>
-<li>删除了为兼容移动端额外使用的touchend事件，增加viewport的meta标签，消除移动端chrome浏览器点击300ms延时情况</li>
-<li>由于引入了babel，删除了兼容ES6语法的自己写的polyfill部分</li>
-<li>使用<a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="external">fetch API</a>请求json</li>
-<li>优化导航条点击事件处理相关的代码</li>
-<li>减少图片数目和json体积</li>
-</ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="https://segmentfault.com/a/1190000004394726" target="_blank" rel="external">使用gulp 进行ES6开发</a></li>
-<li><a href="http://blog.csdn.net/seven0404/article/details/51880162" target="_blank" rel="external">node.js利用gulp 启动webServer服务</a></li>
-<li><a href="https://stackoverflow.com/questions/2434602/css-setting-width-height-as-percentage-minus-pixels" target="_blank" rel="external">CSS: Setting width/height as Percentage minus pixels</a></li>
-<li><a href="http://easings.net/zh-cn" target="_blank" rel="external">缓动函数速查表</a></li>
-<li><a href="https://gist.github.com/gre/1650294" target="_blank" rel="external">Simple Easing Functions in Javascript</a></li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="external">window.requestAnimationFrame | MDN</a></li>
-<li><a href="https://dribbble.com/" target="_blank" rel="external">dribbble</a></li>
-<li><a href="https://codepen.io/sdthornton/pen/wBZdXq" target="_blank" rel="external">Material Design Box Shadows</a></li>
-<li><a href="http://tobiasahlin.com/spinkit/" target="_blank" rel="external">SpinKit | Simple CSS Spinners</a></li>
-<li><a href="https://www.zhihu.com/question/21667151" target="_blank" rel="external">国内有什么方便的图床？</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1635,7 +1506,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1657,7 +1528,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">322</span>
+                <span class="site-state-item-count">325</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1726,7 +1597,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-"></i>
   </span>

@@ -296,6 +296,719 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/06/19/elm-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/06/19/elm-introduction/" itemprop="url">Elm——函数式前端框架介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-19T17:36:01+08:00">
+                2017-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/06/19/elm-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/06/19/elm-introduction/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Elm提出于2012年，最初出现在Evan Czaplicki的毕业论文中（掩面）。目标是提出一个面向web的函数式编程语言。它拥有诸多特性</p>
+<ul>
+<li>强类型语言</li>
+<li>一次编译，no runtime error</li>
+<li>状态不可修改</li>
+<li>函数是一级公民等</li>
+</ul>
+<p>Elm是门新语言，它是一个类似React（但绝对和它不一样）的前端框架。在Web App的设计它甚至启发了Flux设计的提出。在如今前端框架吸收函数式编程以及强类型语言优点的形势下，学习Elm可能会开启对Web前端开发的重新认识。</p>
+<p>再看完下面的介绍后，建议阅读两篇对Elm的评价，相信更有助于对这门年轻语言特点的理解：</p>
+<ul>
+<li><a href="https://medium.com/@ericdreichert/my-thoughts-on-elm-lang-b609d69cfa4d" target="_blank" rel="external">My thoughts on Elm Lang</a></li>
+<li><a href="https://hackernoon.com/some-thoughts-on-elm-development-39a0f8a9002a" target="_blank" rel="external">Some thoughts on Elm Development</a></li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>Elm是通过将代码编译成JavaScript工作的。一个最简单的Elm App大概像下面这样：<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Html <span class="keyword">exposing</span> (<span class="type">Html</span>, button, div, text)</div><div class="line"><span class="keyword">import</span> Html.Events <span class="keyword">exposing</span> (onClick)</div><div class="line"></div><div class="line"><span class="title">main</span> =</div><div class="line">  <span class="type">Html</span>.beginnerProgram &#123; model = <span class="number">0</span>, view = view, update = update &#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> <span class="type">Msg</span> = <span class="type">Increment</span> | <span class="type">Decrement</span></div><div class="line"></div><div class="line"><span class="title">update</span> msg model =</div><div class="line">  <span class="keyword">case</span> msg <span class="keyword">of</span></div><div class="line">    <span class="type">Increment</span> -&gt;</div><div class="line">      model + <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="type">Decrement</span> -&gt;</div><div class="line">      model - <span class="number">1</span></div><div class="line"></div><div class="line"><span class="title">view</span> model =</div><div class="line">  div []</div><div class="line">    [ button [ onClick <span class="type">Decrement</span> ] [ text <span class="string">"-"</span> ]</div><div class="line">    , div [] [ text (toString model) ]</div><div class="line">    , button [ onClick <span class="type">Increment</span> ] [ text <span class="string">"+"</span> ]</div><div class="line">    ]</div></pre></td></tr></table></figure></p>
+<p>那么这样一个Elm文件是怎么应用在页面中呢？</p>
+<p>在<a href="http://elm-lang.org/" target="_blank" rel="external">Elm</a>安装完成后，会有4个Elm相关的包：</p>
+<ul>
+<li>elm-repl 命令行操作，在cli中感受Elm的语法特点</li>
+<li>elm-reactor 快速脚手架搭建</li>
+<li>elm-make 编译工具</li>
+<li>elm-package 包管理工具</li>
+</ul>
+<p>麻雀虽小，五脏俱全。</p>
+<h2 id="语法特点"><a href="#语法特点" class="headerlink" title="语法特点"></a>语法特点</h2><p>Elm在<a href="http://elm-lang.org/docs/syntax" target="_blank" rel="external">语法</a>上不同于C风格的所有语言，和Haskell更为靠近。</p>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>用<code>--</code>开启单行注释，结合<code>{}</code>进行多行注释<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- a single line comment</span></div><div class="line"></div><div class="line"><span class="comment">&#123;- a multiline comment</span></div><div class="line">   <span class="comment">&#123;- can be nested -&#125;</span></div><div class="line">-&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><p>Elm是强类型语言，有Bool，Int，Float，Char，String 5种基本类型。有意思的是，<strong>Elm没有Null</strong>。这也是特别<a href="https://guide.elm-lang.org/error_handling/" target="_blank" rel="external">设计</a>的。</p>
+<div class="tip">注意：Elm中Char类型用单引号<code>&#39;</code>包裹，而String类型用双引号<code>&quot;</code>包裹。<br></div>
+
+<p>除了基本类型，Elm中还有List，Array，Tuple，Dict，Record几种泛型。其中List，Record设计类似JavaScript中的Array和Object。</p>
+<div class="tip">在Elm中<code>Array</code>和<code>List</code>是两种不同的类型，前者通过链表实现，后者通过Relaxed Radix Tree实现。前者在增删节点上高效，后者在随机查询时高效。</div>
+
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line"><span class="number">1</span> :: [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line"><span class="number">1</span> :: <span class="number">2</span> :: <span class="number">3</span> :: <span class="number">4</span> :: []</div><div class="line"><span class="title">point</span> =                         <span class="comment">-- create a record</span></div><div class="line">  &#123; x = <span class="number">3</span>, y = <span class="number">4</span> &#125;</div><div class="line"></div><div class="line"><span class="title">point</span>.x                         <span class="comment">-- access field</span></div><div class="line"></div><div class="line"><span class="type">List</span>.map .x [point,&#123;x=<span class="number">0</span>,y=<span class="number">0</span>&#125;]   <span class="comment">-- field access function</span></div><div class="line"></div><div class="line">&#123; point | x = <span class="number">6</span> &#125;               <span class="comment">-- update a field</span></div><div class="line"></div><div class="line">&#123; point |                       <span class="comment">-- update many fields</span></div><div class="line">    x = point.x + <span class="number">1</span>,</div><div class="line">    y = point.y + <span class="number">1</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><em>(值得注意的是，上面的<code>::</code>和<code>.x</code>实际上都是函数)</em>。</p>
+<h4 id="类型声明"><a href="#类型声明" class="headerlink" title="类型声明"></a>类型声明</h4><p>类型是Elm中重要的一环，每个变量都需要有类型，编译时需要进行检查。因此显式地声明变量类型很重要。</p>
+<p>当我们需要通过基本类型构造复杂类型时，可以通过<code>type alias</code>的形式为record创建新的类型。在新类型创建的同时，会同步生成一个record构造函数。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- Before：麻烦的函数写法</span></div><div class="line"><span class="title">hasBio</span> : &#123; name : <span class="type">String</span>, bio : <span class="type">String</span>, pic : <span class="type">String</span> &#125; -&gt; <span class="type">Bool</span></div><div class="line"><span class="title">hasBio</span> user =</div><div class="line">  <span class="type">String</span>.length user.bio &gt; <span class="number">0</span></div><div class="line"><span class="comment">-- After：简便的写法</span></div><div class="line"><span class="keyword">type</span> <span class="keyword">alias</span> <span class="type">User</span> =</div><div class="line">  &#123; name : <span class="type">String</span></div><div class="line">  , bio : <span class="type">String</span></div><div class="line">  , pic : <span class="type">String</span></div><div class="line">  &#125;</div><div class="line"><span class="title">hasBio</span> : <span class="type">User</span> -&gt; <span class="type">Bool</span></div><div class="line"><span class="title">hasBio</span> user =</div><div class="line">  <span class="type">String</span>.length user.bio &gt; <span class="number">0</span></div></pre></td></tr></table></figure>
+<h4 id="Union类型"><a href="#Union类型" class="headerlink" title="Union类型"></a>Union类型</h4><p>之所以单独拿出来说，是因为Union Type的设计几乎是Elm的精髓。首先，它类似于枚举（enum）的概念，通过<code>type enum = A | B | C</code>的形式定义一个类型。这是简单的Union Type的使用。</p>
+<p>Union Type还有Tagged Union的用法。即下面这样。这意味着<strong>User可以是不带信息的Anonymous或带有String信息的Named</strong>。<code>Anonymous</code>和<code>Named</code>是User的两个构造函数。其中Named接受一个String类型入参构造User类型。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="type">User</span> = <span class="type">Anonymous</span> | <span class="type">Named</span> <span class="type">String</span></div></pre></td></tr></table></figure>
+<div class="tip">注意：不同Union Type间的Tag构造函数不能同名，即不能出现下面的情况。同时Tag后的额外消息是泛型<code>a</code>时，需要在type名后也加上，便于type check</div>
+
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="type">User</span> = <span class="type">Named</span> | <span class="type">Named</span> <span class="type">String</span> <span class="comment">-- Wrong!</span></div></pre></td></tr></table></figure>
+<p>结合上面的特点，可以很容易地将相似数据结构或设计抽象为单一模板，如<a href="https://guide.elm-lang.org/types/union_types.html" target="_blank" rel="external">举例</a>中的将时间轴、日志等统一抽象为widget。思路：<strong>逐个击破，合而为一</strong></p>
+<p>由于Union Type可以递归定义，通过Union Type甚至可以构建链表和<a href="http://elm-lang.org/examples/binary-tree" target="_blank" rel="external">二叉树</a>。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="type">List</span> a = <span class="type">Empty</span> | <span class="type">Node</span> a (<span class="type">List</span> a)</div><div class="line"><span class="keyword">type</span> <span class="type">Tree</span> a = <span class="type">Empty</span> | <span class="type">Node</span> a (<span class="type">Tree</span> a) (<span class="type">Tree</span> a)</div></pre></td></tr></table></figure>
+<p>此外，Elm中的错误处理<a href="https://guide.elm-lang.org/error_handling/maybe.html" target="_blank" rel="external">Maybe</a>和<a href="https://guide.elm-lang.org/error_handling/result.html" target="_blank" rel="external">Result</a>也是基于Union Type实现的。</p>
+<p>因为Union Type的不同子类型可以有自己独特的构造函数，且支持解构赋值，因此非常适合用作实现状态管理的事件。Web App中的update函数接受的Html Msg类型实际上也是Union Type实现的。</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>除了不能手动更改状态的变量（因此<strong>递归完全替代了循环结构</strong>），函数是Elm中最常见的存在。命令式编程中，函数用作告诉电脑该怎么做。函数式编程中，函数用作描述一种映射关系，告诉电脑要什么。Elm中函数像下面这样声明：<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">square</span> n =</div><div class="line">  n^<span class="number">2</span></div><div class="line"></div><div class="line"><span class="title">hypotenuse</span> : <span class="type">Float</span> -&gt; <span class="type">Float</span> -&gt; <span class="type">Float</span></div><div class="line"><span class="title">hypotenuse</span> a b =</div><div class="line">  sqrt (square a + square b)</div><div class="line"></div><div class="line"><span class="title">distance</span> (a,b) (x,y) =</div><div class="line">  hypotenuse (a-x) (b-y)</div></pre></td></tr></table></figure></p>
+<p>入参在上，返回值在下。入参间通过空格隔开，由于Elm支持函数柯里化，所以在函数的类型声明中，也是通过<code>-&gt;</code>隔开每个入参以及返回值的。由于函数变成了纯粹的“通道”，函数体中声明临时变量的语法通过<code>let ... in</code>的形式实现。</p>
+<p>Elm中也有匿名函数，像下面这样，由反斜线<code>\</code>开头：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="title">square</span> =</div><div class="line">  \n -&gt; n^<span class="number">2</span></div><div class="line"></div><div class="line"><span class="title">squares</span> =</div><div class="line">  <span class="type">List</span>.map (\n -&gt; n^<span class="number">2</span>) (<span class="type">List</span>.range <span class="number">1</span> <span class="number">100</span>)</div></pre></td></tr></table></figure>
+<p>函数间通过<code>|&gt;</code>和<code>&lt;|</code>连接减少括号的使用。例如下面这样</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">viewNames1</span> names =</div><div class="line">  <span class="type">String</span>.join <span class="string">", "</span> (<span class="type">List</span>.sort names)</div><div class="line"></div><div class="line"><span class="title">viewNames2</span> names =</div><div class="line">  names</div><div class="line">    |&gt; <span class="type">List</span>.sort</div><div class="line">    |&gt; <span class="type">String</span>.join <span class="string">", "</span></div><div class="line"></div><div class="line"><span class="comment">-- (arg |&gt; func) is the same as (func arg)</span></div></pre></td></tr></table></figure>
+<p>同时，可以通过<code>&gt;&gt;</code>和<code>&lt;&lt;</code>构造复合函数。<code>`` </code>用来将第<code>n</code>个函数入参前置，使得居于更符合语法习惯，如<code>buyMilk `then` drinkMilk</code>中<code>buyMilk</code>参数被提前。<code>n</code>可以通过<code>infixr</code>设置。</p>
+<p>其中可能较难理解的是<strong>递归完全替代了循环结构</strong>，Elm类似其他函数式语言，没有<code>for</code>和<code>while</code>。它用描述问题的方式，通过递归解决普通的循环问题，下面举两个例子：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="title">reverse</span> : <span class="type">List</span> a -&gt; <span class="type">List</span> a</div><div class="line"><span class="title">reverse</span> list =</div><div class="line">  <span class="keyword">case</span> list <span class="keyword">of</span></div><div class="line">    [] -&gt; []</div><div class="line">    (x::xs) -&gt; reverse xs ++ [x]</div><div class="line"></div><div class="line"><span class="title">quicksort</span> : <span class="type">List</span> comparable -&gt; <span class="type">List</span> comparable</div><div class="line"><span class="title">quicksort</span> list = </div><div class="line">  <span class="keyword">case</span> list <span class="keyword">of</span></div><div class="line">    [] -&gt; []</div><div class="line">    (x::xs) -&gt;</div><div class="line">      <span class="keyword">let</span> </div><div class="line">        smallerSorted = quicksort (<span class="type">List</span>.filter ((&gt;) x) xs)</div><div class="line">        biggerSorted = quicksort (<span class="type">List</span>.filter ((&lt;=) x) xs)</div><div class="line">      <span class="keyword">in</span>  </div><div class="line">        smallerSorted ++ [x] ++ biggerSorted</div></pre></td></tr></table></figure>
+<p>可以找到规律：</p>
+<blockquote>
+<p>Usually you define an edge case and then you define a function that does something between some element and the function applied to the rest.</p>
+</blockquote>
+<p>更具体的解释可以看参考链接3。</p>
+<h3 id="控制结构"><a href="#控制结构" class="headerlink" title="控制结构"></a>控制结构</h3><p>Elm中没有<code>for</code>和<code>while</code>循环（都通过递归实现了）。但是存在<code>if</code>和<code>case</code>语句。<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="title">if</span> powerLevel &gt; <span class="number">9000</span> <span class="keyword">then</span> <span class="string">"OVER 9000!!!"</span> <span class="keyword">else</span> <span class="string">"meh"</span></div><div class="line"><span class="title">case</span> maybe <span class="keyword">of</span></div><div class="line">  <span class="type">Just</span> xs -&gt; xs</div><div class="line">  <span class="type">Nothing</span> -&gt; []</div><div class="line"></div><div class="line"><span class="title">case</span> xs <span class="keyword">of</span></div><div class="line">  hd::tl -&gt; <span class="type">Just</span> (hd,tl)</div><div class="line">  []     -&gt; <span class="type">Nothing</span></div><div class="line"></div><div class="line"><span class="title">case</span> n <span class="keyword">of</span></div><div class="line">  <span class="number">0</span> -&gt; <span class="number">1</span></div><div class="line">  <span class="number">1</span> -&gt; <span class="number">1</span></div><div class="line">  _ -&gt; fib (n<span class="number">-1</span>) + fib (n<span class="number">-2</span>) <span class="comment">-- _表示不接受入参</span></div></pre></td></tr></table></figure></p>
+<h3 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h3><ul>
+<li><code>++</code>连接字符串，<code>+</code>表示相加</li>
+<li>Elm不会进行强制类型转换</li>
+<li>缩进会影响语句解析</li>
+<li>list中所有元素类型必须一致</li>
+<li>tuples设计类似python</li>
+<li>records类型不允许访问不存在的属性</li>
+<li><code>//</code>用来进行C风格的除法</li>
+<li>Elm中!用于连接Model和Cmd，用<code>/=</code>表示<code>!=</code>，同<code>not</code>表示<code>!</code></li>
+</ul>
+<p>Elm的语言设定大不同于C风格，所以，多写去熟悉它的语法风格吧。</p>
+<h2 id="Elm架构"><a href="#Elm架构" class="headerlink" title="Elm架构"></a>Elm架构</h2><p>Elm构建Web App的架构为MVU（不考虑Cmd和Subscription的话），这和目前大部分MVVM框架一样，致力于减少UI维护，减少不必要的状态修改来更好地定位错误。有意思的是，Elm也<a href="http://elm-lang.org/blog/blazing-fast-html" target="_blank" rel="external">采用了Virtual DOM的设计</a>。</p>
+<ul>
+<li>Model，类似Web App的state，通常为<code>records</code>类型</li>
+<li>Update，更新state的唯一方式（类似于action或commit），通常类型为<code>Msg -&gt; Model -&gt; (Model, Cmd Msg)</code></li>
+<li>View，根据state渲染HTML的方式，通常类型为<code>Model -&gt; Html Msg</code></li>
+</ul>
+<p>Update部分，通常像下面这样，接受Union Type的Msg，并通过<code>case ... of</code>接受到附在Msg上的payload。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="title">update</span> : <span class="type">Msg</span> -&gt; <span class="type">Model</span> -&gt; <span class="type">Model</span></div><div class="line"><span class="title">update</span> msg model =</div><div class="line">  <span class="keyword">case</span> msg <span class="keyword">of</span></div><div class="line">    <span class="type">Change</span> newContent -&gt;</div><div class="line">      &#123; model | content = newContent &#125;</div></pre></td></tr></table></figure>
+<p>View部分，所有常用的标签名和属性名都被封装为函数，接受属性列表和子元素列表两个入参，像下面这样。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">view</span> : <span class="type">Model</span> -&gt; <span class="type">Html</span> <span class="type">Msg</span></div><div class="line"><span class="title">view</span> model =</div><div class="line">  div []</div><div class="line">    [ input [ placeholder <span class="string">"Text to reverse"</span>, onInput <span class="type">Change</span> ] []</div><div class="line">    , div [] [ text (<span class="type">String</span>.reverse model.content) ]</div><div class="line">    ]</div></pre></td></tr></table></figure>
+<p>将M、V、U三部分结合在一起就可以构造简单的web应用了。当有异步任务等复杂情况出现时，需要通过Cmd和Subscription实现。</p>
+<h3 id="Effects"><a href="#Effects" class="headerlink" title="Effects"></a>Effects</h3><p><img src="https://guide.elm-lang.org/architecture/effects/beginnerProgram.svg" alt="Elm Architecture"></p>
+<p>说这两位之前，我们要回顾下之前的工作流。仔细观察就能发现，我们所做的事只是描述了接受Html Msg后如何生产新的Model并根据新的Model生产新的Html Msg交给Elm Runtime，之后的脏活累活都交给Elm干了。根据Elm的描述，除了vDOM外，它还使用了下面两个手段提升效率：</p>
+<ul>
+<li><strong>Skip Work</strong>，通过<code>lazy</code>（类似React的<code>shouldComponentUpdate</code>）限制更新频率</li>
+<li><strong>Align Work</strong>，通过<code>Html.keyed</code>（类似React的<code>key</code>）减少无意义的diffing。</li>
+</ul>
+<p>回到正题，Cmd和Subscription也是对Msg所做的外层包装而已。除了能向Elm Runtime pipe Html Msg外，当然也可以发送命令或订阅事件</p>
+<p><img src="https://guide.elm-lang.org/architecture/effects/program.svg" alt=""></p>
+<p>。Html, Cmd, Sub三者实际上没太大区别，都是我们将生成的数据交给Elm Runtime，剩下的做甩手掌柜。它可以帮助我们：</p>
+<ul>
+<li>更好的debug</li>
+<li>确保Elm函数的线性时不变</li>
+<li>优化HTTP连接，缓存effects</li>
+</ul>
+<p>下面是一个Sub的例子：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- SUBSCRIPTIONS</span></div><div class="line"></div><div class="line"><span class="title">subscriptions</span> : <span class="type">Model</span> -&gt; <span class="type">Sub</span> <span class="type">Msg</span></div><div class="line"><span class="title">subscriptions</span> model =</div><div class="line">  <span class="type">Time</span>.every second <span class="type">Tick</span></div><div class="line"></div><div class="line"><span class="comment">-- UPDATE</span></div><div class="line"></div><div class="line"><span class="title">update</span> : <span class="type">Msg</span> -&gt; <span class="type">Model</span> -&gt; (<span class="type">Model</span>, <span class="type">Cmd</span> <span class="type">Msg</span>)</div><div class="line"><span class="title">update</span> msg model =</div><div class="line">  <span class="keyword">case</span> msg <span class="keyword">of</span></div><div class="line">    <span class="type">Tick</span> newTime -&gt;</div><div class="line">      (newTime, <span class="type">Cmd</span>.none)</div></pre></td></tr></table></figure>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>之前提到过Elm致力于“编辑时无bug=&gt;Runtime无bug”。除了强类型和无状态（实际上是Immutable的状态）外，还有Maybe和Result的辅助。</p>
+<blockquote>
+<p>Elm treats errors as data.</p>
+</blockquote>
+<p>参考<a href="https://www.lucidchart.com/techblog/2015/08/31/the-worst-mistake-of-computer-science/" target="_blank" rel="external">null的糟糕设计</a>，Elm通过<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="type">Maybe</span> a = <span class="type">Nothing</span> | <span class="type">Just</span> a</div></pre></td></tr></table></figure></p>
+<p>定义了Maybe类型。结合<code>case of</code>的特殊情况处理，通过<strong>option types</strong>的方法<strong>替代Null</strong>。<a href="http://package.elm-lang.org/packages/elm-lang/core/4.0.0/Maybe" target="_blank" rel="external">core/Maybe</a>模块还有<code>withDefault</code>，<code>andThen</code>等其他方法。</p>
+<p>类似于Maybe，Result用Union Type的形式定义了不可靠操作的返回值。<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="type">Result</span> error value = <span class="type">Err</span> error | <span class="type">Ok</span> value</div></pre></td></tr></table></figure></p>
+<p>通过Err和Ok两种类型，隐含了其他语言中的<code>try catch</code>操作，<strong>避免exception</strong>的出现。Elm库函数是实现了Result类型的，如<code>Http.get</code>。Result预定义在<a href="http://package.elm-lang.org/packages/elm-lang/core/4.0.0/Result" target="_blank" rel="external">core/Result</a>中</p>
+<h3 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h3><p>另外，Elm中有Task用来处理异步操作中的失败情况。类似于JS中的Promise。使用思路是先通过succeed方法和fail方法定义Task再使用。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> <span class="keyword">alias</span> <span class="type">Task</span> err ok =</div><div class="line">  <span class="type">Task</span> err ok</div><div class="line"><span class="title">succeed</span> : a -&gt; <span class="type">Task</span> x a</div><div class="line"><span class="title">fail</span> : x -&gt; <span class="type">Task</span> x a</div></pre></td></tr></table></figure>
+<p>在Elm由0.17升级到0.18时，有两种方式执行一个Task。<code>Task.perform</code>和<code>Task.attempt</code>。前者针对<strong>从不返回错误</strong>的task，后者针对<strong>可能出错</strong>的task。更重要的是，在<code>Task.attempt</code>中结合了熟悉的Result模型。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="title">perform</span> : (a -&gt; msg) -&gt; <span class="type">Task</span> <span class="type">Never</span> a -&gt; <span class="type">Cmd</span> msg</div><div class="line"><span class="title">attempt</span> : (<span class="type">Result</span> x a -&gt; msg) -&gt; <span class="type">Task</span> x a -&gt; <span class="type">Cmd</span> msg</div><div class="line"><span class="comment">-- example</span></div><div class="line"><span class="keyword">type</span> <span class="type">Msg</span> = <span class="type">Click</span> | <span class="type">NewTime</span> <span class="type">Time</span></div><div class="line"></div><div class="line"><span class="title">update</span> : <span class="type">Msg</span> -&gt; <span class="type">Model</span> -&gt; ( <span class="type">Model</span>, <span class="type">Cmd</span> <span class="type">Msg</span> )</div><div class="line"><span class="title">update</span> msg model =</div><div class="line">  <span class="keyword">case</span> msg <span class="keyword">of</span></div><div class="line">    <span class="type">Click</span> -&gt;</div><div class="line">      ( model, <span class="type">Task</span>.perform <span class="type">NewTime</span> <span class="type">Time</span>.now )</div><div class="line"></div><div class="line">    <span class="type">NewTime</span> time -&gt;</div><div class="line">      ...</div></pre></td></tr></table></figure>
+<h2 id="互操作性"><a href="#互操作性" class="headerlink" title="互操作性"></a>互操作性</h2><p>Elm的互操作性体现在和JSON以及JavaScript上。</p>
+<h3 id="与JSON"><a href="#与JSON" class="headerlink" title="与JSON"></a>与JSON</h3><p>通过Json.Decode和Json.Encode完成相关工作。解析部分由<code>decodeString</code>完成。<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">decodeString</span> : <span class="type">Decoder</span> a -&gt; <span class="type">String</span> -&gt; <span class="type">Result</span> <span class="type">String</span> a</div></pre></td></tr></table></figure></p>
+<p>由第一个参数指定decoder类型，如 <code>decodeString int &quot;42&quot;</code>就指定了一个整数的解析器。在多数情况下，JSON字符串并没这么简单。这时，需要先利用基本的int、string、list、dict解析器结合map2、map3等构造相应的Decoder，再交给decodeString处理。<strong>函数返回<code>Result</code>类型</strong>。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Json.Decode <span class="keyword">exposing</span> (..)</div><div class="line"></div><div class="line"><span class="keyword">type</span> <span class="keyword">alias</span> <span class="type">Point</span> = &#123; x : <span class="type">Int</span>, y : <span class="type">Int</span> &#125;</div><div class="line"></div><div class="line"><span class="title">pointDecoder</span> = map2 <span class="type">Point</span> (field <span class="string">"x"</span> int) (field <span class="string">"y"</span> int)</div><div class="line"></div><div class="line"><span class="title">decodeString</span> pointDecoder <span class="string">""</span><span class="string">"&#123; "</span>x<span class="string">": 3, "</span>y<span class="string">": 4 &#125;"</span><span class="string">""</span> <span class="comment">-- Ok &#123; x = 3, y = 4 &#125; : Result String Point</span></div></pre></td></tr></table></figure>
+<p>是不是很麻烦。不像JavaScript里一个<code>JSON.parse()</code>完事，确实Elm解析JSON的笨拙为人诟病，官方的<a href="http://package.elm-lang.org/packages/NoRedInk/elm-decode-pipeline/latest" target="_blank" rel="external">pipeline</a>包通过<code>|&gt;</code>组合Decoder，让语法稍微好了一点。最新的0.18版本下有<a href="http://package.elm-lang.org/packages/elm-community/json-extra/2.6.0/Json-Decode-Extra" target="_blank" rel="external">json-extra</a>提供更方便的decoder选择。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Json.Decode.Pipeline <span class="keyword">exposing</span> (decode, required)</div><div class="line"></div><div class="line"><span class="title">pointDecoder</span> : <span class="type">Decoder</span> <span class="type">Point</span></div><div class="line"><span class="title">pointDecoder</span> =</div><div class="line">  decode <span class="type">Point</span></div><div class="line">    |&gt; required <span class="string">"x"</span> int</div><div class="line">    |&gt; required <span class="string">"y"</span> int</div></pre></td></tr></table></figure>
+<p>可这距离<code>JSON.parse</code>还是不够啊。于是有人写了个根据Records类型<a href="https://github.com/eeue56/json-to-elm" target="_blank" rel="external">生成decoder的工具</a>，或者<a href="http://noredink.github.io/json-to-elm/" target="_blank" rel="external">在线生成</a>。</p>
+<p>相比之下，<a href="http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Encode" target="_blank" rel="external">encode</a>过程就简单多了。</p>
+<h3 id="与JavaScript"><a href="#与JavaScript" class="headerlink" title="与JavaScript"></a>与JavaScript</h3><p>有两种方式，port或flag。</p>
+<p>前者类似于在Elm应用上凿洞，用类似订阅发布的模式工作。需要在文件开头的module声明前，额外加上<code>port</code>关键词，同时需要暴露的接口前也需要<code>port</code>关键词。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">port</span> <span class="keyword">module</span> Spelling <span class="keyword">exposing</span> (..)</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">-- port for sending strings out to JavaScript</span></div><div class="line"><span class="keyword">port</span> check : String -&gt; Cmd msg</div><div class="line"></div><div class="line"><span class="comment">-- port for listening for suggestions from JavaScript</span></div><div class="line"><span class="keyword">port</span> suggestions : (<span class="type">List</span> <span class="type">String</span> -&gt; msg) -&gt; Sub msg</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = Elm.Spelling.fullscreen();</div><div class="line"></div><div class="line">app.ports.check.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">word</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> suggestions = spellCheck(word);</div><div class="line">  app.ports.suggestions.send(suggestions);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spellCheck</span>(<span class="params">word</span>) </span>&#123;</div><div class="line">  <span class="comment">// have a real implementation!</span></div><div class="line">  <span class="keyword">return</span> [];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>后者暴露program的init给外部JavaScript。在声明Elm program时，使用<code>programWithFlags</code>而非<code>program</code>。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">init</span> : <span class="type">Flags</span> -&gt; ( <span class="type">Model</span>, <span class="type">Cmd</span> <span class="type">Msg</span> )</div><div class="line"><span class="title">init</span> flags =</div><div class="line">  ...</div><div class="line"></div><div class="line"><span class="title">main</span> =</div><div class="line">  programWithFlags &#123; init = init, ... &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = Elm.MyApp.fullscreen(&#123;</div><div class="line">  <span class="attr">user</span>: <span class="string">'Tom'</span>,</div><div class="line">  <span class="attr">token</span>: <span class="string">'12345'</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Elm的思路是不向后兼容，避免过去问题的引入。只通过port和flags的方式，借由Elm runtime和外部JS沟通，避免自身的runtime exception，把问题只留在JavaScript部分。</p>
+<h2 id="工程实践"><a href="#工程实践" class="headerlink" title="工程实践"></a>工程实践</h2><p>使用Elm编写简单的应用时，可能一个.elm文件完成后，就可以直接<code>elm-make index.elm --output index.js</code>就OK了。当工程较大时（目前还没怎么看到生产环境用Elm的），必然需要拆分组件。</p>
+<p>Elm在设计上，拆分的比MVVM框架更细。它拆分到了函数的级别，由于它pure function的特点，不受状态的束缚，重用函数比MVVM框架顾虑少太多了。如，重用view函数就相当于React和Vue中的函数式组件。重用update函数，可以实现MVVM中“组件A改变组件B，组件B改变组件C，组件C改变组件A”的史诗级难题。</p>
+<p>封装和应用是通过<code>module ... exposing ...</code>和<code>import ... exposing ...</code>的语法完成的。Elm会去elm-package.json中的<code>source-directories</code>以及<code>dependencies</code>中声明的路径和包下寻找<code>import</code>对应的东西。剩下的，只要控制好复用程度，在习惯Elm语法后，就可以轻松且高逼格地编写Web应用了。</p>
+<p>Elm编写好，且通过<code>elm-make</code>成功编译后，会得到一个<code>.js</code>文件，在需要的HTML文件中引入，会得到一个<code>Elm</code>全局对象，存储了所有的program。<strong>每个program都有<code>embed</code>方法和<code>fullscreen</code>方法绑定在HTML文件中</strong>。之后，大功告成！</p>
+<p>参考作者所写的<a href="https://github.com/evancz/elm-todomvc" target="_blank" rel="external">TODOMVC</a>是个不错的开始。</p>
+<h3 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h3><p><strong>Q：Where are my components? And how do they communicate?</strong><br>A：参见<a href="https://guide.elm-lang.org/reuse/" target="_blank" rel="external">Scaling The Elm Architecture</a></p>
+<p><strong>Q：What’s the “Elm style”?</strong><br>A：回头看看<a href="#前言">前言</a>一节最后放的两个Elm开发感受，Elm中，View和Updates两部分均可以拆解成多个/组helper functions。最后在一个门面文件中汇总。Elm将state、updates、view放在一个文件，对开发更友好。Elm的优势在于函数式编程特点的帮助（无副作用/纯函数/强类型/出色的错误处理机制）和对人机交互模式的优异抽象。它的问题在</p>
+<ul>
+<li>不完善的文档</li>
+<li>蹩脚的互操作（interop）设计（port和flag）</li>
+<li>学习曲线陡峭</li>
+<li>缺乏成熟的成套解决方案</li>
+<li>坑爹的JSON支持</li>
+</ul>
+<p><strong>Q：Who will save my front-end routing?</strong><br>A：有的，借助<a href="https://github.com/elm-lang/navigation" target="_blank" rel="external">Elm Navigation package</a>就可以做到，具体如何和状态变化绑定起来参见<a href="https://www.elm-tutorial.org/en/07-routing/01-intro.html" target="_blank" rel="external">tutorial的routing部分</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://guide.elm-lang.org" target="_blank" rel="external">An Introduction to Elm</a></li>
+<li><a href="http://elm-lang.org/docs/syntax" target="_blank" rel="external">syntax</a></li>
+<li><a href="https://learnyouanelm.github.io/pages/05-recursion.html" target="_blank" rel="external">Recursion | Elm</a></li>
+<li><a href="https://infi.nl/nieuws/why-i-became-an-elm-evangelist/" target="_blank" rel="external">Why I became an Elm evangelist</a></li>
+<li><a href="https://github.com/isRuslan/awesome-elm" target="_blank" rel="external">awesome-elm</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/05/19/Frontend-FAQ-part3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/05/19/Frontend-FAQ-part3/" itemprop="url">前端常见面试问题 part 3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T17:07:56+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/05/19/Frontend-FAQ-part3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/19/Frontend-FAQ-part3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>下面的大部分问题来自Github的这个<a href="https://github.com/h5bp/Front-end-Developer-Interview-Questions" target="_blank" rel="external">仓库</a>，排名不分先后</p>
+</blockquote>
+<h3 id="46-html5中元素的data-属性"><a href="#46-html5中元素的data-属性" class="headerlink" title="46. html5中元素的data-*属性"></a>46. html5中元素的<code>data-*</code>属性</h3><p>用来存储用户自定义数据，可以通过Element.dataset.foo的形式读取。</p>
+<h3 id="47-CSS在前JS在后是一定的么"><a href="#47-CSS在前JS在后是一定的么" class="headerlink" title="47. CSS在前JS在后是一定的么"></a>47. CSS在前JS在后是一定的么</h3><p>不。调试js，日志脚本，shim或polyfill以及动态修改整个页面style的JS代码需要放在<code>&lt;head&gt;</code>中。</p>
+<h3 id="48-progressive-rendering"><a href="#48-progressive-rendering" class="headerlink" title="48. progressive rendering"></a>48. progressive rendering</h3><p>渐进式渲染技术是一种尽量快地将渲染结果展现给用户的技术。比如懒加载，优先渲染高优先级元素等手段。目标是将用户关心的内容优先展示出来，将页面信息一点点释放给用户。</p>
+<h3 id="49-normalize-reset-CSS"><a href="#49-normalize-reset-CSS" class="headerlink" title="49. normalize/reset CSS"></a>49. normalize/reset CSS</h3><p><a href="https://www.zhihu.com/question/20094066" target="_blank" rel="external">知乎</a>中一段说明写得太好，这里摘录下来。</p>
+<blockquote>
+<p>CSS Reset 是革命党，CSS Reset 里最激进那一派提倡不管你小子有用没用，通通给我脱了那身衣服，凭什么你 body 出生就穿一圈 margin，凭什么你姓 h 的比别人吃得胖，凭什么你 ul 戴一胳膊珠子。于是 *{margin:0;} 等等运动，把人家全拍扁了。看似是众生平等了，实则是浪费了资源又占不到便宜，有求于人家的时候还得贱贱地给加回去，实在需要人家的默认样式了怎么办？人家锅都扔炉子里烧了，自己看着办吧。</p>
+<p>Normalize.css 是改良派。他们提倡，各个元素都有其存在的道理，简单粗暴地一视同仁是不好的。body 那一圈确实挤压了页面的生存空间，那就改掉。士农工商，谁有谁的作用，给他们制定个规范，确保他们在任何浏览器里都干好自己的活儿。</p>
+</blockquote>
+<p>Normalize.css是一种CSS reset的替代方案。Reset清除了所有浏览器默认样式，强调不同浏览器间的一致性。但是在我们需要浏览器默认样式时，就需要自己重头再来。Normalize是两位设计者研究不同浏览器默认样式差异后，设计的弥补浏览器bug保证一致性的CSS。现在大多数的网站已经抛弃了Reset.css而选择Normalize.css。</p>
+<h3 id="50-BFC是什么"><a href="#50-BFC是什么" class="headerlink" title="50. BFC是什么"></a>50. BFC是什么</h3><p>BFC意为块格式化上下文（block formatting context），BFC表示一个区域，在区域内的所有子元素共同构成一个块级上下文。有4中手段可以触发BFC：</p>
+<ul>
+<li>position: 不为static和relative</li>
+<li>display: table-cell，table-caption，inline-block，flex，inline-flex</li>
+<li>float: 不为none</li>
+<li>overflow: 不为visible</li>
+</ul>
+<p>相对来说通过<code>overflow</code>属性触发BFC对已有内容影响最小。利用BFC可以实现很多特性：</p>
+<ul>
+<li>消除box间margin的collapse现象</li>
+<li>包裹浮动元素，防止高度collapse</li>
+<li>BFC不与其他元素相交叉，避免文字围绕图片，实现多栏布局</li>
+</ul>
+<h3 id="51-清除浮动的一些手段"><a href="#51-清除浮动的一些手段" class="headerlink" title="51. 清除浮动的一些手段"></a>51. 清除浮动的一些手段</h3><ul>
+<li>在浮动元素后创建一个空的<code>div</code>标签，为之设置<code>clear: both</code></li>
+<li>触发BFC，一般通过<code>overflow</code>属性触发</li>
+<li>使用伪类<code>:after</code>，设置<code>clear: both</code></li>
+</ul>
+<h3 id="52-CSS-sprites怎么实现和优缺点"><a href="#52-CSS-sprites怎么实现和优缺点" class="headerlink" title="52. CSS sprites怎么实现和优缺点"></a>52. CSS sprites怎么实现和优缺点</h3><p>将多张小图拼成大图后，通过<code>background-image</code>和<code>background-position</code>更改背景。优点是省流量，更换图标整体风格快；缺点是添加新图片麻烦。</p>
+<h3 id="53-图片替代方案"><a href="#53-图片替代方案" class="headerlink" title="53. 图片替代方案"></a>53. 图片替代方案</h3><p>图片替代指使用图片替代文字，同时保证图片可读，通常用于Logo。有下面几种方案：</p>
+<ul>
+<li>display: none + background-image</li>
+<li>text-ident: 9999px + background-image</li>
+<li>margin-left: -9999px + background-image (盒模型很大，低效)</li>
+<li>img alt属性</li>
+<li>font-size或color: #fff</li>
+</ul>
+<h3 id="54-解决browser-specific问题"><a href="#54-解决browser-specific问题" class="headerlink" title="54. 解决browser-specific问题"></a>54. 解决browser-specific问题</h3><p>写patches（独立的CSS文件）处理</p>
+<h3 id="55-如何面对低等级浏览器"><a href="#55-如何面对低等级浏览器" class="headerlink" title="55. 如何面对低等级浏览器"></a>55. 如何面对低等级浏览器</h3><p>polyfill，graceful degration</p>
+<h3 id="56-预处理语言的优缺点"><a href="#56-预处理语言的优缺点" class="headerlink" title="56. 预处理语言的优缺点"></a>56. 预处理语言的优缺点</h3><p>优点：更加友善，更好的特性，语法糖<br>缺点：需要编译，应用场景局限</p>
+<h3 id="57-display有哪些可选值"><a href="#57-display有哪些可选值" class="headerlink" title="57. display有哪些可选值"></a>57. display有哪些可选值</h3><ul>
+<li>none</li>
+<li>inherit</li>
+<li>initial</li>
+<li>unset</li>
+<li>block</li>
+<li>inline</li>
+<li>inline-block</li>
+<li>flow</li>
+<li>table</li>
+<li>flex</li>
+<li>grid</li>
+<li>list-item</li>
+<li>table-row-group</li>
+<li>table-row</li>
+<li>table-header-group</li>
+<li>table-footer-group</li>
+<li>table-cell</li>
+<li>table-column-group</li>
+<li>table-column</li>
+<li>table-caption</li>
+<li>inline-flex</li>
+<li>inline-grid</li>
+<li>inline-table</li>
+<li>inline-list-item</li>
+</ul>
+<h3 id="58-translate和absolute的选择"><a href="#58-translate和absolute的选择" class="headerlink" title="58. translate和absolute的选择"></a>58. translate和absolute的选择</h3><p>两者并无优劣之分。只有应用场景的不同。translate可以实现复杂的位移和变形，absolute用在固定的定位时更方便</p>
+<h3 id="59-视觉上隐藏一个元素"><a href="#59-视觉上隐藏一个元素" class="headerlink" title="59. 视觉上隐藏一个元素"></a>59. 视觉上隐藏一个元素</h3><ol>
+<li>position: fix + left: -9999px</li>
+<li>clip + width/height + overflow</li>
+<li>visibility: hidden</li>
+</ol>
+<h3 id="60-grid-system"><a href="#60-grid-system" class="headerlink" title="60. grid system"></a>60. grid system</h3><p>除开最新的Grid布局。可以通过<code>inline-block + margin</code>实现。grid布局目前支持还较差。<a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="external">这里</a>是一篇很不错的介绍。</p>
+<p><img src="/blog/images/grid-support.png" alt=""></p>
+<h3 id="61-高效的CSS写法"><a href="#61-高效的CSS写法" class="headerlink" title="61. 高效的CSS写法"></a>61. 高效的CSS写法</h3><p><a href="https://css-tricks.com/css-style-guides/" target="_blank" rel="external">这里</a>有一堆CSS编码风格。总体来说，要注意</p>
+<ul>
+<li>避免全局选择</li>
+<li>让选择器更加具体化</li>
+<li>减少不必要的选择器</li>
+<li>减少选择器的过深嵌套</li>
+<li>尽可能少使用表达式（即calc, rgba这些）</li>
+<li>CSS放在头部</li>
+</ul>
+<h3 id="62-CSS匹配顺序"><a href="#62-CSS匹配顺序" class="headerlink" title="62. CSS匹配顺序"></a>62. CSS匹配顺序</h3><p>先构建DOM树，再从右至左地匹配CSS选择器</p>
+<h3 id="63-盒模型"><a href="#63-盒模型" class="headerlink" title="63. 盒模型"></a>63. 盒模型</h3><p>DOM元素以盒的形式呈现，包裹住真正的内容，有margin/border/padding/content四部分，width在默认情况下仅指content部分的宽度，height同理。若想改变盒模型，可以设置<code>box-sizing</code>属性</p>
+<h3 id="64-flex"><a href="#64-flex" class="headerlink" title="64. flex"></a>64. flex</h3><p>flex是弹性布局。借助flex布局，可以很轻松地实现居中置右等使用默认方法难以实现的效果。flex布局有两个轴：主轴和交叉轴。元素在主轴方向上排布，在位置不够时，会沿交叉轴推挤到下一行或下一列。flex相关的CSS属性同时针对容器和项目。（下方加粗为默认值）</p>
+<p>针对容器的属性有</p>
+<ul>
+<li><code>flex-direction</code> 主轴方向。可选<strong>row</strong>/column/reverse</li>
+<li><code>flex-wrap</code> 换行选项。可选<strong>nowrap</strong>/wrap/wrap-reverse</li>
+<li><code>flex-flow</code> 综合上面两个选项，如row wrap</li>
+<li><code>justify-content</code> 主轴上对齐方式。可选<strong>flex-start</strong>/flex-end/center/space-between/space-around</li>
+<li><code>align-items</code>交叉轴对齐方式。可选flex-start/flex-end/center/<strong>stretch</strong>/baseline</li>
+<li><code>align-contents</code>主轴间对齐方式。可选<strong>flex-start</strong>/end/center/space-between/space-around/stretch</li>
+</ul>
+<p>针对项目的属性有</p>
+<ul>
+<li><code>order</code> 项目顺序，默认按照书写顺序排列</li>
+<li><code>flex-grow</code> 当容器主轴上长度足够时，该项目在主轴方向上的长度，默认为1，项目间按照该值比例分配</li>
+<li><code>flex-shrink</code> 当容器主轴上长度不够时，类似<code>flex-grow</code>处理</li>
+<li><code>flex-basis</code> 容器默认的主轴方向长度，也按比例分配</li>
+<li><code>align-self</code> 该项目的对齐方式</li>
+</ul>
+<h3 id="65-适应式-响应式布局"><a href="#65-适应式-响应式布局" class="headerlink" title="65. 适应式/响应式布局"></a>65. 适应式/响应式布局</h3><p>responsive：响应式布局，使用同一种布局响应浏览器窗口的连续变化<br>adaptive：适应式布局，在视口特定大小时改变外观或样式，是离散的</p>
+<h3 id="66-DOM事件代理，冒泡和捕获两阶段"><a href="#66-DOM事件代理，冒泡和捕获两阶段" class="headerlink" title="66. DOM事件代理，冒泡和捕获两阶段"></a>66. DOM事件代理，冒泡和捕获两阶段</h3><p>DOM事件代理是指，在DOM2级标准中，事件触发有捕获和冒泡两阶段，所以可以将事件监听器绑定在父节点上，减少EventListener的数目。细节可以参见之前做过的一则<a href="https://shenlvmeng.github.io/blog/2017/03/20/domevent-elementsize-mediatag/" target="_blank" rel="external">笔记</a>。</p>
+<h3 id="67-null-nudefined-undeclared三者的区别"><a href="#67-null-nudefined-undeclared三者的区别" class="headerlink" title="67. null, nudefined, undeclared三者的区别"></a>67. null, nudefined, undeclared三者的区别</h3><p><strong>null</strong>: 是Object类型，表示空对象，多用来表示还未赋值的对象<br><strong>undefined</strong>: 是基础类型，表示没有定义的变量或属性<br><strong>undecided</strong>: 只是一种称呼，表示没有用<code>var</code>, <code>const</code>或<code>let</code>声明的变量，默认为全局变量，应该避免出现这种情况</p>
+<h3 id="68-匿名函数的应用场景"><a href="#68-匿名函数的应用场景" class="headerlink" title="68. 匿名函数的应用场景"></a>68. 匿名函数的应用场景</h3><p>主要用作返回值或输入参数。</p>
+<h3 id="69-host-object和native-object的区别"><a href="#69-host-object和native-object的区别" class="headerlink" title="69. host object和native object的区别"></a>69. host object和native object的区别</h3><p>前者是用户定义的对象类型，后者是环境自带的原生对象。尽量避免修改native object（包括增删改）。</p>
+<h3 id="70-Function-prototype-bind的使用场景"><a href="#70-Function-prototype-bind的使用场景" class="headerlink" title="70. Function.prototype.bind的使用场景"></a>70. <code>Function.prototype.bind</code>的使用场景</h3><p>在setTimeout和listener handler中最常用到</p>
+<h3 id="71-feature-detection-feature-inference-UA"><a href="#71-feature-detection-feature-inference-UA" class="headerlink" title="71. feature detection/feature inference/UA"></a>71. feature detection/feature inference/UA</h3><p>由于浏览器之间有各自的特性差异，这三种手段用于保证代码在浏览器间的兼容性。</p>
+<ul>
+<li>feature detection 检测特性是否存在再使用，比较保险科学</li>
+<li>feature inference 通过某特性是否存在推断另一特性是否存在，有风险，避免使用</li>
+<li>UA 直接通过header中的User Agent来得到浏览器信息，建议迫不得已不使用</li>
+</ul>
+<h3 id="72-AJAX技术的优劣"><a href="#72-AJAX技术的优劣" class="headerlink" title="72. AJAX技术的优劣"></a>72. AJAX技术的优劣</h3><p>优：用户体验好，局部刷新速度快，可以用于实现界面和数据分离<br>劣：相对来说较难调试，需要解决跨域问题，搜索引擎支持即SEO弱，会遇到移动端支持问题</p>
+<h3 id="73-JS-templating"><a href="#73-JS-templating" class="headerlink" title="73. JS templating"></a>73. JS templating</h3><p>JS中的模板技术，如在backbone中使用的underscore的_.template方法。在<a href="https://github.com/xtemplate/xtemplate" target="_blank" rel="external">xtemplate</a>支持下，也可以在页面中指定<code>&lt;script type=&quot;x-template&quot;&gt;</code>的形式声明，</p>
+<h3 id="74-如何理解不要改动built-in特性"><a href="#74-如何理解不要改动built-in特性" class="headerlink" title="74. 如何理解不要改动built-in特性"></a>74. 如何理解不要改动built-in特性</h3><p>浏览器和标准都是在不断变化的，此刻对built-in特性做的修改在之后浏览器或标注的呢更新后可能会埋下很深的坑。</p>
+<h3 id="75-如何区分-和"><a href="#75-如何区分-和" class="headerlink" title="75. 如何区分[]和{}"></a>75. 如何区分[]和{}</h3><ul>
+<li>Object.Prototype.toString.call()</li>
+<li>[].concat</li>
+<li>instanceof</li>
+<li>ES6中新增的方法Array.isArray</li>
+</ul>
+<h3 id="76-tenary-operator"><a href="#76-tenary-operator" class="headerlink" title="76. tenary operator"></a>76. tenary operator</h3><p>JS中唯一的三元操作符</p>
+<h3 id="77-DOM中attributes和properties的区别"><a href="#77-DOM中attributes和properties的区别" class="headerlink" title="77. DOM中attributes和properties的区别"></a>77. DOM中attributes和properties的区别</h3><p>节点的特性（attributes）用<code>Attr</code>类型表示。直观上讲，特性就是元素attributes属性中的节点，即在tag中声明的各特性名，以下面的标签为例：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">value</span>=<span class="string">"John"</span> /&gt;</span></div></pre></td></tr></table></figure>
+<p>该DOM节点有两个特性：<code>type</code>和<code>value</code>。<code>Attr</code>也是<code>Node</code>的一种，<code>nodeType</code>为2，<code>Attr</code>对象有三个属性</p>
+<ul>
+<li><code>name</code> 特性名称</li>
+<li><code>value</code> 特性的值</li>
+<li><code>specified</code> 特性是否指定在代码中，抑或是默认的</li>
+</ul>
+<p>节点的属性（properties）则指对应的DOM对象的属性，不论是继承自<code>Node</code>或是<code>Element</code>类型的，还是自身类型自带的。比如上面同样的例子，该DOM节点具有<code>children</code>, <code>childNodes</code>, <code>className</code>等。</p>
+<p>节点的属性和特性会有重合的部分，如<code>id</code>, <code>type</code>等，因DOM节点而异。上面的例子里，attribute中的<code>value</code>指声明在标签上的value默认值，而properties中的<code>value</code>则指该input标签当前的内容。</p>
+<h3 id="78-quot-use-strict-quot"><a href="#78-quot-use-strict-quot" class="headerlink" title="78. &quot;use strict&quot;;"></a>78. <code>&quot;use strict&quot;;</code></h3><p>严格模式在ES5中引入，通过直接定义一个不赋给任何变量的上述字符串进入。可以选择在全局或是函数作用域内开启。</p>
+<ul>
+<li>严格模式下对默认模式下会静默出错的代码显式报错</li>
+<li>严格模式下禁止不合理的行为，如声明了两个一样的属性名</li>
+<li>严格模式还淘汰了一些属性，如<code>arguments.callee</code>和<code>arguments.caller</code>; 同时，限制一些不安全的使用，如<code>with</code>和<code>eval</code></li>
+<li>严格模式抑制了<code>this</code>的值</li>
+<li>严格模式下，对未来版本可能用到的保留字禁止用户访问</li>
+</ul>
+<p>不过，由于严格模式下代码的解析规则会不大一样，建议只在需要测试的特定函数内开启严格模式，</p>
+<h3 id="79-ready和load-event的区别"><a href="#79-ready和load-event的区别" class="headerlink" title="79. ready和load event的区别"></a>79. ready和load event的区别</h3><ul>
+<li>ready在DOM元素加载完成后触发</li>
+<li>load在页面所有资源请求完成后触发（包括图片、视频、音频等）</li>
+</ul>
+<h3 id="80-SPA的SEO优化"><a href="#80-SPA的SEO优化" class="headerlink" title="80. SPA的SEO优化"></a>80. SPA的SEO优化</h3><p>采用预渲染技术，或为爬虫专门准备静态页面</p>
+<h3 id="81-event-loop，call-stack和task-queue"><a href="#81-event-loop，call-stack和task-queue" class="headerlink" title="81. event loop，call stack和task queue"></a>81. event loop，call stack和task queue</h3><p>见这篇<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">笔记</a>。</p>
+<h3 id="82-JavaScript中的对象和继承"><a href="#82-JavaScript中的对象和继承" class="headerlink" title="82. JavaScript中的对象和继承"></a>82. JavaScript中的对象和继承</h3><p>见这篇<a href="https://shenlvmeng.github.io/blog/2017/03/13/js-object/" target="_blank" rel="external">笔记</a>。</p>
+<p>不过，在ES6中引入了强类型OOP语言中传统的对象和继承语法。</p>
+<ul>
+<li>使用<code>class</code>关键字定义类，类中用<code>constructor</code>定义构造函数，使用<code>public</code>和<code>private</code>修饰成员级别</li>
+<li>可以在成员前指定<code>get</code>和<code>set</code>为成员指定setter和getter函数</li>
+<li>通过<code>extends</code>实现继承</li>
+</ul>
+<h3 id="83-promise"><a href="#83-promise" class="headerlink" title="83. promise"></a>83. promise</h3><p>见之前做过的一篇<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/" target="_blank" rel="external">笔记</a>。</p>
+<h3 id="84-提升有滚动条时的动画渲染性能"><a href="#84-提升有滚动条时的动画渲染性能" class="headerlink" title="84. 提升有滚动条时的动画渲染性能"></a>84. 提升有滚动条时的动画渲染性能</h3><p>在CSS中为<code>will-change</code>属性指定动画要改变的CSS属性，参见<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change" target="_blank" rel="external">MDN上的介绍</a>。</p>
+<h3 id="85-layout-painting-composition"><a href="#85-layout-painting-composition" class="headerlink" title="85. layout, painting, composition"></a>85. layout, painting, composition</h3><p>浏览器解析，绘制，组合网页的过程。DOM操作可能会触发回流（reflow）或重绘（repainting），后者代价更小，建议减少频繁的DOM操作</p>
+<h3 id="86-一些HTTP-1-1的header"><a href="#86-一些HTTP-1-1的header" class="headerlink" title="86. 一些HTTP 1.1的header"></a>86. 一些HTTP 1.1的header</h3><ul>
+<li><code>Accept</code> 接受文件的类型</li>
+<li><code>Accept-Charset</code>/<code>Accept-Encoding</code> 可以接受的文件字符集和编码</li>
+<li><code>Age</code> 从缓存实体产生到现在经历的时间</li>
+<li><code>Allow</code> 允许使用的HTTP方法</li>
+<li><code>Cache-control</code> 使用的缓存策略</li>
+<li><code>Content-Encoding</code> 响应体使用编码</li>
+<li><code>Content-Lenght</code> 响应体长度</li>
+<li><code>Content-Range</code> 响应体范围，用于部分下载（服务端的返回）</li>
+<li><code>Content-Type</code> 响应的媒体类型</li>
+<li><code>Date</code> 消息的发送时间</li>
+<li><code>Etag</code> html实体的唯一标识，用于缓存对比</li>
+<li><code>Expires</code> 缓存实体过期时间</li>
+<li><code>Host</code> 服务器的主机名，通常是请求资源的URL</li>
+<li><code>Location</code> 重定向的地址</li>
+<li><code>Pragma</code> 用于向后兼容还没有<code>Cache-Control</code>的HTTP1.0版本，通常只用作<code>Pragma: no-cache</code></li>
+<li><code>Range</code> 请求资源的部分内容，一般用在多线程下载（客户端发起）</li>
+<li><code>Referer</code> 当前请求从哪个地址发起</li>
+<li><code>Server</code> 服务器端使用的软件信息</li>
+<li><code>Transfer-Encoding</code> 传输内容所用的协议类型</li>
+<li><code>Upgrade</code> 切换到额外的通信协议，服务端需要返回101状态码，并指定升级的协议名</li>
+<li><code>User-Agent</code> 请求发起自什么终端</li>
+<li><code>Vary</code> 列出一个相应字段列表，告知服务器当URL对应不同版本资源时，如何选择合适版本</li>
+<li><code>Via</code> 用在proxies中，表示使用的协议，版本以及起始端</li>
+</ul>
+<p>更多header参考<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html" target="_blank" rel="external">W3C文档</a></p>
+<h3 id="87-HTTP-actions"><a href="#87-HTTP-actions" class="headerlink" title="87. HTTP actions"></a>87. HTTP actions</h3><ul>
+<li><code>OPTIONS</code> 描述目标资源的通信选项</li>
+<li><code>GET</code> 获取数据</li>
+<li><code>HEAD</code> 类似GET，但是没有响应体</li>
+<li><code>POST</code> 将实体提交给服务器</li>
+<li><code>PUT</code> 用请求payload替换目标资源</li>
+<li><code>PATCH</code> 对资源部分修改</li>
+<li><code>DELETE</code> 删除指定资源</li>
+<li><code>TRACE</code> 沿着到目标资源的路径执行一个消息环回测试</li>
+<li><code>CONNECT</code> 建立一个到由目标资源标识的服务器的隧道</li>
+</ul>
+<h3 id="88-JS内存泄漏"><a href="#88-JS内存泄漏" class="headerlink" title="88. JS内存泄漏"></a>88. JS内存泄漏</h3><ul>
+<li>意外的全局变量</li>
+<li>被遗忘的<code>setInterval</code></li>
+<li>脱离文档的DOM引用</li>
+<li>不合理的闭包</li>
+</ul>
+<p>Chrome下可以通过Timeline/Profile选项卡查看内存使用情况，避免上述情况出现。</p>
+<h3 id="89-rem，em，px"><a href="#89-rem，em，px" class="headerlink" title="89. rem，em，px"></a>89. rem，em，px</h3><p>见<a href="https://shenlvmeng.github.io/blog/2017/05/17/Frontend-FAQ-part2/index.html#question24" target="_blank" rel="external">Question 24</a>。</p>
+<h3 id="90-JS数据类型"><a href="#90-JS数据类型" class="headerlink" title="90. JS数据类型"></a>90. JS数据类型</h3><p>基础类型：</p>
+<ul>
+<li>Undefined</li>
+<li>Null</li>
+<li>Number（包括NaN Infinity）</li>
+<li>Boolean</li>
+<li>String</li>
+</ul>
+<p>其余都是引用类型。更多参加<a href="https://shenlvmeng.github.io/blog/2017/03/01/js-type-and-equal-judgement/" target="_blank" rel="external">这里</a>。</p>
+<h3 id="91-Object-assign和Object-create"><a href="#91-Object-assign和Object-create" class="headerlink" title="91. Object.assign和Object.create"></a>91. <code>Object.assign</code>和<code>Object.create</code></h3><ul>
+<li><code>Object.assign</code> 将传入变量的<strong>可枚举属性</strong>和已有属性合并</li>
+<li><code>Object.create</code> 创建一个以传入对象为<code>__proto__</code>的对象</li>
+</ul>
+<h3 id="92-回流和重绘"><a href="#92-回流和重绘" class="headerlink" title="92. 回流和重绘"></a>92. 回流和重绘</h3><p>还是参见<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">how browsers work</a>。为了减少回流，有下面一些推荐实践：</p>
+<ul>
+<li>一次性改变样式，如用<code>class</code></li>
+<li><code>requestAnimationFrame</code>推迟回流</li>
+<li>虚拟DOM</li>
+<li>使用<code>documentFragment</code></li>
+</ul>
+<h3 id="93-排序算法"><a href="#93-排序算法" class="headerlink" title="93. 排序算法"></a>93. 排序算法</h3><p>稳定：插冒归基；不稳定：快选堆希。实现略。</p>
+<h3 id="94-CSS-JS跨浏览器兼容问题"><a href="#94-CSS-JS跨浏览器兼容问题" class="headerlink" title="94. CSS/JS跨浏览器兼容问题"></a>94. CSS/JS跨浏览器兼容问题</h3><ul>
+<li>明确产品的兼容版本方案，选择合适的技术栈</li>
+<li>normalize.css polyfill/shim保证兼容</li>
+<li>在符合W3C标准浏览器下表现良好，旧浏览器下保证可用性，提示升级即可</li>
+<li>CSS hack（特殊的选择器，条件样式表）</li>
+</ul>
+<h3 id="95-xss和csrf的防御"><a href="#95-xss和csrf的防御" class="headerlink" title="95. xss和csrf的防御"></a>95. xss和csrf的防御</h3><p>XSS（Cross Site Script，跨站脚本攻击），分为反射式，存储式，前者只对特定用户生效，如存储在个人资料中的脚本，后者对访问网站的所有用户生效，如攻击站点本身代码。防御转义时，不仅要监测<code>&lt;script&gt;</code>标签，对可以书写JavaScript的<code>href</code>属性，<code>src</code>属性，甚至<code>img</code>的<code>onerror</code>等事件也要做防御。</p>
+<p>CSRF（Cross-site Request Forgery，跨站请求伪造），意为恶意网站通过用户存储的cookie，模拟向其他网站发起“合法”请求。需要注意下面两点</p>
+<ul>
+<li>不使用GET方法更新数据</li>
+<li>对于POST方法，通过后台生成随机的csrf_token注入到<code>form</code>的<code>&lt;input type=&quot;hidden&quot;&gt;</code>标签中预防</li>
+</ul>
+<p>总而言之，<strong>不信任用户的所有输入</strong>，对输入做处理，避免SQL注入和XSS攻击。</p>
+<hr>
+<h3 id="96-CSS属性继承"><a href="#96-CSS属性继承" class="headerlink" title="96. CSS属性继承"></a>96. CSS属性继承</h3><p>无继承性：</p>
+<ul>
+<li>display</li>
+<li>文本属性：vertical-align/text-shadow/text-decoration</li>
+<li>盒模型属性</li>
+<li>背景相关属性</li>
+<li>定位属性：float clear top/left/right/bottom z-index</li>
+<li>轮廓内容：content outline</li>
+</ul>
+<p>有继承性：</p>
+<ul>
+<li>字体属性</li>
+<li>文本属性：text-align/line-height/word-spacing/letter-spacing/color</li>
+<li>可见性：visibility</li>
+<li>表格列表：list-style</li>
+<li>光标：cursor</li>
+</ul>
+<p>行内元素可继承：字体属性，除了text-indent/text-align<br>块元素可继承：text-align/text-ident</p>
+<h3 id="97-移动端实现0-5px的border"><a href="#97-移动端实现0-5px的border" class="headerlink" title="97. 移动端实现0.5px的border"></a>97. 移动端实现0.5px的<code>border</code></h3><ul>
+<li>结合<code>:before</code>或<code>:after</code>通过<code>transform-origin</code>和<code>scale</code>实现</li>
+<li>利用渐变<code>background-image: linear-gradient</code></li>
+<li>直接使用backgroun-image</li>
+</ul>
+<h3 id="98-随机打乱一个数组"><a href="#98-随机打乱一个数组" class="headerlink" title="98. 随机打乱一个数组"></a>98. 随机打乱一个数组</h3><p><a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank" rel="external">Fisher-Yates shuffle</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">shuffle</span>(<span class="params">array</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> counter = array.length;</div><div class="line"></div><div class="line">    <span class="comment">// While there are elements in the array</span></div><div class="line">    <span class="keyword">while</span> (counter &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// Pick a random index</span></div><div class="line">        <span class="keyword">let</span> index = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * counter);</div><div class="line"></div><div class="line">        <span class="comment">// Decrease counter by 1</span></div><div class="line">        counter--;</div><div class="line"></div><div class="line">        <span class="comment">// And swap the last element with it</span></div><div class="line">        <span class="keyword">let</span> temp = array[counter];</div><div class="line">        array[counter] = array[index];</div><div class="line">        array[index] = temp;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> array;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="99-移动端fixed定位bug"><a href="#99-移动端fixed定位bug" class="headerlink" title="99. 移动端fixed定位bug"></a>99. 移动端fixed定位bug</h3><p>iOS中，在软键盘唤起后，fixed定位元素会失效，变为absolute定位。解决方案：主体部分设为<code>height: 100%; overflow-y: scroll</code>，通过absolute定位实现。</p>
+<h3 id="100-JS如何获知当前页面是否来自缓存"><a href="#100-JS如何获知当前页面是否来自缓存" class="headerlink" title="100. JS如何获知当前页面是否来自缓存"></a>100. JS如何获知当前页面是否来自缓存</h3><p>配合后台：后台传递时间戳到当前页面或cookie<br>无后台：通过xhr放送<code>HEAD</code>请求，得到返回的status code</p>
+<h3 id="101-重复打印字符串"><a href="#101-重复打印字符串" class="headerlink" title="101. 重复打印字符串"></a>101. 重复打印字符串</h3><p>幂次叠加，<code>substr</code>切割字符串。</p>
+<h3 id="102-正则匹配中-和-的意思"><a href="#102-正则匹配中-和-的意思" class="headerlink" title="102. 正则匹配中?:和?=的意思"></a>102. 正则匹配中<code>?:</code>和<code>?=</code>的意思</h3><ul>
+<li><code>?:</code> 非捕获匹配分组，匹配并出现在匹配结果中，但不作为子匹配返回</li>
+<li><code>?=</code> 前瞻匹配，不出现在匹配结果中</li>
+</ul>
+<p>更多参见<a href="https://shenlvmeng.github.io/blog/2017/05/12/Frontend-FAQ-part1/index.html#regexp" target="_blank" rel="external">问题16</a>。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/05/17/Frontend-FAQ-part2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1216,498 +1929,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/18/cors/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/04/18/cors/" itemprop="url">跨域技法之CORS</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T20:44:38+08:00">
-                2017-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/04/18/cors/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/18/cors/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>说到CORS，要从下面是一段很常见的前端面试对话</p>
-<blockquote>
-<p>问: 之前实践中有遇到过跨域的需求吗？</p>
-<p>答: 遇到过。</p>
-<p>问: 那你是怎么解决的呢？</p>
-<p>答: 跨域吧，大概有8种方法，<del>很平衡</del>，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。</p>
-</blockquote>
-<h3 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h3><p>jsonp是此前最为常用的一种跨域方法，利用了<code>&lt;script&gt;</code>标签的非跨域性，实现起来大概是下面这样的</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params">url, success</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> ud = <span class="string">'_'</span> + +<span class="keyword">new</span> <span class="built_in">Date</span>,</div><div class="line">      script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>),</div><div class="line">      head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>] </div><div class="line">          || <span class="built_in">document</span>.documentElement;</div><div class="line"></div><div class="line">  <span class="built_in">window</span>[ud] = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">    head.removeChild(script);</div><div class="line">    success &amp;&amp; success(data);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  script.src = url.replace(<span class="string">'callback=?'</span>, <span class="string">'callback='</span> + ud);</div><div class="line">  head.appendChild(script);</div><div class="line">&#125;</div><div class="line"></div><div class="line">jsonp(<span class="string">'http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h3><p>CORS（<a href="https://www.w3.org/TR/cors/" target="_blank" rel="external">Cross-Origin Resource Sharing</a>）是W3C规定的在客户端用来进行跨站通信的标准。随着XMLHttpRequest2的出现，大部分浏览器下，可以像普通同域那样使用xhr对象来发起跨域请求。</p>
-<h4 id="构造一个CORS请求"><a href="#构造一个CORS请求" class="headerlink" title="构造一个CORS请求"></a>构造一个CORS请求</h4><p>CORS被下列浏览器<a href="http://caniuse.com/#search=cors" target="_blank" rel="external">支持</a></p>
-<ul>
-<li>Chrome 3+</li>
-<li>Firefox 3.5+</li>
-<li>Opera 12+</li>
-<li>Safari 4+</li>
-<li>Internet Explorer 8+</li>
-</ul>
-<p>其中Chrome，FF，Opera，Safari都通过<a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2</a>对象来实现CORS。不一般的IE通过XDomainRequest对象实现，不过工作方式和xhr对象大同小异。Nicolas Zakas（《JavaScript高级程序设计》的作者）写了一个<a href="http://www.nczonline.net/blog/2010/05/25/cross-domain-ajax-with-cross-origin-resource-sharing/" target="_blank" rel="external">helper函数</a>，保证了浏览器兼容性：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Check if the XMLHttpRequest object has a "withCredentials" property.</span></div><div class="line">    <span class="comment">// "withCredentials" only exists on XMLHTTPRequest2 objects.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, check if XDomainRequest.</span></div><div class="line">    <span class="comment">// XDomainRequest only exists in IE, and is IE's way of making CORS requests.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line"></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Otherwise, CORS is not supported by the browser.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line"><span class="keyword">if</span> (!xhr) &#123;</div><div class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'CORS not supported'</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="withCredentials"><a href="#withCredentials" class="headerlink" title="withCredentials"></a>withCredentials</h4><p>标准的CORS请求默认不携带cookie，如果需要在请求中携带cookie信息，需要在为xhr对象指定<code>withCredentials</code>属性。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xhr.withCredentials = <span class="literal">true</span></div></pre></td></tr></table></figure>
-<p>同时，服务器端也要在响应头上设置<code>Access-Control-Allow-Credentials</code>字段为<code>true</code>。像下面这样:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure>
-<p>值得注意的是，cookie同样遵守同源法则，即你的JS代码无法获取和设置远端的cookie。</p>
-<h4 id="发起CORS请求"><a href="#发起CORS请求" class="headerlink" title="发起CORS请求"></a>发起CORS请求</h4><p>CORS请求发起方式和xhr没有什么区别，调用<code>xhr.send()</code>即可。综合来看，一个End to End的例子像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Create the XHR object.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCORSRequest</span>(<span class="params">method, url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  <span class="keyword">if</span> (<span class="string">"withCredentials"</span> <span class="keyword">in</span> xhr) &#123;</div><div class="line">    <span class="comment">// XHR for Chrome/Firefox/Opera/Safari.</span></div><div class="line">    xhr.open(method, url, <span class="literal">true</span>);</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> XDomainRequest != <span class="string">"undefined"</span>) &#123;</div><div class="line">    <span class="comment">// XDomainRequest for IE.</span></div><div class="line">    xhr = <span class="keyword">new</span> XDomainRequest();</div><div class="line">    xhr.open(method, url);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// CORS not supported.</span></div><div class="line">    xhr = <span class="literal">null</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> xhr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Helper method to parse the title tag from the response.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTitle</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> text.match(<span class="string">'&lt;title&gt;(.*)?&lt;/title&gt;'</span>)[<span class="number">1</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Make the actual CORS request.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeCorsRequest</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// This is a sample server that supports CORS.</span></div><div class="line">  <span class="keyword">var</span> url = <span class="string">'http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html'</span>;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">  <span class="keyword">if</span> (!xhr) &#123;</div><div class="line">    alert(<span class="string">'CORS not supported'</span>);</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Response handlers.</span></div><div class="line">  xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = xhr.responseText;</div><div class="line">    <span class="keyword">var</span> title = getTitle(text);</div><div class="line">    alert(<span class="string">'Response from CORS request to '</span> + url + <span class="string">': '</span> + title);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">'Woops, there was an error making the request.'</span>);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  xhr.send();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="背后"><a href="#背后" class="headerlink" title="背后"></a>背后</h4><p><img src="/blog/images/cors_flow.png" alt=""></p>
-<p>CORS背后的脏活累活包括额外的包头以及额外的报文，这些由浏览器帮我们代劳了。CORS请求分为“<em>简单的请求</em>”和“<em>没那么简单的请求</em>”。简单的请求包含下列特征：</p>
-<ul>
-<li>HTTP方法名是<code>GET</code>, <code>POST</code>, <code>HEAD</code>之一</li>
-<li>HTTP包头包括<ul>
-<li>Accept</li>
-<li>Accept-Language</li>
-<li>Content-Language</li>
-<li>Last-Event-ID</li>
-<li>Content-Type为<code>application/x-www-form-urlencoded</code>或<code>multipart/form-data</code>或<code>text/plain</code></li>
-</ul>
-</li>
-</ul>
-<p>这种普通的CORS请求可以不必选择CORS，而可以通过jsonp或表单提交的方式解决。剩下的不那么简单的请求则需要浏览器和服务器进行额外的报文交换（prelight request）。</p>
-<p>我们先从一个简单的请求开始，利用上面封装好的函数，写出下面的一段代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com/cors"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'GET'</span>, url);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
-<p>在它的背后的HTTP包头像下面这样，请注意其中的Origin字段。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GET /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
-<p>一个合理的CORS请求<strong>必须</strong>包含一个<strong>Origin</strong>包头。这个包头由浏览器添加，用户不可自行修改。这部分由协议，域名和端口三部分组成。三者任意一个与<strong>Host</strong>不一致就算做跨域。非跨域时，不同浏览器对这个字段的处理方式不同，如FF会省去Origin字段，Chrome和Safari会在POST/DELETE/PUT时包括这个字段。</p>
-<p>幸运的是，在跨域时一定会带上这个字段。支持CORS会根据客户端的Origin是否在allow list中做出回应。下面是一个样例</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://appi.bob.com</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Expose-Headers: FooBar</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
-<p>其中前三个以<code>Access-Control-</code>开头的字段和CORS相关。</p>
-<ul>
-<li><code>Access-Control-Allow-Origin</code>(必须)，这个字段必须附加在合法的CORS响应中，像上面例子所写的那样，或是设置为<code>*</code>表示允许任意源的请求（不过一般不会这样设置）</li>
-<li><code>Access-Control-Allow-Credentials</code>(可选)，默认情况下，cookie不被包含在CORS请求中，设置此字段为<code>true</code>表示包含cookie在请求中。这个字段需要和XMLHttpRequest2中的<code>withCredentials</code>属性配合保证成功。</li>
-<li><code>Access-Control-Expose-Headers</code>(可选)，XMLHttpRequest2的<code>getResponseHeader()</code>方法可以获取下面这些属性<ul>
-<li>Cache-Control</li>
-<li>Content-Language</li>
-<li>Content-Type</li>
-<li>Expires</li>
-<li>Last-Modified</li>
-<li>Pragma<br>如果想访问其他属性时，需要设置这个字段，属性间用逗号隔开。</li>
-</ul>
-</li>
-</ul>
-<p>当请求“没那么简单”时，比如徐需要使用PUT或DELETE，或是需要支持JSON的返回资源类型时，浏览器需要先发起一次<strong>prelight request</strong>。在收到服务器允许的回复后，真实的请求再发出。不过这个过程对于用户是透明的。下面是一个例子</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">"http://api.foo.com"</span>,</div><div class="line">    xhr = createCORSRequest(<span class="string">'PUT'</span>, url);</div><div class="line">xhr.setRequestHeader(<span class="string">'X-Custom-Header'</span>, <span class="string">'value'</span>);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure>
-<p><code>Prelight request</code>如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS /cors HTTP/1.1</div><div class="line">Origin: http://api.bar.com</div><div class="line">Access-Control-Request-Method: PUT</div><div class="line">Access-Control-Request-Headers: X-Custom-Header</div><div class="line">Host: api.foo.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0 ...</div></pre></td></tr></table></figure>
-<p>除了我们上面已经提过的<code>Origin</code>字段外，又新增了两个字段</p>
-<ul>
-<li><code>Access-Control-Request-Method</code> 真实的HTTP请求方法。是始终包含在包头的</li>
-<li><code>Access-Control-Request-Headers</code> 用逗号分隔的真实HTTP请求的包头。</li>
-</ul>
-<p>服务器接收到这些后，会根据方法和包头，结合<code>Origin</code>检验合法性。在验证合法后，返回<code>Prelight Response</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
-<p>它们的含义从名字中就可以推出一二</p>
-<ul>
-<li><code>Access-Control-Allow-Origin</code>(必须) 略</li>
-<li><code>Access-Control-Allow-Methods</code>(必须)，用逗号分隔的支持的HTTP方法列表。尽管可能请求中只写了一种方法。这么做避免了多次请求</li>
-<li><code>Access-Control-Allow-Headers</code> (若客户端填写对应的头部则为必须)，逗号分割的支持的所有头部类型</li>
-<li><code>Access-Control-Allow-Credentials</code>(可选) 略</li>
-<li><code>Access-Control-Max-Age</code>(可选)，<code>prelight response</code>的缓存时间，以秒为单位。</li>
-</ul>
-<p>在<code>Prelight request</code>和<code>Prelight response</code>交换完成后，就是真正的请求和响应。此时的请求头部可以带上之前商议中所允许的字段，大致像下面这样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">PUT /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Host: api.alice.com</div><div class="line">X-Custom-Header: value</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure>
-<p>当请求成功发出时，可以在响应头部看到CORS相关的字段，如<code>Access-Control-Allow-Origin</code>。请求失败时，会在console上报错，但不会给出具体信息。</p>
-<h3 id="CORS-from-jQuery"><a href="#CORS-from-jQuery" class="headerlink" title="CORS from jQuery"></a>CORS from jQuery</h3><p>关于使用jQuery发起CORS请求，可以参加后文<a href="#refer">参考</a>的第一条或jQuery相关文档。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span id="refer"></span></p>
-<ul>
-<li><a href="https://www.html5rocks.com/en/tutorials/cors/" target="_blank" rel="external">Using CORS</a></li>
-<li><a href="https://www.html5rocks.com/zh/tutorials/file/xhr2/" target="_blank" rel="external">XMLHttpRequest2 新技巧</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/13/project-habits/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/04/13/project-habits/" itemprop="url">提升项目可维护性的一些习惯</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T17:42:38+08:00">
-                2017-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/04/13/project-habits/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/13/project-habits/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/blog/images/poster/project-habits.jpeg" alt=""></p>
-<blockquote><p>软件生命周期中80%的成本消耗在了维护上</p>
-<footer><strong>《Java语言编码规范》</strong></footer></blockquote>
-<p>在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。</p>
-<h3 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h3><p><img src="/blog/images/editorconfig.png" alt=""></p>
-<p><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a>是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由<code>.editorconfig</code>自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。</p>
-<p>EditorConfig的语法类似<code>.gitignore</code>，比较好理解。下面是官网给出了规定Python和JavaScript文件格式的<code>.editorconfig</code>文件样例</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># EditorConfig is awesome: http://EditorConfig.org</div><div class="line"></div><div class="line"># top-most EditorConfig file</div><div class="line">root = true</div><div class="line"></div><div class="line"># Unix-style newlines with a newline ending every file</div><div class="line">[*]</div><div class="line">end_of_line = lf</div><div class="line">insert_final_newline = true</div><div class="line"></div><div class="line"># Matches multiple files with brace expansion notation</div><div class="line"># Set default charset</div><div class="line">[*.&#123;js,py&#125;]</div><div class="line">charset = utf-8</div><div class="line"></div><div class="line"># 4 space indentation</div><div class="line">[*.py]</div><div class="line">indent_style = space</div><div class="line">indent_size = 4</div><div class="line"></div><div class="line"># Tab indentation (no size specified)</div><div class="line">[Makefile]</div><div class="line">indent_style = tab</div><div class="line"></div><div class="line"># Indentation override for all JS under lib directory</div><div class="line">[lib/**.js]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div><div class="line"></div><div class="line"># Matches the exact files either package.json or .travis.yml</div><div class="line">[&#123;package.json,.travis.yml&#125;]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div></pre></td></tr></table></figure>
-<p>不过通常的项目用不到这么复杂的配置文件。<a href="https://github.com/angular/angular.js/blob/master/.editorconfig" target="_blank" rel="external">这里</a>是Angular的配置文件，<a href="https://github.com/vuejs/vue/blob/1.1/.editorconfig" target="_blank" rel="external">这里</a>是曾经Vue.js的配置文件。官网给出了完整的使用EditorConfig的<a href="https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig" target="_blank" rel="external">工程列表</a>。</p>
-<h4 id="存放位置"><a href="#存放位置" class="headerlink" title="存放位置"></a>存放位置</h4><p>打开一个文件时，EditorConfig插件会去打开文件的目录和其每一级父目录查找<code>.editorconfig</code>文件，直到有一个配置文件<code>root=true</code>。</p>
-<p>读取顺序从上到下，路径最短的文件最后被读取，优先级最高。</p>
-<h4 id="关于文件格式"><a href="#关于文件格式" class="headerlink" title="关于文件格式"></a>关于文件格式</h4><p>EditorConfig文件使用<a href="https://zh.wikipedia.org/wiki/INI%E6%96%87%E4%BB%B6" target="_blank" rel="external">INI格式</a>，目的是可以和<a href="https://docs.python.org/2/library/configparser.html" target="_blank" rel="external">Python Config Library</a>兼容。每个分段（原文：‘section’）由一个<a href="https://en.wikipedia.org/wiki/Glob_(programming" target="_blank" rel="external">globs</a>)开头。斜杠(<code>/</code>)作为路径分隔符，<code>#</code>或者<code>;</code>作为注释。注释应该单独占一行。EditorConfig文件使用UTF-8格式、CRLF或LF作为换行符。</p>
-<h5 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h5><p>EditorConfig目前支持下面这些通配符：</p>
-<ul>
-<li><code>*</code>    匹配除/之外的任意字符串</li>
-<li><code>**</code>    匹配任意字符串</li>
-<li><code>?</code>    匹配任意单个字符</li>
-<li><code>[name]</code>    匹配name字符</li>
-<li><code>[!name]</code>    匹配非name字符</li>
-<li><code>{s1,s3,s3}</code>    匹配任意给定的字符串（0.11.0起支持）</li>
-<li><code>{num1..num2}</code>匹配<em>num1</em>和<em>num2</em>间的整数</li>
-</ul>
-<p>最后特殊字符可以用<code>\</code>转义.</p>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>目前<a href="https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties" target="_blank" rel="external">普遍支持的属性</a>包括下面这些：</p>
-<ul>
-<li>root：表明是最顶层的配置文件，发现设为true时，才会停止查找.editorconfig文件。</li>
-<li>indent_style：可以选择tab或space</li>
-<li>indent_size：设置整数表示规定每级缩进的列数或空格数。如果设定为tab，则会使用tab_width的值（如果已指定）。</li>
-<li>tab_width：设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。</li>
-<li>end_of_line：定义换行符，支持lf、cr和crlf。</li>
-<li>charset：编码格式，支持latin1、utf-8、utf-8-bom、utf-16be和utf-16le，不建议使用uft-8-bom。</li>
-<li>trim_trailing_whitespace：设为true表示会除去换行行首的任意空白字符，false反之。</li>
-<li>insert_final_newline：设为true表明使文件以一个空白行结尾，false反之。</li>
-</ul>
-<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>目前已有大量的IDE或文本编辑器支持EditorConfig配置。有些不需要下载插件，有些则需要。详情可参见<a href="(http://editorconfig.org/">官网</a>。</p>
-<h3 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h3><p><a href="http://eslint.org/" target="_blank" rel="external">ESLint</a>是非常流行的一个JavaScript代码检查器。便于在运行前检查出代码中潜在的错误。它的作者是Nicholas Zakas，红宝书的作者。网站也有<a href="http://eslint.cn" target="_blank" rel="external">中译版</a>。</p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装eslint前，需要有node.js的环境，之后通过npm安装即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g eslint</div></pre></td></tr></table></figure>
-<p>当然也可以本地安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install eslint --save-dev</div></pre></td></tr></table></figure>
-<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>安装完成后，需要在项目目录下生成<code>.eslintrc</code>配置文件才可以使用<code>eslint</code>命令。这一步可以通过<code>eslint --init</code>按着引导完成，也可以根据自己需要修改。eslint推荐使用了一些规则，可以通过下面这样开启（<code>extends</code>的属性还可以是<code>all</code>，即启用所有规则，<strong>不推荐使用</strong>）：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"extends"</span>: [ <span class="string">"eslint:recommended"</span> ]</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>配置项里，还可以通过<code>env</code>指令<a href="http://eslint.cn/docs/user-guide/configuring#specifying-environments" target="_blank" rel="external">代码环境</a>，像下面这样：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"env"</span>: &#123;</div><div class="line">        <span class="attr">"browser"</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">"node"</span>: <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>同样，具体的<a href="http://eslint.cn/docs/rules/" target="_blank" rel="external">规则</a>也是可以配置的，每个规则的配置项都有一个默认值，规则键对应的值为数值时，是下面的意思</p>
-<ul>
-<li>0 Disable the rule</li>
-<li>1 Warn about the rule</li>
-<li>2 Throw error about the rule</li>
-</ul>
-<p>对应的值为数组时，则会更改规则配置项的原默认值，如下面例子中的<code>quote</code>规则：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "rules": &#123;</div><div class="line">        // 使用默认的分号规则，违背时会有警告消息</div><div class="line">        "semi": 1</div><div class="line">        // 使用双引号包裹字符串，违背是会抛出错误</div><div class="line">        "quotes": [2, "double"],</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>关于eslint的更多配置项，可参考<a href="http://eslint.cn/docs/user-guide/configuring" target="_blank" rel="external">官网</a>。</p>
-<p>若项目中使用到了ES6语法，则还需要安装<code>babel-eslint</code>包，并指定<code>.eslintrc</code>中<code>parser</code>和<code>parseOptions</code>两项。具体的配置大概是下面这样：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "extends": [ "eslint:recommended" ],</div><div class="line">    "parser": "babel-eslint",</div><div class="line">    "parserOptions": &#123;</div><div class="line">        ecmaVersion: 6</div><div class="line">    &#125;,</div><div class="line">  	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>ESLint 支持几种格式的配置文件：</p>
-<ul>
-<li>JavaScript - 使用<code>.eslintrc.js</code>然后输出一个配置对象。</li>
-<li>YAML - 使用<code>.eslintrc.yaml</code>或<code>.eslintrc.yml</code>去定义配置的结构。</li>
-<li>JSON - 使用<code>.eslintrc.json</code>去定义配置的结构ESLint的JSON文件允许JavaScript风格的注释。</li>
-<li>Deprecated - 使用<code>.eslintrc</code>，可以使JSON也可以是YAML。</li>
-<li>package.json - 在<code>package.json</code>里创建一个<code>eslintConfig</code>属性，在那里定义你的配置。</li>
-</ul>
-<p>如果同一个目录下有多个配置文件，ESLint只会使用一个，优先级是上面列表从上到下的顺序。</p>
-<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>可以在文件中书写注释在运行时更改eslint的配置（实际上几乎所有的配置项都可以在注释中通过<code>eslint-xxx</code>这样的形式修改）。</p>
-<p>当文件中出现已考虑到的规则例外时，可以通过<code>/*eslint quotes: [&quot;error&quot;, &quot;double&quot;]*/</code>或<code>/*eslint eqeqeq: 0, curly: 2*/</code>这样的形式临时添加例外。</p>
-<p>当文件出现不想被检测到的规则例外时，可以通过<code>/*eslint-disable*/</code>和<code>/*eslint-enable*/</code>避免警告。单行例外可以使用<code>/*eslint-disable-line*/</code>更详细的配置可以参见<a href="http://eslint.cn/docs/user-guide/configuring#disabling-rules-with-inline-comments" target="_blank" rel="external">文档</a>。</p>
-<h4 id="sublime插件"><a href="#sublime插件" class="headerlink" title="sublime插件"></a>sublime插件</h4><p>上面说的这些工作，在配置完成后，需要在命令行中通过<code>eslint xxx.file</code>这样的形式lint。借助编辑器的插件可以获得可视化的lint结果，妈妈再也不用担心我的找不到错误了（误）。因为个人原因，下面仅以sublime为例。</p>
-<p>下载eslint for sublime插件前，需要下载Sublime-Linter。因为前者利用了后者作为lint的平台。在<code>Ctrl+Shift+P</code>找到<code>Package Controll: Install Packages</code>后（什么？你没有装Package Control？），搜索Sublime-Linter下载安装即可。完成后，可以在<code>Prefences -&gt; Package Settings</code>或<code>Tools</code>选项卡中找到Sublime Linter的身影。</p>
-<p>之后同样的方式搜索Sublime-contrib-eslint下载安装即可。建议在安装前去<a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">官网</a>看看，避免遇到不必要的问题。</p>
-<p>这些工作完成后了，可以选择SublimeLinter的mode为load/save，之后在文件载入和保存时都会对文件进行lint操作，并将违背规则的地方标出。</p>
-<h3 id="Commit-message规范"><a href="#Commit-message规范" class="headerlink" title="Commit message规范"></a>Commit message规范</h3><p><img src="/blog/images/git-commit.png" alt=""></p>
-<p>git每次修改后需要填写commit message才能提交。这一步可以通过给<code>git commit</code>添加<code>-m</code>参数完成，像下面那样，也可以在<code>git commit</code>打开的vi界面下填写多行文本。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git commit -m <span class="string">'some commit message'</span></div></pre></td></tr></table></figure>
-<p>git并没有对commit message的风格做出规范，可以用中文，可以用英文，甚至当你不知道该写些什么的时候，还可以去某些<a href="http://whatthecommit.com/index.txt" target="_blank" rel="external">网站</a>参考。</p>
-<p>但是在团队协作中，还是建议清晰明了地书写此次commit的目的和做的修改。实际上，commit message规范这种事一直在做。比如<a href="https://eggjs.org/zh-cn/contributing.html#commit-提交规范" target="_blank" rel="external">egg.js</a>, <a href="https://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md" target="_blank" rel="external">Angular</a>或者更加简洁的规范：<a href="https://github.com/thoughtbot/dotfiles/blob/master/gitmessage" target="_blank" rel="external">这样</a>或<a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="external">这样</a>。其中Angular的规范应用较广，还有<a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">commitizen</a>工具帮助生成changelog和检查commit message样式。</p>
-<h5 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h5><p>根据Angular的规范，commmit message包括三个部分：<strong>Header</strong>, <strong>Body</strong>和<strong>Footer</strong>。其中Header是必需的，Body和Footer则不是。模板像下面这样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</div><div class="line">// 空行</div><div class="line">&lt;body&gt;</div><div class="line">// 空行</div><div class="line">&lt;footer&gt;</div></pre></td></tr></table></figure>
-<p>模板中，<strong>type</strong>为提交commit的类型，<strong>只有</strong>下面这些选择：</p>
-<ul>
-<li>feat: 新功能</li>
-<li>fix: 修复问题</li>
-<li>docs: 修改文档</li>
-<li>style: 修改代码格式，不影响代码逻辑</li>
-<li>refactor: 重构代码，理论上不影响现有功能</li>
-<li>perf: 提升性能</li>
-<li>test: 增加修改测试用例</li>
-<li>chore: 修改工具相关（包括但不限于文档、代码生成等）</li>
-<li>deps: 升级依赖</li>
-</ul>
-<p>其中前两种commit一定会出现在changelog中。</p>
-<p><strong>scope</strong>为修改文件的范围（包括但不限于doc, middleware, core, config, plugin）；<strong>subject</strong>用一句话清楚的描述这次提交做了什么，首字母小写；<strong>body</strong>作为subject的补充，增加原因和目的等具体内容，可以不写。</p>
-<p><strong>footer</strong>部分中，<strong>当有非兼容修改(Breaking Change)时必须在这里描述清楚</strong>，或者描述关联issue。下面是一个完整的例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9</div><div class="line">Older IEs serialize html uppercased, but IE9 does not...</div><div class="line">Would be better to expect case insensitive, unfortunately jasmine does</div><div class="line">not allow to user regexps for throw expectations.</div><div class="line">Document change on eggjs/egg#123</div><div class="line">Closes #392</div><div class="line">BREAKING CHANGE:</div><div class="line">  Breaks foo.bar api, foo.baz should be used instead</div></pre></td></tr></table></figure>
-<p>代码用于撤销此前commit所做修改时，message用revert开头，后面跟着被撤销commit的Header。像下面这样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">revert: feat(pencil): add &apos;graphiteWidth&apos; option</div><div class="line"></div><div class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</div></pre></td></tr></table></figure>
-<p>如果当前commit与被撤销的commit，在同一个发布（release）里面，那么它们都不会出现在Change log中。</p>
-<h5 id="Commitizen"><a href="#Commitizen" class="headerlink" title="Commitizen"></a>Commitizen</h5><p><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a>就是方便你做出上面提交的工具，可以通过npm安装。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g commitizen</div></pre></td></tr></table></figure>
-<p>安装完成后，使用<code>git cz</code>代替<code>git commit</code>命令来提交改动。之后会出现指引帮助你完成一次合格的提交。</p>
-<p><img src="/blog/images/commitizen.png" alt=""></p>
-<p>commitizen的插件cz-conventional-changelog可以帮助我们完成commit message，首先通过下面的命令安装并配置cz-conventional-changelog。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install -g cz-conventional-changelog</div><div class="line"><span class="built_in">echo</span> <span class="string">'&#123; "path": "cz-conventional-changelog" &#125;'</span> &gt; ~/.czrc</div></pre></td></tr></table></figure>
-<p>之后运行下面的命令即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</div></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a></li>
-<li><a href="http://eslint.cn" target="_blank" rel="external">ESLint中文站</a></li>
-<li><a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">roadhump/SublimeLinter-eslint: This linter plugin for SublimeLinter provides an interface to ESLint</a></li>
-<li><a href="http://jonathancreamer.com/setup-eslint-with-es6-in-sublime-text/" target="_blank" rel="external">Setup ESLint with ES6 in Sublime Text</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html" target="_blank" rel="external">Commit message 和 Change log 编写指南</a></li>
-<li><a href="https://eggjs.org/zh-cn/contributing.html" target="_blank" rel="external">egg.js代码贡献规范</a></li>
-<li><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1758,7 +1979,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1780,7 +2001,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">322</span>
+                <span class="site-state-item-count">325</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1849,7 +2070,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-"></i>
   </span>

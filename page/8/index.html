@@ -296,6 +296,740 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/09/13/http-intro-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/09/13/http-intro-note/" itemprop="url">《图解HTTP》整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-13T23:35:11+08:00">
+                2018-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/09/13/http-intro-note/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/09/13/http-intro-note/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>读完了《图解HTTP》，就算是对计算机网络和HTTP部分内容做了个温习吧。同步做了整理，以便加强记忆和后面回顾。</p>
+</blockquote>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>请求报文构成：</p>
+<ul>
+<li>方法</li>
+<li>URI（绝对或是相对）</li>
+<li>HTTP版本</li>
+<li>请求首部</li>
+<li>内容实体</li>
+</ul>
+<p>响应报文构成：</p>
+<ul>
+<li>HTTP版本号</li>
+<li>状态码</li>
+<li>状态码原语</li>
+<li>响应头部</li>
+<li>响应主体</li>
+</ul>
+<p>请求URI是服务器本身时，可以用<code>*</code>代替URI。</p>
+<p>可用的方法列表：</p>
+<ul>
+<li>GET 获取资源</li>
+<li>POST 传输信息</li>
+<li>PUT 传输文件，<strong>没有用户验证机制</strong>，很少用到</li>
+<li>DELETE 删除文件，同上，很少用到</li>
+<li>HEAD 获得响应头部，不返回主体</li>
+<li>OPTIONS 询问支持方法</li>
+<li>CONNECT 用来建立HTTPS连接的隧道</li>
+<li>TRACE 追踪路径上的所有服务器节点，很少用到</li>
+</ul>
+<p>其中后面三个是HTTP1.1才开始支持的。</p>
+<p><strong>持久化</strong></p>
+<p>在HTTP1.1后，HTTP建立的TCP连接默认是长连接（<code>keep-alive</code>），避免不必要的多次TCP握手和挥手。在此基础上，客户端可以同时向服务端发起多个资源请求。</p>
+<p><strong>状态化</strong></p>
+<p>HTTP本身是无状态的。通过cookie实现状态化，cookie通过服务端在响应头部的<code>set-cookie</code>字段下发，设置信息、使用范围、过期时间等内容。客户端在使用范围内的请求默认会携带上cookie信息。</p>
+<h2 id="HTTP报文结构"><a href="#HTTP报文结构" class="headerlink" title="HTTP报文结构"></a>HTTP报文结构</h2><ul>
+<li>请求首部和主体通过CR+LF分割开来</li>
+<li>报文编码<ul>
+<li>编码压缩<ul>
+<li>gzip （GNU zip）</li>
+<li>compress（UNIX compress）</li>
+<li>deflate（zlib）</li>
+<li>indentity（不压缩）</li>
+</ul>
+</li>
+<li>分块发送</li>
+<li>多部分发送（multipart）<ul>
+<li>multipart/form-data 表单文件上传，用boundary字符<code>--</code>表示新的part的开始</li>
+<li>multipart/byterange 配合206响应只包含了部分数据时使用</li>
+</ul>
+</li>
+<li>部分发送<ul>
+<li>Range指定字节范围</li>
+<li>206响应状态码</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>内容协商<ul>
+<li>双方就合适的语言、字符集、编码方式、过期时间进行协商</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h2><ul>
+<li>1xx 这一类型的状态码，代表请求已被接受，需要继续处理<ul>
+<li>100 Continue：客户端应当继续发送请求。</li>
+<li>101 Switching Protocals：将通过Upgrade消息头通知客户端采用不同的协议来完成这个请求。</li>
+</ul>
+</li>
+<li>2xx 成功：这一类型的状态码，代表请求已成功被服务器接收、理解、并接受。<ul>
+<li>200 OK：请求已成功，在方法时HEAD时不返回响应主体</li>
+<li>204 No Content：服务器成功处理了请求，但不需要返回任何实体内容，<strong>用户浏览器应保留发送了该请求的页面</strong></li>
+<li>205 Reset Content：和204的唯一不同是返回此状态码的响应要求请求者重置文档视图</li>
+<li>206 Partial Content：服务器已经成功处理了部分GET请求。请求必须包含Range头信息来指示客户端希望得到的内容范围，返回使用<code>Content-Range</code>多用于下载工具</li>
+</ul>
+</li>
+<li>3xx 重定向：这类状态码代表需要客户端采取进一步的操作才能完成请求。通常，这些状态码用来重定向，后续的请求地址在本次响应的Location域中指明。<ul>
+<li>300 Multiple Choices：被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。用户或浏览器能够自行选择一个首选的地址进行重定向。</li>
+<li>301 Moved Permanently：被请求的资源已永久移动到新位置，建议使用Location中的新地址</li>
+<li>302 Found：请求的资源现在临时从不同的URI响应请求</li>
+<li>303 See Other：和302的区别是，客户端<strong>应当采用GET的方式</strong>访问新的资源</li>
+<li>304 Not Modified：如果客户端发送了一个带条件（包括缓存相关的请求头部）的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变</li>
+<li>305 Use Proxy：被请求的资源必须通过指定的代理才能被访问</li>
+</ul>
+</li>
+<li>4xx 客户端错误：客户端发生了错误<ul>
+<li>400 Bad Request：由于包含语法错误，当前请求无法被服务器理解</li>
+<li>401 Unauthorized：当前请求需要用户验证，或用户未通过验证。</li>
+<li>403 Forbidden：服务器已经理解请求，但是拒绝执行它</li>
+<li>404 Not Found：资源未被在服务器上发现</li>
+<li>405 Method Not Allowed：请求行中指定的请求方法不能被用于请求相应的资源，响应中必须返回一个Allow头信息用以表示出当前资源能够接受的请求方法的列表</li>
+<li>406 Not Acceptable：请求的资源的内容特性无法满足请求头中的条件</li>
+<li>413 Request Entity Too Large</li>
+<li>414 Request-URI Too Long</li>
+</ul>
+</li>
+<li>5xx 服务器错误：服务器在处理请求的过程中有错误发生<ul>
+<li>500 Internal Server Error：这个问题会在服务器的代码出错时出现</li>
+<li>501 Not Implemented：服务器不支持当前请求所需要的某个功能</li>
+<li>502 Bad GateWay：作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应</li>
+<li>503 Service Unavailable：临时的服务器维护或者过载。这个状况是临时的，并且将在一段时间以后恢复。</li>
+<li>504 Gateway Timeout：作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器或者辅助服务器收到响应</li>
+</ul>
+</li>
+</ul>
+<h2 id="协作机制"><a href="#协作机制" class="headerlink" title="协作机制"></a>协作机制</h2><ul>
+<li>代理（Proxy），单纯转发HTTP请求，会在响应头部的<code>Via</code>字段留下痕迹</li>
+<li>网关（Gateway），隔绝服务器和客户端，有安全、计费等逻辑</li>
+<li>隧道（tunnel），基于协议搭建，保证传输安全，对用户侧透明</li>
+<li>缓存（Cache），本地、服务端二级缓存，加快响应时间，有过期时间</li>
+</ul>
+<h2 id="报文头部"><a href="#报文头部" class="headerlink" title="报文头部"></a>报文头部</h2><ul>
+<li>首部用来进行连接的各种信息描述。每个首部的字段用字段名和值组成，两者用<code>:</code>隔开。</li>
+<li>首部分为端到端和逐跳两类，前者在报文转发的整个过程都保留，后者在转发后就会丢弃。典型的逐条首部有<code>Connection</code>, <code>Keep-Alive</code>, <code>Transfer-Encoding</code>, <code>Upgrade</code>等</li>
+</ul>
+<h3 id="通用首部"><a href="#通用首部" class="headerlink" title="通用首部"></a>通用首部</h3><h4 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h4><p>客户端和服务端协商缓存机制。配合下面一些首部字段使用：</p>
+<ul>
+<li><code>Etag</code></li>
+<li><code>Last-Modified</code></li>
+<li><code>Expires</code>（HTTP1.0）</li>
+<li><code>Pragma</code>（HTTP1.0）</li>
+<li><code>Age</code>（HTTP1.0）</li>
+<li><code>If-None-Match</code></li>
+<li><code>If-Not-Modified-Since</code></li>
+</ul>
+<p><code>Cache-Control</code>有下面一些可配置项。</p>
+<p>缓冲能力上，</p>
+<ul>
+<li>private，缓存只针对当前用户而言</li>
+<li>public，缓存对所有用户生效</li>
+<li>no-cache，始终对缓存进行过期验证</li>
+<li>no-store，不允许缓存</li>
+</ul>
+<p>过期时间上，</p>
+<ul>
+<li>min-fresh，返回指定时间范围内的非过期资源</li>
+<li>max-stale，返回指定时间范围内过期、非过期资源</li>
+<li>max-age，单位：秒，最大缓存时间</li>
+<li>s-max-age，同上，只用于CDN缓存</li>
+</ul>
+<p>二次验证上，</p>
+<ul>
+<li>only-if-cached，强制从缓存服务器中获取内容</li>
+<li>immutable，一旦缓存不可更改</li>
+<li>must-revalidate，即使本地已缓存，仍要求检查CDN缓存</li>
+<li>proxy-revalidate，缓存服务器必须检查源内容是否改变</li>
+</ul>
+<h4 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h4><p>管理连接，主要有两个用途。</p>
+<ul>
+<li>指定不希望转发给代理的字段</li>
+<li>管理持久连接。使用<code>Connection: Keep-Alive</code>建立连接（HTTP1.1默认行为），使用<code>Connection: Close</code>终止连接</li>
+</ul>
+<h4 id="Date"><a href="#Date" class="headerlink" title="Date"></a>Date</h4><p>报文创建时间。行如“Date: Tue, 03 Jul 2012 04:31:12 GMT”</p>
+<h4 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a>Pragma</h4><p>历史遗留字段。<code>Pragma: no-cache</code>等同于<code>Cache-Control: no-cache</code>。</p>
+<p>除此外还有：</p>
+<ul>
+<li>Trailer，说明报文主体中记录的首部字段</li>
+<li>Transfer-Encoding，分段传输的主体编码</li>
+<li>Upgrade，切换协议，<strong>配合<code>Connection: Upgrade</code>使用</strong></li>
+<li>Via，标明沿途的整条路径</li>
+<li>Warning，缓存相关警告</li>
+</ul>
+<h3 id="请求首部"><a href="#请求首部" class="headerlink" title="请求首部"></a>请求首部</h3><ul>
+<li>Accept 接受文件的类型，类型间可以指定<code>q=x</code>表示权重值，x的取值在0到1之间。下同</li>
+<li>Accept-Charset 可以接受的文件字符集</li>
+<li>Accept-Encoding 可以接受的文件编码，有gzip，compress，deflate，indentity几种</li>
+<li>Accept-Language 可接受的语言</li>
+<li>Authorization 服务端需要的用户验证信息</li>
+<li>Age 从缓存实体产生到现在经历的时间</li>
+<li>Expect 期望的服务端返回状态码，服务端无法满足时返回417状态码，客户端等待服务端100响应时发送的请求都要带上该字段</li>
+<li>Host 服务器的主机名，通常是请求资源的URL</li>
+<li>If-Match 需要匹配的Etag，不满足时返回412，表示不满足条件</li>
+<li>If-Modified-Since 返回指定日期后的新内容，否则返回304</li>
+<li>If-Unmodified-Since 类似上</li>
+<li>If-Range 类似If-Match不过是范围匹配</li>
+<li>Max-Forwards 报文最多转发次数，通常配合TRACE方法使用</li>
+<li>Proxy-Authorization 代理服务端需要的用户验证信息</li>
+<li>Range 请求资源的部分内容，一般用在多线程下载（客户端发起）</li>
+<li>Referer 当前请求从哪个地址发起</li>
+<li>User-Agent 请求发起终端信息</li>
+</ul>
+<h3 id="响应首部"><a href="#响应首部" class="headerlink" title="响应首部"></a>响应首部</h3><ul>
+<li>Accept-Ranges，表示服务器是否支持Range请求，支持时值为bytes，否则是none</li>
+<li>Age，表示缓存到目前为止过了多久（HTTP1.0）</li>
+<li>Etag，资源的唯一标识，分为强Etag和弱Etag</li>
+<li>Location，用在3xx的请求中，表示客户端需要重定向到的新地址</li>
+<li>WWW-Authentication/Proxy-Authentication，服务器、代理使用的认证类型</li>
+<li>Server，服务器信息</li>
+<li>Vary，与Vary指定首部字段同名的请求才会命中缓存</li>
+</ul>
+<h3 id="实体首部"><a href="#实体首部" class="headerlink" title="实体首部"></a>实体首部</h3><ul>
+<li>Allow 允许的访问方法</li>
+<li>Content-Encoding/Content-Language/Content-Length/ 内容的编码、语言、长度、类型</li>
+<li>Content-Location 内容的位置，通常在和访问URI时会用到</li>
+<li>Content-MD5 内容MD5编码，便于和客户端编码后进行对比，防止内容篡改</li>
+<li>Content-Range 用于部分请求</li>
+<li>Content-Type 文件类型，包括MIME type和字符集</li>
+<li>Expires/Last-Modified 文件的过期时间和上次修改时间，用户判断缓存是否过期</li>
+</ul>
+<p>除此之外，还有和Cookie相关的两个头部，它们来自网景公司对于Cookie的设计。</p>
+<ul>
+<li>Set-Cookie，服务端下发设置Cookie信息。包含下列信息<ul>
+<li>expires，过期时间</li>
+<li>path，适用路径</li>
+<li>domain，适用域名</li>
+<li>secure，限制https才会携带Cookie</li>
+<li>HttpOnly，限制JS脚本访问Cookie</li>
+<li>下发的cookie内容</li>
+</ul>
+</li>
+<li>Cookie，客户端期望的cookie内容</li>
+</ul>
+<p>另外还有一些常用的首部字段：</p>
+<ul>
+<li>X-Frame-Options，规定页面在iframe中的呈现方式<ul>
+<li>DENY 禁止访问</li>
+<li>SAMEORIGIN 仅允许同源访问</li>
+</ul>
+</li>
+<li>X-XSS-Protection，为1时开启XSS防御</li>
+</ul>
+<p><strong>不建议使用”X-“开头的方式拓展非标准首部</strong>。 </p>
+<h2 id="HTTPS简介"><a href="#HTTPS简介" class="headerlink" title="HTTPS简介"></a>HTTPS简介</h2><p>HTTP缺点：</p>
+<ul>
+<li>使用明文 -&gt; 通信内容可以被窃听 –HTTPS–&gt; 加密通信内容</li>
+<li>不能验证身份 -&gt; DDoS攻击和伪装服务器、客户端身份 –HTTPS–&gt; 证书证明身份</li>
+<li>不能验证内容完整性 -&gt; 中间人攻击 –HTTPS–&gt; HTTPS保证完整性</li>
+</ul>
+<p>HTTPS特征：</p>
+<ul>
+<li>加密内容</li>
+<li>证书</li>
+<li>完整性保护</li>
+</ul>
+<p>HTTPS建立在SSL连接之上，SSL建立在TCP连接上。SSL使用共享秘钥和公开秘钥加密两种方式混合加密。在秘钥确保安全的情况下，使用共享秘钥对称加密，优化速度；否则使用公开秘钥确保安全性。</p>
+<ul>
+<li>共享秘钥，双方使用同一秘钥加密和解密，秘钥被监听后加密就失去了意义</li>
+<li>公开秘钥，使用公开秘钥加密，使用私有秘钥解密</li>
+</ul>
+<p>然而公开密钥本身并不能确保完整性，需要证书机构（CA）颁发证书认证，确保秘钥和端的有效以及合法性。服务端也可以使用OpenSSL为自己颁发自认证证书，但是一般会在浏览器上弹出警告。</p>
+<p>HTTPS建立连接的过程包括：</p>
+<ol>
+<li>协商决定秘钥组件</li>
+<li>服务端发送公开密钥、证书</li>
+<li>客户端检查证书合法性，以确认服务端身份，并拿到公钥</li>
+<li>客户端发送pre-master secret随机字符串</li>
+<li>服务端使用私钥加密pre-master secret hash值，返回加密的hash值（避免黑客尝试破解私钥）</li>
+<li>客户端使用公钥解密hash，对比自己之前生成的pre-master secret字符串hash，若一致，及证明服务端身份的合法性</li>
+<li>客户端生成一个对称加密算法和秘钥master-secret，使用公钥加密，发送给服务端</li>
+<li>双方使用master-secret进行通信</li>
+</ol>
+<p>通信的完整性可以通过将报文内容生成hash交由客户端验证来实现。</p>
+<p>SSL最初由网景开发，1.0和2.0版本被发现存在问题已被废弃。3.0后由IETF接手。目前可用的协议版本有SSL3.0和TLS1.0、TLS1.1、TLS1.2，其中最常用的是SSL3.0和TLS1.0。</p>
+<p><strong>证书</strong></p>
+<p>证书包含：</p>
+<ul>
+<li>发布机构（CA）</li>
+<li>有效期</li>
+<li>持有者（由CA担保证明持有者身份）</li>
+<li>公钥</li>
+<li>数字签名算法</li>
+<li>指纹算法</li>
+</ul>
+<p>为了保证安全，在证书的发布机构发布证书时，证书的指纹和指纹算法，都会用自己的私钥加密后再和证书放到一起发布。使用者在打开证书时，根据加密算法，系统使用自带的公钥解密指纹和指纹算法，使用指纹算法计算证书的hash值和指纹对比，如果对的上就代表证书没问题。系统使用的公钥和证书一般由证书发布机构自己生成，内嵌在操作系统中。</p>
+<p>证书颁发机构（CA）通常会去做很多工作确保持有者的合法性，信任CA代表着信任CA颁发证书中的所有信息。所以一般系统只选择信誉较好的CA机构。公司内部使用或自生成的证书就只能被在指定范围内被信任。</p>
+<h2 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h2><ul>
+<li>BASIC 使用用户名密码验证，明文传输</li>
+<li>DIGEST 质询响应，防止密码被拦截，安全度和便利性都较差</li>
+<li>SSL 客户端证书 + HTTPS传输，成本高</li>
+<li>HTTP表单 + Cookie/Session验证</li>
+</ul>
+<h2 id="功能追加协议"><a href="#功能追加协议" class="headerlink" title="功能追加协议"></a>功能追加协议</h2><p><strong>WebSocket</strong></p>
+<p>全双工，解决Ajax，长短轮询的局限。握手过程很简单：</p>
+<ul>
+<li>请求方添加<code>Upgrade</code>首部字段，声明升级到websocket。包含Sec-WebSocket-Key，Sec-WebSocket-Protocol，Sec-WebSocket-Verison等必要字段</li>
+<li>响应方回复101状态码，包含Sec-WebSocket-Accept（是根据Sec-WebSocket-Key生成的），Sec-WebSocket-Protocol</li>
+</ul>
+<p>连接建立后，双方使用WebSocket的方式进行通信</p>
+<p><strong>WebDAV</strong></p>
+<p>基于Web的文件属性管理。新增了一些方法和状态码，允许客户端远程修改服务器上的文件。</p>
+<h2 id="Web应用"><a href="#Web应用" class="headerlink" title="Web应用"></a>Web应用</h2><p><strong>RSS</strong></p>
+<p>RDF Site Summary，简易内容聚合。和Atom一样，使用XML的形式发布信息，通过特定的RSS阅读器阅读。</p>
+<h2 id="常见Web攻击方式"><a href="#常见Web攻击方式" class="headerlink" title="常见Web攻击方式"></a>常见Web攻击方式</h2><p>根本原因：HTTP本身没有必要的安全机制。</p>
+<h3 id="输出值转义相关攻击方式"><a href="#输出值转义相关攻击方式" class="headerlink" title="输出值转义相关攻击方式"></a>输出值转义相关攻击方式</h3><ul>
+<li>XSS，跨站脚本攻击，主要出现在<strong>动态拼接HTML</strong>的场景中，用户恶意注入的script代码段埋下陷阱，诱导用户误操作触发。盗取用户密码或Cookie信息</li>
+<li>SQL注入，通过URL注入的方式，制造恶意SQL语句，出现在<strong>动态拼接SQL语句</strong>的场景下。可以绕过认证、甚至破坏整个数据库</li>
+<li>OS命令注入，类似SQL注入，出现在<strong>动态拼接OS语句</strong>的场景下。</li>
+<li>HTTP首部攻击，出现在服务端响应头部使用了用户侧输入场景下，比如302响应中的Location头部可能存在的query部分。攻击者可以通过添加换行符，恶意添加新的首部字段，甚至篡改原有的响应主体</li>
+<li>邮箱首部注入攻击，类似HTTP首部攻击</li>
+</ul>
+<p>类似地还有目录遍历漏洞、远程文件引用漏洞。</p>
+<p>通过上面几种攻击方式，可以看到，<strong>永远不要信任用户侧输入</strong>，<strong>使用白名单机制，禁止动态拼接用户输入的语句</strong>。</p>
+<h3 id="设计缺陷相关攻击方式"><a href="#设计缺陷相关攻击方式" class="headerlink" title="设计缺陷相关攻击方式"></a>设计缺陷相关攻击方式</h3><ul>
+<li>强制浏览，在服务器公开目录下，浏览开发者本非自愿公开的文件。</li>
+<li>不正确的系统错误处理方式，数据库等内部系统抛出的错误，对用户毫无帮助，反倒能让攻击者看到服务背后的一些细节。包括，数据库错误、PHP等脚本错误、Web服务器的错误</li>
+<li>开放重定向，网站有诸如<code>?redirect=xxx</code>的path可以重定向时，一定要对redirect后的网址进行白名单控制，防止成为钓鱼攻击的跳板</li>
+</ul>
+<h3 id="session相关"><a href="#session相关" class="headerlink" title="session相关"></a>session相关</h3><ul>
+<li>XSS盗取cookie，伪装用户登录</li>
+<li>发送恶意链接，强制用户使用攻击者指定的session ID</li>
+<li>CSRF，跨站信息伪造，在带有用户信息的domain里留下恶意的网络请求，伪造用户发起请求，伪造请求可以通过<code>&lt;img src=&quot;xx&quot; /&gt;</code>, <code>&lt;video src=&quot;xxx&gt;&lt;/video&gt;</code>等多种形式</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>穷举法破解密码，暴力破解。使用图片验证码、手机验证码、机器检测等方式限制同IP的访问频率。<ul>
+<li>彩虹表。使用salt，增加破解难度</li>
+</ul>
+</li>
+<li>撞库。建议用户在不同域内使用不一样的密码</li>
+<li>点击劫持，使用透明元素覆盖在目标网页上。在18+网页中最常出现（😂）。</li>
+<li>DoS（Denial of Service）拒绝服务攻击，构造大量合法的网络请求，导致服务器超负荷。通常都是DDoS（Distributed Denial of Service）的形式。需要在IP层去过滤攻击的IP。</li>
+<li>后门程序</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/09/02/dont-make-me-think-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/09/02/dont-make-me-think-note/" itemprop="url">《Don't make me think》 笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-02T23:46:37+08:00">
+                2018-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/设计/" itemprop="url" rel="index">
+                    <span itemprop="name">设计</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/09/02/dont-make-me-think-note/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/09/02/dont-make-me-think-note/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>原版链接: <a href="https://book.douban.com/subject/25820714/" target="_blank" rel="external">https://book.douban.com/subject/25820714/</a></p>
+</blockquote>
+<h2 id="准则"><a href="#准则" class="headerlink" title="准则"></a>准则</h2><ul>
+<li>减少用户思考</li>
+<li>减少用户心理负担</li>
+</ul>
+<p>原因： 用户时间有限，界面必须易于理解</p>
+<h2 id="用户的使用方法"><a href="#用户的使用方法" class="headerlink" title="用户的使用方法"></a>用户的使用方法</h2><ul>
+<li>82原则，只扫描感兴趣的</li>
+<li>用户只寻求一个可行而非最优的答案</li>
+<li>用户并不关心产品如何运作，会按照某个可用的方式一直使用下去</li>
+</ul>
+<h2 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h2><ul>
+<li>利用习惯性思维，包括页面位置、使用方法、元素外观这些被培养起来的习惯。如无必要，勿增实体。</li>
+<li>层次分明，逻辑上的关联能从视觉上直接体现；能够划分区域</li>
+<li>明确标识可交互元素；提高信噪比，减少不必要视觉干扰</li>
+<li>标题更靠近关联的内容，突出关键词汇</li>
+<li>减少冗余文本，包括欢迎语、指示文字</li>
+</ul>
+<h2 id="Web导航"><a href="#Web导航" class="headerlink" title="Web导航"></a>Web导航</h2><p>重要性：</p>
+<ul>
+<li>用户在web中感受不到方位</li>
+<li>用户需要更快地达成目标</li>
+</ul>
+<p>习惯用法：</p>
+<ul>
+<li>导航部分（或是某些公用部分）固定出现在页面同样位置，会让用户能<strong>立即确认</strong>自己还处在这个网站里<ul>
+<li>在<strong>市场类应用</strong>里，包括站点ID、栏目、实用工具、搜索</li>
+</ul>
+</li>
+<li>站点ID需要有独特可区分的设计</li>
+<li>一个返回首页的导航链接</li>
+<li>简洁明了的搜索框<ul>
+<li>简单的按钮文案</li>
+<li>减少无用的提示文字</li>
+<li>明确可能的搜索选项（如果有的话）</li>
+</ul>
+</li>
+<li>每个页面需要有个名字（保留意见）<ul>
+<li>合适位置</li>
+<li>引人注目</li>
+<li>和链接保持尽量一致</li>
+</ul>
+</li>
+<li>明确告诉用户“我在哪儿”<ul>
+<li>面包屑</li>
+<li>tab</li>
+</ul>
+</li>
+<li>上述元素主要的原因：<strong>现实生活中，用户并不会按照设计师规划好的路径访问网页，可能会来自分享链接、搜索引擎，并不能保证从入口进入。要能让用户在任意一个页面都可以清楚明白它要完成某项任务的话，应该如何使用当前这个网页。</strong></li>
+</ul>
+<h2 id="吸引用户时需要注意的地方"><a href="#吸引用户时需要注意的地方" class="headerlink" title="吸引用户时需要注意的地方"></a>吸引用户时需要注意的地方</h2><p>主页要能传达整体印象。必须能显而易见地直截了当地明白：</p>
+<ul>
+<li>这是什么网站</li>
+<li>我能在里面做什么</li>
+<li>网站里有什么</li>
+<li>为什么选择这个网站</li>
+</ul>
+<p>在用户弄清楚这些问题的最初几秒甚至是最初几毫秒，是决定你能否留住他的关键（晕轮效应）。而且因为上面加粗字体的原因，你可能要在主页外的其他页面也保证这一点。</p>
+<p>一些手段：</p>
+<ul>
+<li>靠近站点ID的简洁的slogan</li>
+<li>一些推介语</li>
+<li>以明确主张为目标占用空间</li>
+<li>在描述使命时保证坦诚</li>
+<li>ab test和数据说话</li>
+</ul>
+<p>好口号和好的站点ID一样，是非常重要的。它需要至少有下面几点特征：</p>
+<ul>
+<li>清晰简洁、言之有物</li>
+<li>明确产品特色与优势，最好是只有你能适用，别的产品都用不了的那种</li>
+<li>最好能再个性、俏皮一点</li>
+</ul>
+<p>当然你们公司足够出名的话，上面这些就当不存在就行。</p>
+<p>接下来的任务就是，告诉用户该<strong>从哪里开始</strong>和避免滥用首页推介。</p>
+<h2 id="怎样减少信仰讨论"><a href="#怎样减少信仰讨论" class="headerlink" title="怎样减少信仰讨论"></a>怎样减少信仰讨论</h2><ul>
+<li>避免关于个人喜好的讨论（如：“我不喜欢下拉框”）</li>
+<li>针对场景，根据经验选择（如：“我认为这种场景下不适合下拉框”）</li>
+<li><strong>充分测试，数据说话反哺经验</strong></li>
+</ul>
+<h2 id="如何进行可用性测试"><a href="#如何进行可用性测试" class="headerlink" title="如何进行可用性测试"></a>如何进行可用性测试</h2><p><em>当下的互联网公司迭代速度之快，可能并没有时间做这方面的研究。</em></p>
+<p>区分开焦点测试（类似于种子用户，听取他们的使用感受和反馈）和可用性测试。</p>
+<ul>
+<li>焦点测试在早期阶段</li>
+<li>可用性测试持续进行</li>
+<li>周期性（比如一个月）进行可行性测试</li>
+<li>暴露严重问题，因为团队可能并没有资源解决所有问题</li>
+<li>应该有个主持人</li>
+</ul>
+<p>最有可能的测试流程：</p>
+<ul>
+<li>介绍部分</li>
+<li>简单的提问部分，了解测试者的背景</li>
+<li>简单的主页浏览，询问感受</li>
+<li>完成测试任务</li>
+<li>问题询问</li>
+</ul>
+<p>典型的问题:</p>
+<ul>
+<li>用户不清楚概念</li>
+<li>用户找不到想要的字眼</li>
+<li>内容太多了</li>
+</ul>
+<h2 id="移动时代带来的挑战"><a href="#移动时代带来的挑战" class="headerlink" title="移动时代带来的挑战"></a>移动时代带来的挑战</h2><ul>
+<li>狭小空间的约束<ul>
+<li>用户需要立即完成或经常重复的工作应该一样就能看到</li>
+<li>其他的事情应该轻点几下就能完成，而且有显而易见的路径到达</li>
+</ul>
+</li>
+<li><strong>兼容多平台的UI解决银弹是很难的</strong></li>
+<li>在UI上给用户足够的按钮，比如一个有着三维样式闪着光的按钮</li>
+<li>意识到没有光标了</li>
+<li>应用最好能“让人快乐”</li>
+<li>移动应用尤其需要<strong>可学习</strong>，然后是<strong>可记忆</strong></li>
+</ul>
+<h2 id="用户的好感度"><a href="#用户的好感度" class="headerlink" title="用户的好感度"></a>用户的好感度</h2><p>降低好感度的几种方式</p>
+<ul>
+<li>隐藏用户想要的信息</li>
+<li>对用户交互不宽容</li>
+<li>询问用户过多信息</li>
+<li>敷衍用户</li>
+<li>看上去不专业</li>
+</ul>
+<p>如何提升好感度</p>
+<ul>
+<li>知道用户想要什么</li>
+<li>简明易懂</li>
+<li>看上去花了心思</li>
+<li>知道用户的可能问题，并给予解释</li>
+<li>提高鲁棒性</li>
+</ul>
+<h2 id="如何说服你的老板推进可用性"><a href="#如何说服你的老板推进可用性" class="headerlink" title="如何说服你的老板推进可用性"></a>如何说服你的老板推进可用性</h2><p>略</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/08/16/git-workflow/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -917,414 +1651,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/06/26/canvas-flowchart-compare/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/06/26/canvas-flowchart-compare/" itemprop="url">流程图JS实现方案对比</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-26T21:09:27+08:00">
-                2018-06-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/06/26/canvas-flowchart-compare/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/26/canvas-flowchart-compare/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>实现流程图和类流程图的工具主要需要解决<strong>数据 -&gt; 图形</strong>和<strong>交互</strong>两方面问题。在实现图形元素时也有canvas，SVG，canvas with DOM，SVG with DOM，DOM with canvas一些实现方式。</p>
-<p>canvas和SVG的实现方式区别比较明显：</p>
-<ul>
-<li>大规模元素、频繁重绘上，canvas完胜</li>
-<li>强调光影效果上，canvas小胜</li>
-<li>强调导出图片上，canvas小胜</li>
-<li>强调元素可交互上，SVG完胜</li>
-<li>强调画图元素可缩放上，SVG完胜</li>
-</ul>
-<p>使用SVG实现时，元素规模大以及频繁重绘时会出现卡顿现象，在大规模元素场景下交互也会有卡顿。使用canvas实现时，保证流程图元素的可交互性将成为头疼的难题，开发者需要自己模拟浏览器的一部分行为。</p>
-<p>下面是一些流程图实现基础的对比。</p>
-<h2 id="d3"><a href="#d3" class="headerlink" title="d3"></a>d3</h2><p>d3着眼在数据可视化，重点在使用不同layout组织数据，完成可视化。</p>
-<p>d3最初是天然支持SVG的，这点从类jQuery的API也能看出来。d3和canvas的结合上，绘制需要<a href="https://bl.ocks.org/mbostock/1276463" target="_blank" rel="external">额外的data binding</a>操作，周期性地将虚拟的DOM节点映射到canvas上，重绘得到下一帧画面。要实现canvas可交互的话也需要一些<a href="https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444" target="_blank" rel="external">hack的手段</a>。基于d3实现流程图并不划算。</p>
-<h2 id="zrender"><a href="#zrender" class="headerlink" title="zrender"></a>zrender</h2><p>zrender是一个canvas画图的基础库。它并不负责数据的组织和渲染，需要自己完成这一部分工作。但是zrender提供了让canvas可交互的重要功能。</p>
-<p>zrender下，mixin了Eventful特性的元素上可以监听交互事件。Eventful只是为元素提供了类似EventEmitter的功能。真正实现元素可交互的handler。</p>
-<p>handler内会拦截发生在canvas内的<code>click</code>/<code>mousedown</code>/<code>mouseup</code>/<code>mousewheel</code>/<code>dblclick</code>/<code>contextmenu</code>事件，交予prototype内对应的处理方法处理，handler内有下面几个关键方法：</p>
-<ul>
-<li><code>mousemove</code>，监听canvas内mousemove事件，调用<code>findHover</code>得到当前位置对应的元素，根据情况调用<code>dispatchToElement</code>方法，分发<code>mouseout</code>，<code>mouseover</code>，<code>mousemove</code>给刚才得到的元素实例</li>
-<li><code>dispatchToElement</code>，分发事件到对应实例，将事件对象封装，trigger实例的对应事件handler，并通过<code>el.parent</code>向上冒泡</li>
-<li><code>findHover</code>，指定x, y坐标寻找该坐标位置的元素。从storage中拿到所有的displayable的list。挨个调用<code>isHover</code>判断displayable和[x, y]坐标的关系</li>
-<li><code>isHover</code>函数，根据displayable的rectHover属性，即是否使用包围盒检测鼠标进入。调用displayable的<code>rectContain</code>或<code>contain</code>检测是否在其中。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isHover</span>(<span class="params">displayable, x, y</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (displayable[displayable.rectHover ? <span class="string">'rectContain'</span> : <span class="string">'contain'</span>](x, y)) &#123;</div><div class="line">        <span class="keyword">var</span> el = displayable;</div><div class="line">        <span class="keyword">var</span> isSilent;</div><div class="line">        <span class="keyword">while</span> (el) &#123;</div><div class="line">            <span class="comment">// If clipped by ancestor.</span></div><div class="line">            <span class="comment">// <span class="doctag">FIXME:</span> If clipPath has neither stroke nor fill,</span></div><div class="line">            <span class="comment">// el.clipPath.contain(x, y) will always return false.</span></div><div class="line">            <span class="keyword">if</span> (el.clipPath &amp;&amp; !el.clipPath.contain(x, y))  &#123;</div><div class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (el.silent) &#123;</div><div class="line">                isSilent = <span class="literal">true</span>;</div><div class="line">            &#125;</div><div class="line">            el = el.parent;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> isSilent ? SILENT : <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>先简单看下storage，因为zrender里绘制的元素之间没有逻辑关联，因此需要有一个全局存储storage去统一管理加入的Group或Shape。storage的<code>getDisplayList</code>方法返回所有图形的绘制队列。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">getDisplayList: <span class="function"><span class="keyword">function</span> (<span class="params">update, includeIgnore</span>) </span>&#123;</div><div class="line">    includeIgnore = includeIgnore || <span class="literal">false</span>;</div><div class="line">    <span class="keyword">if</span> (update) &#123;</div><div class="line">        <span class="keyword">this</span>.updateDisplayList(includeIgnore);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._displayList;</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
-<p><em>注：方法中提到的<code>updateDisplayList</code>用于更新图形的绘制队列，在每次绘制前调用，它会深度优先遍历整个树，更新所有的变换后，根据优先级排序得到新的绘制队列。</em></p>
-<p>在displayable的基类中，<code>contain</code>方法只是单纯调用了<code>rectContain</code>（子类都有区别于<code>rectContain</code>的自己的实现）。在<code>rectContain</code>中，获取到坐标相对于图形的坐标（<code>transformCoordToLocal</code>）和图形的包围盒（<code>getBoundingRect</code>）。这里先说简单的<code>RectContain</code>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rectContain: <span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> coord = <span class="keyword">this</span>.transformCoordToLocal(x, y);</div><div class="line">    <span class="keyword">var</span> rect = <span class="keyword">this</span>.getBoundingRect();</div><div class="line">    <span class="keyword">return</span> rect.contain(coord[<span class="number">0</span>], coord[<span class="number">1</span>]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>其中<code>getBoundingRect</code>是各自类自己实现的。除了个别情况，如Text，形状都基于Path类。在Path的<code>getBoundingRect</code>中可以看到，path的绘制又额外包装了一层<code>PathProxy</code>，<code>getBoundingRect</code>也是使用的<code>PathProxy</code>的方法。在实现上，PathProxy把绘制路径的操作命令拆分成了命令数组。通过记录每一段子路径上x、y的最大最小值，再将所有这些极值比较得到最后的最值。在PathProxy返回结果后，根据描边粗细得到最终结果。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">getBoundingRect: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// _rect变量做缓存用，计算完成后只在重绘时置空，避免重复计算</span></div><div class="line">    <span class="keyword">var</span> rect = <span class="keyword">this</span>._rect;</div><div class="line">    <span class="keyword">var</span> style = <span class="keyword">this</span>.style;</div><div class="line">    <span class="keyword">var</span> needsUpdateRect = !rect;</div><div class="line">    <span class="keyword">if</span> (needsUpdateRect) &#123;</div><div class="line">        <span class="keyword">var</span> path = <span class="keyword">this</span>.path;</div><div class="line">        <span class="keyword">if</span> (!path) &#123;</div><div class="line">            <span class="comment">// Create path on demand.</span></div><div class="line">            path = <span class="keyword">this</span>.path = <span class="keyword">new</span> PathProxy();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.__dirtyPath) &#123;</div><div class="line">            path.beginPath();</div><div class="line">            <span class="keyword">this</span>.buildPath(path, <span class="keyword">this</span>.shape, <span class="literal">false</span>);</div><div class="line">        &#125;</div><div class="line">        rect = path.getBoundingRect();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">this</span>._rect = rect;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (style.hasStroke()) &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line"></div><div class="line">        <span class="comment">// Return rect with stroke</span></div><div class="line">        <span class="keyword">return</span> rectWithStroke;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> rect;</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
-<p><code>Displayable</code>继承自<code>Element</code>，<code>Element</code>通过mixin得到来自<code>Transformable</code>中的<code>transformCoordToLocal</code>方法。这里要说到，zrender中元素和Group都有一个构造时的初始位置，而后的所有变化都是作为transform叠加在元素上的。例如拖拽元素对应的是“原始位置 + transform”而不是一个“新位置”。</p>
-<p>在每次变换后，<code>Transformable</code>中的<code>updateTransform</code>方法都会调用，设置自身<code>invTransform</code>属性为这次变化的逆矩阵。在<code>transformCoordToLocal</code>中对向量[x, y]应用这个逆矩阵即可得到点相对于当前形状的位置（可以理解成将点逆变换到形状变换前的位置）。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">transformableProto.updateTransform = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line"></div><div class="line">    m = m || matrix.create();</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="comment">// 保存这个变换矩阵</span></div><div class="line">    <span class="keyword">this</span>.transform = m;</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="keyword">this</span>.invTransform = <span class="keyword">this</span>.invTransform || matrix.create();</div><div class="line">    matrix.invert(<span class="keyword">this</span>.invTransform, m);</div><div class="line">&#125;;</div><div class="line"><span class="comment">// ...</span></div><div class="line">transformableProto.transformCoordToLocal = <span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> v2 = [x, y];</div><div class="line">    <span class="keyword">var</span> invTransform = <span class="keyword">this</span>.invTransform;</div><div class="line">    <span class="keyword">if</span> (invTransform) &#123;</div><div class="line">        vector.applyTransform(v2, v2, invTransform);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> v2;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>综合这两个方法即可判断点是否在某元素的包围盒中。</p>
-<p>判断<code>contain</code>时，首先需要满足<code>rectContain</code>的关系。之后根据描边和填充情况，执行<code>contain/path</code>下对应的<code>contain</code>或<code>containStroke</code>方法。前者实际上是后者stroke为0时的特殊情况。除了path外，可以判断点是否在元素图形内的所有元素在<code>contain</code>下都有对应文件。基本所有的包含都可以转化为指定闭合路径是否包含指定点的问题。</p>
-<p>zrender利用<a href="https://en.wikipedia.org/wiki/Point_in_polygon" target="_blank" rel="external">PIP</a>（point-in-polygon）问题<a href="https://www.quora.com/How-do-I-know-a-point-is-inside-a-closed-curve-or-not#" target="_blank" rel="external">winding number</a>的解法判断点是否在path中；canvas提供的API中也有<code>isPointInPath</code>和<code>isPointInStroke</code>，不过只能针对当前的path。</p>
-<p>综上，zrender可以实现canvas内的元素和交互。</p>
-<h2 id="g6"><a href="#g6" class="headerlink" title="g6"></a>g6</h2><p>g6是antv的一部分，是一个canvas实现的展示关系型数据的JS可视化库。使用canvas的原因应该也在展示大量数据和重绘上更流畅。</p>
-<p>使用canvas实现时，g6一样会遇到zrender遇到的实现元素可交互的难题。从处理event的event.js中能看到，关联事件和元素的实现在<code>_getEventObj</code>处完成，剩下的步骤只是额外的封装操作：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">Util.each(MouseEventTypes, item =&gt; &#123;</div><div class="line">    _events.push(Util.addEventListener(el, item, ev =&gt; &#123;</div><div class="line">        <span class="keyword">const</span> oldEventObj = <span class="keyword">this</span>._currentEventObj;</div><div class="line">        <span class="keyword">this</span>._oldEventObj = oldEventObj;</div><div class="line">        <span class="keyword">this</span>._processEventObj(ev);</div><div class="line">        <span class="keyword">const</span> currentEventObj = <span class="keyword">this</span>._currentEventObj;</div><div class="line"></div><div class="line">        <span class="comment">// ...</span></div><div class="line">        &#125;</div><div class="line">    &#125;));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">_processEventObj(ev) &#123;</div><div class="line">    <span class="keyword">const</span> graph = <span class="keyword">this</span>.graph;</div><div class="line">    <span class="keyword">const</span> canvas = graph.get(<span class="string">'_canvas'</span>);</div><div class="line">    <span class="keyword">const</span> frontCanvas = graph.get(<span class="string">'_frontCanvas'</span>);</div><div class="line">    <span class="keyword">const</span> evObj = <span class="keyword">this</span>._getEventObj(ev, canvas);</div><div class="line">    <span class="keyword">const</span> frontEvObj = <span class="keyword">this</span>._getEventObj(ev, frontCanvas);</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">_getEventObj(ev, canvas) &#123;</div><div class="line">    <span class="keyword">const</span> graph = <span class="keyword">this</span>.graph;</div><div class="line">    <span class="keyword">const</span> clientX = ev.clientX;</div><div class="line">    <span class="keyword">const</span> clientY = ev.clientY;</div><div class="line">    <span class="keyword">const</span> canvasPoint = canvas.getPointByClient(clientX, clientY);</div><div class="line">    <span class="keyword">const</span> point = <span class="keyword">this</span>._parsePoint(canvasPoint.x, canvasPoint.y); <span class="comment">// 根据pixel ratio做一个转换</span></div><div class="line">    <span class="keyword">const</span> shape = canvas.getShape(canvasPoint.x, canvasPoint.y);</div><div class="line">    <span class="keyword">const</span> item = graph.getItemByShape(shape);</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>p.s. 另说一点，frontCanvas的作用是绘制拖拽状态中的元素和辅助线等信息。</p>
-<p>最关键的方法<code>getPointByClient</code>和<code>getShape</code>来自Graph的<code>canvas</code>属性，这个属性通过’@antv/g’（G2）的canvas构造得来。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> G = <span class="built_in">require</span>(<span class="string">'@antv/g'</span>);</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">const</span> Canvas = G.Canvas;</div></pre></td></tr></table></figure>
-<p>在G2中，Canvas继承自Group，可以认为Canvas本身已经扮演了根节点的角色。Canvas判断坐标对应元素的方法<code>getShape(x,y)</code>也来自Group。此方法遍历Group下所有元素（包括单个元素或Group），判断点[x, y]是否在范围内：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">find</span>(<span class="params">children, x, y</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> rst;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = children.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</div><div class="line">    <span class="keyword">const</span> child = children[i];</div><div class="line">    <span class="keyword">if</span> (child.__cfg.visible &amp;&amp; child.__cfg.capture) &#123;</div><div class="line">      <span class="comment">// 是Group就继续向下寻找</span></div><div class="line">      <span class="keyword">if</span> (child.isGroup) &#123;</div><div class="line">        rst = child.getShape(x, y);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (child.isHit(x, y)) &#123;</div><div class="line">        rst = child;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (rst) &#123;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> rst;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>关键的<code>child.isHit</code>方法类似zrender里的<code>contain</code>方法。区别使用包围盒还是自身范围判断。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">isHit(x, y) &#123;</div><div class="line">    <span class="keyword">const</span> self = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">const</span> v = [ x, y, <span class="number">1</span> ];</div><div class="line">    self.invert(v); <span class="comment">// canvas</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (self.isHitBox()) &#123;</div><div class="line">        <span class="keyword">const</span> box = self.getBBox();</div><div class="line">        <span class="keyword">if</span> (box &amp;&amp; !Inside.box(box.minX, box.maxX, box.minY, box.maxY, v[<span class="number">0</span>], v[<span class="number">1</span>])) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> clip = self.__attrs.clip;</div><div class="line">    <span class="keyword">if</span> (clip) &#123;</div><div class="line">        <span class="keyword">if</span> (clip.inside(x, y)) &#123;</div><div class="line">            <span class="keyword">return</span> self.isPointInPath(v[<span class="number">0</span>], v[<span class="number">1</span>]);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> self.isPointInPath(v[<span class="number">0</span>], v[<span class="number">1</span>]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用包围盒时用<code>getBBox()</code>判断，类似zrender；否则使用<code>isPointInPath</code>。这点上g2不同，它只对特殊的闭合曲线如圆、矩形、贝塞尔曲线等等进行自己的实现。对一般性的path，直接使用上面提到的canvas的API来判断。</p>
-<h2 id="processOn"><a href="#processOn" class="headerlink" title="processOn"></a>processOn</h2><p>processOn严格意义上是一个产品，类似于在线的visio，编辑很流畅。使用DOM + canvas实现。具体来说：</p>
-<ul>
-<li>DOM绘制每个元素占位，响应交互</li>
-<li>canvas绘制每个DOM内的图形本身</li>
-</ul>
-<p>这么做的好处在有二：1. 天然解决了元素交互的问题；2. 更平滑的元素拖拽效果。</p>
-<p>类似的还有jsPlumb这样的使用SVG的方案，使用SVG的优势体现在交互更容易实现。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/23/some-tips-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/05/23/some-tips-2/" itemprop="url">工作中的遇到的一些小知识 2</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T23:12:30+08:00">
-                2018-05-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/05/23/some-tips-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/05/23/some-tips-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一个合法检测的Validator"><a href="#一个合法检测的Validator" class="headerlink" title="一个合法检测的Validator"></a>一个合法检测的Validator</h2><p>合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> TYPE_VALIDATE_MESSAGE = &#123;</div><div class="line">    <span class="attr">isNumber</span>: <span class="string">'不是一个数字'</span>,</div><div class="line">    <span class="attr">isObject</span>: <span class="string">'不是一个对象'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="string">'不是一个数组'</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="string">'数值过大'</span>,</div><div class="line">    <span class="attr">gt</span>: <span class="string">'数值过小'</span>,</div><div class="line">    <span class="attr">st</span>: <span class="string">'长度过短'</span>,</div><div class="line">    <span class="attr">ht</span>: <span class="string">'长度过长'</span></div><div class="line">    notEmpty: <span class="string">'需要非空'</span>,</div><div class="line">    <span class="attr">len</span>: <span class="string">'长度不合规范'</span>,</div><div class="line">    <span class="attr">in</span>: <span class="string">'不在可选范围内'</span>,</div><div class="line">    <span class="attr">reg</span>: <span class="string">'无法匹配指定模式'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 供validate使用</span></div><div class="line">util.test = &#123;</div><div class="line">    <span class="attr">isObject</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Object</span>(_) === _,</div><div class="line">    <span class="attr">isNumber</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="keyword">typeof</span> _ == <span class="string">'number'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Array</span>.isArray(_),</div><div class="line">    <span class="attr">notEmpty</span>: <span class="function"><span class="params">_</span> =&gt;</span> _.length &gt; <span class="number">0</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &lt; limit,</div><div class="line">    <span class="attr">gt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &gt; limit,</div><div class="line">    <span class="attr">st</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &lt; limit,</div><div class="line">    <span class="attr">ht</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &gt; limit,</div><div class="line">    <span class="attr">in</span>: <span class="function">(<span class="params">_, range</span>) =&gt;</span> ~range.indexOf(_),</div><div class="line">    <span class="attr">len</span>: <span class="function">(<span class="params">_, length</span>) =&gt;</span> _.length === length,</div><div class="line">    <span class="attr">reg</span>: <span class="function">(<span class="params">_, reg</span>) =&gt;</span> reg.test(_)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 数据校验</div><div class="line"> * @author: shenlvmeng</div><div class="line"> * @params value &#123;any&#125; 校验数值 输入单个数值使用verify校验 输入对象使用verifyMap校验</div><div class="line"> * @method verify 校验单个数值</div><div class="line"> * @method verifyMap 校验对象</div><div class="line"> * @return &#123;Object&#125; 包含success和message的对象</div><div class="line"> */</div><div class="line">util.validate = <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 方便传递到外界修改</span></div><div class="line">    <span class="keyword">let</span> message = &#123; <span class="attr">content</span>: <span class="string">''</span> &#125;;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">verify</span>(<span class="params">val, validators, key</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(validators)) validators = [validators];</div><div class="line">        <span class="keyword">return</span> validators.every(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</div><div class="line">            <span class="keyword">let</span> isRight;</div><div class="line">            <span class="keyword">if</span> (util.test.isObject(v)) &#123;</div><div class="line">                isRight = util.test[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]](val, <span class="built_in">Object</span>.values(v)[<span class="number">0</span>])</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]]&#125;</span>`</span>);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                isRight = util.test[v](val);</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[v]&#125;</span>`</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> isRight;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 单个数值使用</div><div class="line">         * @params validators &#123; String|Array|Object &#125; 校验函数 必须是util中已定义的函数</div><div class="line">         * @params String 类型时为函数名; Object类型时为函数名和对应入参; Array时为以上的列表 </div><div class="line">         */</div><div class="line">        verify(validators) &#123;</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: verify(value, validators),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 校验整个对象时使用</div><div class="line">         * @params config &#123; Object &#125; 校验函数 针对Object中每个key的校验</div><div class="line">         * @params 每个key的value服从verify的格式，当key为function类型时交给调用方自己处理</div><div class="line">         */</div><div class="line">        verifyMap(config) &#123;</div><div class="line">            <span class="keyword">if</span> (!util.test.isObject(value)) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Invalid value type. It should be an Object.'</span>);</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: <span class="built_in">Object</span>.keys(config).every(<span class="function"><span class="params">key</span> =&gt;</span> (</div><div class="line">                    <span class="keyword">typeof</span> config[key] === <span class="string">'function'</span> ? config[key](value[key], message)</div><div class="line">                    : verify(value[key], config[key], key))</div><div class="line">                ),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>实际应用中发现，<code>verifyMap</code>方法用的比较多。使用样例如下;</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">examine() &#123;</div><div class="line">    <span class="keyword">return</span> util.validate(formData).verifyMap(&#123;</div><div class="line">        <span class="attr">userName</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">password</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">age</span>: [<span class="string">'isNumber'</span>, &#123; <span class="attr">lt</span>: <span class="number">18</span> &#125;],</div><div class="line">        <span class="attr">gender</span>: &#123;<span class="attr">in</span>: [<span class="string">'male'</span>, <span class="string">'female'</span>]&#125;,</div><div class="line">        <span class="attr">email</span>: &#123;<span class="string">'reg'</span>: <span class="regexp">/email pattern/</span>&#125;,</div><div class="line">        <span class="attr">isAccepted</span>: <span class="function">(<span class="params">value, message</span>) =&gt;</span> value ? value : (message.content = <span class="string">'请接收用户协议'</span>, <span class="literal">false</span>)</div><div class="line">    &#125;);</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
-<h2 id="Linux清理大文件"><a href="#Linux清理大文件" class="headerlink" title="Linux清理大文件"></a>Linux清理大文件</h2><ul>
-<li><code>df -h</code>查看存储情况</li>
-<li><code>du -sh * | grep G</code>查找当前目录下大于1G的大文件，挨个确认删除即可</li>
-</ul>
-<h2 id="当前页面窗口活动状态检查"><a href="#当前页面窗口活动状态检查" class="headerlink" title="当前页面窗口活动状态检查"></a>当前页面窗口活动状态检查</h2><p>利用<code>visibilityChange</code>API，配合<code>visibilityState</code>检查窗口状态。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// subscribe to visibility change events</span></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'visibilitychange'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// fires when user switches tabs, apps, goes to homescreen, etc.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'hidden'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = <span class="string">'Baby, Come Back!'</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// fires when app transitions from prerender, user returns to the app / tab.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'visible'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = defaultTitle;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><p>监测页面元素和视口的交错关系的DOM API，目前浏览器支持度不高。可以用来方便地实现懒加载和页面无限滚动。</p>
-<p><a href="http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html" target="_blank" rel="external">参考</a></p>
-<h2 id="图种"><a href="#图种" class="headerlink" title="图种"></a>图种</h2><ul>
-<li>Windows，<code>copy /b image.jpg+zip.rar output.jpg</code>，更改输出图片后缀为rar得到压缩包</li>
-<li>Linux，<code>cat image.jpg zip.rar &gt; output.jpg</code>，同上</li>
-</ul>
-<h2 id="draggable-with-Vue"><a href="#draggable-with-Vue" class="headerlink" title="draggable with Vue"></a>draggable with Vue</h2><p>业务中有拖拽需求，在试用多个轮子后，最终选择了<a href="https://jexordexan.github.io/vue-slicksort/?selectedKind=Vertical%20sorting&amp;selectedStory=Simple%20list&amp;full=0&amp;addons=1&amp;stories=1&amp;panelRight=0&amp;addonPanel=storybook%2Factions%2Factions-panel" target="_blank" rel="external">vue-slicksort</a></p>
-<ul>
-<li>Vue Draggable</li>
-<li>Vue Dragula</li>
-<li>Vue slicksort</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>GitHub名</th>
-<th>流行度</th>
-<th>依赖/原理</th>
-<th>功能完善度</th>
-<th>文档完善度</th>
-<th>使用舒适度</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>vuedraggable</td>
-<td>star数3859，很流行</td>
-<td>依赖sortable.js，后者依赖HTML5的draggable API</td>
-<td>功能丰富强大，有很多别人踩过的坑</td>
-<td>文档比较丰富</td>
-<td>通过组件包裹形式使用 侵入性小 优</td>
-<td>有兼容性问题，Chrome66.0.3359.181 Mac OSX 10.13.1下无法通过拖动换位</td>
-</tr>
-<tr>
-<td>vue-dragula</td>
-<td>star数100+，上次更新1年前</td>
-<td>依赖dragula.js</td>
-<td>功能一般</td>
-<td>不完善，几乎都是dragula的API</td>
-<td>通过<code>Vue.use</code>的形式 + directives的方式引入，侵入式一般</td>
-<td>使用效果不好，实现时没有拖动和移动的动效</td>
-</tr>
-<tr>
-<td>vue-slicksort</td>
-<td>star数100+，更新较活跃</td>
-<td>0依赖，不基于HTML5 drag API，支持触摸屏，兼容性好</td>
-<td>功能一般，支持平面拖动</td>
-<td>较完善，有样例、API解释和FAQ</td>
-<td>略糟糕，需要使用mixin的形式，通常意味着额外的组件定义</td>
-<td>展示效果优秀，能满足需求</td>
-</tr>
-</tbody>
-</table>
-<p>综上，考虑到只有vue-slicksort能满足需求，故选择之。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1375,7 +1701,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1397,7 +1723,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">322</span>
+                <span class="site-state-item-count">325</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1466,7 +1792,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-"></i>
   </span>
