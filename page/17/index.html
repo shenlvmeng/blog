@@ -296,6 +296,966 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/13/project-habits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/13/project-habits/" itemprop="url">提升项目可维护性的一些习惯</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T17:42:38+08:00">
+                2017-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/13/project-habits/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/13/project-habits/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/blog/images/poster/project-habits.jpeg" alt=""></p>
+<blockquote><p>软件生命周期中80%的成本消耗在了维护上</p>
+<footer><strong>《Java语言编码规范》</strong></footer></blockquote>
+<p>在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。</p>
+<h3 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h3><p><img src="/blog/images/editorconfig.png" alt=""></p>
+<p><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a>是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由<code>.editorconfig</code>自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。</p>
+<p>EditorConfig的语法类似<code>.gitignore</code>，比较好理解。下面是官网给出了规定Python和JavaScript文件格式的<code>.editorconfig</code>文件样例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># EditorConfig is awesome: http://EditorConfig.org</div><div class="line"></div><div class="line"># top-most EditorConfig file</div><div class="line">root = true</div><div class="line"></div><div class="line"># Unix-style newlines with a newline ending every file</div><div class="line">[*]</div><div class="line">end_of_line = lf</div><div class="line">insert_final_newline = true</div><div class="line"></div><div class="line"># Matches multiple files with brace expansion notation</div><div class="line"># Set default charset</div><div class="line">[*.&#123;js,py&#125;]</div><div class="line">charset = utf-8</div><div class="line"></div><div class="line"># 4 space indentation</div><div class="line">[*.py]</div><div class="line">indent_style = space</div><div class="line">indent_size = 4</div><div class="line"></div><div class="line"># Tab indentation (no size specified)</div><div class="line">[Makefile]</div><div class="line">indent_style = tab</div><div class="line"></div><div class="line"># Indentation override for all JS under lib directory</div><div class="line">[lib/**.js]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div><div class="line"></div><div class="line"># Matches the exact files either package.json or .travis.yml</div><div class="line">[&#123;package.json,.travis.yml&#125;]</div><div class="line">indent_style = space</div><div class="line">indent_size = 2</div></pre></td></tr></table></figure>
+<p>不过通常的项目用不到这么复杂的配置文件。<a href="https://github.com/angular/angular.js/blob/master/.editorconfig" target="_blank" rel="external">这里</a>是Angular的配置文件，<a href="https://github.com/vuejs/vue/blob/1.1/.editorconfig" target="_blank" rel="external">这里</a>是曾经Vue.js的配置文件。官网给出了完整的使用EditorConfig的<a href="https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig" target="_blank" rel="external">工程列表</a>。</p>
+<h4 id="存放位置"><a href="#存放位置" class="headerlink" title="存放位置"></a>存放位置</h4><p>打开一个文件时，EditorConfig插件会去打开文件的目录和其每一级父目录查找<code>.editorconfig</code>文件，直到有一个配置文件<code>root=true</code>。</p>
+<p>读取顺序从上到下，路径最短的文件最后被读取，优先级最高。</p>
+<h4 id="关于文件格式"><a href="#关于文件格式" class="headerlink" title="关于文件格式"></a>关于文件格式</h4><p>EditorConfig文件使用<a href="https://zh.wikipedia.org/wiki/INI%E6%96%87%E4%BB%B6" target="_blank" rel="external">INI格式</a>，目的是可以和<a href="https://docs.python.org/2/library/configparser.html" target="_blank" rel="external">Python Config Library</a>兼容。每个分段（原文：‘section’）由一个<a href="https://en.wikipedia.org/wiki/Glob_(programming" target="_blank" rel="external">globs</a>)开头。斜杠(<code>/</code>)作为路径分隔符，<code>#</code>或者<code>;</code>作为注释。注释应该单独占一行。EditorConfig文件使用UTF-8格式、CRLF或LF作为换行符。</p>
+<h5 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h5><p>EditorConfig目前支持下面这些通配符：</p>
+<ul>
+<li><code>*</code>    匹配除/之外的任意字符串</li>
+<li><code>**</code>    匹配任意字符串</li>
+<li><code>?</code>    匹配任意单个字符</li>
+<li><code>[name]</code>    匹配name字符</li>
+<li><code>[!name]</code>    匹配非name字符</li>
+<li><code>{s1,s3,s3}</code>    匹配任意给定的字符串（0.11.0起支持）</li>
+<li><code>{num1..num2}</code>匹配<em>num1</em>和<em>num2</em>间的整数</li>
+</ul>
+<p>最后特殊字符可以用<code>\</code>转义.</p>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>目前<a href="https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties" target="_blank" rel="external">普遍支持的属性</a>包括下面这些：</p>
+<ul>
+<li>root：表明是最顶层的配置文件，发现设为true时，才会停止查找.editorconfig文件。</li>
+<li>indent_style：可以选择tab或space</li>
+<li>indent_size：设置整数表示规定每级缩进的列数或空格数。如果设定为tab，则会使用tab_width的值（如果已指定）。</li>
+<li>tab_width：设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。</li>
+<li>end_of_line：定义换行符，支持lf、cr和crlf。</li>
+<li>charset：编码格式，支持latin1、utf-8、utf-8-bom、utf-16be和utf-16le，不建议使用uft-8-bom。</li>
+<li>trim_trailing_whitespace：设为true表示会除去换行行首的任意空白字符，false反之。</li>
+<li>insert_final_newline：设为true表明使文件以一个空白行结尾，false反之。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>目前已有大量的IDE或文本编辑器支持EditorConfig配置。有些不需要下载插件，有些则需要。详情可参见<a href="(http://editorconfig.org/">官网</a>。</p>
+<h3 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h3><p><a href="http://eslint.org/" target="_blank" rel="external">ESLint</a>是非常流行的一个JavaScript代码检查器。便于在运行前检查出代码中潜在的错误。它的作者是Nicholas Zakas，红宝书的作者。网站也有<a href="http://eslint.cn" target="_blank" rel="external">中译版</a>。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装eslint前，需要有node.js的环境，之后通过npm安装即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g eslint</div></pre></td></tr></table></figure>
+<p>当然也可以本地安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install eslint --save-dev</div></pre></td></tr></table></figure>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>安装完成后，需要在项目目录下生成<code>.eslintrc</code>配置文件才可以使用<code>eslint</code>命令。这一步可以通过<code>eslint --init</code>按着引导完成，也可以根据自己需要修改。eslint推荐使用了一些规则，可以通过下面这样开启（<code>extends</code>的属性还可以是<code>all</code>，即启用所有规则，<strong>不推荐使用</strong>）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"extends"</span>: [ <span class="string">"eslint:recommended"</span> ]</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置项里，还可以通过<code>env</code>指令<a href="http://eslint.cn/docs/user-guide/configuring#specifying-environments" target="_blank" rel="external">代码环境</a>，像下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"env"</span>: &#123;</div><div class="line">        <span class="attr">"browser"</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">"node"</span>: <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同样，具体的<a href="http://eslint.cn/docs/rules/" target="_blank" rel="external">规则</a>也是可以配置的，每个规则的配置项都有一个默认值，规则键对应的值为数值时，是下面的意思</p>
+<ul>
+<li>0 Disable the rule</li>
+<li>1 Warn about the rule</li>
+<li>2 Throw error about the rule</li>
+</ul>
+<p>对应的值为数组时，则会更改规则配置项的原默认值，如下面例子中的<code>quote</code>规则：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "rules": &#123;</div><div class="line">        // 使用默认的分号规则，违背时会有警告消息</div><div class="line">        "semi": 1</div><div class="line">        // 使用双引号包裹字符串，违背是会抛出错误</div><div class="line">        "quotes": [2, "double"],</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>关于eslint的更多配置项，可参考<a href="http://eslint.cn/docs/user-guide/configuring" target="_blank" rel="external">官网</a>。</p>
+<p>若项目中使用到了ES6语法，则还需要安装<code>babel-eslint</code>包，并指定<code>.eslintrc</code>中<code>parser</code>和<code>parseOptions</code>两项。具体的配置大概是下面这样：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "extends": [ "eslint:recommended" ],</div><div class="line">    "parser": "babel-eslint",</div><div class="line">    "parserOptions": &#123;</div><div class="line">        ecmaVersion: 6</div><div class="line">    &#125;,</div><div class="line">  	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ESLint 支持几种格式的配置文件：</p>
+<ul>
+<li>JavaScript - 使用<code>.eslintrc.js</code>然后输出一个配置对象。</li>
+<li>YAML - 使用<code>.eslintrc.yaml</code>或<code>.eslintrc.yml</code>去定义配置的结构。</li>
+<li>JSON - 使用<code>.eslintrc.json</code>去定义配置的结构ESLint的JSON文件允许JavaScript风格的注释。</li>
+<li>Deprecated - 使用<code>.eslintrc</code>，可以使JSON也可以是YAML。</li>
+<li>package.json - 在<code>package.json</code>里创建一个<code>eslintConfig</code>属性，在那里定义你的配置。</li>
+</ul>
+<p>如果同一个目录下有多个配置文件，ESLint只会使用一个，优先级是上面列表从上到下的顺序。</p>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>可以在文件中书写注释在运行时更改eslint的配置（实际上几乎所有的配置项都可以在注释中通过<code>eslint-xxx</code>这样的形式修改）。</p>
+<p>当文件中出现已考虑到的规则例外时，可以通过<code>/*eslint quotes: [&quot;error&quot;, &quot;double&quot;]*/</code>或<code>/*eslint eqeqeq: 0, curly: 2*/</code>这样的形式临时添加例外。</p>
+<p>当文件出现不想被检测到的规则例外时，可以通过<code>/*eslint-disable*/</code>和<code>/*eslint-enable*/</code>避免警告。单行例外可以使用<code>/*eslint-disable-line*/</code>更详细的配置可以参见<a href="http://eslint.cn/docs/user-guide/configuring#disabling-rules-with-inline-comments" target="_blank" rel="external">文档</a>。</p>
+<h4 id="sublime插件"><a href="#sublime插件" class="headerlink" title="sublime插件"></a>sublime插件</h4><p>上面说的这些工作，在配置完成后，需要在命令行中通过<code>eslint xxx.file</code>这样的形式lint。借助编辑器的插件可以获得可视化的lint结果，妈妈再也不用担心我的找不到错误了（误）。因为个人原因，下面仅以sublime为例。</p>
+<p>下载eslint for sublime插件前，需要下载Sublime-Linter。因为前者利用了后者作为lint的平台。在<code>Ctrl+Shift+P</code>找到<code>Package Controll: Install Packages</code>后（什么？你没有装Package Control？），搜索Sublime-Linter下载安装即可。完成后，可以在<code>Prefences -&gt; Package Settings</code>或<code>Tools</code>选项卡中找到Sublime Linter的身影。</p>
+<p>之后同样的方式搜索Sublime-contrib-eslint下载安装即可。建议在安装前去<a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">官网</a>看看，避免遇到不必要的问题。</p>
+<p>这些工作完成后了，可以选择SublimeLinter的mode为load/save，之后在文件载入和保存时都会对文件进行lint操作，并将违背规则的地方标出。</p>
+<h3 id="Commit-message规范"><a href="#Commit-message规范" class="headerlink" title="Commit message规范"></a>Commit message规范</h3><p><img src="/blog/images/git-commit.png" alt=""></p>
+<p>git每次修改后需要填写commit message才能提交。这一步可以通过给<code>git commit</code>添加<code>-m</code>参数完成，像下面那样，也可以在<code>git commit</code>打开的vi界面下填写多行文本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git commit -m <span class="string">'some commit message'</span></div></pre></td></tr></table></figure>
+<p>git并没有对commit message的风格做出规范，可以用中文，可以用英文，甚至当你不知道该写些什么的时候，还可以去某些<a href="http://whatthecommit.com/index.txt" target="_blank" rel="external">网站</a>参考。</p>
+<p>但是在团队协作中，还是建议清晰明了地书写此次commit的目的和做的修改。实际上，commit message规范这种事一直在做。比如<a href="https://eggjs.org/zh-cn/contributing.html#commit-提交规范" target="_blank" rel="external">egg.js</a>, <a href="https://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md" target="_blank" rel="external">Angular</a>或者更加简洁的规范：<a href="https://github.com/thoughtbot/dotfiles/blob/master/gitmessage" target="_blank" rel="external">这样</a>或<a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="external">这样</a>。其中Angular的规范应用较广，还有<a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">commitizen</a>工具帮助生成changelog和检查commit message样式。</p>
+<h5 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h5><p>根据Angular的规范，commmit message包括三个部分：<strong>Header</strong>, <strong>Body</strong>和<strong>Footer</strong>。其中Header是必需的，Body和Footer则不是。模板像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</div><div class="line">// 空行</div><div class="line">&lt;body&gt;</div><div class="line">// 空行</div><div class="line">&lt;footer&gt;</div></pre></td></tr></table></figure>
+<p>模板中，<strong>type</strong>为提交commit的类型，<strong>只有</strong>下面这些选择：</p>
+<ul>
+<li>feat: 新功能</li>
+<li>fix: 修复问题</li>
+<li>docs: 修改文档</li>
+<li>style: 修改代码格式，不影响代码逻辑</li>
+<li>refactor: 重构代码，理论上不影响现有功能</li>
+<li>perf: 提升性能</li>
+<li>test: 增加修改测试用例</li>
+<li>chore: 修改工具相关（包括但不限于文档、代码生成等）</li>
+<li>deps: 升级依赖</li>
+</ul>
+<p>其中前两种commit一定会出现在changelog中。</p>
+<p><strong>scope</strong>为修改文件的范围（包括但不限于doc, middleware, core, config, plugin）；<strong>subject</strong>用一句话清楚的描述这次提交做了什么，首字母小写；<strong>body</strong>作为subject的补充，增加原因和目的等具体内容，可以不写。</p>
+<p><strong>footer</strong>部分中，<strong>当有非兼容修改(Breaking Change)时必须在这里描述清楚</strong>，或者描述关联issue。下面是一个完整的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9</div><div class="line">Older IEs serialize html uppercased, but IE9 does not...</div><div class="line">Would be better to expect case insensitive, unfortunately jasmine does</div><div class="line">not allow to user regexps for throw expectations.</div><div class="line">Document change on eggjs/egg#123</div><div class="line">Closes #392</div><div class="line">BREAKING CHANGE:</div><div class="line">  Breaks foo.bar api, foo.baz should be used instead</div></pre></td></tr></table></figure>
+<p>代码用于撤销此前commit所做修改时，message用revert开头，后面跟着被撤销commit的Header。像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">revert: feat(pencil): add &apos;graphiteWidth&apos; option</div><div class="line"></div><div class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</div></pre></td></tr></table></figure>
+<p>如果当前commit与被撤销的commit，在同一个发布（release）里面，那么它们都不会出现在Change log中。</p>
+<h5 id="Commitizen"><a href="#Commitizen" class="headerlink" title="Commitizen"></a>Commitizen</h5><p><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a>就是方便你做出上面提交的工具，可以通过npm安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g commitizen</div></pre></td></tr></table></figure>
+<p>安装完成后，使用<code>git cz</code>代替<code>git commit</code>命令来提交改动。之后会出现指引帮助你完成一次合格的提交。</p>
+<p><img src="/blog/images/commitizen.png" alt=""></p>
+<p>commitizen的插件cz-conventional-changelog可以帮助我们完成commit message，首先通过下面的命令安装并配置cz-conventional-changelog。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install -g cz-conventional-changelog</div><div class="line"><span class="built_in">echo</span> <span class="string">'&#123; "path": "cz-conventional-changelog" &#125;'</span> &gt; ~/.czrc</div></pre></td></tr></table></figure>
+<p>之后运行下面的命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://editorconfig.org/" target="_blank" rel="external">EditorConfig</a></li>
+<li><a href="http://eslint.cn" target="_blank" rel="external">ESLint中文站</a></li>
+<li><a href="https://github.com/roadhump/SublimeLinter-eslint" target="_blank" rel="external">roadhump/SublimeLinter-eslint: This linter plugin for SublimeLinter provides an interface to ESLint</a></li>
+<li><a href="http://jonathancreamer.com/setup-eslint-with-es6-in-sublime-text/" target="_blank" rel="external">Setup ESLint with ES6 in Sublime Text</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html" target="_blank" rel="external">Commit message 和 Change log 编写指南</a></li>
+<li><a href="https://eggjs.org/zh-cn/contributing.html" target="_blank" rel="external">egg.js代码贡献规范</a></li>
+<li><a href="http://commitizen.github.io/cz-cli/" target="_blank" rel="external">Commitizen</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/11/how-browsers-work-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/11/how-browsers-work-2/" itemprop="url">浏览器是如何工作的 下 布局与绘制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T20:44:04+08:00">
+                2017-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/11/how-browsers-work-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/11/how-browsers-work-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>上篇传送门：<a href="https://shenlvmeng.github.io/blog/2017/04/10/how-browsers-work-1/" target="_blank" rel="external">浏览器是如何工作的 上 解析与呈现</a></p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要翻译于Tali Garsiel在2009年10月的一篇介绍Webkit和Gecko内核的经典文章<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">How browsers work</a>。尽管在面试和工作上用不到这么细节，但是学习浏览器的内部原理将让我们可以更好地理解一些最优开发实践的道理。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>呈现器在创建完成并添加到呈现树时，并不包含位置和大小信息。计算这些值的过程称为布局或重排。</p>
+<p>HTML 采用基于流的布局模型，这意味着大多数情况下只要一次遍历就能计算出几何信息。处于流中靠后位置元素通常不会影响靠前位置元素的几何特征，因此布局可以按从左至右、从上至下的顺序遍历文档。但是也有例外情况，比如<a href="https://developer.mozilla.org/en/docs/Notes_on_HTML_Reflow" target="_blank" rel="external">HTML表格的计算</a>就需要不止一次的遍历。</p>
+<p>布局是一个递归的过程。它从根呈现器（对应于HTML文档的<code>&lt;html&gt;</code>元素）开始，然后递归遍历部分或所有的框架层次结构，为每一个需要计算的呈现器计算几何信息。</p>
+<p>根呈现器的位置是0,0，其尺寸为视口（也就是浏览器窗口的可见区域）。所有的呈现器都有一个<code>layout</code>或者<code>reflow</code>方法，每一个呈现器都会调用其需要进行布局的子代的<code>layout</code>方法。</p>
+<h4 id="Dirty-Bit系统"><a href="#Dirty-Bit系统" class="headerlink" title="Dirty Bit系统"></a>Dirty Bit系统</h4><p>为避免对所有细小更改都进行整体布局，浏览器采用了一种<strong>dirty bit</strong>系统。如果某个呈现器发生了更改，或者将自身及其子代标注为dirty，则需要进行布局。</p>
+<p>有两种标记：<code>dirty</code>和<code>children are dirty</code>。<code>children are dirty</code>表示尽管呈现器自身没有变化，但它至少有一个子代需要布局。</p>
+<h4 id="全局与增量布局"><a href="#全局与增量布局" class="headerlink" title="全局与增量布局"></a>全局与增量布局</h4><p>全局布局是指触发了整个呈现树范围的布局，触发原因可能包括：</p>
+<ul>
+<li>影响所有呈现器的全局样式更改，例如字体大小更改（因此<a href="https://shenlvmeng.github.io/blog/2017/04/06/mobile-uiue-experience/" target="_blank" rel="external">这里</a>提到的自适应JavaScript代码一定要放在<code>body</code>前，否则会有白屏闪动现象出现）。</li>
+<li>屏幕大小调整，即<code>resize</code>事件。</li>
+</ul>
+<p>增量布局是指只对dirty呈现器进行布局（这样可能存在需要进行额外布局的弊端）。当呈现器为 dirty 时，会异步触发增量布局。例如，当来自网络的额外内容添加到 DOM 树之后，新的呈现器附加到了呈现树中。</p>
+<p><img src="/blog/images/browser/reflow.png" alt=""></p>
+<p>增量布局是异步执行的。Firefox 将增量布局的”reflow命令”加入队列，而调度程序会触发这些命令的批量执行。WebKit也有用于执行增量布局的计时器：对呈现树进行遍历，并对dirty呈现器进行布局。请求样式信息（例如<code>offsetHeight</code>）的脚本可同步触发增量布局。</p>
+<p>如果布局是由“大小调整”或呈现器的位置（而非大小）改变而触发的，那么可以从缓存中获取呈现器的大小，而无需重新计算。<br>另外，在某些情况下，只有一个子树进行了修改，因此无需从根节点开始布局。这适用于在本地进行更改而不影响周围元素的情况，例如在文本字段中插入文本（否则每次键盘输入都将触发从根节点开始的布局）。</p>
+<h4 id="布局过程"><a href="#布局过程" class="headerlink" title="布局过程"></a>布局过程</h4><p>布局过程通常遵守下面的模式：</p>
+<ol>
+<li>父呈现器确定自己的宽度。</li>
+<li>父呈现器依次处理子呈现器，并且：<ol>
+<li>放置子呈现器（设置 x,y 坐标）。</li>
+<li>如果有必要，调用子呈现器的布局（如果子呈现器是dirty的，或者这是全局布局，或出于其他某些原因），这会计算子呈现器的高度。</li>
+</ol>
+</li>
+<li>父呈现器根据子呈现器的累加高度以及边距和补白的高度来设置自身高度，此值也可供父呈现器的父呈现器使用。</li>
+<li>将其 dirty 位设置为 false。</li>
+</ol>
+<h4 id="宽度和换行"><a href="#宽度和换行" class="headerlink" title="宽度和换行"></a>宽度和换行</h4><p>呈现器宽度是根据容器块的宽度、呈现器样式中的“width”属性以及边距和边框计算得出的。例如，下面有一个<code>div</code>标签：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"width:30%"</span>/&gt;</span></div></pre></td></tr></table></figure>
+<p>Webkit将像下面一样计算它的宽度（<code>RenderBox</code>类的<code>calcWidth</code>方法）：</p>
+<ol>
+<li>容器的宽度取容器的availableWidth和0中的较大值。availableWidth在本例中相当于contentWidth</li>
+<li>元素的宽度是<code>width</code>样式属性。它会根据容器宽度的百分比计算得出一个绝对值。</li>
+<li>然后再加上水平方向的边框和补白。</li>
+</ol>
+<p>现在计算得出的是<strong>preferred width</strong>。然后需要计算最小宽度和最大宽度。如果首选宽度大于最大宽度，那么应使用最大宽度。如果首选宽度小于最小宽度（最小的不可分单位），那么应使用最小宽度。最后，这些值会缓存起来，以用于需要布局而宽度不变的情况。</p>
+<p>如果呈现器在布局过程中需要换行，会立即停止布局，并告知其父代需要换行。父代会创建额外的呈现器，并在其上布局。</p>
+<h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><p>在绘制阶段，系统会遍历呈现树，并调用呈现器的<code>paint</code>方法，将呈现器的内容显示在屏幕上。和布局一样，绘制也分为<strong>全局</strong>（绘制整个呈现树）和<strong>增量</strong>两种。在增量绘制中，部分呈现器发生了更改，但是不会影响整个树。更改后的呈现器将其在屏幕上对应的矩形区域设为无效，这导致 OS 将其视为一块“dirty 区域”，并生成“paint”事件。OS会很巧妙地将多个区域合并成一个。</p>
+<p><a href="https://www.w3.org/TR/CSS21/zindex.html" target="_blank" rel="external">CSS2.1规范</a>描述了绘制的顺序，这个顺序实际上也是堆栈上下文的顺序。这些堆栈会从后往前绘制，因此这样的顺序会影响绘制。块呈现器的堆栈顺序如下：</p>
+<ol>
+<li>背景颜色</li>
+<li>背景图片</li>
+<li>边框</li>
+<li>子代元素</li>
+<li>轮廓（outline）</li>
+</ol>
+<h4 id="浏览器特点"><a href="#浏览器特点" class="headerlink" title="浏览器特点"></a>浏览器特点</h4><p>Firefox会遍历整个呈现树，为绘制的矩形建立一个显示列表。列表中按照正确的绘制顺序（先是呈现器的背景，然后是边框等等）包含了与矩形相关的呈现器。这样等到重新绘制的时候，只需遍历一次呈现树，而不用多次遍历（绘制所有背景，然后绘制所有图片，再绘制所有边框等等）。同时Firefox对此过程进行了优化，也就是不添加隐藏的元素，例如被不透明元素完全遮挡住的元素。</p>
+<p>Webkit在重新绘制之前，则会将原来的矩形另存为一张位图，然后只绘制新旧矩形之间的差异部分。 </p>
+<h3 id="动态变化"><a href="#动态变化" class="headerlink" title="动态变化"></a>动态变化</h3><p>在发生变化时，<strong>回流</strong>（reflow）和<strong>重绘</strong>（repaint）可能会被触发，浏览器会尽可能做出最小的响应。例如，元素的颜色改变后，只会对该元素进行重绘。元素的位置改变后，只会对该元素及其子元素（可能还有同级元素）进行布局和重绘。添加DOM节点后，会对该节点进行布局和重绘。一些重大变化（例如增大<code>html</code>元素的字体）会导致缓存无效，使得整个呈现树都会进行重新布局和绘制。</p>
+<p>无论是回流还是重绘都会增加浏览器的工作负担，带来响应时间。其中回流的计算代价更大，应该尽量避免。有一些<a href="https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/" target="_blank" rel="external">方法</a>可以用来减少回流的出现。</p>
+<h3 id="渲染引擎的线程"><a href="#渲染引擎的线程" class="headerlink" title="渲染引擎的线程"></a>渲染引擎的线程</h3><p>呈现引擎采用了单线程。几乎所有操作（除了网络操作）都是在单线程中进行的。在Firefox和Safari中，该线程就是浏览器的主线程。而在Chrome浏览器中，该线程是标签进程的主线程。</p>
+<p>网络操作可由多个并行线程执行。并行连接数是有限的（通常为2至6个，以Firefox为例是6个）。</p>
+<h4 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h4><p>浏览器的主线程是事件循环（Event Loop）。它是一个无限循环，永远处于接受活动状态，并等待事件（如布局和绘制事件）发生，并进行处理。这是Firefox中关于主事件循环的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (!mExiting)</div><div class="line">  NS_ProcessNextEvent(thread);</div></pre></td></tr></table></figure>
+<h3 id="CSS2-1可视化模型"><a href="#CSS2-1可视化模型" class="headerlink" title="CSS2.1可视化模型"></a>CSS2.1可视化模型</h3><blockquote>
+<p>注：<a href="https://www.w3.org/TR/CSS/#css-level-3" target="_blank" rel="external">CSS3</a>是将CSS2模块化并对其中部分模块进行更新的版本。它仍使用CSS2.1规范作为其核心。改进的模块并不会与CSS2.1相冲突。因此这里原文关于CSS2.1的描述并不算过时</p>
+</blockquote>
+<h4 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h4><p><img src="/blog/images/browser/boxdim.png" alt=""></p>
+<p><a href="https://www.w3.org/TR/CSS2/box.html" target="_blank" rel="external">CSS盒模型</a>描述的是针对文档树中的元素而生成，并根据可视化格式模型进行布局的矩形框。每个框都有一个内容区域（例如文本、图片等），还有可选的周围补白、边框和边距区域。如上图所示。</p>
+<p>每一个节点都会生成 0..n 个这样的框。所有元素都有一个“display”属性，决定了它们所对应生成的框类型。默认值是inline，但是浏览器样式表设置了其他默认值。例如，<code>&lt;div&gt;</code>元素的<code>display</code>属性默认值是<code>block</code>。W3C上有全面的<a href="https://www.w3.org/TR/CSS2/sample.html" target="_blank" rel="external">默认样式表</a>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">html</span>, <span class="selector-tag">address</span>,</div><div class="line"><span class="selector-tag">blockquote</span>,</div><div class="line"><span class="selector-tag">body</span>, <span class="selector-tag">dd</span>, <span class="selector-tag">div</span>,</div><div class="line"><span class="selector-tag">dl</span>, <span class="selector-tag">dt</span>, <span class="selector-tag">fieldset</span>, <span class="selector-tag">form</span>,</div><div class="line"><span class="selector-tag">frame</span>, <span class="selector-tag">frameset</span>,</div><div class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>,</div><div class="line"><span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>, <span class="selector-tag">noframes</span>,</div><div class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">p</span>, <span class="selector-tag">ul</span>, <span class="selector-tag">center</span>,</div><div class="line"><span class="selector-tag">dir</span>, <span class="selector-tag">hr</span>, <span class="selector-tag">menu</span>, <span class="selector-tag">pre</span>   &#123; <span class="attribute">display</span>: block; <span class="attribute">unicode-bidi</span>: embed &#125;</div><div class="line"><span class="selector-tag">li</span>              &#123; <span class="attribute">display</span>: list-item &#125;</div><div class="line"><span class="selector-tag">head</span>            &#123; <span class="attribute">display</span>: none &#125;</div><div class="line"><span class="selector-tag">table</span>           &#123; <span class="attribute">display</span>: table &#125;</div><div class="line"><span class="selector-tag">tr</span>              &#123; <span class="attribute">display</span>: table-row &#125;</div><div class="line"><span class="selector-tag">thead</span>           &#123; <span class="attribute">display</span>: table-header-group &#125;</div><div class="line"><span class="selector-tag">tbody</span>           &#123; <span class="attribute">display</span>: table-row-group &#125;</div><div class="line"><span class="selector-tag">tfoot</span>           &#123; <span class="attribute">display</span>: table-footer-group &#125;</div><div class="line"><span class="selector-tag">col</span>             &#123; <span class="attribute">display</span>: table-column &#125;</div><div class="line"><span class="selector-tag">colgroup</span>        &#123; <span class="attribute">display</span>: table-column-group &#125;</div><div class="line"><span class="selector-tag">td</span>, <span class="selector-tag">th</span>          &#123; <span class="attribute">display</span>: table-cell &#125;</div><div class="line"><span class="selector-tag">caption</span>         &#123; <span class="attribute">display</span>: table-caption &#125;</div><div class="line"><span class="selector-tag">th</span>              &#123; <span class="attribute">font-weight</span>: bolder; <span class="attribute">text-align</span>: center &#125;</div><div class="line"><span class="selector-tag">caption</span>         &#123; <span class="attribute">text-align</span>: center &#125;</div><div class="line"><span class="selector-tag">body</span>            &#123; <span class="attribute">margin</span>: <span class="number">8px</span> &#125;</div><div class="line"><span class="selector-tag">h1</span>              &#123; <span class="attribute">font-size</span>: <span class="number">2em</span>; <span class="attribute">margin</span>: .<span class="number">67em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h2</span>              &#123; <span class="attribute">font-size</span>: <span class="number">1.5em</span>; <span class="attribute">margin</span>: .<span class="number">75em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h3</span>              &#123; <span class="attribute">font-size</span>: <span class="number">1.17em</span>; <span class="attribute">margin</span>: .<span class="number">83em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h4</span>, <span class="selector-tag">p</span>,</div><div class="line"><span class="selector-tag">blockquote</span>, <span class="selector-tag">ul</span>,</div><div class="line"><span class="selector-tag">fieldset</span>, <span class="selector-tag">form</span>,</div><div class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">dl</span>, <span class="selector-tag">dir</span>,</div><div class="line"><span class="selector-tag">menu</span>            &#123; <span class="attribute">margin</span>: <span class="number">1.12em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h5</span>              &#123; <span class="attribute">font-size</span>: .<span class="number">83em</span>; <span class="attribute">margin</span>: <span class="number">1.5em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h6</span>              &#123; <span class="attribute">font-size</span>: .<span class="number">75em</span>; <span class="attribute">margin</span>: <span class="number">1.67em</span> <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>,</div><div class="line"><span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>, <span class="selector-tag">b</span>,</div><div class="line"><span class="selector-tag">strong</span>          &#123; <span class="attribute">font-weight</span>: bolder &#125;</div><div class="line"><span class="selector-tag">blockquote</span>      &#123; <span class="attribute">margin-left</span>: <span class="number">40px</span>; <span class="attribute">margin-right</span>: <span class="number">40px</span> &#125;</div><div class="line"><span class="selector-tag">i</span>, <span class="selector-tag">cite</span>, <span class="selector-tag">em</span>,</div><div class="line"><span class="selector-tag">var</span>, <span class="selector-tag">address</span>    &#123; <span class="attribute">font-style</span>: italic &#125;</div><div class="line"><span class="selector-tag">pre</span>, <span class="selector-tag">tt</span>, <span class="selector-tag">code</span>,</div><div class="line"><span class="selector-tag">kbd</span>, <span class="selector-tag">samp</span>       &#123; <span class="attribute">font-family</span>: monospace &#125;</div><div class="line"><span class="selector-tag">pre</span>             &#123; <span class="attribute">white-space</span>: pre &#125;</div><div class="line"><span class="selector-tag">button</span>, <span class="selector-tag">textarea</span>,</div><div class="line"><span class="selector-tag">input</span>, <span class="selector-tag">select</span>   &#123; <span class="attribute">display</span>: inline-block &#125;</div><div class="line"><span class="selector-tag">big</span>             &#123; <span class="attribute">font-size</span>: <span class="number">1.17em</span> &#125;</div><div class="line"><span class="selector-tag">small</span>, <span class="selector-tag">sub</span>, <span class="selector-tag">sup</span> &#123; <span class="attribute">font-size</span>: .<span class="number">83em</span> &#125;</div><div class="line"><span class="selector-tag">sub</span>             &#123; <span class="attribute">vertical-align</span>: sub &#125;</div><div class="line"><span class="selector-tag">sup</span>             &#123; <span class="attribute">vertical-align</span>: super &#125;</div><div class="line"><span class="selector-tag">table</span>           &#123; <span class="attribute">border-spacing</span>: <span class="number">2px</span>; &#125;</div><div class="line"><span class="selector-tag">thead</span>, <span class="selector-tag">tbody</span>,</div><div class="line"><span class="selector-tag">tfoot</span>           &#123; <span class="attribute">vertical-align</span>: middle &#125;</div><div class="line"><span class="selector-tag">td</span>, <span class="selector-tag">th</span>, <span class="selector-tag">tr</span>      &#123; <span class="attribute">vertical-align</span>: inherit &#125;</div><div class="line"><span class="selector-tag">s</span>, <span class="selector-tag">strike</span>, <span class="selector-tag">del</span>  &#123; <span class="attribute">text-decoration</span>: line-through &#125;</div><div class="line"><span class="selector-tag">hr</span>              &#123; <span class="attribute">border</span>: <span class="number">1px</span> inset &#125;</div><div class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">ul</span>, <span class="selector-tag">dir</span>,</div><div class="line"><span class="selector-tag">menu</span>, <span class="selector-tag">dd</span>        &#123; <span class="attribute">margin-left</span>: <span class="number">40px</span> &#125;</div><div class="line"><span class="selector-tag">ol</span>              &#123; <span class="attribute">list-style-type</span>: decimal &#125;</div><div class="line"><span class="selector-tag">ol</span> <span class="selector-tag">ul</span>, <span class="selector-tag">ul</span> <span class="selector-tag">ol</span>,</div><div class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ul</span>, <span class="selector-tag">ol</span> <span class="selector-tag">ol</span>    &#123; <span class="attribute">margin-top</span>: <span class="number">0</span>; <span class="attribute">margin-bottom</span>: <span class="number">0</span> &#125;</div><div class="line"><span class="selector-tag">u</span>, <span class="selector-tag">ins</span>          &#123; <span class="attribute">text-decoration</span>: underline &#125;</div><div class="line"><span class="selector-tag">br</span><span class="selector-pseudo">:before</span>       &#123; <span class="attribute">content</span>: <span class="string">"\A"</span>; <span class="attribute">white-space</span>: pre-line &#125;</div><div class="line"><span class="selector-tag">center</span>          &#123; <span class="attribute">text-align</span>: center &#125;</div><div class="line"><span class="selector-pseudo">:link</span>, <span class="selector-pseudo">:visited</span> &#123; <span class="attribute">text-decoration</span>: underline &#125;</div><div class="line"><span class="selector-pseudo">:focus</span>          &#123; <span class="attribute">outline</span>: thin dotted invert &#125;</div><div class="line"></div><div class="line"><span class="comment">/* Begin bidirectionality settings (do not change) */</span></div><div class="line"><span class="selector-tag">BDO</span><span class="selector-attr">[DIR="ltr"]</span>  &#123; <span class="attribute">direction</span>: ltr; <span class="attribute">unicode-bidi</span>: bidi-override &#125;</div><div class="line"><span class="selector-tag">BDO</span><span class="selector-attr">[DIR="rtl"]</span>  &#123; <span class="attribute">direction</span>: rtl; <span class="attribute">unicode-bidi</span>: bidi-override &#125;</div><div class="line"></div><div class="line">*<span class="selector-attr">[DIR="ltr"]</span>    &#123; <span class="attribute">direction</span>: ltr; <span class="attribute">unicode-bidi</span>: embed &#125;</div><div class="line">*<span class="selector-attr">[DIR="rtl"]</span>    &#123; <span class="attribute">direction</span>: rtl; <span class="attribute">unicode-bidi</span>: embed &#125;</div><div class="line"></div><div class="line">@<span class="keyword">media</span> print &#123;</div><div class="line">  <span class="selector-tag">h1</span>            &#123; <span class="attribute">page-break-before</span>: always &#125;</div><div class="line">  <span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>,</div><div class="line">  <span class="selector-tag">h4</span>, <span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>    &#123; <span class="attribute">page-break-after</span>: avoid &#125;</div><div class="line">  <span class="selector-tag">ul</span>, <span class="selector-tag">ol</span>, <span class="selector-tag">dl</span>    &#123; <span class="attribute">page-break-before</span>: avoid &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="定位方案"><a href="#定位方案" class="headerlink" title="定位方案"></a>定位方案</h4><p>CSS中有三种定位方案：</p>
+<ul>
+<li>普通：根据对象在文档中的位置进行定位，也就是说对象在呈现树中的位置和它在DOM树中的位置相似，并根据其框类型和尺寸进行布局。</li>
+<li>浮动：脱离文档流，对象先按照普通流进行布局，然后尽可能地向左或向右移动。</li>
+<li>绝对：完全脱离文档流，对象在呈现树中的位置和它在DOM树中的位置不同。</li>
+</ul>
+<p>定位方案是由“position”属性和“float”属性设置的。如果值是<code>static</code>和<code>relative</code>，就是普通流，如果值是 <code>absolute</code>和<code>fixed</code>，就是绝对定位。</p>
+<h4 id="盒类型"><a href="#盒类型" class="headerlink" title="盒类型"></a>盒类型</h4><ul>
+<li><code>block</code>：形成一个block，在浏览器窗口中拥有其自己的矩形区域。</li>
+<li><code>inline</code>：没有自己的 block，但是位于容器 block 内。</li>
+</ul>
+<p>block一个接一个地垂直排布，而inline则是水平排布。</p>
+<h4 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h4><ul>
+<li>相对定位：先按照普通方式定位，然后根据所需偏移量进行移动。</li>
+<li>浮动：浮动框会移动到行的左边或右边。有趣的特征在于，其他框会浮动在它的周围。</li>
+<li>绝对定位和固定定位：这种布局是准确定义的，与普通流无关。元素不参与普通流。尺寸是相对于容器而言的。在固定定位中，容器就是可视区域。</li>
+</ul>
+<p>更具体的分析可以参见CSS2.1中对normal flow，float和absolute做的<a href="https://www.w3.org/TR/CSS2/visuren.html#comparison" target="_blank" rel="external">讲解</a>。</p>
+<h4 id="层级"><a href="#层级" class="headerlink" title="层级"></a>层级</h4><p>这是由<code>z-index</code>属性指定的。它代表了框的第三个维度，也就是沿“z 轴”方向的位置。这些框分散到多个堆栈（称为堆栈上下文）中。在每一个堆栈中，会首先绘制后面的元素，然后在顶部绘制前面的元素，以便更靠近用户。如果出现重叠，新绘制的元素就会覆盖之前的元素。</p>
+<p>堆栈是按照<code>z-index</code>属性进行排序的。具有<code>z-index</code>属性的框形成了本地堆栈。视口具有外部堆栈。更多描述参考<a href="https://www.w3.org/TR/CSS2/visuren.html#z-index" target="_blank" rel="external">CSS2.1 z-index</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/10/how-browsers-work-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/10/how-browsers-work-1/" itemprop="url">浏览器是如何工作的 上 解析与呈现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T20:27:40+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/10/how-browsers-work-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/10/how-browsers-work-1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>下篇传送门： <a href="https://shenlvmeng.github.io/blog/2017/04/11/how-browsers-work-2/" target="_blank" rel="external">浏览器是如何工作的 下 布局与绘制</a></p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要翻译于Tali Garsiel在2009年10月的一篇介绍Webkit和Gecko内核的经典文章<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">How browsers work</a>。尽管在面试和工作上用不到这么细节，但是学习浏览器的内部原理将让我们可以更好地理解一些最优开发实践的道理。</p>
+<h3 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h3><p>浏览器可以说是PC和移动设备上最常用的软件应用了。目前的主流浏览器有5个：IE，Firefox，Safari，Chrome和Opera。浏览器的主要功能是协助用户向服务器发起请求，并在窗口中展示请求的网络资源（HTML文档，或图片，或pdf文档，或其他可以被URI指定位置的类型）。</p>
+<p>浏览器解释并展示HTML稳当的方式规定在HTML和CSS规范中。这些规范由<a href="https://www.w3.org" target="_blank" rel="external">W3C</a>组织制订和维护。但是多年来，各浏览器并没有完全遵从这些规范（直到现在也是如此），从而带来兼容性的问题。</p>
+<p>从高层来看，浏览器的用户界面（并没有规范去规定它该如何设计）是类似的，有用来输入URI的地址栏，前进和后退按钮，书签管理选项，刷新和停止刷新按钮，主页按钮等。这些最佳实践是自然发展和相互模仿的结果。它的背后由下面的一些组件组成：</p>
+<ul>
+<li>用户界面和界面后端，即UI</li>
+<li>浏览器引擎，负责在UI和浏览器各组件间传递指令</li>
+<li>渲染引擎，负责渲染请求的内容</li>
+<li>网络，底层的网络调用</li>
+<li>JavaScript引擎</li>
+<li>数据存储，持久化存储浏览器的各种数据</li>
+</ul>
+<p><img src="/blog/images/browser/layers.png" alt=""></p>
+<div class="tip">值得注意的是，Chrome的每个标签页分别对应一个渲染引擎实例，且都是一个独立的进程。（知道为什么Chrome那么吃内存了么😂）<br></div>
+
+<h3 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h3><p>渲染引擎的工作是渲染（文章原话），默认情况下，渲染引擎能呈现HTML、XML文档和图片。通过插件还可以展示其他类型内容（如PDF查看器插件显示PDF文档）。文章主要讨论了Firefox的Gecko引擎和Chrome的<a href="http://webkit.org" target="_blank" rel="external">Webkit</a>引擎。</p>
+<p>渲染引擎的主要流程大致是获取并解析HTML文档构建DOM树，之后创建呈现树，呈现树包含有视觉属性（如颜色和尺寸），最后进入布局和绘制阶段。需要指出的是，这是个复杂和渐进的过程，为了更好地用户体验，渲染引擎通常会先将解析完成的部分HTML显示出来。下面是Webkit和Gecko的渲染引擎主流程。</p>
+<p><img src="/blog/images/browser/geckoflow.jpg" alt="Webkit"></p>
+<p><img src="/blog/images/browser/webkitflow.png" alt="Gecko"></p>
+<p>Gecko和Webkit的术语略有不同，整体流程却是相似的。Gecko将视觉格式化元素组成的树称为“框架树”。每个元素都是一个框架。WebKit使用的术语是“呈现树”，它由“呈现对象”组成。对于元素的放置，WebKit 使用的术语是“布局”，而Gecko称之为“重排”。另外，Gecko在HTML和DOM树间还有一个称为“内容槽”的层用于生成DOM元素。</p>
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>关于解析HTML文档，<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Parsing_general" target="_blank" rel="external">原文</a>做了详尽深入的讲解。由于侧重点不同，这里做些精炼。</p>
+<p>解析文档是指将文档转化成为有意义的结构，也就是可让代码理解和使用的结构。解析得到的结果通常是代表了文档结构的节点树，它称作解析树或者语法树。</p>
+<p>解析的过程通常分为<strong>词法分析</strong>和<strong>语法分析</strong>。前者是指将内容拆解成合法标记的过程，由词法分析器完成；后者指应用语言的语法规则，由解析器完成。</p>
+<p><img src="/blog/images/browser/parse.png" alt=""></p>
+<p>词汇通常用正则表达式表示。例如，我们的示例语言可以定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INTEGER :0|[1-9][0-9]*</div><div class="line">PLUS : +</div><div class="line">MINUS: -</div></pre></td></tr></table></figure>
+<p>正如您所看到的，这里用正则表达式给出了整数的定义。语法通常使用一种称为<a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form" target="_blank" rel="external">BNF</a>的格式来定义。我们的示例语言可以定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">expression :=  term  operation  term</div><div class="line">operation :=  PLUS | MINUS</div><div class="line">term := INTEGER | expression</div></pre></td></tr></table></figure>
+<p>之前我们说过，如果语言的语法是与<a href="https://en.wikipedia.org/wiki/Context-free_grammar" target="_blank" rel="external">上下文无关</a>的语法，就可以由常规解析器进行解析。与上下文无关的语法的直观定义就是可以完全用BNF格式表达的语法。</p>
+<h5 id="解析器"><a href="#解析器" class="headerlink" title="解析器"></a>解析器</h5><p>有两种基本类型的解析器：<strong>自上而下解析器</strong>和<strong>自下而上解析器</strong>。直观地来说，自上而下的解析器从语法的高层结构出发，尝试从中找到匹配的结构。而自下而上的解析器从低层规则出发，将输入内容逐步转化为语法规则，直至满足高层规则。</p>
+<p>例如，我们要解析一个<code>2 + 3 - 1</code>的表达式，自上而下的解析器会从高层的规则开始：首先将<code>2 + 3</code>标识为一个表达式，然后将<code>2 + 3 - 1</code>标识为一个表达式。自下而上的解析器将扫描输入内容，找到匹配的规则后，将匹配的输入内容替换成规则。如此继续替换，直到输入内容的结尾。部分匹配的表达式保存在解析器的堆栈中。</p>
+<p>有一些工具可以帮助您生成解析器，它们称为解析器生成器。您只要向其提供您所用语言的语法（词汇和语法规则），它就会生成相应的解析器。WebKit使用了两种非常有名的解析器生成器：用于创建词法分析器的Flex以及用于创建解析器的Bison。Flex的输入是包含标记的正则表达式定义的文件。Bison的输入是采用BNF格式的语言语法规则。</p>
+<p>事情到了HTML这里变得麻烦了些。首先，HTML解析器的任务是将HTML标记解析成解析树。HTML词汇和语法在W3C的规范（目前版本是HTML5）中有着定义。但是HTML并不能很容易地用解析器所需的与上下文无关的语法来定义。HTML的正规格式DTD（Document Type Definition）并不是一种上下文无关的语法。</p>
+<p>原因就是HTML并不是XML。HTML最初野蛮生长的日子里，实现方式不一而足，HTML的严格版变体XHTML并没有得到广泛的支持。为了保证兼容性，饶了诸多浏览器一命，包容许多并不合适的使用方式，简化网络开发。DTD中的严格模式下是完全遵守HTML规范的。</p>
+<h4 id="HTML解析"><a href="#HTML解析" class="headerlink" title="HTML解析"></a>HTML解析</h4><p>解析器的输出<em>解析树</em>是由DOM元素和属性节点构成的树结构。DOM是文档对象模型 (Document Object Model) 的缩写。它是HTML文档的对象表示，同时也是JavaScript与HTML元素之间的接口。解析树的根节点是<code>Document</code>对象。DOM与标记tag间几乎是一一对应的关系。</p>
+<p>如上文所说，由于语言的宽容性和原内容的可更改性，HTML无法用常规的自上而下或自下而上的解析器来解析。根据原文的说法，<a href="https://www.w3.org/TR/html5/syntax.html#html-parser" target="_blank" rel="external">HTML的解析算法</a>由<strong>标记化</strong>和<strong>树构建</strong>组成。</p>
+<p>标记化是词法分析过程，将输入内容解析成多个标记。HTML标记包括起始标记、结束标记、属性名称和属性值。标记生成器识别标记，传递给树构造器，然后接受下一个字符以识别下一个标记；如此反复直到输入的结束。</p>
+<p><img src="/blog/images/browser/parseflow.png" alt=""></p>
+<p>其中<strong>标记化算法</strong>的输出结果是HTML标记。该算法使用状态机来表示。每一个状态接收来自输入信息流的一个或多个字符，并根据这些字符更新下一个状态。当前的标记化状态和树结构状态会影响进入下一状态的决定。算法相当复杂，无法在此详述，下面给出一个简要的示例（来自原文）</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    Hello world</div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>初始状态是数据状态。遇到字符<code>&lt;</code>时状态更改为“标记打开状态”。接收一个a-z字符会创建“起始标记”，状态更改为“标记名称状态”。这个状态会一直保持到接收<code>&gt;</code>字符。在此期间接收的每个字符都会附加到新的标记名称上。在本例中，我们创建的标记是<code>html</code>标记。</p>
+<p>遇到<code>&gt;</code>标记时，会发送当前的标记，状态改回“数据状态”。<code>&lt;body&gt;</code>标记也会进行同样的处理。目前<code>html</code>和<code>body</code>标记均已发出。现在我们回到“数据状态”。接收到 <code>Hello world</code>中的<code>H</code>字符时，将创建并发送字符标记，直到接收<code>&lt;/body&gt;</code>中的<code>&lt;</code>。我们将为<code>Hello world</code>中的每个字符都发送一个字符标记。</p>
+<p>现在我们回到“标记打开状态”。接收下一个输入字符<code>/</code>时，会创建<code>end tag token</code>并改为“标记名称状态”。我们会再次保持这个状态，直到接收<code>&gt;</code>。然后将发送新的标记，并回到“数据状态”。<code>&lt;/html&gt;</code>输入也会进行同样的处理。</p>
+<p><img src="/blog/images/browser/tokeniser.png" alt=""></p>
+<p>树构造器中运行着<strong>树构造算法</strong>。在创建解析器的同时，也会创建<code>Document</code>对象。在树构建阶段，以<code>Document</code>为根节点的DOM树也会不断进行修改，向其中添加各种元素。标记生成器发送的每个节点都会由树构建器进行处理。规范中定义了每个标记所对应的DOM元素，这些元素会在接收到相应的标记时创建。这些元素不仅会添加到DOM树中，还会添加到开放元素的堆栈中。此堆栈用于纠正嵌套错误和处理未关闭的标记。其算法类似标记化算法，也可以用状态机来描述。</p>
+<p>我们同样以上面的代码为例，树构建阶段的输入是一个来自标记化阶段的标记序列。第一个模式是<strong>initial mode</strong>。接收HTML标记后转为<strong>before html</strong>模式，并在这个模式下重新处理此标记。这样会创建一个<code>HTMLHtmlElement</code>元素，并将其附加到<code>Document</code>根对象上。</p>
+<p>然后状态将改为<strong>before head</strong>。此时我们接收<code>body</code>标记。即使我们的示例中没有<code>head</code>标记，系统也会隐式创建一个<code>HTMLHeadElement</code>，并将其添加到树中。</p>
+<p>现在我们进入了<strong>in head</strong>模式，然后转入<strong>after head</strong>模式。系统对<code>body</code>标记进行重新处理，创建并插入<code>HTMLBodyElement</code>，同时模式转变为<strong>in body</strong>。</p>
+<p>现在，接收由“Hello world”字符串生成的一系列字符标记。接收第一个字符时会创建并插入<code>Text</code>节点，而其他字符也将附加到该节点。</p>
+<p>接收<code>body</code>结束标记会触发<strong>after body</strong>模式。现在我们将接收HTML结束标记，然后进入<code>after after body</code>模式。接收到文件结束标记后，解析过程就此结束。</p>
+<p><img src="/blog/images/browser/treebuilder.gif" alt=""></p>
+<h4 id="解析后与容错机制"><a href="#解析后与容错机制" class="headerlink" title="解析后与容错机制"></a>解析后与容错机制</h4><p>在此阶段，浏览器会将文档标注为交互状态，并开始解析那些处于<code>deferred</code>模式的脚本，也就是那些应在文档解析完成后才执行的脚本。然后，文档状态将设置为“完成”，一个<code>load</code>事件随之触发。</p>
+<p>我们在浏览HTML网页时从来不会看到“语法无效”的错误。这是因为浏览器会纠正<strong>任何</strong>无效内容，然后继续工作。不同浏览器的错误处理机制相当一致，但这种机制却并不是HTML当前规范的一部分。和书签管理以及前进/后退按钮一样，它也是浏览器在多年发展中的产物。很多网站都普遍存在着一些已知的无效HTML结构，每一种浏览器都会尝试通过和其他浏览器一样的方式来修复这些无效结构。</p>
+<p><a href="https://whatwg-cn.github.io/html/" target="_blank" rel="external">HTML5规范</a>定义了一部分这样的要求。WebKit在HTML解析器类的开头注释中对此做了很好的概括。</p>
+<blockquote><p>解析器对标记化输入内容进行解析，以构建文档树。如果文档的格式正确，就直接进行解析。</p>
+<p>遗憾的是，我们不得不处理很多格式错误的 HTML 文档，所以解析器必须具备一定的容错性。</p>
+<p>我们至少要能够处理以下错误情况：</p>
+<ol>
+<li>明显不能在某些外部标记中添加的元素。在此情况下，我们应该关闭所有标记，直到出现禁止添加的元素，然后再加入该元素。</li>
+<li>我们不能直接添加的元素。这很可能是网页作者忘记添加了其中的一些标记（或者其中的标记是可选的）。这些标签可能包括：HTML HEAD BODY TBODY TR TD LI（还有遗漏的吗？）。</li>
+<li>向inline元素内添加block元素。关闭所有inline元素，直到出现下一个较高级的block元素。</li>
+<li>如果这样仍然无效，可关闭所有元素，直到可以添加元素为止，或者忽略该标记。</li>
+</ol>
+</blockquote>
+<p><a href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Browsers_error_tolerance" target="_blank" rel="external">错误的情况</a>包括错误使用<code>&lt;br&gt;</code>，离散表格，过于复杂的标记层级结构。错误的html或body结束标记等。Webkit的具体代码展示略。</p>
+<h4 id="CSS解析"><a href="#CSS解析" class="headerlink" title="CSS解析"></a>CSS解析</h4><p>和HTML不同，CSS是上下文无关的语法，可以使用简介中描述的各种解析器进行解析。词法语法（词汇）是针对各个标记用正则表达式定义的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">comment   \/\*[^*]*\*+([^/*][^*]*\*+)*\/</div><div class="line">num   [0-9]+|[0-9]*&quot;.&quot;[0-9]+</div><div class="line">nonascii  [\200-\377]</div><div class="line">nmstart   [_a-z]|&#123;nonascii&#125;|&#123;escape&#125;</div><div class="line">nmchar    [_a-z0-9-]|&#123;nonascii&#125;|&#123;escape&#125;</div><div class="line">name    &#123;nmchar&#125;+</div><div class="line">ident   &#123;nmstart&#125;&#123;nmchar&#125;*</div></pre></td></tr></table></figure>
+<p>其中<code>ident</code>表示标识符，如类名。<code>name</code>是元素ID。</p>
+<p>语法则是采用 BNF 格式描述的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">ruleset</div><div class="line">  : selector [ &apos;,&apos; S* selector ]*</div><div class="line">    &apos;&#123;&apos; S* declaration [ &apos;;&apos; S* declaration ]* &apos;&#125;&apos; S*</div><div class="line">  ;</div><div class="line">selector</div><div class="line">  : simple_selector [ combinator selector | S+ [ combinator? selector ]? ]?</div><div class="line">  ;</div><div class="line">simple_selector</div><div class="line">  : element_name [ HASH | class | attrib | pseudo ]*</div><div class="line">  | [ HASH | class | attrib | pseudo ]+</div><div class="line">  ;</div><div class="line">class</div><div class="line">  : &apos;.&apos; IDENT</div><div class="line">  ;</div><div class="line">element_name</div><div class="line">  : IDENT | &apos;*&apos;</div><div class="line">  ;</div><div class="line">attrib</div><div class="line">  : &apos;[&apos; S* IDENT S* [ [ &apos;=&apos; | INCLUDES | DASHMATCH ] S*</div><div class="line">    [ IDENT | STRING ] S* ] &apos;]&apos;</div><div class="line">  ;</div><div class="line">pseudo</div><div class="line">  : &apos;:&apos; [ IDENT | FUNCTION S* [IDENT S*] &apos;)&apos; ]</div><div class="line">  ;</div></pre></td></tr></table></figure>
+<p>如其中的<code>ruleset</code>表示，这个规则集是一个选择器，或者由逗号和空格（S表示空格）分隔的多个（数量可选）选择器。规则集包含了大括号，以及其中的一个或多个（数量可选）由分号分隔的声明。</p>
+<p>Webkit使用Flex和Bison解析器生成器，通过 CSS 语法文件自动创建解析器。Firefox 使用的是人工编写的自上而下的解析器。这两种解析器都会将CSS文件解析成<code>StyleSheet</code>对象，且每个对象都包含CSS规则。</p>
+<h4 id="JS和CSS的处理"><a href="#JS和CSS的处理" class="headerlink" title="JS和CSS的处理"></a>JS和CSS的处理</h4><blockquote>
+<p>这也是经常的考点</p>
+</blockquote>
+<h5 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h5><p><strong>解析器遇到<code>&lt;script&gt;</code>标记时会立即解析并执行脚本。文档的解析将停止，直到脚本执行完毕</strong>。如果脚本是外部的，那么解析过程会停止，直到从网络同步抓取资源完成后再继续。此模型已经使用了多年，也在HTML4和HTML5规范中进行了指定。</p>
+<p>脚本标注为<strong>defer</strong>时，它不会停止文档解析，而是等到解析结束才执行。HTML5中还增加了一个选项<code>async</code>，可将脚本标记为异步，在资源下载完毕后立即执行。</p>
+<h5 id="预解析"><a href="#预解析" class="headerlink" title="预解析"></a>预解析</h5><p>WebKit和Firefox都进行了这项优化。在执行脚本时，其他线程会解析文档的其余部分，找出并加载需要通过网络加载的其他资源。通过这种方式，资源可以在并行连接上加载，从而提高总体速度。但是，<strong>预解析器不会修改DOM树</strong>，而是将这项工作交由主解析器处理；预解析器只会解析外部资源（例如外部脚本、样式表和图片）的引用。</p>
+<h5 id="样式表"><a href="#样式表" class="headerlink" title="样式表"></a>样式表</h5><p>理论上来说，应用样式表不会更改DOM树，因此似乎没有必要等待样式表并停止文档解析。但这涉及到一个问题，就是脚本在文档解析阶段会请求样式信息。如果当时还没有加载和解析样式，脚本就会获得错误的回复。</p>
+<p>从而，Firefox在样式表加载和解析的过程中，会禁止所有脚本。而对于WebKit而言，仅当脚本尝试访问的样式属性可能受尚未加载的样式表影响时，它才会禁止该脚本。</p>
+<h4 id="呈现树"><a href="#呈现树" class="headerlink" title="呈现树"></a>呈现树</h4><p>在DOM树构建的同时，浏览器还会构建另一个树结构：呈现树（Render Tree）。这是由可视化元素按照其显示顺序而组成的树，也是文档的可视化表示。它的作用是让您按照正确的顺序绘制内容。</p>
+<p>Firefox将呈现树中的元素称为“框架”。WebKit使用的术语是呈现器或呈现对象。呈现器知道如何布局并将自身及其子元素绘制出来。</p>
+<p>每个呈现器都表示一个矩形区域，通常对应于相关节点的CSS框，这一点在CSS2规范中有所描述。它包含诸如宽度、高度和位置等几何信息。框的类型会受到与节点相关的<code>display</code>样式属性的影响。下面是Webkit根据<code>display</code>属性的不同，针对同一个DOM节点创建不同呈现器的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">RenderObject* RenderObject::createObject(Node* node, RenderStyle* style)</div><div class="line">&#123;</div><div class="line">  Document* doc = node-&gt;document();</div><div class="line">  RenderArena* arena = doc-&gt;renderArena();</div><div class="line">  ...</div><div class="line">  RenderObject* o = <span class="number">0</span>;</div><div class="line"></div><div class="line">  <span class="keyword">switch</span> (style-&gt;display()) &#123;</div><div class="line">    <span class="keyword">case</span> NONE:</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> INLINE:</div><div class="line">      o = <span class="keyword">new</span> (arena) RenderInline(node);</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> BLOCK:</div><div class="line">      o = <span class="keyword">new</span> (arena) RenderBlock(node);</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> INLINE_BLOCK:</div><div class="line">      o = <span class="keyword">new</span> (arena) RenderBlock(node);</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> LIST_ITEM:</div><div class="line">      o = <span class="keyword">new</span> (arena) RenderListItem(node);</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">   ...</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> o;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="和DOM树关系"><a href="#和DOM树关系" class="headerlink" title="和DOM树关系"></a>和DOM树关系</h5><p>呈现器和DOM元素是一一对应的，但是呈现树则不是。<strong>非可视化的DOM元素不会插入在呈现树中</strong>，例如<code>head</code>元素，或是<code>display</code>设为none的元素。同时，还有<strong>一些DOM元素对应着多个可视化对象</strong>，例如<code>select</code>元素。格式无效的HTML元素会根据CSS规范作出调整，如inline元素中同时包裹了block和inline元素（只能包含其中一种）。最后，<strong>有些呈现对象的位置和DOM节点位置不同</strong>，如浮动定位和绝对定位这样脱离文档流的元素。</p>
+<p><img src="/blog/images/browser/rendertree.png" alt=""></p>
+<h5 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h5><p>在Firefox中，<strong>展示层被注册为DOM更新的监听器</strong>。在监听到DOM改动后，展示层会把将框架创建工作委派给<code>FrameConstructor</code>，由其构造器解析样式并创建框架。</p>
+<p>在WebKit中，<strong>解析样式和创建呈现器的过程称为attachment</strong>。每个DOM节点都有一个<code>attach</code>方法用于完成此项工作。attach是<strong>同步</strong>进行的，将节点插入DOM树需要调用新的节点<code>attach</code>方法。</p>
+<p>处理<code>html</code>和<code>body</code>标记会构建呈现树根节点。这个根节点呈现对象对应于CSS规范中所说的<em>容器block</em>，这是最上层的 block，包含了其他所有block。它的尺寸就是视口，即浏览器窗口显示区域的尺寸。Firefox称之为<code>ViewPortFrame</code>，而WebKit称之为<code>RenderView</code>。这就是文档所指向的呈现对象。呈现树的其余部分以DOM树节点插入的形式来构建。</p>
+<p>W3C的CSS2.1规范中有提到<a href="https://www.w3.org/TR/CSS21/intro.html#processing-model" target="_blank" rel="external">解析模型</a>的问题。</p>
+<h5 id="样式计算"><a href="#样式计算" class="headerlink" title="样式计算"></a>样式计算</h5><p>构建呈现树时，需要计算每个呈现对象的可视化属性。这是通过每个元素的样式来完成的。样式包括来自各种来源的样式表、inline样式元素（即style属性）和HTML中的可视化属性（如<code>bgColor</code>, <code>width</code>）。样式表的来源包括浏览器的默认样式表、由网页作者提供的样式表以及由浏览器用户提供的用户样式表等。</p>
+<p>样式计算存在着许多困难：1）样式数据庞大，2）为元素查找匹配规则的过程复杂，3）CSS的层叠规则复杂。针对这些问题，firefox和Webkit有不同的处理方法。</p>
+<p>Webkit会引用样式对象（RenderStyle）。这些对象在某些情况下可被不同同级节点共享，这些节点还有下面的要求：</p>
+<ul>
+<li>鼠标状态相同，如都是<code>:hover</code></li>
+<li>没有元素ID</li>
+<li>tag名应匹配</li>
+<li>class属性应匹配</li>
+<li>链接状态（如<code>:active</code>）和焦点状态（如<code>:focus</code>）相同</li>
+<li>映射属性的集合完全相同</li>
+<li>不应被属性选择器匹配</li>
+<li>不能有任何inline样式属性</li>
+<li>不能使用同级选择器</li>
+</ul>
+<p>Firefox为简化运算，使用了另外两种树，<strong>规则树</strong>和<strong>样式上下文树</strong>，如下图所示。Webkit则通过DOM节点指向样式对象来实现。样式上下文包含端值。要计算出这些值，应按照正确顺序应用所有的匹配规则，并将其从逻辑值转化为具体的值。例如，如果逻辑值是屏幕大小的百分比，则需要换算成绝对的单位。</p>
+<p><img src="/blog/images/browser/firefoxstyletree.png" alt=""></p>
+<h6 id="规则树"><a href="#规则树" class="headerlink" title="规则树"></a>规则树</h6><p>规则树的设计将所有匹配规则都存储在树中，它包含了所有匹配规则。路径的路径中的底层节点拥有较高的优先级。规则树包含了所有已知规则匹配的路径。规则的存储是延迟进行的。规则树不会在开始的时候就为所有的节点进行计算，而是只有当某个节点样式需要进行计算时，才会向规则树添加计算的路径。</p>
+<p>原文从两个角度分析了规则树如何减少工作量：<strong>结构划分</strong>和<strong>通过规则树计算样式上下文</strong>。</p>
+<p>样式上下文可分割成多个结构。这些结构体包含了特定类别（如<code>border</code>或<code>color</code>）的样式信息。结构中的属性都是继承的或非继承的。继承属性如果未由元素定义，则继承自其父代。非继承属性（也称为“重置”属性）如果未进行定义，则使用默认值。</p>
+<p>规则树通过缓存整个结构（包含计算出的端值）为我们提供帮助。这一想法假定底层节点没有提供结构的定义，则可使用上层节点中的缓存结构。</p>
+<p>在计算某个特定元素的样式上下文时，我们首先计算规则树中的一条对应路径，或者使用一条现有的路径。然后我们沿此路径应用规则，在这个样式上下文中填充结构。我们从路径中拥有最高优先级的底层节点（通常也是最特殊的选择器）开始，并向上遍历规则树，直到结构填充完毕。</p>
+<p>如果该规则节点对于此结构没有任何规范，那么我们可以实现更好的优化：寻找路径更上层的节点，找到后指定完整的规范并指向相关节点即可。这是最好的优化方法，因为整个结构都能共享。这可以减少端值的计算量并节约内存。 </p>
+<p>如果我们找到了部分定义，就会向上遍历规则树，直到结构填充完毕。如果我们找不到结构的任何定义，那么假如该结构是<strong>继承</strong>类型，我们会在上下文树中指向父代的结构，这样也可以共享结构。如果是<code>reset</code>类型的结构，则会使用默认值。</p>
+<p>如果最特殊的节点确实添加了值，那么我们需要另外进行一些计算，以便将这些值转化成实际值。然后我们将结果缓存在树节点中，供子代使用。如果某个元素与其同级元素都指向同一个树节点，那么它们就可以<strong>共享整个样式上下文</strong>。</p>
+<p>下面用一个例子来讲解上面晦涩的说明：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"err"</span> <span class="attr">id</span>=<span class="string">"div1"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span></div><div class="line">        this is a <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"big"</span>&gt;</span> big error <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        this is also a</div><div class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"big"</span>&gt;</span> very  big  error<span class="tag">&lt;/<span class="name">span</span>&gt;</span> error</div><div class="line">      <span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"err"</span> <span class="attr">id</span>=<span class="string">"div2"</span>&gt;</span>another error<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">div</span> &#123;<span class="attribute">margin</span>:<span class="number">5px</span>;<span class="attribute">color</span>:black&#125;</div><div class="line"><span class="selector-class">.err</span> &#123;<span class="attribute">color</span>:red&#125;</div><div class="line"><span class="selector-class">.big</span> &#123;<span class="attribute">margin-top</span>:<span class="number">3px</span>&#125;</div><div class="line"><span class="selector-tag">div</span> <span class="selector-tag">span</span> &#123;<span class="attribute">margin-bottom</span>:<span class="number">4px</span>&#125;</div><div class="line"><span class="selector-id">#div1</span> &#123;<span class="attribute">color</span>:blue&#125;</div><div class="line"><span class="selector-id">#div2</span> &#123;<span class="attribute">color</span>:green&#125;</div></pre></td></tr></table></figure>
+<p>为了简便起见，我们只需要填充两个结构：color 结构和 margin 结构。color 结构只包含一个成员（即“color”），而 margin 结构包含四条边。 形成的规则树如下图所示</p>
+<p><img src="/blog/images/browser/styletree.png" alt=""></p>
+<p>假设我们解析 HTML 时遇到了第二个<code>&lt;div&gt;</code>标记，我们需要为此节点创建样式上下文，并填充其样式结构。经过规则匹配，我们发现该<code>&lt;div&gt;</code>的匹配规则是第1、2和6条。这意味着规则树中已有一条路径可供我们的元素使用，我们只需要再为其添加一个节点以匹配第6条规则（规则树中的F节点）。我们将创建样式上下文并将其放入上下文树中。新的样式上下文将指向规则树中的F节点。</p>
+<p>现在我们需要填充样式结构。首先要填充的是<code>margin</code>结构。由于最后的规则节点(F)并没有添加到<code>margin</code>结构，我们需要上溯规则树，直至找到在先前节点插入中计算过的缓存结构，然后使用该结构。我们会在指定<code>margin</code>规则的最上层节点（即B节点）上找到该结构。</p>
+<p>我们已经有了<code>color</code>结构的定义，因此不能使用缓存的结构。由于<code>color</code>有一个属性，我们无需上溯规则树以填充其他属性。我们将计算端值（将字符串转化为RGB等）并在此节点上缓存经过计算的结构。</p>
+<p>第二个<code>&lt;span&gt;</code>元素处理起来更加简单。我们将匹配规则，最终发现它和之前的<code>span</code>一样指向规则G。由于我们找到了指向同一节点的同级，就可以共享整个样式上下文了，只需指向之<code>span</code>的上下文即可。</p>
+<h6 id="处理规则简化匹配"><a href="#处理规则简化匹配" class="headerlink" title="处理规则简化匹配"></a>处理规则简化匹配</h6><p>样式规则来源于外部样式表、inline样式属性、HTML可视化属性。后两者很容易匹配。CSS规则可能会棘手，可以对它进行一些处理，便于访问。</p>
+<p>样式表解析完毕后，系统会根据选择器将CSS规则添加到某个哈希表中。这些哈希表的选择器各不相同，包括ID、类名称、标记名称等，还有一种通用哈希表，适合不属于上述类别的规则。如果选择器是ID，规则就会添加到ID表中；如果选择器是类，规则就会添加到类表中，依此类推。这种处理可以大大简化规则匹配。我们无需查看每一条声明，只要从哈希表中提取元素的相关规则即可。以下面的CSS为例</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">p</span><span class="selector-class">.error</span> &#123;<span class="attribute">color</span>:red&#125;</div><div class="line"><span class="selector-id">#messageDiv</span> &#123;<span class="attribute">height</span>:<span class="number">50px</span>&#125;</div><div class="line"><span class="selector-tag">div</span> &#123;<span class="attribute">margin</span>:<span class="number">5px</span>&#125;</div></pre></td></tr></table></figure>
+<p>第一条规则将插入类表，第二条将插入ID表，而第三条将插入标记表。对于下面的HTML代码段：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"error"</span>&gt;</span>an error occurred <span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"messageDiv"</span>&gt;</span>this is a message<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>我们首先会为p元素寻找匹配的规则。类表中有一个<code>error</code>键，在下面可以找到<code>p.error</code>的规则。div元素在ID表（键为 ID）和标记表中有相关的规则。剩下的工作就是找出哪些根据键提取的规则是真正匹配的了。</p>
+<h6 id="正确的层叠顺序"><a href="#正确的层叠顺序" class="headerlink" title="正确的层叠顺序"></a>正确的层叠顺序</h6><p>样式对象具有与可视化属性一一对应的属性（均为CSS属性但更为通用）。如果某个属性未由任何匹配规则所定义，那么部分属性可由父代元素样式对象继承。其他属性具有默认值。不过如果定义不止一个，就会出现麻烦，这时需要通过层叠顺序来解决。</p>
+<p>某个样式属性的声明可能会出现在多个样式表中，也可能在同一个样式表中出现多次。<strong>层叠</strong>顺序的重要性正体现在这里。根据CSS2规范，层叠的顺序为（优先级从低到高）：</p>
+<ol>
+<li>Browser declarations</li>
+<li>User normal declarations</li>
+<li>Author normal declarations</li>
+<li>Author important declarations</li>
+<li>User important declarations</li>
+</ol>
+<p>同样顺序的声明则会根据<strong>特异性(specity)</strong>进行排序，然后再是其<strong>指定顺序</strong>。HTML可视化属性会转换成匹配的CSS声明。它们被视为低优先级的Author normal declaration。</p>
+<p>那么特异性是什么意思呢？根据<a href="https://www.w3.org/TR/selectors/#specificity" target="_blank" rel="external">CSS3 selectors specificity</a>中的定义（和CSS2.1几乎一样），一个选择器的优先级计算如下：</p>
+<ol>
+<li>如果声明来自于<code>style</code>属性，而不是带有选择器的规则，则记为1，否则记为0 (= a)</li>
+<li>记为选择器中ID属性的个数 (= b)</li>
+<li>记为选择器中其他属性和伪类的个数 (= c)</li>
+<li>记为选择器中元素名称和伪元素的个数 (= d)</li>
+</ol>
+<p>将四个数字按a-b-c-d这样连接起来（位于大数进制的数字系统中），构成特异性。所使用的进制取决于上述类别中的最高计数。例如，如果a=14，可以使用十六进制。如果a=17，那么需要使用十七进制；不过在正常使用中，几乎不会使用到如此深嵌套层级的选择器。规范中给出的例子很好地演示了这种系统的工作方式。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">*             &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=0 -&gt; specificity = 0,0,0,0 */</span></div><div class="line"><span class="selector-tag">li</span>            &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=1 -&gt; specificity = 0,0,0,1 */</span></div><div class="line"><span class="selector-tag">li</span><span class="selector-pseudo">:first-line</span> &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */</span></div><div class="line"><span class="selector-tag">ul</span> <span class="selector-tag">li</span>         &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */</span></div><div class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ol</span>+<span class="selector-tag">li</span>      &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=3 -&gt; specificity = 0,0,0,3 */</span></div><div class="line"><span class="selector-tag">h1</span> + *<span class="selector-attr">[rel=up]</span>&#123;&#125;  <span class="comment">/* a=0 b=0 c=1 d=1 -&gt; specificity = 0,0,1,1 */</span></div><div class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ol</span> <span class="selector-tag">li</span><span class="selector-class">.red</span>  &#123;&#125;  <span class="comment">/* a=0 b=0 c=1 d=3 -&gt; specificity = 0,0,1,3 */</span></div><div class="line"><span class="selector-tag">li</span><span class="selector-class">.red</span><span class="selector-class">.level</span>  &#123;&#125;  <span class="comment">/* a=0 b=0 c=2 d=1 -&gt; specificity = 0,0,2,1 */</span></div><div class="line"><span class="selector-id">#x34y</span>         &#123;&#125;  <span class="comment">/* a=0 b=1 c=0 d=0 -&gt; specificity = 0,1,0,0 */</span></div></pre></td></tr></table></figure>
+<p>找到匹配的规则之后，应根据级联顺序将其排序。WebKit对于较小的列表会使用冒泡排序，对较大的列表使用归并排序。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/06/mobile-uiue-experience/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/06/mobile-uiue-experience/" itemprop="url">移动端页面切图自适应方案和体验优化经验</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T22:16:00+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/06/mobile-uiue-experience/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/06/mobile-uiue-experience/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。</p>
+<h3 id="像素完美"><a href="#像素完美" class="headerlink" title="像素完美"></a>像素完美</h3><p>像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似<code>background-image</code>这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应该出现的位置。在移动端设备宽度不一时，交互元素的位置如何保值像素完美的一致呢。</p>
+<p>最容易想到的方法是<strong>百分比布局</strong>，保证设计师设计的美美的UI界面可以自适应地等比扩充到整个页面。不过这样会让交互元素的位置摆放很难办，难以保证设备兼容性。<strong>flex布局</strong>也是种常见的解决方案，但距离像素完美还有距离。</p>
+<p>于是，我在上一次实践中，采用了<strong>固定宽度</strong>的处理方式（这并不是一种好的实践），CSS样式写起来大概是下面这样的。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.container</span> &#123;</div><div class="line">  <span class="attribute">display</span>: block;</div><div class="line">  <span class="attribute">width</span>: <span class="number">414px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.bkg</span> &#123;</div><div class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./bkg.png'</span>);</div><div class="line">  <span class="attribute">background-size</span>: <span class="number">100%</span>;</div><div class="line">  <span class="attribute">background-repeat</span>: repeat-y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>margin: 0 auto</code>是为了保证PC端居中的兼容性。这么写可以让交互元素定位时没有了设备宽度不同的后顾之忧。不过，在页面打开后，宽度较大使得页面出现横向滚动条，在绝大多数的移动端页面都不是种好的体验。的确，可以在<code>meta</code>标签中，设置<code>user-scalable=yes</code>来实现宽度上的自适应。但是，放开了页面缩放的限制也不是好的实践方式。</p>
+<p>这次活动页参考的使用<strong>rem</strong>的方式（淘宝最早实践的）是一种明显更好的方法。<code>rem</code>是CSS3中出现的新属性，它是root em的缩写。和<code>em</code>不同的是，<code>rem</code>使用整个html的<code>font-size</code>作为尺寸的参考。只需要改变html的<code>font-size</code>，所有使用了<code>rem</code>属性的元素大小都会等比例地变化。于是，下面的一段代码轻松地实现了<strong>移动端</strong>的自适应方案。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">win, doc</span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> docEl = doc.documentElement,</div><div class="line">    resizeEvt = <span class="string">'onorientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">    recalc = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> clientWidth = docEl.clientWidth;</div><div class="line">      <span class="keyword">if</span> (!clientWidth) <span class="keyword">return</span>;</div><div class="line">      <span class="keyword">if</span> (clientWidth &gt;= <span class="number">750</span>) &#123;</div><div class="line">       docEl.style.fontSize = <span class="string">'100px'</span>;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        docEl.style.fontSize = <span class="number">100</span> * (clientWidth / <span class="number">750</span>) + <span class="string">'px'</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  <span class="comment">//省去addEventListener兼容性处理</span></div><div class="line">  win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">  doc.addEventListener(<span class="string">'DOMContentLoaded'</span>, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="built_in">window</span>, <span class="built_in">document</span>);</div></pre></td></tr></table></figure>
+<p>代码里假设UI设计稿原始宽度为750px。大意是：</p>
+<ul>
+<li>页面宽度超过750px时，<code>document</code>的字体大小恒为100px，此时页面中涉及尺寸的CSS样式部分统统用<code>{像素值} / 100 rem</code>书写。之所以使用100px正是为了换算时方便</li>
+<li>页面宽度小于750px时，<code>document</code>等比缩小字体大小，页面中使用<code>rem</code>的元素都会等比缩小。从而保证交互元素不错位。</li>
+</ul>
+<p>效果类似<a href="https://m.taobao.com/#index" target="_blank" rel="external">淘宝手机站</a>。使用<code>rem</code>布局需要注意:</p>
+<ul>
+<li>在<code>&lt;head&gt;</code>中放置这段代码，保证在页面元素渲染前确定<code>font-size</code>大小，避免<em>闪屏</em>现象出现影响体验。</li>
+<li>PC端可以使用<a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries" target="_blank" rel="external">媒体查询</a>，<code>rem</code>在移动端使用较多</li>
+<li><code>rem</code>方案可以使用在页面的一部分，在宽度固定的元素中使用flex这样的方案</li>
+</ul>
+<h3 id="用户体验"><a href="#用户体验" class="headerlink" title="用户体验"></a>用户体验</h3><p>上个活动页中遇到了一些优化体验的小地方，列在下面。</p>
+<ul>
+<li><p>禁止用户选中页面元素。这么做可以避免长按屏幕的选中，很明显地提升体验。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line">  <span class="attribute">-moz-user-select</span>: none;</div><div class="line">  <span class="attribute">-webkit-user-select</span>: none;</div><div class="line">  <span class="attribute">-ms-user-select</span>: none;</div><div class="line">  <span class="attribute">-khtml-user-select</span>: none;</div><div class="line">  <span class="attribute">user-select</span>: none;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止一些手机上为手机号码和邮箱地址进行的特殊处理</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"email=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止页面缩放，很常见的需求</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>为二维码单独切图，可以解决长按二维码无法识别的问题</p>
+</li>
+<li>输入框获得焦点时自动上移。可以通过<code>document.scrollTop</code>或设置输入框部分<code>position:fixed</code>实现</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/05/vue-reactive-sourcecode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -526,826 +1486,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-2/" itemprop="url">JavaScript中的异步编程 下</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/29/javascript-async-programming-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/29/javascript-async-programming-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>上篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/" target="_blank" rel="external">JavaScript中的异步编程 上</a></p>
-</blockquote>
-<p>上篇说到了使用回调的思路解决JavaScript中异步编程的难题。可不论是显式的指定回调函数，通过事件绑定响应还是通过事件订阅、promise.then，都和逃不出回调的思路。写起来仍不够自然，且在批次回调任务时难以解决。</p>
-<p>有没有办法能使我们像平时写同步代码那样，来书写异步代码呢？ES6出现后，Generator对象给了我们这个机会。</p>
-<h3 id="生成器函数"><a href="#生成器函数" class="headerlink" title="生成器函数"></a>生成器函数</h3><p>提到生成器函数前，需要提到<a href="https://en.wikipedia.org/wiki/Coroutine" target="_blank" rel="external">协程</a>(coroutine)这个概念。协程是轻量级用户态的线程。用户可以手动控制协程的暂停和继续，配合线程实现异步任务。协程间通过<code>yield</code>方式切换执行权，并交换信息。就像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asyncFunc</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="comment">// 执行someFunc后交出执行权</span></div><div class="line">    <span class="keyword">var</span> t = <span class="keyword">yield</span> someFunc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>协程在遇到<code>yield</code>关键字时交出自己的执行权，直到执行权返回。这里<code>someFunc</code>方法可以是一个异步操作。</p>
-<p>ES6中协程体现在Generator函数中。函数在<code>function</code>关键字后添加星号<code>*</code>以示和普通函数的区分。Generator函数是可以通过<code>yield</code>暂停执行的。比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="keyword">yield</span> i;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(); <span class="comment">// 2</span></div></pre></td></tr></table></figure>
-<p>Generator函数的调用通过<code>next</code>方法完成。每次调用后会将函数流程移动到下一个yield语句处。yield的返回包含两个属性<code>value</code>和<code>done</code>。前者代表yield的返回值，后者代表生成器函数是否已经执行完毕。</p>
-<p>同时，每次调用<code>next</code>方法时，可以输入参数作为上个异步任务的返回值。调用<code>throw</code>方法可以向生成器函数内抛出错误。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> <span class="number">1</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">yield</span> x;</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="built_in">console</span>.log(e);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(); </div><div class="line">g.next(); <span class="comment">// 1</span></div><div class="line">g.next(<span class="number">2</span>); <span class="comment">// 2</span></div><div class="line">g.throw(<span class="string">'some error'</span>) <span class="comment">// 'some error'</span></div></pre></td></tr></table></figure>
-<p>使用Generator函数封装一个异步操作，再通过执行器管理函数内部的异步流程。通过这种方式，在Generator函数中可以很方便地书写异步操作。例如，利用<a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="external">fetch API</a>发起一次跨域请求。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = <span class="keyword">yield</span> fetch(<span class="string">'http://www.example.org/data.json'</span>);</div><div class="line">    <span class="built_in">console</span>.log(text);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> data.json();</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>fetch API返回一个promise对象，通过为之指定<code>then</code>，处理fetch成功后的返回值。</p>
-<h3 id="co和koa"><a href="#co和koa" class="headerlink" title="co和koa"></a>co和koa</h3><p>我们上面提到了使用Generator还缺少的一样东西——执行器。使用Generator函数在其中通过yield返回Promise，但是外层还是需要在promise的then方法中书写<code>g.next(data)</code>来通知协程继续操作。<a href="https://github.com/tj/co" target="_blank" rel="external">co</a>函数库帮助我们<strong>完成了执行器的工作</strong>。</p>
-<p>以回调函数中完成读文件操作为例（注意：其中的readFile先被改写成返回thunk函数的格式，即只接收callback作为唯一的输入参数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="keyword">var</span> co = <span class="built_in">require</span>(<span class="string">'co'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">        fs.readFile(path, &#123;<span class="attr">encoding</span>: <span class="string">'utf-8'</span>&#125;, cb);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line">co(gen);</div></pre></td></tr></table></figure>
-<p>上面的代码里，为<code>co</code>函数传入Generator函数，就会自动依次执行其中的异步任务，并在返回一个Promise对象。因此，可以给<code>co</code>函数通过<code>then</code>的方式添加回调函数。</p>
-<h4 id="co"><a href="#co" class="headerlink" title="co"></a>co</h4><p>co的代码并不复杂，核心代码只有数十行。摘录如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">  <span class="keyword">var</span> args = slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> gen === <span class="string">'function'</span>) gen = gen.apply(ctx, args);</div><div class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen.next !== <span class="string">'function'</span>) <span class="keyword">return</span> resolve(gen);</div><div class="line"></div><div class="line">    onFulfilled();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">res</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.next(res);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> ret;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        ret = gen.throw(err);</div><div class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">        <span class="keyword">return</span> reject(e);</div><div class="line">      &#125;</div><div class="line">      next(ret);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">ret</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (ret.done) <span class="keyword">return</span> resolve(ret.value);</div><div class="line">      <span class="keyword">var</span> value = toPromise.call(ctx, ret.value);</div><div class="line">      <span class="keyword">if</span> (value &amp;&amp; isPromise(value)) <span class="keyword">return</span> value.then(onFulfilled, onRejected);</div><div class="line">      <span class="keyword">return</span> onRejected(<span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'You may only yield a function, promise, generator, array, or object, '</span></div><div class="line">        + <span class="string">'but the following object was passed: "'</span> + <span class="built_in">String</span>(ret.value) + <span class="string">'"'</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在看co的代码前，我们不妨先想一下它的原理。Generator 函数只是一个异步操作的容器，它的流程和控制是由外部机制完成的。而<strong>thunk函数（这个在下面介绍）和Promise对象恰恰可以方便得在回调函数和then方法中交还执行权给Generator函数</strong>。</p>
-<p>这么来看就简单了，<strong>co函数库针对thunk函数和Promise对象封装了执行器</strong>。以比较好理解的Promise对象为例（co在内部也会将thunk函数转为Promise对象）。</p>
-<p>首先将readFile的thunk函数转为Promise对象。其中ctx绑定到co函数体内。（co函数库的thunkToPromise函数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> readFile = <span class="function"><span class="keyword">function</span> (<span class="params">path</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span> (<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">        readFile.call(ctx, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>)</span>&#123;</div><div class="line">            <span class="keyword">if</span> (err) reject(err);</div><div class="line">            resolve(data);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>之后同样使用上节中的生成器函数<code>gen()</code>，并手动执行下一步操作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen();</div><div class="line"></div><div class="line">g.next().value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">    g.next(data).value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        g.next(data);</div><div class="line">    &#125;);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>发现规律了么？<strong>自动执行器实际上就是在<code>g.done == false</code>时，不断地在then方法中嵌套添加回调函数</strong>。结果呼之欲出。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">gen</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> g = gen;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> res = g.next(data);</div><div class="line">        <span class="keyword">if</span> (res.done) <span class="keyword">return</span> res.value;</div><div class="line">        res.value.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            next(data);</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    next();</div><div class="line">&#125;</div><div class="line"></div><div class="line">run(gen);</div></pre></td></tr></table></figure>
-<p>每执行一次next，检查<code>done</code>的状态，若未结束则在then方法继续指定next方法，等待下一次返回结果。这也是co函数库的基本原理。</p>
-<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><p>理解了原理后，回头看co的源码，就比较好理解了。前6行对传入的<code>gen</code>检测是否为Generator类型。<code>onFulfilled</code>函数和<code>onRejected</code>函数对Generator函数原有的<code>next</code>和<code>throw</code>函数进行了封装，便于错误捕获和处理。</p>
-<p>在<code>next</code>方法中，主要做了下面的4步微小的工作：</p>
-<ol>
-<li>查是否已经到Generator函数的最后一步，如果是则返回</li>
-<li>确保每次<code>yield</code>返回值都是Promise对象</li>
-<li>通过<code>then</code>方法，为返回值添加回调函数，并在回调中再次调用自身</li>
-<li>对于类型不合适的<code>gen</code>，将状态修改为<code>rejected</code></li>
-</ol>
-<p>co能接收的yield返回值类型是有限的（尽管Generator函数中的yield后不限制返回值类型），有thunk函数，array，object，Promise对象。其中array和object使co可以胜任并发的操作，即可以在yield中返回多个异步操作任务。</p>
-<h4 id="koa"><a href="#koa" class="headerlink" title="koa"></a>koa</h4><p>koa是建立在generator和co之上的中间件框架，由Express开发人员打造。它通过组合不同的生成器函数，避免了繁杂易出错的回调函数嵌套。koa中没有绑定任何中间件，仅仅提供了一个轻量级函数库。</p>
-<blockquote>
-<p>Koa 中间件以一种更加传统的方式级联起来, 跟你在其他系统或工具中碰到的方式非常相似。 然而在以往的 Node 开发中, 级联是通过回调实现的, 想要开发用户友好的代码是非常困难的, Koa 借助 generators 实现了真正的中间件架构, 与 Connect 实现中间件的方法相对比，Koa 的做法不是简单的将控制权依次移交给一个又一个的方法直到某个结束，Koa 执行代码的方式有点像回形针，用户请求通过中间件，遇到 yield next 关键字时，会被传递到下游中间件（downstream），在 yield next 捕获不到下一个中间件时，逆序返回继续执行代码（upstream）。</p>
-</blockquote>
-<h3 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h3><p>上文中提到的thunk函数实际上由来已久，它是函数传名调用的一种实现方式，不同于函数的传值调用。就像下面的例子一样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 执行器</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a, b</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">f(x * <span class="number">3</span> + <span class="number">1</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 可以写成下面这样</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunk</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> x * <span class="number">3</span> + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">thunk, <span class="number">1</span></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> thunk() + <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>JavaScript中的thunk函数有着另外的意思，它替换的不是一个输入参数，而是<strong>将多参数的函数替换成单参数的版本，且只接受回调函数作为输入参数</strong>，正如之前写到的例子一样。</p>
-<p>一个简单的thunk函数转换器写起来并不复杂，像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> thunk = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">done</span>) </span>&#123;</div><div class="line">            args.push(done);</div><div class="line">            fn.apply(<span class="keyword">this</span>, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><a href="https://github.com/tj/node-thunkify" target="_blank" rel="external">node-thunkify</a>模块对此又多了一些监测，如在最内层的function添加called变量确保回调函数只执行一次。Thunkify的源码相比co就更短了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">thunkify</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">    assert(<span class="string">'function'</span> == <span class="keyword">typeof</span> fn, <span class="string">'function required'</span>);</div><div class="line">    <span class="comment">// 返回一个包含thunk函数的函数，返回的thunk函数用于执行yield，而外围这个函数用于给thunk函数传递参数</span></div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> args = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="built_in">arguments</span>.length);</div><div class="line">        <span class="comment">// 缓存当前上下文环境，给fn提供执行环境</span></div><div class="line">        <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</div><div class="line"> </div><div class="line">        <span class="comment">// 将参数类数组转化为数组（实现方式略显臃肿，可直接用Array.prototype.slice.call(arguments)实现）</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; args.length; ++i) &#123;</div><div class="line">            args[i] = <span class="built_in">arguments</span>[i];</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="comment">// 真正的thunk函数（有且只有一个参数是callback的函数，且callback的第一个参数为error）</span></div><div class="line">        <span class="comment">// 类似于：</span></div><div class="line">        <span class="comment">// function(cb) &#123;fs.readFile(path, &#123;encoding: 'utf8&#125;, cb)&#125;</span></div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> called;</div><div class="line"> </div><div class="line">            <span class="comment">// 将回调函数再包裹一层，避免重复调用；同时，将包裹了的真正的回调函数push进参数数组</span></div><div class="line">            args.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (called) <span class="keyword">return</span>;</div><div class="line">                called = <span class="literal">true</span>;</div><div class="line">                done.apply(<span class="literal">null</span>, <span class="built_in">arguments</span>);</div><div class="line">            &#125;);</div><div class="line"> </div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// 在ctx上下文执行fn（一般是异步函数，如：fs.readFile）</span></div><div class="line">                <span class="comment">// 并将执行thunkify之后返回的函数的参数（含done回调）传入，类似于执行：</span></div><div class="line">                <span class="comment">// fs.readFile(path, &#123;encoding: 'utf8&#125;, done)</span></div><div class="line">                <span class="comment">// 关于done是做什么用，则是在co库内</span></div><div class="line">                fn.apply(ctx, args);</div><div class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">                done(err);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>thunk函数的特点和Promise对象类似，就是将回调函数的绑定单独抽离出来，thunk函数结合Generator函数实现自动流程管理方法和Promise一样。</p>
-<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><p>从Promise对象到Generator函数，JavaScript中的异步编程越来越简单，但是还是有戴着镣铐跳舞的感觉，async函数的提出即将把这个镣铐摘掉。</p>
-<p>async函数的使用和Generator函数很像，我们改写之前的那个读取文件函数如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> d1 = <span class="keyword">await</span> readFile(<span class="string">'file1.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d1);</div><div class="line">    <span class="keyword">var</span> d2 = <span class="keyword">await</span> readFile(<span class="string">'file2.js'</span>);</div><div class="line">    <span class="built_in">console</span>.log(d2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>虽然和Generator函数很像，但是它有着更清晰易懂的语法，更广的适用性（<code>await</code>后可以跟任何类型，在原始类型时等同于同步操作）。最关键的是，<strong>async函数自带执行器！！！</strong></p>
-<p>在实现上，async函数和Generator函数是一样的，不过是将执行器放在自身内部而已。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">args</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> spawn(<span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spawn</span> (<span class="params">genF, self</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> gen = genF.call(self);</div><div class="line">    step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(<span class="literal">undefined</span>));</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">step</span> (<span class="params">nextF</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> next;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        next = nextF();</div><div class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="comment">// finished with failure, reject the promise</span></div><div class="line">        reject(e);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (next.done) &#123;</div><div class="line">        <span class="comment">// finished with success, resolve the promise</span></div><div class="line">        resolve(next.value);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></div><div class="line">      <span class="built_in">Promise</span>.resolve(next.value).then(</div><div class="line">        <span class="function"><span class="params">v</span> =&gt;</span> step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(v)),</div><div class="line">        e =&gt; step(<span class="function"><span class="params">()</span> =&gt;</span> gen.throw(e))</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="external">This API is so Fetching!</a><br><a href="https://github.com/tj/co" target="_blank" rel="external">co</a><br><a href="https://nswbmw.github.io/N-club/1/1.3.html" target="_blank" rel="external">co和koa</a><br><a href="https://ponyfoo.com/articles/understanding-javascript-async-await" target="_blank" rel="external">Understanding JavaScript’s async await</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-1/" itemprop="url">JavaScript中的异步编程 上</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/29/javascript-async-programming-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>下篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">JavaScript中的异步编程 下</a></p>
-</blockquote>
-<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
-<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
-<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">Event Loop</a> 的体现。</p>
-<p>在<a href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html" target="_blank" rel="external">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
-<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
-<p>大概是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></div><div class="line">asy(), cal();</div><div class="line"><span class="comment">//它们的定义和使用像下面这样</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asy</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//异步工作代码</span></div><div class="line">        callback();</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cal</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello!'</span>); <span class="comment">//或其它什么</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">asy(cal);</div></pre></td></tr></table></figure>
-<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
-<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
-<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
-<p>大概是这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target.on(<span class="string">'someevent'</span>, handler); <span class="comment">// 注册事件</span></div><div class="line">target.emit(<span class="string">'someevent'</span>); <span class="comment">//触发事件</span></div></pre></td></tr></table></figure>
-<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="comment">// 全局事件管理</span></div><div class="line">    <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">    <span class="comment">// 注册事件</span></div><div class="line">        on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">                events[type].push(handler);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                events[type] = [handler];</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">        emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">                events[type][i];</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
-<p>也就是<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>和<a href="https://vuex.vuejs.org/" target="_blank" rel="external">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
-<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a href="http://callbackhell.com/" target="_blank" rel="external">回调地狱</a>”也为人诟病。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">async</span>(<span class="params">request, callback</span>) </span>&#123;</div><div class="line">    <span class="comment">// Do something.</span></div><div class="line">    asyncA(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="comment">// Do something</span></div><div class="line">        asyncB(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="comment">// Do something</span></div><div class="line">            asyncC(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">// Do something</span></div><div class="line">                callback(data);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
-<p>ES6中的<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
-<p>它的使用方法像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</div><div class="line">        resolve(val);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        reject(err)</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//failure handler</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 或是</span></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;).catch(err) &#123;</div><div class="line">    <span class="comment">//error handler</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 处理一批次的异步任务</span></div><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1, p2, p3]),</div><div class="line">    q = <span class="built_in">Promise</span>.race([p1, p2, p3]);</div></pre></td></tr></table></figure>
-<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//constructor</span></div><div class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.callbacks = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.prototype = &#123;</div><div class="line">    <span class="attr">construct</span>: <span class="built_in">Promise</span>,</div><div class="line">    <span class="attr">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"resolve"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">reject</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"reject"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">complete</span>: <span class="function"><span class="keyword">function</span>(<span class="params">type, result</span>) </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.callbacks[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">this</span>.callbacks.shift()[type](result);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">then</span>: <span class="function"><span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callbacks.push(&#123;</div><div class="line">            <span class="attr">resolve</span>: successHandler,</div><div class="line">            <span class="attr">reject</span>: failedHandler</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
-<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://segmentfault.com/a/1190000003028634" target="_blank" rel="external">异步编程 promise模式 的简单实现</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/20/domevent-elementsize-mediatag/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/20/domevent-elementsize-mediatag/" itemprop="url">【笔记】JavaScript事件处理机制，元素大小判断与H5的媒体标签</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-20T20:45:30+08:00">
-                2017-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/20/domevent-elementsize-mediatag/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/20/domevent-elementsize-mediatag/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>前一阵舍友去面试，被问到JavaScript中的事件处理机制。暗自思忖，发现自己也没有深入的了解过。顺带连同常用的HTML元素大小和实际中用到的HTML5中的媒体元素简单整理在下面，方便之后回顾。</p>
-<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><p>JavaScript和HTML的交互是通过<strong>事件</strong>实现的。可以通过监听器订阅文档或窗口中的事件，在事件发生时执行特定的代码。这种属于设计模式中的观察者模式。</p>
-<p>事件相关的API最早出现在IE4和NetScape Nivagator4（后面简称为网景）中。两种浏览器提供了相似却不同的API。在之后的DOM2级标准中对DOM事件进行了标准化。</p>
-<h3 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h3><p><strong>事件流</strong>描述的是页面中接受时间的顺序。在这点上IE和网景采用了完全相反的两种处理思路。IE采用的是<strong>事件冒泡流</strong>，网景采用的是<strong>事件捕获流</strong>。</p>
-<p>事件冒泡（event bubbling）指从事件开始的最具体的元素接收，再逐步向上传递到最外层的节点，直到<code>document</code>。如下图（来自红宝书）展示的过程，在下面的文档中：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Event bubbling<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>Click me<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>如果div标签被点击，<code>click</code>事件会这样依次传递：<code>&lt;div&gt;</code> -&gt; <code>&lt;body&gt;</code> -&gt; <code>&lt;html&gt;</code> -&gt; <code>document</code>。（不同浏览器实现细节上会有不同）</p>
-<p><img src="/blog/images/event-bubbling.jpg" alt=""></p>
-<p>事件捕获（event capturing）则认为应该从父节点开始捕获事件直到事件目标。因此，同样的上面的例子，顺序将是：<code>document</code> -&gt; <code>&lt;html&gt;</code> -&gt; <code>&lt;body&gt;</code> -&gt;  <code>&lt;div&gt;</code>。</p>
-<p><img src="/blog/images/event-capturing.jpg" alt=""></p>
-<p>目前很少有人使用事件捕获这种方式作为事件流。</p>
-<h4 id="DOM-事件流"><a href="#DOM-事件流" class="headerlink" title="DOM 事件流"></a>DOM 事件流</h4><p>“DOM2级标准”中规定事件流包括三个阶段，<strong>事件捕获</strong>、<strong>处于目标</strong>、<strong>时间冒泡</strong>。在实际的DOM事件流中，实际目标不会接受到事件。因此如下图展示的那样，捕获阶段停止在父目标<code>&lt;body&gt;</code>上，之后事件发生在目标上，<strong>并作为事件冒泡的一部分</strong>。然后，冒泡阶段发生，事件传回到文档。</p>
-<p><img src="/blog/images/DOM2-event-flow.jpg" alt=""></p>
-<h3 id="事件处理程序"><a href="#事件处理程序" class="headerlink" title="事件处理程序"></a>事件处理程序</h3><p>事件处理程序指用户指定响应事件的某种动作。它们都以’on’开头。HTML元素本身都可以使用与之同名的HTML特性。</p>
-<h4 id="DOM0级事件处理程序"><a href="#DOM0级事件处理程序" class="headerlink" title="DOM0级事件处理程序"></a>DOM0级事件处理程序</h4><p>DOM0级事件处理程序就是将一个函数直接赋值给一个事件处理程序属性。使用这种方法指定的事件处理程序被认为是元素的一种方法，从而其作用域为元素本身，即<code>this</code>指向引用元素。可以通过直接为事件处理程序属性赋值为null删除。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> btn = <span class="built_in">document</span>.getElementById(<span class="string">'button'</span>);</div><div class="line">btn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="keyword">this</span>.id); <span class="comment">// "button"</span></div><div class="line">&#125;</div><div class="line"><span class="comment">//删除</span></div><div class="line">btn.onclick = <span class="literal">null</span>;</div></pre></td></tr></table></figure>
-<p>所有浏览器都支持DOM0级事件处理程序。这么做的好处是可以保证浏览器兼容性，缺点是使得HTML和JavaScript紧密耦合，不利用后期维护。</p>
-<h4 id="DOM2级事件处理程序"><a href="#DOM2级事件处理程序" class="headerlink" title="DOM2级事件处理程序"></a>DOM2级事件处理程序</h4><p>伴随DOM2级标准提出，“DOM2级事件”提出了两种方法，用于绑定和解除事件处理程序：<code>addEventListener()</code>和<code>removeEventListener()</code>。它接受3个参数：<strong>事件名</strong>、<strong>事件处理程序对应的函数</strong>、<strong>表示捕获阶段的布尔值</strong>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> btn = <span class="built_in">document</span>.getElementById(<span class="string">'button'</span>);</div><div class="line">btn.addEventListener(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="keyword">this</span>.id);</div><div class="line">&#125;, <span class="literal">false</span>);</div><div class="line">btn.addEventListener(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="keyword">this</span>.id + <span class="string">" again."</span>);</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
-<p>使用DOM2级方法绑定事件处理程序的一个优点是，<strong>可以添加多个程序到同一个标签上</strong>。使用DOM0级方法时则会覆盖上一次的事件处理程序。IE9及以上版本都支持DOM2级事件处理程序。</p>
-<p>由于IE事件处理程序在IE8之前，是通过类似的<code>attachEvent()</code>和<code>detachEvent()</code>方法。它的第一个参数是事件名（<strong>需要带上on</strong>），第二个参数是事件处理程序。通过这种方法绑定的处理程序都添加在冒泡阶段，且需要注意的是其中的<code>this</code>等于<code>window</code>对象。支持这种方式有IE和Opera。</p>
-<p>因此，一个跨浏览器兼容的事件绑定和解绑应该是下面这样的：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="attr">addHandler</span>: <span class="function"><span class="keyword">function</span>(<span class="params">element, type, handler</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (element.addEventListener) &#123;</div><div class="line">            element.addEventListener(type, handler, <span class="literal">false</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (element.attachEvent) &#123;</div><div class="line">            element.attachEvent(<span class="string">"on"</span> + type, handler);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            element[<span class="string">"on"</span> + type] = handler;</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">removeHandler</span>: <span class="function"><span class="keyword">function</span>(<span class="params">element, type, handler</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (element.removeEventListener) &#123;</div><div class="line">            element.removeEventListener(type, handler, <span class="literal">false</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (element.detachEvent) &#123;</div><div class="line">            element.detachEvent(<span class="string">"on"</span> + type, handler);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            element[<span class="string">"on"</span> + type] = <span class="literal">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>===</p>
-<h2 id="元素大小与位置"><a href="#元素大小与位置" class="headerlink" title="元素大小与位置"></a>元素大小与位置</h2><p>这些属性方法并不属于“DOM2级样式”，但是却经常得到使用。目前所有主流浏览器都支持这些属性。它们大多都是只读的。</p>
-<h3 id="偏移量"><a href="#偏移量" class="headerlink" title="偏移量"></a>偏移量</h3><p><strong>偏移量</strong>描述元素在屏幕中占用的可用空间，由其宽高决定，包括内边距、滚动条和边框（不包括外边距）。有下面4个属性：</p>
-<ul>
-<li><code>offsetHeight</code> 元素垂直方向上的占用空间</li>
-<li><code>offsetWidth</code> 元素水平方向上的占用空间</li>
-<li><code>offsetLeft</code> 元素左边框距<code>offsetParent</code>元素左内边框的像素距离</li>
-<li><code>offsetTop</code> 元素上边框距<code>offsetParent</code>元素上内边框的像素距离</li>
-</ul>
-<p>可以利用元素的<code>offsetLeft</code>或<code>offsetLeft</code>与其<code>offsetParent</code>对应属性相加直到根元素，获取到元素相对于页面的左偏移值或上偏移值。</p>
-<h3 id="客户区大小"><a href="#客户区大小" class="headerlink" title="客户区大小"></a>客户区大小</h3><p><strong>客户区大小</strong>指元素内容和内边距占据的空间大小，不包括滚动条。<code>clientWidth</code>是元素内容宽度加左右内边距的宽度，<code>clientHeight</code>是元素内容高度加上下内边距的高度。</p>
-<p>可以通过对<code>body</code>元素取值来获取当前浏览器视口的大小。</p>
-<h3 id="滚动大小"><a href="#滚动大小" class="headerlink" title="滚动大小"></a>滚动大小</h3><p><strong>滚动大小</strong>包含滚动内容的元素大小。它有下面4个相关属性：</p>
-<ul>
-<li><code>scrollHeight</code> 没有滚动条时，元素内容的高度</li>
-<li><code>scrollWidth</code> 没有滚动条时，元素内容的宽度</li>
-<li><code>scrollLeft</code> 被隐藏在内容区域左侧的像素数，可以设置从而改变元素滚动位置</li>
-<li><code>scrollTop</code> 被隐藏在内容区域上侧的像素数，可以设置从而改变元素滚动位置</li>
-</ul>
-<p><code>scrollHeight/scrollWidth</code>和<code>clientHeight/clientWidth</code>在不同浏览器下的表现行为并不相同，有的表示视口大小，有的表示元素内容区域大小。使用时可以<strong>取较大值</strong>。而另外两个属性<code>scrollLeft</code>和<code>scrollTop</code>则通常用在<code>document</code>中，获取和滚动相关的属性。</p>
-<h3 id="确定元素大小"><a href="#确定元素大小" class="headerlink" title="确定元素大小"></a>确定元素大小</h3><p>大多数主流浏览器为元素提供了<code>getBoundingClientRect()</code>方法，返回一个对象，包含<code>left</code>，<code>right</code>，<code>top</code>，<code>bottom</code>四个属性。给出了元素相对于视口的位置。</p>
-<p>对不支持这个方法的浏览器，可以通过偏移量的相关属性获取。</p>
-<p>===</p>
-<h2 id="媒体元素"><a href="#媒体元素" class="headerlink" title="媒体元素"></a>媒体元素</h2><p>HTML5出现前，提供富媒体内容的网站多采用Flash的方式保证浏览器兼容性。HTML5新增了两个标签<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" target="_blank" rel="external"><code>&lt;audio&gt;</code></a>和<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/video" target="_blank" rel="external"><code>&lt;video&gt;</code></a>。用于方便地嵌入音频和视频内容。同时，这两个标签也提供了实现常用功能的JavaScript API。允许为媒体创建自定义控件。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">src</span>=<span class="string">"demo.mpg"</span> <span class="attr">id</span>=<span class="string">"foo"</span>&gt;</span>Video player is not available.<span class="tag">&lt;/<span class="name">video</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">src</span>=<span class="string">"song.mp3"</span> <span class="attr">id</span>=<span class="string">"bar"</span>&gt;</span>Audio player is not available.<span class="tag">&lt;/<span class="name">audio</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>其中元素的<code>src</code>属性指定了加载的媒体文件，还可以通过<code>width</code>和<code>height</code>属性指定播放器大小。<code>controls</code>属性意味浏览器应该显示UI控件用于操作媒体。标签中的内容用于在不支持时显示后备内容。</p>
-<p>因为不同浏览器支持的媒体格式集并不完全相同，可以在标签下指定<strong>一或多个</strong><code>&lt;source&gt;</code>元素，通过<code>src</code>和<code>type</code>属性指定来源和格式，视频标签下<code>&lt;source&gt;</code>的<code>type</code>中甚至可以指定<code>codecs</code>表示解码器。目前现代浏览器（IE9+，对IE说的就是你）都支持这两个标签。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">id</span>=<span class="string">"myVideo"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"foo.mpg"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"foo.webm"</span> <span class="attr">type</span>=<span class="string">"video/webm; codecs=vp8, vorbis"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">video</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">audio</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"song.ogg"</span> <span class="attr">type</span>=<span class="string">"audio/ogg"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"song.mp3"</span> <span class="attr">type</span>=<span class="string">"audio/mpeg"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p><code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code>提供了完善的JavaScript接口，下面是一些可能会用到的它们的属性。其中很多可以直接在标签元素上设置。</p>
-<ul>
-<li><code>autoplay</code> 取消或设置当前<code>autoplay</code>标识</li>
-<li><code>controls</code> 取消或设置当前<code>controls</code>标识，用于显示和隐藏浏览器内置控件</li>
-<li><code>currentTime</code> 获取已经播放的秒数</li>
-<li><code>duration</code> 获取媒体的总长度（秒数）</li>
-<li><code>ended</code> 获取媒体是否播放完成</li>
-<li><code>loop</code>  取消或设置媒体文件是否循环播放</li>
-<li><code>muted</code> 取消或设置媒体文件是否静音</li>
-<li><code>paused</code> 标识播放器是否暂停</li>
-<li><code>playbackRate</code> 取消或设置当前播放速度</li>
-<li><code>readyState</code> 标识媒体是否就绪，有0，1，2，3四种情况，表示不可用、可以播放当前帧、可以播放、加载完毕</li>
-<li><code>src</code> 媒体文件来源，可重写</li>
-<li><code>volume</code> 取消或设置当前音量，值为0.0到1.0</li>
-</ul>
-<h3 id="事件-1"><a href="#事件-1" class="headerlink" title="事件"></a>事件</h3><p>这两个媒体元素还有许多事件，有的是媒体播放的结果，有的是用户操作的结果。</p>
-<ul>
-<li><code>abort</code> 下载中断</li>
-<li><code>canplay</code> 对应着<code>readyState</code>为2</li>
-<li><code>canplaythrough</code> 对应着<code>readyState</code>为3</li>
-<li><code>ended</code> 媒体播放完毕</li>
-<li><code>error</code> 下载过程网络错误</li>
-<li><code>pause</code> 播放暂停</li>
-<li><code>play</code>  媒体收到播放指令</li>
-<li><code>playing</code> 媒体开始播放</li>
-<li><code>ratechange</code> 播放速度改变</li>
-<li><code>seeked</code> 移动到新位置</li>
-<li><code>seeking</code> 正在移动进度条</li>
-<li><code>volumnchange</code> <code>volumn</code>和<code>muted</code>属性值改变</li>
-<li><code>waiting</code> 播放因下载未完成暂停</li>
-</ul>
-<p>在如此丰富的属性和事件的帮助下，结合<code>play()</code>和<code>pause()</code>方法，我们可以很容易构建一个自定义的媒体播放器。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"player"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"player__content"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">video</span> <span class="attr">id</span>=<span class="string">"video"</span> <span class="attr">src</span>=<span class="string">"movie.mov"</span> <span class="attr">poster</span>=<span class="string">"movie.jpg"</span> <span class="attr">width</span>=<span class="string">"400"</span> <span class="attr">height</span>=<span class="string">"200"</span>&gt;</span></div><div class="line">      Video is not supported.</div><div class="line">    <span class="tag">&lt;/<span class="name">video</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"player__control"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Play!"</span> <span class="attr">id</span>=<span class="string">"video-play"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"curtime"</span>&gt;</span>0<span class="tag">&lt;/<span class="name">span</span>&gt;</span>/<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"duration"</span>&gt;</span>0<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> player = <span class="built_in">document</span>.getElementById(<span class="string">"video"</span>),</div><div class="line">    btn = <span class="built_in">document</span>.getElementById(<span class="string">"video-play"</span>),</div><div class="line">    curtime = <span class="built_in">document</span>.getElementById(<span class="string">"curtime"</span>),</div><div class="line">    duration = <span class="built_in">document</span>.getElementById(<span class="string">"duration"</span>);</div><div class="line"></div><div class="line"><span class="comment">//更新播放时间</span></div><div class="line">duration.innerHTML = player.duration;</div><div class="line"></div><div class="line"><span class="comment">//为按钮添加处理事件</span></div><div class="line">EventUtil.addHandler(btn, <span class="string">"click"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (player.paused) &#123;</div><div class="line">        player.play();</div><div class="line">        btn.value = <span class="string">"Pause!"</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        player.pause();</div><div class="line">        btn.value = <span class="string">"Play!"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">//定时更新时间</span></div><div class="line">setInterval(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    curtime.innerHTML = player.currentTime;</div><div class="line">&#125;, <span class="number">250</span>);</div></pre></td></tr></table></figure>
-<p>最后，不是所有浏览器都支持这两个标签的所有解码器，因此有一个API来检测浏览器是否支持某种解码器。通过<code>canPlayType()</code>方法，该方法接收格式/编解码器（如”<code>audio/wav</code>“）字符串，返回”probably”, “maybe”或是空字符串””。像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (audio.canPlayType(<span class="string">"audio/mpeg"</span>))&#123;</div><div class="line">    <span class="comment">//进一步处理</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/18/how-to-construct-css/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/18/how-to-construct-css/" itemprop="url">BEM和CSS方法论</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-18T16:49:06+08:00">
-                2017-03-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/18/how-to-construct-css/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/18/how-to-construct-css/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>CSS是一种“奇怪”的编程语言，用来描述网页的样式。使用起来很简单，却由于自身的缺陷（只有全局作用域、没有模块化）使得它很难像真正的编程语言那样，有软件工程的办法适用。</p>
-<h2 id="BEM"><a href="#BEM" class="headerlink" title="BEM"></a>BEM</h2><p><a href="https://en.bem.info/" target="_blank" rel="external">BEM</a>是一个方法论，是一套使用CSS的惯例和约定，用于写出更具有维护性和重用性的CSS代码。BEM由<a href="https://yandex.com/company/" target="_blank" rel="external">Yandex</a>公司提出，目前已被广泛采用。它和其他的CSS的规范如<a href="http://oocss.org/" target="_blank" rel="external">OOCSS</a>，<a href="http://smacss.com/" target="_blank" rel="external">SMACSS</a>并不冲突。它们都用来提高CSS文件的可维护性。</p>
-<h3 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h3><p><strong>BEM</strong>的三个字母分别代表块（<strong>block</strong>）、元素（<strong>element</strong>）、修饰符（<strong>modifier</strong>）。根据<a href="http://getbem.com/introduction/" target="_blank" rel="external">官网</a>的介绍：</p>
-<ul>
-<li><code>Block</code>代表一个独立的抽象的组件</li>
-<li><code>Element</code>代表依附于<code>Block</code>的后代，用来形成一个完整的<code>block</code></li>
-<li><code>Modifier</code>代表<code>Block</code>或是<code>Element</code>的不同状态或版本，用来改变默认样式</li>
-</ul>
-<p>另外：</p>
-<ul>
-<li><strong>不要使用文档的层级结构</strong></li>
-<li><strong>在标签嵌套时，只使用一层嵌套</strong>，通过class名标注标签</li>
-</ul>
-<p>其中<code>Element</code>命名时在<code>Block</code>后添加两个短横线<code>--</code>，<code>Modifier</code>在<code>Block</code>后添加两个下划线<code>__</code>。<strong>所有的CSS均绑定到标签的class上</strong>，确保样式的重用性。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.block</span>&#123;&#125;</div><div class="line"><span class="selector-class">.block__element</span>&#123;&#125;</div><div class="line"><span class="selector-class">.block--modifier</span>&#123;&#125;</div></pre></td></tr></table></figure>
-<p>之所以采用两个短划线和下划线，是为了让用户自定义的块命名中可以含有单个短划线和下划线。</p>
-<p>下面是官网的样例：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span>=<span class="string">"form form--theme-xmas form--simple"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"form__input"</span> <span class="attr">type</span>=<span class="string">"text"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span></span></div><div class="line">    <span class="attr">class</span>=<span class="string">"form__submit form__submit--disabled"</span></div><div class="line">    <span class="attr">type</span>=<span class="string">"submit"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.form</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form--theme-xmas</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form--simple</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__input</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__submit</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__submit--disabled</span> &#123; &#125;</div></pre></td></tr></table></figure>
-<h3 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h3><p>BEM正如上面介绍的那样，只是一套规范。在使用的时候会感觉类名有些冗长和奇怪。不过它带来的好处是很有价值的。</p>
-<p>另外，<strong>没有必要在每个地方都使用BEM规范</strong>。对于独立的一条CSS样式，写成BEM格式的写法并没有必要。对于考虑使用BEM的人来讲，可能最重要的是从哪里到哪里使用BEM。</p>
-<h2 id="OOCSS"><a href="#OOCSS" class="headerlink" title="OOCSS"></a>OOCSS</h2><p>写CSS代码很简单，但是写出可维护的CSS代码比其他语言就要更难了。因此，大牛们提出了OOCSS、SMACSS这样的<strong>设计模式</strong>来让事情更容易。OOCSS（Object Oriented CSS）即面向对象的CSS，它的关键在于创建在页面中创建模块化可重用的对象（HTML和CSS的结合体）。</p>
-<p>根据OOCSS之父Nicole Sullivan的说法，OOCSS重点在于：</p>
-<ol>
-<li>独立文档结构与样式</li>
-<li>独立文档容器和内容</li>
-</ol>
-<p>使用容易理解的话来说，就是从HTML结构上解脱出来，增加CSS class的重复利用。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">nav</span> <span class="attr">class</span>=<span class="string">"nav--main"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">nav</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>上面的例子里，业务代码经常会将CSS选择器写成<code>nav ul li a</code>这样的写法。这么做过渡依赖原有的HTML文档结构。原有的文档结构改变时，CSS就必须跟着重构。因此，建议直接给<code>a</code>标签绑定class，或写成<code>nav--main a</code>的写法。</p>
-<p>第二，减少使用id<strong>作为CSS的选择器</strong>。尽量使用class，类似<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>中的概念，抽出重复的部分，定义在一个class中。像下面这样，定义基本的类<code>button</code>，并通过<code>button-default</code>和<code>button-primary</code>来拓展基本类。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"button button-default"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"button button-primary"</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>总结一下，OOCSS的优势在于它可以减少CSS的代码减少加载时间（当然的），<strong>语义化的类名</strong>增强逻辑性和SEO，CSS样式可以轻松拓展，</p>
-<p>缺点在于它适合大型网站的开发，在小型项目中似乎用不到这种<em>40米的长刀</em>，同时没有巧妙地使用，创建的组件会适得其反增加，增加维护难度。</p>
-<h2 id="SMACSS"><a href="#SMACSS" class="headerlink" title="SMACSS"></a>SMACSS</h2><p><a href="https://smacss.com/" target="_blank" rel="external">SMACSS</a>(读作”smacks”)全称为Scalable and Modular Architecture for CSS。它也是CSS的框架规范之一，目标是让”<strong>keep CSS more organized and more structured, leading to code that is easier to build and easier to maintain（作者Jonathan Snook语）</strong>“</p>
-<p>SMACSS使用了一套5个类别来划分CSS，这种组织和结构规范了CSS写法，提高了CSS使用效率。</p>
-<ul>
-<li><strong>Base rules</strong> 类似与<code>reset.css</code>和<code>normalize.css</code>的效果，为文档的标签设置默认样式，<strong>应该只包含单独的标签选择器</strong></li>
-<li><strong>Layout rules</strong> 将文档分成诸如header，article，footer这样的各个部分，为布局中的每个部分设置样式</li>
-<li><strong>Module rules</strong> 页面中可重用部分的样式，在layout中出现多次，使用时避免出现标签选择器</li>
-<li><strong>State rules</strong> 用于描述element的不同状态，和基本规则组合使用。</li>
-<li><strong>Theme rules</strong> 类似与“皮肤”的概念，更改整个网站的主题。</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><a href="https://github.com/css-modules/css-modules" target="_blank" rel="external">CSS Modules</a>和上面的思路要来的不大一样。它着眼于解决作用域和模块依赖的问题，采取的做法是重写class名。在React，Vue中每个组件中的CSS样式就做了这样的处理，保证的模块间的CSS文件不相冲突。</p>
-<p>在通过JavaScript绑定到特定class的标签上时，也造成了CSS维护的不变。必要的时候可以为HTML标签赋予专为JavaScript使用的类名。如：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"nav--main__item js-nav--main__item"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>whatever<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CSS是一门看起来很简单的语言，但是它的简单性也提升了工程中的使用难度。为了增强它的可用性。许多名为”xxxCSS”的方法论和机制等被发明，类似Sass，SCSS，Compass，Less，stylus，BEM，SMACSS，OOCSS，ACSS，CCSS等。在使用CSS时，可以尝试使用上面的规范，遵守一些<a href="http://cssguidelin.es/" target="_blank" rel="external">法则</a>，以写出更pure的代码。</p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
-<li><a href="http://getbem.com/" target="_blank" rel="external">BEM</a></li>
-<li><a href="https://smacss.com/book" target="_blank" rel="external">SMACSS Book</a></li>
-<li><a href="http://www.w3cplus.com/css/oocss-concept" target="_blank" rel="external">OOCSS——概念篇</a></li>
-<li><a href="http://www.w3cplus.com/css/css-sass-scss-compass-less-bem-smacss-oocss-acss-ccss-wtfss.html" target="_blank" rel="external">CSS, Sass, SCSS, Compass, Less,BEM, SMACSS, OOCSS, ACSS, CCSS, WTFSS?</a></li>
-<li><a href="https://segmentfault.com/a/1190000000388784" target="_blank" rel="external">编写可维护的CSS</a>(翻译自<a href="http://cssguidelin.es/" target="_blank" rel="external">CSS Guildelines</a>)</li>
-<li><a href="https://github.com/css-modules/css-modules" target="_blank" rel="external">CSS Modules</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><a class="extend next" rel="next" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><a class="extend next" rel="next" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1391,7 +1536,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">115</span>
+                <span class="site-state-item-count">119</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1413,7 +1558,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">325</span>
+                <span class="site-state-item-count">337</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

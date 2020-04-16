@@ -296,6 +296,977 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/23/some-tips-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/05/23/some-tips-2/" itemprop="url">工作中的遇到的一些小知识 2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T23:12:30+08:00">
+                2018-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/05/23/some-tips-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/23/some-tips-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一个合法检测的Validator"><a href="#一个合法检测的Validator" class="headerlink" title="一个合法检测的Validator"></a>一个合法检测的Validator</h2><p>合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> TYPE_VALIDATE_MESSAGE = &#123;</div><div class="line">    <span class="attr">isNumber</span>: <span class="string">'不是一个数字'</span>,</div><div class="line">    <span class="attr">isObject</span>: <span class="string">'不是一个对象'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="string">'不是一个数组'</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="string">'数值过大'</span>,</div><div class="line">    <span class="attr">gt</span>: <span class="string">'数值过小'</span>,</div><div class="line">    <span class="attr">st</span>: <span class="string">'长度过短'</span>,</div><div class="line">    <span class="attr">ht</span>: <span class="string">'长度过长'</span></div><div class="line">    notEmpty: <span class="string">'需要非空'</span>,</div><div class="line">    <span class="attr">len</span>: <span class="string">'长度不合规范'</span>,</div><div class="line">    <span class="attr">in</span>: <span class="string">'不在可选范围内'</span>,</div><div class="line">    <span class="attr">reg</span>: <span class="string">'无法匹配指定模式'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 供validate使用</span></div><div class="line">util.test = &#123;</div><div class="line">    <span class="attr">isObject</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Object</span>(_) === _,</div><div class="line">    <span class="attr">isNumber</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="keyword">typeof</span> _ == <span class="string">'number'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Array</span>.isArray(_),</div><div class="line">    <span class="attr">notEmpty</span>: <span class="function"><span class="params">_</span> =&gt;</span> _.length &gt; <span class="number">0</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &lt; limit,</div><div class="line">    <span class="attr">gt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &gt; limit,</div><div class="line">    <span class="attr">st</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &lt; limit,</div><div class="line">    <span class="attr">ht</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &gt; limit,</div><div class="line">    <span class="attr">in</span>: <span class="function">(<span class="params">_, range</span>) =&gt;</span> ~range.indexOf(_),</div><div class="line">    <span class="attr">len</span>: <span class="function">(<span class="params">_, length</span>) =&gt;</span> _.length === length,</div><div class="line">    <span class="attr">reg</span>: <span class="function">(<span class="params">_, reg</span>) =&gt;</span> reg.test(_)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 数据校验</div><div class="line"> * @author: shenlvmeng</div><div class="line"> * @params value &#123;any&#125; 校验数值 输入单个数值使用verify校验 输入对象使用verifyMap校验</div><div class="line"> * @method verify 校验单个数值</div><div class="line"> * @method verifyMap 校验对象</div><div class="line"> * @return &#123;Object&#125; 包含success和message的对象</div><div class="line"> */</div><div class="line">util.validate = <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 方便传递到外界修改</span></div><div class="line">    <span class="keyword">let</span> message = &#123; <span class="attr">content</span>: <span class="string">''</span> &#125;;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">verify</span>(<span class="params">val, validators, key</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(validators)) validators = [validators];</div><div class="line">        <span class="keyword">return</span> validators.every(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</div><div class="line">            <span class="keyword">let</span> isRight;</div><div class="line">            <span class="keyword">if</span> (util.test.isObject(v)) &#123;</div><div class="line">                isRight = util.test[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]](val, <span class="built_in">Object</span>.values(v)[<span class="number">0</span>])</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]]&#125;</span>`</span>);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                isRight = util.test[v](val);</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[v]&#125;</span>`</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> isRight;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 单个数值使用</div><div class="line">         * @params validators &#123; String|Array|Object &#125; 校验函数 必须是util中已定义的函数</div><div class="line">         * @params String 类型时为函数名; Object类型时为函数名和对应入参; Array时为以上的列表 </div><div class="line">         */</div><div class="line">        verify(validators) &#123;</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: verify(value, validators),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 校验整个对象时使用</div><div class="line">         * @params config &#123; Object &#125; 校验函数 针对Object中每个key的校验</div><div class="line">         * @params 每个key的value服从verify的格式，当key为function类型时交给调用方自己处理</div><div class="line">         */</div><div class="line">        verifyMap(config) &#123;</div><div class="line">            <span class="keyword">if</span> (!util.test.isObject(value)) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Invalid value type. It should be an Object.'</span>);</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: <span class="built_in">Object</span>.keys(config).every(<span class="function"><span class="params">key</span> =&gt;</span> (</div><div class="line">                    <span class="keyword">typeof</span> config[key] === <span class="string">'function'</span> ? config[key](value[key], message)</div><div class="line">                    : verify(value[key], config[key], key))</div><div class="line">                ),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际应用中发现，<code>verifyMap</code>方法用的比较多。使用样例如下;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">examine() &#123;</div><div class="line">    <span class="keyword">return</span> util.validate(formData).verifyMap(&#123;</div><div class="line">        <span class="attr">userName</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">password</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">age</span>: [<span class="string">'isNumber'</span>, &#123; <span class="attr">lt</span>: <span class="number">18</span> &#125;],</div><div class="line">        <span class="attr">gender</span>: &#123;<span class="attr">in</span>: [<span class="string">'male'</span>, <span class="string">'female'</span>]&#125;,</div><div class="line">        <span class="attr">email</span>: &#123;<span class="string">'reg'</span>: <span class="regexp">/email pattern/</span>&#125;,</div><div class="line">        <span class="attr">isAccepted</span>: <span class="function">(<span class="params">value, message</span>) =&gt;</span> value ? value : (message.content = <span class="string">'请接收用户协议'</span>, <span class="literal">false</span>)</div><div class="line">    &#125;);</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
+<h2 id="Linux清理大文件"><a href="#Linux清理大文件" class="headerlink" title="Linux清理大文件"></a>Linux清理大文件</h2><ul>
+<li><code>df -h</code>查看存储情况</li>
+<li><code>du -sh * | grep G</code>查找当前目录下大于1G的大文件，挨个确认删除即可</li>
+</ul>
+<h2 id="当前页面窗口活动状态检查"><a href="#当前页面窗口活动状态检查" class="headerlink" title="当前页面窗口活动状态检查"></a>当前页面窗口活动状态检查</h2><p>利用<code>visibilityChange</code>API，配合<code>visibilityState</code>检查窗口状态。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// subscribe to visibility change events</span></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'visibilitychange'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// fires when user switches tabs, apps, goes to homescreen, etc.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'hidden'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = <span class="string">'Baby, Come Back!'</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// fires when app transitions from prerender, user returns to the app / tab.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'visible'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = defaultTitle;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><p>监测页面元素和视口的交错关系的DOM API，目前浏览器支持度不高。可以用来方便地实现懒加载和页面无限滚动。</p>
+<p><a href="http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html" target="_blank" rel="external">参考</a></p>
+<h2 id="图种"><a href="#图种" class="headerlink" title="图种"></a>图种</h2><ul>
+<li>Windows，<code>copy /b image.jpg+zip.rar output.jpg</code>，更改输出图片后缀为rar得到压缩包</li>
+<li>Linux，<code>cat image.jpg zip.rar &gt; output.jpg</code>，同上</li>
+</ul>
+<h2 id="draggable-with-Vue"><a href="#draggable-with-Vue" class="headerlink" title="draggable with Vue"></a>draggable with Vue</h2><p>业务中有拖拽需求，在试用多个轮子后，最终选择了<a href="https://jexordexan.github.io/vue-slicksort/?selectedKind=Vertical%20sorting&amp;selectedStory=Simple%20list&amp;full=0&amp;addons=1&amp;stories=1&amp;panelRight=0&amp;addonPanel=storybook%2Factions%2Factions-panel" target="_blank" rel="external">vue-slicksort</a></p>
+<ul>
+<li>Vue Draggable</li>
+<li>Vue Dragula</li>
+<li>Vue slicksort</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>GitHub名</th>
+<th>流行度</th>
+<th>依赖/原理</th>
+<th>功能完善度</th>
+<th>文档完善度</th>
+<th>使用舒适度</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vuedraggable</td>
+<td>star数3859，很流行</td>
+<td>依赖sortable.js，后者依赖HTML5的draggable API</td>
+<td>功能丰富强大，有很多别人踩过的坑</td>
+<td>文档比较丰富</td>
+<td>通过组件包裹形式使用 侵入性小 优</td>
+<td>有兼容性问题，Chrome66.0.3359.181 Mac OSX 10.13.1下无法通过拖动换位</td>
+</tr>
+<tr>
+<td>vue-dragula</td>
+<td>star数100+，上次更新1年前</td>
+<td>依赖dragula.js</td>
+<td>功能一般</td>
+<td>不完善，几乎都是dragula的API</td>
+<td>通过<code>Vue.use</code>的形式 + directives的方式引入，侵入式一般</td>
+<td>使用效果不好，实现时没有拖动和移动的动效</td>
+</tr>
+<tr>
+<td>vue-slicksort</td>
+<td>star数100+，更新较活跃</td>
+<td>0依赖，不基于HTML5 drag API，支持触摸屏，兼容性好</td>
+<td>功能一般，支持平面拖动</td>
+<td>较完善，有样例、API解释和FAQ</td>
+<td>略糟糕，需要使用mixin的形式，通常意味着额外的组件定义</td>
+<td>展示效果优秀，能满足需求</td>
+</tr>
+</tbody>
+</table>
+<p>综上，考虑到只有vue-slicksort能满足需求，故选择之。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/14/canvas-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/05/14/canvas-introduction/" itemprop="url">canvas相关介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T21:28:01+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/05/14/canvas-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/14/canvas-introduction/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和<code>&lt;img&gt;</code>标签很像，但是只有<code>width</code>和<code>height</code>两个属性，在未设置时，为300px和150px。canvas类似<code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code>可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于<code>&lt;img&gt;</code>，它必须要有一个<code>&lt;/canvas&gt;</code>作为闭合标志。</p>
+<p>canvas是一个2D渲染上下文环境（就像webGL是3D渲染上下文环境），在获取到<code>&lt;canvas&gt;</code>元素后，可以通过其<code>getContext</code>方法得到渲染上下文和相关功能，通常传入<code>2d</code>，用来绘制2D图案。</p>
+<h2 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h2><p><code>canvas.getContext(&#39;2d&#39;)</code>得到一个CanvasRenderingContext2D对象。剩下的绘制操作都通过调用对象上的API实现。</p>
+<p>canvas的坐标系系统和svg一样，从左上角开始，向右和向下为正，坐标轴单位为像素。下面列出最常见的绘制图形API。</p>
+<ul>
+<li><code>fillRect(x, y, width, height)</code> 绘制矩形</li>
+<li><code>strokeRect(x, y, width, height)</code> 绘制矩形边框</li>
+<li><code>clearRect(x, y, width, height)</code> 擦除矩形范围</li>
+</ul>
+<p>path被用来绘制通用曲线，注意<strong>path都是封闭的</strong>。绘制路径有4步：</p>
+<ul>
+<li><code>beginPath()</code> 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。</li>
+<li>使用画图命令去画出路径</li>
+<li><code>closePath()</code> 闭合路径</li>
+<li><em>可选</em> <code>fill()</code> 通过填充路径的内容区域生成实心的图形，使用<code>fill()</code>时可以不手动闭合路径</li>
+<li><code>stroke()</code>，为路径添加描边</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 样例</span></div><div class="line">ctx.beginPath();</div><div class="line">ctx.moveTo(<span class="number">75</span>,<span class="number">50</span>);</div><div class="line">ctx.lineTo(<span class="number">100</span>,<span class="number">75</span>);</div><div class="line">ctx.lineTo(<span class="number">100</span>,<span class="number">25</span>);</div><div class="line">ctx.fill();</div></pre></td></tr></table></figure>
+<div class="tip">所有的路径通过<code>stroke()</code>和<code>fill()</code>才能体现效果。</div>
+
+<p>里面包含了常见的<code>moveTo</code>和<code>lineTo</code>，表示移动画笔/画直线到(x,y)处。画曲线时可以选择：</p>
+<ul>
+<li><code>arc(x, y, radius, startAngle, endAngle, anticlockwise)</code><br>画一个以（x,y）为圆心的以radius为半径的圆弧（圆），从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。</li>
+<li><code>arcTo(x1, y1, x2, y2, radius)</code> 根据给定的控制点和半径画一段圆弧，再以直线连接两个控制点。</li>
+<li><code>quadraticCurveTo(cp1x, cp1y, x, y)</code> 绘制二次贝塞尔曲线，cp1x,cp1y为一个控制点，x,y为结束点。</li>
+<li><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</code> 绘制三次贝塞尔曲线，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二，x,y为结束点。</li>
+</ul>
+<p><strong>path2D</strong></p>
+<p>通过<code>new path2D()</code>用path2D声明子路径，允许你保留和重用路径对象。除了CanvasRenderingContext2D对象的API外，还可以用<code>addPath</code>新增路径到path2D对象中，它还支持通过SVG格式的字符串导入为路径。</p>
+<h2 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h2><p>通过修改<code>fillStyle</code>和<code>strokeStyle</code>改变当前填充和描边的默认颜色。支持的颜色格式有</p>
+<ul>
+<li>颜色名</li>
+<li>hex</li>
+<li>rgb</li>
+<li>rgba</li>
+</ul>
+<p>通过<code>globalAlpha</code>修改画布里的所有图形的透明度，取值在0到1之间。</p>
+<p>线型样式选择有：</p>
+<ul>
+<li>lineWidth = value 设置线条宽度。</li>
+<li>lineCap = type 设置线条末端样式。默认为butt，还有round、square可选。</li>
+<li>lineJoin = type 设定线条与线条间接合处的样式。round, bevel 和 miter三种可选，miter时，miterLimit可以限制尖角的高度。</li>
+<li>miterLimit = value 限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度</li>
+</ul>
+<p>设置虚线时，<code>setLineDash(segments)</code>设置当前虚线样式。<code>lineDashOffset = value</code>设置虚线样式的起始偏移量。<code>getLineDash()</code>返回一个包含当前虚线样式，长度为非负偶数的数组。</p>
+<p><strong>渐变</strong></p>
+<p>渐变需要先指定类型和覆盖范围：</p>
+<ul>
+<li><code>createLinearGradient(x1, y1, x2, y2)</code> 方法接受4个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。</li>
+<li><code>createRadialGradient(x1, y1, r1, x2, y2, r2)</code> 方法接受6个参数，前三个定义一个以 (x1,y1) 为原点，半径为r1的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为r2的圆。</li>
+</ul>
+<p>创建的渐变通过<code>addColorStop(position, color)</code>添加多个color stop。position参数是一个0.0与1.0之间的数值，表示渐变中颜色所在的相对位置。<strong>渐变是一种样式，通过指定给fillStyle或是strokeStyle发挥作用</strong>。</p>
+<p><strong>模式</strong></p>
+<p>通过<code>createPattern(image, type)</code>创建pattern，Image可以是一个Image对象的引用，或者另一个canvas对象。Type描述重复的格式，是下面的字符串值之一：repeat，repeat-x，repeat-y 和 no-repeat。</p>
+<p>同样，通过指定给<code>fillStyle</code>和<code>strokeStyle</code>使用。</p>
+<p><strong>阴影</strong></p>
+<ul>
+<li>shadowOffsetX = float</li>
+<li>shadowOffsetY = float<br>shadowOffsetX和shadowOffsetY用来设定阴影在X和Y轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为0。</li>
+<li>shadowBlur = float shadowBlur 用于设定阴影的模糊程度，默认为 0。</li>
+<li>shadowColor = color，默认为黑色</li>
+</ul>
+<p>canvas有两种填充规则<a href="https://en.wikipedia.org/wiki/Nonzero-rule" target="_blank" rel="external"><code>non-zero</code></a>和<code>even-odd</code>，默认为前者。</p>
+<h2 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h2><ul>
+<li><code>fillText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置填充指定的文本，绘制的最大宽度是可选的</li>
+<li><code>strokeText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置绘制文本边框，绘制的最大宽度是可选的</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ctx.font = <span class="string">"48px PingFangSC"</span>;</div><div class="line">ctx.strokeText(<span class="string">"Hello world"</span>, <span class="number">10</span>, <span class="number">50</span>);</div></pre></td></tr></table></figure>
+<p>除了<code>font</code>（语法和CSS的font相同）外，还有下面的选择：</p>
+<ul>
+<li>textAlign = value 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。</li>
+<li>textBaseline = value 基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。</li>
+<li>direction = value 文本方向</li>
+</ul>
+<p>另外，可以通过<code>measureText()</code>，得到文本绘制的宽度。</p>
+<h2 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h2><p>canvas里可以引入Image对象或其他canvas元素，或者通过URL方式使用图片。</p>
+<ul>
+<li>使用相同页面内的图片，使用正常地获取元素的方式获取即可</li>
+<li>使用其它域名下的图片，在HTMLImageElement上使用<code>crossOrigin</code>属性，可以请求加载其它域名上的图片。若服务器不允许跨域加载，则会污染canvas，即不能导出数据</li>
+<li>使用canvas，按获取元素的方式获取即可</li>
+</ul>
+<p>image可以指定<code>src</code>属性为URL或<code>data:url</code>的形式。甚至引入<code>&lt;video&gt;</code>使用视频帧作为image。绘制图片时，使用：</p>
+<ul>
+<li><code>drawImage(image, x, y)</code> 其中image是image或者canvas对象，x和y是其在目标canvas里的起始坐标。</li>
+<li><code>drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)</code>是包含了缩放和切片后完整的<code>drawImage</code>用法</li>
+</ul>
+<h2 id="变形和裁剪"><a href="#变形和裁剪" class="headerlink" title="变形和裁剪"></a>变形和裁剪</h2><p><strong>save</strong>和<strong>restore</strong>用来保存和恢复canvas状态。每当<code>save()</code>方法被调用后，当前的状态就被推送到栈中保存。状态包括所有变形、样式信息。每次<code>restore</code>时会弹出栈顶的状态。<strong>建议在做变形和裁剪前保存状态</strong>。</p>
+<p>变形用到的属性和CSS很像：</p>
+<ul>
+<li><code>translate(x,y)</code>改变当前原点位置，</li>
+<li><code>rotate(angle)</code>以当前原点为圆心旋转画布，angle为弧度值。</li>
+<li><code>scale(x, y)</code>缩放当前canvas中的图形大小，x和y分别表示两轴上的缩放因子</li>
+<li><code>transform(m11, m12, m21, m22, dx, dy)</code>通过变形矩阵进行变换</li>
+<li><code>setTransform(m11, m12, m21, m22, dx, dy)</code>先还原为单位矩阵，再按入参的矩阵变换</li>
+<li><code>resetTransform</code>重置变形为单位矩阵</li>
+</ul>
+<p><code>globalCompositeOperation</code>定义了图形相互重叠时的处理策略，类似PS中图层的混合模式，默认为<code>darker</code>，还有很多<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation" target="_blank" rel="external">别的选项</a>。</p>
+<p><code>clip()</code>即裁剪方法，和<code>fill</code>以及<code>stroke</code>类似，不过<code>clip</code>将路径对应的部分裁剪出指定区域。</p>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>canvas只是一个画布，画出的东西都会保持原样。制作动画只能采取重绘，逐帧绘制，而每一帧包括下面几步：</p>
+<ul>
+<li>清空canvas，可以使用<code>clearRect</code>方法</li>
+<li><em>可选</em>，保存当前状态</li>
+<li>使用上面提过的种种方法绘制下一帧</li>
+<li><em>可选</em>，恢复状态</li>
+</ul>
+<p>绘制动画通常要结合用户交互以及<code>setTimeout</code>，<code>setInterval</code>，<code>requestAnimationFrame</code>。</p>
+<p>MDN给个一个<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Advanced_animations" target="_blank" rel="external">小球的组合动画</a>可以参考。</p>
+<h2 id="像素级操作"><a href="#像素级操作" class="headerlink" title="像素级操作"></a>像素级操作</h2><p><code>ImageData</code>接口描述<code>&lt;canvas&gt;</code>元素的一个包含像素数据的区域。它包含<code>width</code>, <code>height</code>, <code>data</code>单个只读属性。<code>ImageData</code>可以通过<code>ctx.createImageData(width, height)</code>或者从已有对象中创建，除此创建的所有像素都是透明黑。</p>
+<p>可以用<code>getImageData(left, top, width, height)</code>方法获取指定范围的<code>ImageData</code>信息，当<code>width</code>和<code>height</code>都为1时，取得当前像素信息。</p>
+<p>使用<code>putImageData(imageData, dx, dy)</code>可以在当前画布(dx, dy)处绘制imageData像素数据。<code>imageSmoothingEnabled</code>默认开启，关闭后可以在图片缩放时看到清楚颗粒化的细节。</p>
+<h2 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h2><p>主要有三种用法：</p>
+<ul>
+<li><code>canvas.toDataURL(&#39;image/png&#39;)</code>，默认将canvas导出成png文件</li>
+<li><code>canvas.toDataURL(&#39;image/jpeg&#39;, quality)</code>，quality指定在0到1之间，默认为0.92。</li>
+<li><code>canvas.toBlob(callback, type, encoderOptions)</code>，这个创建了一个在画布中的代表图片的Blob对像</li>
+</ul>
+<p><code>toDataURL</code>除了上面两种导出格式还有别的选择。</p>
+<h2 id="交互"><a href="#交互" class="headerlink" title="交互"></a>交互</h2><p><code>&lt;canvas&gt;</code>标签只是一个位图，它并不提供任何已经绘制在上面的对象的信息。canvas的内容不能像语义化的HTML一样暴露给一些协助工具。一般来说，你应该避免在交互型的网站或者App上使用canvas。</p>
+<p><code>addHitRegion(options)</code>可以将添加一个点击区域，options可以参考<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/addHitRegion" target="_blank" rel="external">MDN文档</a>，鼠标事件如果触发在点击区域中，会带上region用于定位点击区域。</p>
+<p>另外<code>drawFocusIfNeeded()</code>和<code>scrollPathIntoView()</code>方法还可以绘制焦点圈。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><ul>
+<li>预渲染相似或重复对象</li>
+<li>为了避免抗锯齿带来的额外运算，减少使用浮点数</li>
+<li>在离屏canvas中缓存图片的不同尺寸，不要用<code>drawImage()</code>去缩放它们</li>
+<li><p>使用多层画布去画一个复杂的场景，比如使用多层画布，描绘不同层级的内容。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div id=<span class="string">"stage"</span>&gt;</div><div class="line">  <span class="xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">"ui-layer"</span> <span class="attr">width</span>=<span class="string">"480"</span> <span class="attr">height</span>=<span class="string">"320"</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></div><div class="line">  &lt;canvas id=<span class="string">"game-layer"</span> width=<span class="string">"480"</span> height=<span class="string">"320"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></div><div class="line">  &lt;canvas id=<span class="string">"background-layer"</span> width=<span class="string">"480"</span> height=<span class="string">"320"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></div><div class="line">&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>用CSS画大的背景图</p>
+</li>
+<li>用CSS transforms特性缩放画布，建议不要将小画布放大，而是去将大画布缩小</li>
+<li>尽可能避免text rendering</li>
+<li>尽可能避免 shadowBlur</li>
+<li><code>window.requestAnimationFrame()</code>性能优于<code>window.setInterval()</code></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/01/sicp-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/05/01/sicp-note/" itemprop="url">SICP大纲</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T17:18:04+08:00">
+                2018-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/05/01/sicp-note/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/01/sicp-note/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文是《计算机程序的构造和解释》的笔记</p>
+</blockquote>
+<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>序中其实也包含了很多睿智的观点，值得细细体会。</p>
+<ul>
+<li>“每一个计算机程序都是现实中的或者精神中的某个过程的一个模型”</li>
+<li>“我们很少能通过自己的程序将这种过程模拟到永远令人满意的程度”</li>
+<li>“不幸的是，随着程序变得更大更复杂（实际上它们几乎总是如此），这种描述本身的适宜性，一致性和正确性也都变得非常值得怀疑了”</li>
+<li>“如何利用一些已经证明和有价值的组织技术，将这些结构组合成更大的结构，这些都是至关重要的”</li>
+<li>“将我们的Lisp程序变换到‘机器’程序的过程本身也是抽象模型，是通过程序设计做出来的。研究和构造它们，能使人更加深刻地理解与任何模型的程序设计有关的程序组织问题”</li>
+<li>“计算机永远都不够大也不够快。硬件技术的每一次突破都带来了更大规模的程序设计事业，新的组织原理，以及更加丰富的抽象模型。每个读者都应该反复问自己‘到哪里才是头儿，到哪里才是头儿’——但是不要问的过于频繁，以免忽略了程序设计的乐趣，使自己陷入一种喜忧参半的呆滞状态中”</li>
+<li>“Pascal是为了建造金字塔——壮丽辉煌，令人震撼，是由各就其位的沉重巨石筑起的静态结构，而Lisp则是为了构造有机体——同样壮丽辉煌并令人震撼，由各就其位但却永不静止的无数简单的有机体片段构成的动态结构”</li>
+<li>“Lisp程序大大抬高了函数库的地位，使其可用性超越了催生它们的那些具体应用”</li>
+<li>“采用100个函数在一种数据结构上操作，远远优于用10个函数在10个数据结构上操作。作为这些情况的必然后果，金字塔矗立在那里千年不变，而有机体则必须演化，否则会死亡”</li>
+<li>“在任何非常大的程序设计工作中，一条有用的组织原则就是通过发明新语言，去控制和隔离作业模块之间的信息流动”</li>
+</ul>
+<h2 id="过程抽象"><a href="#过程抽象" class="headerlink" title="过程抽象"></a>过程抽象</h2><ul>
+<li>应用序和正则序</li>
+<li>递归和迭代在展开式上的区分，以及尾递归</li>
+<li>过程（函数）作为入参、返回值</li>
+<li>匿名函数和高阶函数</li>
+</ul>
+<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><ul>
+<li>构造函数和方法函数</li>
+<li><code>cons</code>和<code>car</code>、<code>cdr</code></li>
+<li>序对和list（层次化数据）</li>
+<li>表操作和表映射</li>
+<li>序列化操作</li>
+<li>符号数据（类似字符串）</li>
+<li>数据的多种表示（类型）与通用操作</li>
+</ul>
+<h2 id="模块化、对象和状态"><a href="#模块化、对象和状态" class="headerlink" title="模块化、对象和状态"></a>模块化、对象和状态</h2><ul>
+<li>面向对象和面向流</li>
+<li>从时间角度理解赋值和局部状态</li>
+<li>赋值的利与弊</li>
+<li>赋值带来的环境模型解释（作用域、作用域链）<ul>
+<li>局部状态</li>
+<li>作用域模型的解释</li>
+</ul>
+</li>
+<li>变动的表<ul>
+<li>区分共享和相等（相同的指针、相同的值）</li>
+<li>队列与键值对</li>
+</ul>
+</li>
+<li>描述约束系统</li>
+<li>并发（交错进行的读写操作）<ul>
+<li>串行化和串行化组</li>
+<li>mutex(mutual exclusion)和实现</li>
+<li>死锁（多共享资源）<ul>
+<li>按顺序获取资源列表</li>
+<li>死锁恢复</li>
+<li>屏障同步</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>流<ul>
+<li>延时求值的表序列</li>
+<li>延时求值的原理</li>
+<li>无穷流的构造</li>
+<li>流操作和组合</li>
+</ul>
+</li>
+</ul>
+<h2 id="元语言设计"><a href="#元语言设计" class="headerlink" title="元语言设计"></a>元语言设计</h2><ul>
+<li>求值器（解释器）的工作与意义<ul>
+<li>在基本过程上提供组合与抽象构建一个语言<ul>
+<li>表达式的嵌套</li>
+<li>变量维护</li>
+<li>过程复合</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>求值器内核<ul>
+<li>eval 过程体解释</li>
+<li>apply 过程求值解释</li>
+<li>表达式规范化和实现 / 派生表达式</li>
+<li>环境模型的数据结构</li>
+<li>求值器程序初始化</li>
+</ul>
+</li>
+<li>数据即程序<ul>
+<li>图灵机和停机问题</li>
+</ul>
+</li>
+<li>内部定义<ul>
+<li>内部定义是否应该具有时序</li>
+<li>Y结合子与lambda演算</li>
+</ul>
+</li>
+<li>语法分析与执行分离</li>
+<li>惰性求值<ul>
+<li>thunk化，关联表达式和环境</li>
+<li>惰性的表</li>
+</ul>
+</li>
+<li>非确定性求值（满足约束的所有可行解）<ul>
+<li>amb和自动回溯</li>
+<li>amb实现，成功与失败继续过程</li>
+</ul>
+</li>
+<li>逻辑语言设计<ul>
+<li>类SQL语言基于amb的实现</li>
+</ul>
+</li>
+</ul>
+<h2 id="解释与编译"><a href="#解释与编译" class="headerlink" title="解释与编译"></a>解释与编译</h2><ul>
+<li>机器描述<ul>
+<li>基本指令与子程序（label）</li>
+<li>堆栈实现递归</li>
+</ul>
+</li>
+<li>基本指令的实现<ul>
+<li>类汇编语言</li>
+</ul>
+</li>
+<li>内存管理<ul>
+<li>表与堆栈的实现</li>
+<li>garbage collection机制</li>
+</ul>
+</li>
+<li>解释<ul>
+<li>基础操作实现</li>
+<li>尾递归优化解释</li>
+</ul>
+</li>
+<li>编译<ul>
+<li>与解释有何区别，各自优势</li>
+<li>env/argl/proc/val/continue寄存器</li>
+<li>编译器结构<ul>
+<li>语法分派</li>
+<li>入参：target（存储表达式值的寄存器）与linkage（continue寄存器）</li>
+<li>指令序列的结构与构造，分析指令序列，<code>preserving</code>机制避免无谓的堆栈操作</li>
+</ul>
+</li>
+<li>表达式的编译<ul>
+<li>linkage的编译，检查<code>next</code>或<code>return</code>的情况</li>
+<li>简单、条件表达式、表达式序列的编译</li>
+<li>lambda表达式的编译</li>
+</ul>
+</li>
+<li>过程的编译<ul>
+<li>入参的处理</li>
+<li>尾递归</li>
+</ul>
+</li>
+<li>指令序列的组合</li>
+<li>代码编译的实例</li>
+<li>优化变量查找<ul>
+<li>词法地址</li>
+</ul>
+</li>
+<li>解释与编译<ul>
+<li>解释：机器语言 -&gt; 用户程序</li>
+<li>编译：用户程序 -&gt; 机器语言</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>最后吐槽下，书是本好书，就是翻译的不太给力，在有些地方强行提高了理解难度。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/25/webrtc-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/04/25/webrtc-practice/" itemprop="url">webrtc学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T23:09:06+08:00">
+                2018-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/04/25/webrtc-practice/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/25/webrtc-practice/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>必读：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API" target="_blank" rel="external">WebRTC API - Web API接口 | MDN</a><br>必读：<a href="https://blog.coding.net/blog/getting-started-with-webrtc" target="_blank" rel="external">WebRTC的前世今生</a></p>
+</blockquote>
+<p>Web端用户视频推流使用webRTC方案，使用已有JS SDK（和<a href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web" target="_blank" rel="external">这个</a>兼容）。</p>
+<p>WebRTC由Google主推，全称Web Browser Real Time Communication。目标是希望在Web端进行点对点音视频通信。</p>
+<p>整个P2P过程很复杂，但是对于浏览器而言，WebRTC实际上只是提供了三个API：</p>
+<ul>
+<li><strong>MediaStream</strong>, 即getUserMedia（<code>navigator.getUserMedia</code>），获取媒体数据，如来自用户摄像头和麦克风的音视频流</li>
+<li><strong>RTCPeerConnection</strong>，用于peer跟peer之间呼叫和建立连接以便传输音视频数据流；这个不同浏览器的实现不同，官网推荐使用<code>adapter.js</code>进行适配</li>
+<li><strong>RTCDataChannel</strong>，用于peer跟peer之间传输音视频之外的一般数据。</li>
+</ul>
+<h2 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h2><p>参考<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream" target="_blank" rel="external">MDN</a>。来自<code>navigator.getUserMedia()</code>，这个方法接收三个参数：</p>
+<ul>
+<li>一个约束对象，如<code>{ audio: false, video: true }</code>，除了这两种，其他外设也可以作为输入</li>
+<li>一个成功回调</li>
+<li>一个失败回调</li>
+</ul>
+<p>返回的MediaStream对象有<code>addTrack</code>, <code>getAudioTracks</code>, <code>getVideoTracks</code>等方法。通过这些方法取出的MediaStreamTrack数组代表对应类型的流，可以把取出的这些流导入到<code>&lt;video&gt;</code>等标签输出。在Chrome或Opera中，<code>URL.createObjectURL()</code>方法可以转换一个MediaStream到一个Blob URL，可以被设置作为视频的源。除了这种方法，还可以使用<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" target="_blank" rel="external"><code>AudioContext</code></a>API，对音频做处理后输出。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">gotStream</span>(<span class="params">stream</span>) </span>&#123;</div><div class="line">    <span class="built_in">window</span>.AudioContext = <span class="built_in">window</span>.AudioContext || <span class="built_in">window</span>.webkitAudioContext;</div><div class="line">    <span class="keyword">var</span> audioContext = <span class="keyword">new</span> AudioContext();</div><div class="line"></div><div class="line">    <span class="comment">// Create an AudioNode from the stream</span></div><div class="line">    <span class="keyword">var</span> mediaStreamSource = audioContext.createMediaStreamSource(stream);</div><div class="line"></div><div class="line">    <span class="comment">// Connect it to destination to hear yourself</span></div><div class="line">    <span class="comment">// or any other node for processing!</span></div><div class="line">    mediaStreamSource.connect(audioContext.destination);</div><div class="line">&#125;</div><div class="line"></div><div class="line">navigator.getUserMedia(&#123;<span class="attr">audio</span>:<span class="literal">true</span>&#125;, gotStream);</div></pre></td></tr></table></figure>
+<p>使用HTTPS请求<code>getUserMedia</code>会向用户给出一次提示。不建议在HTTP环境下使用。</p>
+<p><a href="https://webrtc.github.io/samples/src/content/getusermedia/gum/" target="_blank" rel="external">这里</a>是一个demo，打开console，查看全局变量stream就明白MediaStream结构了。</p>
+<p>约束对象中可以商议视频分辨率等信息。它会影响获取到的视频流。</p>
+<h2 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h2><p>WebRTC使用RTCPeerConnection在浏览器间传递数据流，但在之前需要有一个交换信令的过程。这个过程不在WebRTC中定义，开发者可以使用任何想用的消息协议，比如WebSocket或XHR轮询什么的。信令过程需要传递三种信息：</p>
+<ul>
+<li>连接控制信息：初始化或者关闭连接报告错误。</li>
+<li>网络配置：对于外网，我们电脑的 IP 地址和端口？</li>
+<li>多媒体数据：使用什么编码解码器，浏览器可以处理什么信息</li>
+</ul>
+<p>点对点的连接需要ICE（Interactive Connectivity Establishment）的帮助，ICE靠STUN和TURN服务器处理NAT穿透等复杂问题。起初连接建立在UDP之上，STUN服务器让位于NAT中的client获知自己的公网IP和端口。如果UDP建立失败，考虑TCP连接，再考虑HTTP和HTTPS连接。否则使用TURN服务器做中转工作。</p>
+<p>W3C给了RTCPeerConnection的样例，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> signalingChannel = <span class="keyword">new</span> SignalingChannel();</div><div class="line"><span class="keyword">var</span> configuration = &#123; <span class="string">"iceServers"</span>: [&#123; <span class="string">"url"</span>: <span class="string">"stun:stun.example.org"</span> &#125;] &#125;;</div><div class="line"><span class="keyword">var</span> pc;</div><div class="line"></div><div class="line"><span class="comment">// 调用start()建立连接</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">start</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  pc = <span class="keyword">new</span> RTCPeerConnection(configuration);</div><div class="line"></div><div class="line">  <span class="comment">// 有任何 ICE candidates 可用，</span></div><div class="line">  <span class="comment">// 通过signalingChannel传递candidate给对方</span></div><div class="line">  pc.onicecandidate = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (evt.candidate)</div><div class="line">      signalingChannel.send(<span class="built_in">JSON</span>.stringify(&#123; <span class="string">"candidate"</span>: evt.candidate &#125;));</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="comment">// let the "negotiationneeded" event trigger offer generation</span></div><div class="line">  pc.onnegotiationneeded = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    pc.createOffer(localDescCreated, logError);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 远端流到达时，在remoteView中做展示</span></div><div class="line">  pc.onaddstream = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">    remoteView.src = URL.createObjectURL(evt.stream);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="comment">// 获取本地流，展示并传递</span></div><div class="line">  navigator.getUserMedia(&#123; <span class="string">"audio"</span>: <span class="literal">true</span>, <span class="string">"video"</span>: <span class="literal">true</span> &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</div><div class="line">    selfView.src = URL.createObjectURL(stream);</div><div class="line">    pc.addStream(stream);</div><div class="line">  &#125;, logError);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">localDescCreated</span>(<span class="params">desc</span>) </span>&#123;</div><div class="line">  pc.setLocalDescription(desc, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    signalingChannel.send(<span class="built_in">JSON</span>.stringify(&#123; <span class="string">"sdp"</span>: pc.localDescription &#125;));</div><div class="line">  &#125;, logError);</div><div class="line">&#125;</div><div class="line"></div><div class="line">signalingChannel.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!pc)</div><div class="line">    start();</div><div class="line"></div><div class="line">  <span class="keyword">var</span> message = <span class="built_in">JSON</span>.parse(evt.data);</div><div class="line">  <span class="keyword">if</span> (message.sdp) &#123;</div><div class="line">    pc.setRemoteDescription(<span class="keyword">new</span> RTCSessionDescription(message.sdp), <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// 接收到offer时，回应一个answer</span></div><div class="line">      <span class="keyword">if</span> (pc.remoteDescription.type == <span class="string">"offer"</span>)</div><div class="line">        pc.createAnswer(localDescCreated, logError);</div><div class="line">    &#125;, logError);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 接收对方candidate并加入自己的RTCPeerConnection</span></div><div class="line">    pc.addIceCandidate(<span class="keyword">new</span> RTCIceCandidate(message.candidate));</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">logError</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">  log(error.name + <span class="string">": "</span> + error.message);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在开始建立连接时，调用<code>start()</code>，创建<code>RTCPeerConnection</code>对象，接着完成下面步骤：</p>
+<ul>
+<li><strong>交换网络信息</strong>，<code>onicecandidate</code>回调在有任何candidate出现时，将通过SignalChannel（使用额外方法创建，如WebSocket）传递给对方。同样地，在通过SignalChannel接收到对方发来的该信息时，加入这个candidate到RTCPeerConnection中。</li>
+<li><strong>交换多媒体信息</strong>，使用SDP（Session Description Protocol）与对端交换多媒体资讯，在<code>onnegotiationneeded</code>中，调用<code>createOffer</code>通过<code>setLocalDescription</code>创建<code>RTCSessionDecription</code>对象进行本地存储，并传给对方。接收方通过<code>setRemoteDescription</code>方法设定remote description。</li>
+</ul>
+<p>上述过程称为JavaScript Session Establishment Protocol（JSEP）。一旦这个signaling完成了，数据可以直接的在端到端之间进行数据传输。如果失败了，通过中介服务器relay服务进行转发。</p>
+<p>通常RTCPeerConnection的API太复杂，所以有很多在此基础上的库封装出了更加友善的API。</p>
+<h2 id="JS-SDK接入流程"><a href="#JS-SDK接入流程" class="headerlink" title="JS-SDK接入流程"></a>JS-SDK接入流程</h2><blockquote>
+<p>参考：<a href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web" target="_blank" rel="external">Agora：视频通话API</a></p>
+</blockquote>
+<ol>
+<li>准备工作，包括界面绘制等</li>
+<li>向远端注册当前用户，获取token，为后面做准备</li>
+<li>使用<code>createClient()</code>方法创建客户端</li>
+<li>指定回调，包括已订阅流、已添加流、移除、失败等生命周期事件的回调</li>
+<li>初始化客户端，传入appId和成功回调</li>
+<li>初始化成功后，调用join方法根据获取到的token加入指定房间（原理是WebRTC的stream有id）</li>
+<li>指定配置创建本地流（getUserMedia），发布本地流，播放本地流</li>
+</ol>
+<h2 id="RTMP相关"><a href="#RTMP相关" class="headerlink" title="RTMP相关"></a>RTMP相关</h2><blockquote>
+<p>必读：<a href="https://www.villainhr.com/page/2017/08/05/RTMP%20H5%20%E7%9B%B4%E6%92%AD%E6%B5%81%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90" target="_blank" rel="external">RTMP H5 直播流技术解析</a></p>
+</blockquote>
+<p>一次RTMP握手的模拟。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 握手协议模拟</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="keyword">constructor</span>(time, random) &#123;</div><div class="line">        <span class="keyword">this</span>.time = time || <span class="number">0</span>;</div><div class="line">        <span class="keyword">this</span>.random = random || Buffer.alloc(<span class="number">0</span>); <span class="comment">// Buffer类型</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    get C0() &#123;</div><div class="line">        <span class="keyword">const</span> buf = Buffer.alloc(<span class="number">1</span>, <span class="number">3</span>);</div><div class="line">        <span class="keyword">return</span> buf;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    get C1() &#123;</div><div class="line">        <span class="keyword">const</span> buf = Buffer.alloc(<span class="number">1536</span>);</div><div class="line">        <span class="keyword">return</span> buf;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * write C2</div><div class="line">     */</div><div class="line">    get C2() &#123;</div><div class="line">        <span class="keyword">let</span> buf = Buffer.alloc(<span class="number">1536</span>);</div><div class="line">        buf.writeUInt32BE(<span class="keyword">this</span>.time, <span class="number">4</span>);</div><div class="line">        <span class="keyword">this</span>.random.copy(buf, <span class="number">8</span>, <span class="number">0</span>, <span class="number">1528</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 客户端</span></div><div class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> net.socket();</div><div class="line"><span class="keyword">const</span> RTMP_C = <span class="keyword">new</span> C();</div><div class="line"></div><div class="line">client.connect(&#123;</div><div class="line">    <span class="attr">port</span>: <span class="number">1935</span>,</div><div class="line">    <span class="attr">host</span>: <span class="string">'example.live.com'</span>,</div><div class="line">    () =&gt; &#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'connected'</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">client.on(<span class="string">'data'</span>, (data) =&gt; &#123;</div><div class="line">    <span class="keyword">if</span> (!data) &#123;</div><div class="line">        <span class="built_in">console</span>.warn(<span class="string">'Empty Buffer.'</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S0 &amp;&amp; data.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        RTMP_C.S0 = data.readUInt8(<span class="number">0</span>);</div><div class="line">        data = data.slice(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S1 &amp;&amp; data.length &gt;= <span class="number">1536</span>) &#123;</div><div class="line">        RTMP_C.time = data.readUInt32BE(<span class="number">0</span>);</div><div class="line">        RTMP_C.random = data.slice(<span class="number">8</span>, <span class="number">1536</span>);</div><div class="line">        RTMP_C.S1 = <span class="literal">true</span>;</div><div class="line">        data = data.slice(<span class="number">1536</span>)</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'send C2'</span>);</div><div class="line">        client.write(RTMP_C.C2);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!RTMP_C.S2 &amp;&amp; data.length &gt;= <span class="number">1536</span>) &#123;</div><div class="line">        RTMP_C.S2 = <span class="literal">true</span>;</div><div class="line">        data = data.slice(<span class="number">1536</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/some-tips-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -527,911 +1498,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/quill-md/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/04/17/quill-md/" itemprop="url">使用quill搭建文本编辑器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T23:45:03+08:00">
-                2018-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/框架/" itemprop="url" rel="index">
-                    <span itemprop="name">框架</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/04/17/quill-md/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/17/quill-md/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>官网：<a href="https://quilljs.com" target="_blank" rel="external">https://quilljs.com</a></p>
-</blockquote>
-<p>quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。</p>
-<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>关于<code>contenteditable</code>属性，<code>selection</code>对象和<code>range</code>对象的介绍，可以参考<a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">这篇文章</a>。</p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">"#container"</span>);</div><div class="line"><span class="comment">// 或是直接传入DOM对象</span></div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="built_in">document</span>.body);</div></pre></td></tr></table></figure>
-<p>quill通常使用上面的方式初始化。在初始化时，支持用丰富的配置项定义生成的编辑器。下面是一个例子。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> options = &#123;</div><div class="line">    <span class="attr">debug</span>: <span class="string">'info'</span>,</div><div class="line">    <span class="attr">modules</span>: &#123;</div><div class="line">        <span class="attr">toolbar</span>: <span class="string">'#toolbar'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">placeholder</span>: <span class="string">'Tell a story...'</span>,</div><div class="line">    <span class="attr">readOnly</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">them</span>: <span class="string">'snow'</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">'#container'</span>, options);</div></pre></td></tr></table></figure>
-<p>Quill支持的配置项有：</p>
-<ul>
-<li><code>bounds</code>，Quill UI元素的限制范围，默认<code>document.body</code></li>
-<li><code>debug</code>，是<code>Quill.debug</code>的快捷方式，用于打印调试信息，默认级别为<code>warn</code></li>
-<li><code>formats</code>，Quill中允许出现的格式，默认为<a href="https://quilljs.com/docs/formats/" target="_blank" rel="external">所有格式</a>，它和toolbar是解耦的</li>
-<li><code>modules</code>，注册在Quill中的功能模块和与之对应的配置信息，Quill会有默认配置</li>
-<li><code>placeholder</code>，提示信息</li>
-<li><code>readOnly</code>，是否可写</li>
-<li><code>scrollContainer</code>，编辑器滚动条的父级，默认为编辑器本身</li>
-<li><code>strict</code>，版本更新配置，默认为<code>true</code></li>
-<li><code>theme</code>，整体外观，默认为<code>snow</code>，<code>bubble</code>可选</li>
-</ul>
-<h3 id="支持的文本格式"><a href="#支持的文本格式" class="headerlink" title="支持的文本格式"></a>支持的文本格式</h3><p>分为<strong>行内</strong>，<strong>块级</strong>，<strong>嵌入式</strong>三大类。</p>
-<ul>
-<li>行内：加粗/背景色/字体颜色/字体/行内代码/斜体/下划线/删除线/链接/字体大小/上、下标</li>
-<li>块级：引用/标题/行首缩进/有序、无序列表/对齐/文本方向/代码块</li>
-<li>嵌入式：音频/视频/公式</li>
-</ul>
-<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p>按照由浅入深，分为<strong>修改内容</strong>，<strong>修改格式</strong>，<strong>选取</strong>，<strong>编辑器本身</strong>，<strong>事件</strong>，<strong>数据模型操作</strong>，<strong>拓展</strong>几大类。涉及到内容修改的都会返回代表更改的delta。</p>
-<h4 id="修改内容"><a href="#修改内容" class="headerlink" title="修改内容"></a>修改内容</h4><p>涉及到修改时，最后一个参数都可以选择<code>user</code>，<code>api</code>，<code>silent</code>。<code>user</code>类型下，disabled时会没有效果。</p>
-<ul>
-<li><code>deleteText</code>，输入起始点和长度，删除特定范围的内容，返回delta类型数据。如<code>quill.deleteText(6, 4)</code></li>
-<li><code>getContents</code>，获取delta格式的编辑器内容，如<code>quill.getContents()</code></li>
-<li><code>getLength</code>，获取文本长度，quill默认会有一个空行，所以默认返回1</li>
-<li><code>getText</code>，获取文本内容，跳过非文本如音视频元素，如<code>quill.getText(0, 10)</code></li>
-<li><code>insertEmbed</code>，输入位置，类型，值，插入嵌入式内容，如<code>quill.insertEmbed(10, &#39;image&#39;, &#39;https://quilljs.com/images/cloud.png&#39;)</code></li>
-<li><p><code>insertText</code>，插入文本，可带格式。如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Hello'</span>, <span class="string">'bold'</span>, <span class="literal">true</span>);</div><div class="line"></div><div class="line">quill.insertText(<span class="number">5</span>, <span class="string">'Quill'</span>, &#123;</div><div class="line">  <span class="string">'color'</span>: <span class="string">'#ffff00'</span>,</div><div class="line">  <span class="string">'italic'</span>: <span class="literal">true</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>setContent</code>，输入delta，重设编辑器内容，需以<code>\n</code>结尾。如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">quill.setContents([</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'Hello '</span> &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'World!'</span>, <span class="attr">attributes</span>: &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125; &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'\n'</span> &#125;</div><div class="line">]);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>setText</code>，设置文本，返回代表改变的delta</p>
-</li>
-<li><code>updateContent</code>，输入delta，更新内容，返回代表更新的delta</li>
-</ul>
-<h4 id="修改格式"><a href="#修改格式" class="headerlink" title="修改格式"></a>修改格式</h4><ul>
-<li><code>format</code>，设置用户当前所选的文本格式，如<code>quill.format(&#39;color&#39;, &#39;red&#39;);</code></li>
-<li><code>formatLine</code>，设置给定选择当前整行样式，使用类似<code>format</code>的方法设置样式，也支持直接传入格式对象。类似<code>quill.formatLine(1, 2, { &#39;align&#39;: &#39;right&#39;})</code></li>
-<li><code>formatText</code>，设置给定范围内文本格式，类似<code>formatLine</code></li>
-<li><code>getFormat</code>，获取给定范围内的格式，没有输入时，返回当前选择的格式</li>
-<li><code>removeFormat</code>，移除范围内样式</li>
-</ul>
-<h4 id="选取"><a href="#选取" class="headerlink" title="选取"></a>选取</h4><ul>
-<li><code>getBounds(index, length = 0)</code>，返回的top、width、height、left相对于编辑器容器而言</li>
-<li><code>getSelection(focus = false)</code>，返回用户的选取范围，由index、length组成</li>
-<li><code>setSelection(index, length = 0)</code>，设置选区范围，会自动focus，输入null会自动blur</li>
-</ul>
-<h4 id="编辑器本身"><a href="#编辑器本身" class="headerlink" title="编辑器本身"></a>编辑器本身</h4><ul>
-<li><code>blur</code>，失焦</li>
-<li><code>disable</code>，禁用</li>
-<li><code>enable(enabled = false)</code>，启用</li>
-<li><code>focus</code>，聚焦</li>
-<li><code>hasFocus</code>，是否聚焦</li>
-<li><code>update</code>，同步用户改动，协同工作时常用</li>
-</ul>
-<h4 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h4><p>事件通过<code>on</code>方法绑定在quill对象上。</p>
-<ul>
-<li><code>text-change</code>，quill内的内容改变时触发，回调函数可以获取delta、oldContent，source。通常来自’user’，<code>source</code>为’silent’时，该事件不会触发。</li>
-<li><code>selection-change</code>，回调函数可以获取range，oldRange，source</li>
-<li><code>editor-change</code>，上述两个事件触发时触发，即使source为<code>silent</code></li>
-</ul>
-<p>除了<code>on</code>方法，还有<code>once</code>用于绑定一次和<code>off</code>方法解绑。</p>
-<h4 id="数据模型操作"><a href="#数据模型操作" class="headerlink" title="数据模型操作"></a>数据模型操作</h4><ul>
-<li><code>find</code>，寻找DOM节点对应的quill或Blot对象</li>
-<li><code>getIndex</code>，返回文档开头到给定Blot的偏移量</li>
-<li><code>getLeafBlot</code>，返回给定位置的Blot</li>
-<li><code>getLine</code>，返回给定位置整行的Blot</li>
-<li><code>getLines</code>，返回给定范围的Blot</li>
-</ul>
-<h4 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h4><ul>
-<li><code>debug</code>，设置调试信息级别，<code>info | log | warn | error</code></li>
-<li><p><code>import</code>，导出quill相关库，输入相对于quill的路径</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Parchment = Quill.import(<span class="string">'parchment'</span>);</div><div class="line"><span class="keyword">var</span> Delta = Quill.import(<span class="string">'delta'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> Toolbar = Quill.import(<span class="string">'modules/toolbar'</span>);</div><div class="line"><span class="keyword">var</span> Link = Quill.import(<span class="string">'formats/link'</span>);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>register</code>，注册module到quill中，有下面几种用法</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Quill.register(format: Attributor | BlotDefinintion, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(path: <span class="built_in">String</span>, <span class="attr">def</span>: any, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(defs: &#123; [<span class="built_in">String</span>]: any &#125;, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>addContainer</code>，新增容器并返回</p>
-</li>
-<li><code>enable/disable</code>，启用、禁用编辑器</li>
-</ul>
-<h3 id="delta"><a href="#delta" class="headerlink" title="delta"></a>delta</h3><p><a href="https://github.com/quilljs/delta" target="_blank" rel="external">delta</a>是quill中最重要的概念。据<a href="https://quilljs.com/guides/designing-the-delta-format/" target="_blank" rel="external">介绍</a>所说，quill是“第一个”使用delta（结构化数据）这个概念的。不同于其他大多数文本编辑器需要反复执行修改编辑器中的HTML文档。quill维护一个delta数组，使用JSON数据的方式描述了文档的内容。</p>
-<p>使用delta一词，并没有问题，因为可以理解成文档本身是由空内容 + delta一点点得到的。delta主要有两个特性：</p>
-<ul>
-<li>权威性，delta和对应的生成结果是一一对应的，没有歧义</li>
-<li>压缩性，delta中描述的操作是经过压缩后的</li>
-</ul>
-<p>delta中的操作可以分为增、删、修改格式，分别对应<code>insert</code>，<code>delete</code>和<code>retain</code>操作。对文本编辑器的一次改动（真实世界中的改动行为）只可能涉及上述三种行为的一种（Quill并不允许Ctrl多处选中）。其中retain的意义类似于光标的移动，它使得这三种操作并不需要使用index描述，便于Quill做优化和压缩。</p>
-<p>delta的操作实际上是对parchment进行的，它类似于vdom，使用JS的数据结构对文本编辑器中可能出现的各元素进行了抽象，称作Blot。Blot有scroll，inline、block、text，break几种。父Blot下必须包含至少一个子Blot，而所有的Blot都包含在一个scroll Blot下。文本编辑器中特定格式的文本块都用特定的Blot表示，每个这样的Blot都必须继承自上面的一种Blot类型。就像通过下面的方式继承了Blot，就可以使对应的行内元素得到对应的编辑器样式元素对应起来，并使用在后面的编辑器里。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> Inline = Quill.import(<span class="string">'blots/inline'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BoldBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">BoldBlot.blotName = <span class="string">'bold'</span>;</div><div class="line">BoldBlot.tagName = <span class="string">'strong'</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ItalicBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">ItalicBlot.blotName = <span class="string">'italic'</span>;</div><div class="line">ItalicBlot.tagName = <span class="string">'em'</span>;</div><div class="line"></div><div class="line">Quill.register(BoldBlot);</div><div class="line">Quill.register(ItalicBlot);</div><div class="line"></div><div class="line"><span class="comment">// in your editor</span></div><div class="line"></div><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Test'</span>, &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;);</div><div class="line">quill.formatText(<span class="number">0</span>, <span class="number">4</span>, <span class="string">'italic'</span>, <span class="literal">true</span>);</div></pre></td></tr></table></figure>
-<p>类似地，我们定义一个Link Blot。它相比bold，italic不同的是，它需要一个string而不是boolean初始化。因此需要定义<code>create</code>和<code>format</code>两个函数。其中create在构造Blot时使用，value即输入的href，formats将用户的format字段和真实DOM的字段相关联。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LinkBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    <span class="comment">// Sanitize url value if desired</span></div><div class="line">    node.setAttribute(<span class="string">'href'</span>, value);</div><div class="line">    <span class="comment">// Okay to set other non-format related attributes</span></div><div class="line">    <span class="comment">// These are invisible to Parchment so must be static</span></div><div class="line">    node.setAttribute(<span class="string">'target'</span>, <span class="string">'_blank'</span>);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="comment">// We will only be called with a node already</span></div><div class="line">    <span class="comment">// determined to be a Link blot, so we do</span></div><div class="line">    <span class="comment">// not need to check ourselves</span></div><div class="line">    <span class="keyword">return</span> node.getAttribute(<span class="string">'href'</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">LinkBlot.blotName = <span class="string">'link'</span>;</div><div class="line">LinkBlot.tagName = <span class="string">'a'</span>;</div><div class="line"></div><div class="line">Quill.register(LinkBlot);</div></pre></td></tr></table></figure>
-<p>定义引用这样的块级元素时，对应地继承Block Blot即可。和inline Blot不同的是，Block Blot无法嵌套，在对已有的块级元素应用时会替换而不是嵌套绑定在元素上。以Header元素为例，可以指定tagName为一个数组，可以在format时使用1、2的方式指定具体哪种tag。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeaderBlot</span> <span class="keyword">extends</span> <span class="title">Block</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="keyword">return</span> HeaderBlot.tagName.indexOf(node.tagName) + <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">HeaderBlot.blotName = <span class="string">'header'</span>;</div><div class="line"><span class="comment">// Medium only supports two header sizes, so we will only demonstrate two,</span></div><div class="line"><span class="comment">// but we could easily just add more tags into this array</span></div><div class="line">HeaderBlot.tagName = [<span class="string">'H1'</span>, <span class="string">'H2'</span>];</div></pre></td></tr></table></figure>
-<p>类似的，可以在插入embed Blot，这种类型效果是插入在元素中间的新的tag。如Image。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> BlockEmbed = Quill.import(<span class="string">'blots/block/embed'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImageBlot</span> <span class="keyword">extends</span> <span class="title">BlockEmbed</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    node.setAttribute(<span class="string">'alt'</span>, value.alt);</div><div class="line">    node.setAttribute(<span class="string">'src'</span>, value.url);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> value(node) &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">alt</span>: node.getAttribute(<span class="string">'alt'</span>),</div><div class="line">      <span class="attr">url</span>: node.getAttribute(<span class="string">'src'</span>)</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">ImageBlot.blotName = <span class="string">'image'</span>;</div><div class="line">ImageBlot.tagName = <span class="string">'img'</span>;</div><div class="line"></div><div class="line"><span class="comment">// 使用时</span></div><div class="line"><span class="keyword">let</span> range = quill.getSelection(<span class="literal">true</span>);</div><div class="line">quill.insertText(range.index, <span class="string">'\n'</span>, Quill.sources.USER);</div><div class="line">quill.insertEmbed(range.index + <span class="number">1</span>, <span class="string">'image'</span>, &#123;</div><div class="line">    <span class="attr">alt</span>: <span class="string">'Quill Cloud'</span>,</div><div class="line">    <span class="attr">url</span>: <span class="string">'https://quilljs.com/0.20/assets/images/cloud.png'</span></div><div class="line">&#125;, Quill.sources.USER);</div><div class="line">quill.setSelection(range.index + <span class="number">2</span>, Quill.sources.SILENT);</div></pre></td></tr></table></figure>
-<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h3><p>quill中的module位于quill的应用层。可以通过定制modules，利用quill的功能；或是更改quill内置module，修改quill本身的行为和功能。clipboard、keyboard、history三个module是quill默认加载的。用户完全可以根据业务需求定义自己的module。官网给了<a href="https://quilljs.com/guides/building-a-custom-module/" target="_blank" rel="external">简单的例子</a>展示了module的大致骨架：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Quill.register(<span class="string">'modules/counter'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">quill, options</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> container = <span class="built_in">document</span>.querySelector(options.container);</div><div class="line">  quill.on(<span class="string">'text-change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = quill.getText();</div><div class="line">    <span class="keyword">if</span> (options.unit === <span class="string">'word'</span>) &#123;</div><div class="line">      container.innerText = text.split(<span class="regexp">/\s+/</span>).length + <span class="string">' words'</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      container.innerText = text.length + <span class="string">' characters'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">counter</span>: &#123;</div><div class="line">      <span class="attr">container</span>: <span class="string">'#counter'</span>,</div><div class="line">      <span class="attr">unit</span>: <span class="string">'word'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>只需要定义一个可以接收quill对象的函数即可，在函数内部利用quill事件监听即可完成应用层的建设。</p>
-<h3 id="Toolbar和ClipBoard"><a href="#Toolbar和ClipBoard" class="headerlink" title="Toolbar和ClipBoard"></a>Toolbar和ClipBoard</h3><p><a href="https://quilljs.com/docs/modules/toolbar/" target="_blank" rel="external">Toolbar</a>和<a href="https://quilljs.com/docs/modules/clipboard/" target="_blank" rel="external">Clipboard</a>是Quill内置的两个module，对你构建自己的文本编辑器有很大的借鉴意义。</p>
-<p>Toolbar用来定制工具栏上的按钮，是自定义编辑器（尤其是业务相关的编辑器）逃不开的一部分。它有几个基本配置：</p>
-<ul>
-<li><code>container</code>，放置工具栏的DOM容器</li>
-<li><code>handler</code>，点击ToolBar图标时注册的函数，传入Blot的value，通过调用Quill的API完成功能。也可以通过下面方式注册。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Handlers can also be added post initialization</span></div><div class="line"><span class="keyword">var</span> toolbar = quill.getModule(<span class="string">'toolbar'</span>);</div><div class="line">toolbar.addHandler(<span class="string">'image'</span>, showImageUI);</div></pre></td></tr></table></figure>
-<p>在遇到从别的文本编辑器拷贝内容过来的情况时，需要修改ClipBoard Module中<code>addMatcher</code>的定义。这个方法向ClipBoard中注册了新的Matcher匹配拷贝过来的HTML文本，将之转换为对应的Blot。如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">quill.clipboard.addMatcher(Node.TEXT_NODE, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Delta().insert(node.data);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// Interpret a &lt;b&gt; tag as bold</span></div><div class="line">quill.clipboard.addMatcher(<span class="string">'.custom-class'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> delta.compose(<span class="keyword">new</span> Delta().retain(delta.length(), &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;));</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>或者在configuration中，注入新定义的matcher即可。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">clipboard</span>: &#123;</div><div class="line">      <span class="attr">matchers</span>: [</div><div class="line">        [<span class="string">'B'</span>, customMatcherA],</div><div class="line">        [Node.TEXT_NODE, customMatcherB]</div><div class="line">      ]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="https://quilljs.com/docs/" target="_blank" rel="external">Quill文档</a></li>
-<li><a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">利用javascript搭建富文本编辑器</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/14/image-render-md/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/04/14/image-render-md/" itemprop="url">图片生成有感</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-14T11:20:07+08:00">
-                2018-04-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/04/14/image-render-md/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/14/image-render-md/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在业务中遇到使用生成图片的需求，图片只需要展示数据，没有计算密集型工作。后端生成的图片字体太单一，工作就交给了前端。从0开始作图做像素级的操作自然是不现实的，有幸的是，HTML本身就是一个很不错的做UI的语言，有CSS的支持。再借助HTML to canvas或是SVG的库，可以完成想要的需求。</p>
-<p><em>实际上，后端大多数也是通过起chrome内核，绘制DOM节点生成图片的</em></p>
-<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
-<li>按照指定格式生成图片</li>
-<li>保证格式正确清晰度高</li>
-<li>生成过程用户无感知</li>
-<li>对图片格式没有明确要求</li>
-</ul>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>HTML to image有两种方案比较流行，一个是<a href="https://github.com/niklasvh/html2canvas" target="_blank" rel="external">html2canvas</a>，一个是<a href="https://github.com/tsayen/dom-to-image" target="_blank" rel="external">dom-to-image</a>。它们的设计初衷其实都是将<strong>已有</strong>DOM结构转成图片类型。对比来看</p>
-<ul>
-<li>流行度上，html2canvas流行度更高，资料更好找，但更新缓慢</li>
-<li>格式支持上，dom-to-image可以将图转成SVG等更多格式，html2canvas只能输出canvas，需要用户自行处理</li>
-<li>清晰度上，dom-to-image可以导出SVG，html2canvas则需要hack的方式（设置更大的canvas绘制再等比缩放）</li>
-<li>实现原理上，都是通过遍历DOM树，读取格式化数据，dom-to-image通过浏览器解析CSS语法，因此支持度更高；html2canvas则<a href="https://github.com/niklasvh/html2canvas/tree/master/src/parsing" target="_blank" rel="external">自己实现了CSS解析</a></li>
-</ul>
-<p>渲染图片的HTML模板在通常情况下，不应该展示给用户。即生成过程短暂停留的DOM需要用户不可见。不可见的方式大致有下面几种：</p>
-<ul>
-<li><code>display: none</code>，这种情况，两个方案度都输出空白图片</li>
-<li><code>visibility: hidden</code>，在输出图片时，DOM结构会短暂闪现，两种方案都输出空白图片</li>
-<li>将DOM移出视口，html2canvas可以正确输出图片，dom-to-image不行</li>
-</ul>
-<p>本场景下生成的图片需要上传，并最后展示给C端，没有对SVG的需求。测试来看，两者的输出结果清晰度类似，且html2canvas输出格式还原度更高。综合考虑，选择html2canvas。</p>
-<p>在其他场景下，如支持SVG、需要高清截图、需要导出更多图片时，可以考虑使用dom-to-image。两者的API实际上非常类似。</p>
-<h3 id="容器组件"><a href="#容器组件" class="headerlink" title="容器组件"></a>容器组件</h3><p>考虑到未来仍可能存在的前端图片渲染需求，将相关逻辑内聚成一个组件，同时开发接口给外部使用。</p>
-<p>组件需要输入：</p>
-<ul>
-<li><code>hide</code>，因为渲染过程是<code>componentDidMount</code>阶段完成的，在每次渲染完成后要在父组件手动卸载该组件，这部分需要在<code>hide</code>中实现</li>
-<li><code>success</code>，可选的成功回调，入参是生成的canvas，<code>hide</code>作为可选第二个入参，可以异步卸载组件</li>
-<li><code>{children}</code>，无状态的函数组件，只负责图片的HTML模板</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * @author: shenlvmeng</div><div class="line"> * @desc: 渲染图片的容器组件，加载时根据内部DOM生成图片，输出data64编码到回调</div><div class="line"> * @props: hide    &#123;Function&#125; required 图片生成完成后需要在父组件执行的卸载该组件操作</div><div class="line"> * @props: success &#123;Function&#125; 成功回调</div><div class="line">**/</div><div class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span>;</div><div class="line"><span class="keyword">import</span> html2canvas <span class="keyword">from</span> <span class="string">'html2canvas'</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratedImage</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">    <span class="keyword">static</span> defaultProps = &#123;</div><div class="line">        <span class="attr">hide</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;,</div><div class="line">        <span class="attr">success</span>: <span class="function">(<span class="params">canvas</span>) =&gt;</span> &#123;<span class="built_in">document</span>.body.appendChild(canvas);&#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> propTypes = &#123;</div><div class="line">        <span class="attr">hide</span>: PropTypes.func,</div><div class="line">        <span class="attr">success</span>: PropTypes.func</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    componentDidMount() &#123;</div><div class="line">        html2canvas(<span class="built_in">document</span>.getElementById(<span class="string">'html2canvas'</span>))</div><div class="line">        .then(<span class="function">(<span class="params">canvas</span>) =&gt;</span> &#123;</div><div class="line">            <span class="comment">// 可以将hide操作作为success的回调使用</span></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.props.success.length &gt; <span class="number">1</span>) &#123;</div><div class="line">                <span class="keyword">this</span>.props.success(canvas, <span class="keyword">this</span>.props.hide);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">this</span>.props.success(canvas);</div><div class="line">                <span class="keyword">this</span>.props.hide();</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .catch(<span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</div><div class="line">            <span class="built_in">console</span>.error(e);</div><div class="line">            <span class="keyword">this</span>.props.hide();</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    render() &#123;</div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">div</span></span></span></div><div class="line">                <span class="attr">id</span>=<span class="string">"html2canvas"</span></div><div class="line">                <span class="attr">style</span>=<span class="string">&#123;&#123;</span></div><div class="line">                    <span class="attr">position:</span> '<span class="attr">fixed</span>',</div><div class="line">                    <span class="attr">left:</span> '<span class="attr">-9999px</span>'</div><div class="line">                &#125;&#125;</div><div class="line">            &gt;</div><div class="line">                &#123;this.props.children&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        );</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> GeneratedImage;</div></pre></td></tr></table></figure>
-<p>使用时，像如下这样，在对应的时机展示组件即可：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123; <span class="keyword">this</span>.state.isGenerating ?</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">GeneratedImage</span></span></span></div><div class="line">        <span class="attr">hide</span>=<span class="string">&#123;()</span> =&gt; &#123;this.setState(&#123; isGenerating: false &#125;)&#125;&#125;</div><div class="line">        success=&#123;(canvas) =&gt; &#123; console.log(canvas.toDataURL()); &#125;&#125;</div><div class="line">    &gt;</div><div class="line">        <span class="tag">&lt;<span class="name">Image</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">GeneratedImage</span>&gt;</span></div><div class="line">    : <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="已知缺陷"><a href="#已知缺陷" class="headerlink" title="已知缺陷"></a>已知缺陷</h3><ul>
-<li>对部分CSS属性支持度有限，如<code>box-shadow</code>，<code>-webkit-line-clamp</code>，<code>background-position</code>等</li>
-<li>使用时需要额外的卸载操作</li>
-</ul>
-<h2 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h2><p>生成图片的业务需求大多数是用内容填充的，因此使用浏览器渲染页面再截图是比较直观的生成方式（qrcode这种简单的图片需求另说）。在使用python的场景下，可以用<a href="http://selenium-python.readthedocs.io/" target="_blank" rel="external">selenium</a>生成，代码非常简单。</p>
-<p>首先，<code>pip install selenium</code>，如果是python3，就<code>pip3 install selenium</code>。</p>
-<p>然后，安装<a href="http://npm.taobao.org/mirrors/chromedriver/" target="_blank" rel="external">chromedriver</a>。使用headless模式打开chrome，并根据图片位置和大小截图即可。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</div><div class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</div><div class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</div><div class="line"><span class="keyword">from</span> os <span class="keyword">import</span> path</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">screenshot</span><span class="params">(path)</span>:</span></div><div class="line">    <span class="comment"># Headless chrome</span></div><div class="line"></div><div class="line">    DRIVER = <span class="string">'chromedriver'</span> <span class="comment"># add this to your $PATH</span></div><div class="line">    chrome_options = webdriver.ChromeOptions()</div><div class="line">    chrome_options.add_argument(<span class="string">'--headless'</span>)</div><div class="line">    chrome_options.add_argument(<span class="string">'--disable-gpu'</span>)</div><div class="line"></div><div class="line">    <span class="comment"># get screenshot</span></div><div class="line"></div><div class="line">    browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=DRIVER)</div><div class="line">    browser.get(path)</div><div class="line">    ele = browser.find_element_by_id(<span class="string">'demo'</span>)</div><div class="line">    location = ele.location</div><div class="line">    size = ele.size</div><div class="line">    image = browser.get_screenshot_as_png()</div><div class="line">    browser.quit()</div><div class="line"></div><div class="line">    <span class="comment"># crop image</span></div><div class="line"></div><div class="line">    im  = Image.open(BytesIO(image))</div><div class="line"></div><div class="line">    left = location[<span class="string">'x'</span>]</div><div class="line">    top = location[<span class="string">'y'</span>]</div><div class="line">    right = location[<span class="string">'x'</span>] + size[<span class="string">'width'</span>] * <span class="number">2</span></div><div class="line">    bottom = location[<span class="string">'y'</span>] + size[<span class="string">'height'</span>] * <span class="number">2</span></div><div class="line"></div><div class="line">    im = im.crop((left, top, right, bottom))</div><div class="line">    im.save(<span class="string">'screenshot.png'</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> (__name__ == <span class="string">'__main__'</span>):</div><div class="line">    curr_path = path.dirname(path.realpath(__file__))</div><div class="line">    screenshot(<span class="string">'file://'</span> + curr_path + <span class="string">'/demo.html'</span>)</div></pre></td></tr></table></figure>
-<p>这样就可以获取到示例页面的截图。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/03/15/gallery-backend-with-egg-js/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/03/15/gallery-backend-with-egg-js/" itemprop="url">Photo Gallery中出现的常见需求解决方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T14:17:10+08:00">
-                2018-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/03/15/gallery-backend-with-egg-js/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/15/gallery-backend-with-egg-js/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="https://s2.ax1x.com/2019/04/07/Ahbr1x.png" alt="Ahbr1x.png"></p>
-<blockquote>
-<p>使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用</p>
-</blockquote>
-<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>新建<code>User</code>表，填充表结构，至少包含<code>账号</code>和<code>密码</code>两个字段。</p>
-<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p>（Ajax）登录页面，对应<code>login</code>行为，处理登录请求，包括以下工作：</p>
-<ul>
-<li>调用服务匹配用户名密码</li>
-<li><em>（可选）</em> 检查用户类型</li>
-<li>密码需要加密存储</li>
-<li>储存用户信息到session</li>
-<li>返回提示信息</li>
-</ul>
-<p>（Ajax）注册页面，对应<code>register</code>行为，处理注册请求，包括以下工作：</p>
-<ul>
-<li>寻找重名等逻辑</li>
-<li>调用服务创建用户</li>
-<li>密码需要加密存储</li>
-<li>储存用户信息到session</li>
-<li>返回提示信息</li>
-</ul>
-<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>用户管理，和数据库连接。对应到controller中大多数是POST请求。</p>
-<ul>
-<li>新增用户</li>
-<li>获取用户</li>
-<li>用户资料修改</li>
-<li>用户删除（使用用户状态更新实现）</li>
-</ul>
-<h3 id="Router与中间件"><a href="#Router与中间件" class="headerlink" title="Router与中间件"></a>Router与中间件</h3><ul>
-<li>添加中间件检查是否有session，否则同一跳转<code>/login</code>（业务逻辑）</li>
-<li><em>（可选）</em> Router上使用重定向让path更友好</li>
-<li><strong>一定不要瞎用301状态码</strong></li>
-</ul>
-<h3 id="页面js"><a href="#页面js" class="headerlink" title="页面js"></a>页面js</h3><ul>
-<li>使用Ajax或jsonp请求</li>
-</ul>
-<hr>
-<h2 id="无限滚动"><a href="#无限滚动" class="headerlink" title="无限滚动"></a>无限滚动</h2><h3 id="HTML部分"><a href="#HTML部分" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
-<li>提前加载所有图片（后续API动态请求，DOM插入时间损耗太大）。</li>
-<li>前若干张图片（假设为K）正常展示</li>
-<li>后若干张容器使用<code>display:none</code>或<code>height: 0</code>等手段避免展示</li>
-<li>后若干张图片使用<code>data-src</code>存储真实路径，避免提前加载，影响首屏时间</li>
-</ul>
-<h3 id="JS部分"><a href="#JS部分" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
-<li>设置参数保存当前展示图片的数目</li>
-<li>判断是否滚动到底端</li>
-<li>上述情况下增加展示的图片数目，删除避免展示的<code>class</code>，替换真正的<code>src</code>加载图片</li>
-<li>使用节流，保证弱网络环境下，没有连续的过多图片加载，使用<code>flag</code>控制程序触发，在最后一张图片加载完成后，更新<code>flag</code>布尔值，开放权限</li>
-<li><em>（可选）</em>，网络环境很差时，可以考虑<code>setTimeout</code>兜底，但不推荐</li>
-<li>注意在所有图片都加载完成时，停止监听<code>scroll</code>事件</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> figure = $($(<span class="string">'#figures'</span>).children()[index]);</div><div class="line">  <span class="keyword">if</span> (!figure) &#123;</div><div class="line">    $(<span class="built_in">window</span>).off(<span class="string">'scroll'</span>);</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><h3 id="HTML部分-1"><a href="#HTML部分-1" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
-<li>使用包裹<code>&lt;input type=&#39;file&#39;&gt;</code>的<code>&lt;form&gt;</code></li>
-<li><code>&lt;input type=&#39;file&#39;&gt;</code>使用<code>display: none</code>，通过更友好的方式trigger它的点击</li>
-<li><strong>注意：<code>type=file</code>的<code>input</code>标签一定要有<code>name</code>属性，否则不会被包裹在<code>FormData</code>中。</strong></li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"upload"</span> <span class="attr">class</span>=<span class="string">"upload"</span>&gt;</span>+ 点击上传<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"upload-form"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span> </div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">accept</span>=<span class="string">"image/*"</span> <span class="attr">name</span>=<span class="string">"files"</span> <span class="attr">id</span>=<span class="string">"upload-file"</span> <span class="attr">multiple</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="JS部分-1"><a href="#JS部分-1" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
-<li>使用Ajax提交替换form表单替换，来实现更复杂的回调和逻辑控制</li>
-<li>通过构造<code>FormData</code>，提交域内文件</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$(<span class="string">'#upload'</span>).on(<span class="string">'click'</span>, () =&gt; &#123;</div><div class="line">  $(<span class="string">'#upload-file'</span>).trigger(<span class="string">'click'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">$(<span class="string">'#upload-file'</span>).on(<span class="string">'change'</span>, () =&gt; &#123;</div><div class="line">  $.ajax(&#123;</div><div class="line">    <span class="attr">url</span>: <span class="string">'/gallery/upload'</span>,</div><div class="line">    <span class="attr">type</span>: <span class="string">'POST'</span></div><div class="line">    cache: <span class="literal">false</span>,</div><div class="line">    <span class="attr">data</span>: <span class="keyword">new</span> FormData($(<span class="string">'#upload-form'</span>)[<span class="number">0</span>]),</div><div class="line">    <span class="attr">processData</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">contentType</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">success</span>: <span class="function"><span class="params">data</span> =&gt;</span> &#123;</div><div class="line">      <span class="built_in">console</span>.log(data)</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="后台路由"><a href="#后台路由" class="headerlink" title="后台路由"></a>后台路由</h3><ul>
-<li>配置Ajax和jsonp安全检查</li>
-</ul>
-<h3 id="控制器端"><a href="#控制器端" class="headerlink" title="控制器端"></a>控制器端</h3><p>使用插件，参考<a href="https://github.com/eggjs/examples/blob/master/multipart/app/controller/multiple.js" target="_blank" rel="external">examples/multiple.js at master · eggjs/examples</a></p>
-<h2 id="HTML模板"><a href="#HTML模板" class="headerlink" title="HTML模板"></a>HTML模板</h2><p>使用ES6的模板字符串。</p>
-<p>已知问题：</p>
-<ul>
-<li>似乎有些视图、逻辑未分离</li>
-</ul>
-<h2 id="使用七牛API上传文件"><a href="#使用七牛API上传文件" class="headerlink" title="使用七牛API上传文件"></a>使用七牛API上传文件</h2><p>使用服务端上传，<a href="https://developer.qiniu.com/kodo/kb/1374/batch-upload-and-file-upload-more-resources" target="_blank" rel="external">一次只能单张上传</a>。官网API文档<a href="https://developer.qiniu.com/kodo/sdk/1289/nodejs" target="_blank" rel="external">Node.js版</a>描述的并不清楚，下面是上传的简单流程展示：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> mac = <span class="keyword">new</span> qiniu.auth.digest.Mac(config.accessKey, config.secretKey);</div><div class="line"><span class="keyword">const</span> options = &#123;</div><div class="line">  <span class="attr">scope</span>: config.bucketName,</div><div class="line">&#125;;</div><div class="line"><span class="keyword">const</span> putPolicy = <span class="keyword">new</span> qiniu.rs.PutPolicy(options);</div><div class="line"><span class="keyword">const</span> uploadToken = putPolicy.uploadToken(mac);</div><div class="line"><span class="keyword">const</span> qiniuConfig = <span class="keyword">new</span> qiniu.conf.Config();</div><div class="line">qiniuConfig.zone = qiniu.zone.Zone_z1;</div><div class="line"><span class="keyword">const</span> formUploader = <span class="keyword">new</span> qiniu.form_up.FormUploader(qiniuConfig);</div><div class="line"><span class="keyword">const</span> putExtra = <span class="keyword">new</span> qiniu.form_up.PutExtra();</div><div class="line"></div><div class="line">formUploader.putFile(uploadToken, key, localFile, putExtra, <span class="function"><span class="keyword">function</span>(<span class="params">respErr, respBody, respInfo</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (respErr) &#123;&#125;</div><div class="line">  <span class="keyword">if</span> (respInfo.statusCode == <span class="number">200</span>) &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>多文件上传使用外部队列暂存所有任务，并和回调函数关联即可实现。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/02/06/my-first-electron-demo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/02/06/my-first-electron-demo/" itemprop="url">我的第一个Electron应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-06T15:58:11+08:00">
-                2018-02-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/02/06/my-first-electron-demo/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/02/06/my-first-electron-demo/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>前一阵突发奇想，想写一个汇总所有骑行数据的网页。又想到最近看了下Electron，干脆写一个能够生产这样网页的工具，造福自己，造福他人。</p>
-</blockquote>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahbsc6.png" alt="Ahbsc6.png"></p>
-<h2 id="Electron是啥"><a href="#Electron是啥" class="headerlink" title="Electron是啥"></a>Electron是啥</h2><p><a href="(https://electronjs.org/">Electron</a>)一套由Github开发的开源库，基于<a href="https://www.chromium.org/Home" target="_blank" rel="external">Chromium</a>和<a href="https://nodejs.org/en/" target="_blank" rel="external">Node.js</a>，支持通过HTML、JavaScript、CSS来构建跨平台（Mac、Windows、Linux）应用。Electron起初是为文本编辑器<a href="https://atom.io/" target="_blank" rel="external">Atom</a>而开发的一套开发框架，名为Atom Shell。现如今已经为<a href="https://electronjs.org/apps" target="_blank" rel="external">众多应用</a>所用。</p>
-<p>从开发者角度看，Electron分为<code>main</code>和<code>renderer</code>两部分。前者运行在主进程中，以创建web页面的方式显示一个GUI；后者是渲染进程，每个Electron的web页面运行在其中。通常的浏览器内，网页通常运行在一个沙盒的环境不能够进行原生操作。 在Electron中，可以在渲染进程使用Node.js的API和Electron提供的众多API（GUI相关除外），和操作系统进行一些低级别的交互。主进程和渲染进程通过<a href="https://electronjs.org/docs/api/ipc-main" target="_blank" rel="external"><code>ipcMain</code></a>和<a href="https://electronjs.org/docs/api/ipc-renderer" target="_blank" rel="external"><code>ipcRenderer</code></a>相互沟通；也可以通过<a href="https://electronjs.org/docs/api/remote" target="_blank" rel="external"><code>remote</code></a>的方式发起，后者要更简洁些。</p>
-<p>在项目结构上，官网并没有限制，<a href="https://github.com/electron-userland/electron-webpack" target="_blank" rel="external">electron-webpack</a>的<a href="https://webpack.electron.build/project-structure" target="_blank" rel="external">project-structure</a>可以参考，安全性上，可以参考官网的<a href="https://electronjs.org/docs/tutorial/security" target="_blank" rel="external">介绍</a>。要想获得对Electron概念的快速认识，可以看看<a href="https://electronjs.org/docs/tutorial/about" target="_blank" rel="external">关于Electron</a>和<a href="https://electronjs.org/docs/tutorial/quick-start" target="_blank" rel="external">快速入门</a>，再去<a href="https://www.zhihu.com/topic/20038727/top-answers" target="_blank" rel="external">知乎Electron精华话题</a>看看，或者看看<a href="https://github.com/sindresorhus/awesome-electron" target="_blank" rel="external">awesome list</a>也是极好的。</p>
-<h2 id="调研准备"><a href="#调研准备" class="headerlink" title="调研准备"></a>调研准备</h2><p>地图考虑还是使用百度地图API（因为<a href="https://shenlvmeng.github.io/blog/2018/01/27/my-first-pwa-app/" target="_blank" rel="external">上个小项目</a>用的就是百度地图，好上手），根据<a href="http://lbsyun.baidu.com/jsdemo.htm#c1_25" target="_blank" rel="external">demo演示</a>来看，根据数据点画个折线是没什么问题的。地图的part没问题了。</p>
-<p>下面就是数据的part。去确认了下我骑行常用的APP<a href="https://www.imxingzhe.com/" target="_blank" rel="external">行者</a>，网页和APP都有导出功能。导出格式为<code>.gpx</code>的gps数据文件。OK，数据的来源也有了。</p>
-<p>至于怎么把这些点连线搁在地图上，就是我要干的活了。</p>
-<h2 id="功能设计"><a href="#功能设计" class="headerlink" title="功能设计"></a>功能设计</h2><p>但是事情没那么简单，既然选择<a href="https://electronjs.org/" target="_blank" rel="external">Electron</a>来练手，光做个展示的网页出来就很没意思了。这也不是Electron的用武之地。于是能够想到的就是，做一个<strong>可以生成上面那个网页的工具</strong>，一方面减轻我的负担，让我在日后维护时省心省力；另一方面也能造福他人嘛。</p>
-<p>现在整理一下，我拿在手里的是一堆<code>.gpx</code>的文件，产出是可以画图的网页。稍微分解一下：</p>
-<ul>
-<li>网页是需要独立存在，不需要用户配置的，这些gps数据必须单独存储，可以使用前端友好的JSON文件。这个<strong>转译</strong>过程需要在Electron应用中完成</li>
-<li>网页需要能够配置生成，不需要用户手写，因此在应用里需要填充<strong>HTML模板</strong>，生产HTML文件。</li>
-<li>页面并不复杂，不需要使用Vue、React甚至webpack的加持，作为我的第一个Electron应用，把握整体感受要紧</li>
-</ul>
-<h2 id="开写"><a href="#开写" class="headerlink" title="开写"></a>开写</h2><h3 id="相关环境"><a href="#相关环境" class="headerlink" title="相关环境"></a>相关环境</h3><p>安装Electron过程中，报错node版本过低。只能重新安转新版本的node，windows下只有<a href="https://github.com/coreybutler/nvm-windows" target="_blank" rel="external">nvm-windows</a>这个选择。安装完成后，之前全局安装的npm包只能重头再安一遍。先安装<a href="https://www.npmjs.com/package/nrm" target="_blank" rel="external">nrm</a>再说。</p>
-<p><strong>注意：安装nvm-windows前，强烈建议卸载已有的Node.js</strong></p>
-<h3 id="boilerplate"><a href="#boilerplate" class="headerlink" title="boilerplate"></a>boilerplate</h3><p>boilerplate即骨架。现在前端的环境里，一门成熟的开源库是一定有一堆boilerplate的，毕竟程序猿懒人多。Electron也不能免俗。可以从<a href="https://github.com/sindresorhus/awesome-electron#boilerplates" target="_blank" rel="external">awesome list</a>中挑一个看上眼的。如果项目比较大，可以直接用<a href="https://github.com/SimulatedGREG/electron-vue" target="_blank" rel="external">electron-vue</a>这种省心省力，一键式配置，开发打包工具一应齐全。这里我从官网提到的<a href="https://github.com/electron/electron-quick-start" target="_blank" rel="external">quick start</a>，除了一些样例代码，啥都没有，正合我意。</p>
-<p><em>（我曾经尝试使用<a href="https://github.com/electron/electron-quick-start" target="_blank" rel="external">electron-webpack-quick-start</a>，想着顺便打包了<a href="https://github.com/electron-userland/electron-builder" target="_blank" rel="external">electron-builder</a>，还有webpack、热加载，岂不美哉。不过根据<a href="https://webpack.electron.build/development#use-of-html-webpack-plugin" target="_blank" rel="external">这里</a>所说，是没有index.html暴露给你的，这几乎就意味着必须要用Vue、React这样的解决方案，但是<a href="https://github.com/electron-userland/electron-webpack" target="_blank" rel="external">electron-webpack</a>这个库并没有包括，需要自己add-on，但是按照<a href="https://webpack.electron.build/add-ons#vuejs" target="_blank" rel="external">文档</a>所说的操作后，并不能识别<code>.vue</code>文件，而且也没有vue-devtool。这是<strong>坑之一</strong>）</em></p>
-<h3 id="转译"><a href="#转译" class="headerlink" title="转译"></a>转译</h3><p>转译过程是在<code>renderer.js</code>中完成的。实际上，项目里<a href="https://zhuanlan.zhihu.com/p/24275216" target="_blank" rel="external">大多数业务逻辑也是在渲染进程中完成的</a>。核心在把gpx文件里的信息解析出来，除了<code>&lt;desc&gt;&lt;/desc&gt;</code>中的meta信息之外，其余的点结构大致像下面这样;</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">trkpt</span> <span class="attr">lat</span>=<span class="string">"40.106419"</span> <span class="attr">lon</span>=<span class="string">"116.369812"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">ele</span>&gt;</span>40.6<span class="tag">&lt;/<span class="name">ele</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">time</span>&gt;</span>2017-03-04T16:52:36Z<span class="tag">&lt;/<span class="name">time</span>&gt;</span><span class="tag">&lt;/<span class="name">trkpt</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">trkpt</span> <span class="attr">lat</span>=<span class="string">"40.106531"</span> <span class="attr">lon</span>=<span class="string">"116.369916"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">ele</span>&gt;</span>59.8<span class="tag">&lt;/<span class="name">ele</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">time</span>&gt;</span>2017-03-04T16:52:39Z<span class="tag">&lt;/<span class="name">time</span>&gt;</span><span class="tag">&lt;/<span class="name">trkpt</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>幸运的是，npm上早就有gpx的parser。<a href="https://www.npmjs.com/package/gpx-parse" target="_blank" rel="external">gpx-parse</a>的功能足够满足我们需要了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> gpxParse = <span class="built_in">require</span>(<span class="string">"gpx-parse"</span>);</div><div class="line"> </div><div class="line"><span class="comment">//from file </span></div><div class="line">gpxParse.parseGpxFromFile(<span class="string">"/path/to/gpxFile"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>) </span>&#123;</div><div class="line">    <span class="comment">//do stuff </span></div><div class="line">&#125;);</div><div class="line"> </div><div class="line"><span class="comment">//or from string </span></div><div class="line">gpxParse.parseGpx(<span class="string">"&lt;gpx&gt;&lt;/gpx&gt;"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>) </span>&#123;</div><div class="line">    <span class="comment">//do stuff </span></div><div class="line">&#125;);</div><div class="line"> </div><div class="line"><span class="comment">// or an external file via HTTP(S) </span></div><div class="line">gpxParse.parseRemoteGpxFile(<span class="string">"http://host.tld/my.gpx"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>) </span>&#123;</div><div class="line">    <span class="comment">//do stuff </span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>顺带写几个input框（包括<code>&lt;input type=&quot;file&quot;&gt;</code>），测试一下，没啥问题（排除掉中间处理<a href="https://yarnpkg.com/zh-Hans/" target="_blank" rel="external">yarn</a>和npm冲突问题的话）。观察一下，返回值是一个<code>GpxResult</code>类型，里面有<code>metadata</code>，<code>routes</code>，<code>tracks</code>等字段，只有tracks中记录着点的信息。考虑到<code>tracks</code>和里面<code>segments</code>字段是数组的情况，要进行一下flatten的处理。最后，整个转译过程大概如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">serialize</span>(<span class="params">file, index</span>) </span>&#123;</div><div class="line">  gpxParse.parseGpxFromFile(file.path, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (error || !data.tracks) &#123;</div><div class="line">      alert(<span class="string">'文件内容错误'</span>)</div><div class="line">      <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> track = data.tracks;</div><div class="line">    <span class="comment">// 扁平化处理</span></div><div class="line">    <span class="keyword">const</span> flattenTrack = track.reduce(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> (cur.segments.reduce(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> acc.concat(cur), []).concat(acc)), [])</div><div class="line">    <span class="keyword">const</span> points = flattenTrack.map(<span class="function">(<span class="params">&#123;lat, lon&#125;</span>) =&gt;</span> (&#123;lat, <span class="attr">lng</span>: lon&#125;))</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="keyword">const</span> jsonData = <span class="built_in">JSON</span>.stringify(points)</div><div class="line">      <span class="keyword">const</span> pathStr = path.join(OUTPUT_PATH, <span class="string">`<span class="subst">$&#123;index&#125;</span>.json`</span>)</div><div class="line">      remote.require(<span class="string">'fs'</span>).writeFile(pathStr, jsonData,<span class="string">'utf8'</span>, err =&gt; &#123;</div><div class="line">        <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</div><div class="line">      &#125;)</div><div class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">      <span class="built_in">console</span>.warn(e)</div><div class="line">      alert(<span class="string">'文件序列化失败'</span>)</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="写一个示例网页"><a href="#写一个示例网页" class="headerlink" title="写一个示例网页"></a>写一个示例网页</h3><p>既然最后的网页是生成出来的，就有第一个能够成功工作起来的网页作为模子，好抽离范本出来。先搭一个最简单的HTML架子，插入百度地图的script标签。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0, user-scalable=no"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></div><div class="line">    <span class="selector-tag">body</span>, <span class="selector-tag">html</span>, <span class="selector-id">#map</span> &#123;<span class="attribute">width</span>: <span class="number">100%</span>; <span class="attribute">height</span>: <span class="number">100%</span>; <span class="attribute">overflow</span>: hidden; <span class="attribute">margin</span>:<span class="number">0</span>;&#125;</div><div class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>我的骑行轨迹<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"map"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://api.map.baidu.com/api?v=2.0&amp;ak=你的秘钥"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>下面我们把工作稍微分析一下：</p>
-<ul>
-<li>从本地读取JSON文件，意味着<strong>自己实现一个ajax</strong>，考虑兼容性（毕竟没了<a href="http://babeljs.io/" target="_blank" rel="external">babel</a>和webpack）,使用XMLHttpRequest</li>
-<li>读取当然得是<strong>异步</strong>的，JSON文件很有可能很多，需要依次进行</li>
-<li>地图配置和画图就很简单了，参考API就行了</li>
-</ul>
-<p>第一个工作不难：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getJSON</span>(<span class="params">path, callback</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  request.open(<span class="string">'GET'</span>, path, <span class="literal">true</span>);</div><div class="line">  request.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (request.readyState === <span class="number">4</span> &amp;&amp; request.status === <span class="number">200</span>) &#123;</div><div class="line">      callback(request.response);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  request.send();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>第二个工作也不难，在递归函数的外面设置控制递归的变量就可以了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pool = <span class="built_in">Array</span>.apply(<span class="literal">null</span>, <span class="built_in">Array</span>(length)).map(<span class="function"><span class="keyword">function</span>(<span class="params">v, i</span>)</span>&#123;<span class="keyword">return</span> i+<span class="string">'.json'</span>;&#125;);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">paint</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!pool.length) <span class="keyword">return</span>;</div><div class="line">  getJSON(pool.shift(), <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (res) paint();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="keyword">var</span> pois = <span class="built_in">JSON</span>.parse(res).map(<span class="function"><span class="keyword">function</span>(<span class="params">point</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BMap.Point(point.lng, point.lat);</div><div class="line">      &#125;);</div><div class="line">      <span class="keyword">var</span> polyline = <span class="keyword">new</span> BMap.Polyline(pois);</div><div class="line">      map.addOverlay(polyline);</div><div class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">      <span class="built_in">console</span>.warn(e);</div><div class="line">    &#125;</div><div class="line">  &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>OK，大功告成（排除其余逻辑bug之后），赶紧接上<code>renderer.js</code>那边转译好的JSON文件看看骑行轨迹吧！</p>
-<p>你以为事情会这么简单么？</p>
-<p>当然不。</p>
-<h3 id="坐标换算"><a href="#坐标换算" class="headerlink" title="坐标换算"></a>坐标换算</h3><p>图是出来了，但是路线有偏差，发现明显有所平移。这是怎么回事，搜索过后才发现，百度所采用的坐标并不是gps数据中的真实大地坐标，而是在火星坐标基础上再次加密的百度坐标（<a href="http://blog.csdn.net/flygoa/article/details/69258648" target="_blank" rel="external">更多</a>）。<a href="http://lbsyun.baidu.com/jsdemo.htm#a5_3" target="_blank" rel="external">官网示例</a>上也给出了gps坐标转成百度坐标的API。</p>
-<p>得，那就在转译成JSON数据前多map一段呗。仔细一看，<a href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html#a7b49" target="_blank" rel="external"><code>Convertor</code></a>的介绍里赫然写着<strong>“一次最多10个点”</strong>，居然还限流（其实不只是限流的问题，递归的写法也要变化）。一条路线至少上千个点呢，算了先试试看速度吧。</p>
-<p>两条路线用了30s才显示出来，果然很慢……</p>
-<p>只能自己实现转译过程了，网上倒是有一些例子，都差不多。尝试了一下，发现有点效果，但是路线还是有偏移。试了半个多小时后，总算找到了一个完美的<a href="http://www.oschina.net/code/snippet_260395_39205" target="_blank" rel="external">JS转译代码</a>，感谢原作者。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">delta</span>(<span class="params">lat, lon</span>) </span>&#123;</div><div class="line">  <span class="comment">// Krasovsky 1940</span></div><div class="line">  <span class="comment">//</span></div><div class="line">  <span class="comment">// a = 6378245.0, 1/f = 298.3</span></div><div class="line">  <span class="comment">// b = a * (1 - f)</span></div><div class="line">  <span class="comment">// ee = (a^2 - b^2) / a^2;</span></div><div class="line">  <span class="keyword">const</span> a = <span class="number">6378245.0</span>; <span class="comment">//  a: 卫星椭球坐标投影到平面地图坐标系的投影因子。</span></div><div class="line">  <span class="keyword">const</span> ee = <span class="number">0.00669342162296594323</span>; <span class="comment">//  ee: 椭球的偏心率。</span></div><div class="line">  <span class="keyword">let</span> dLat = transformLat(lon - <span class="number">105.0</span>, lat - <span class="number">35.0</span>);</div><div class="line">  <span class="keyword">let</span> dLon = transformLon(lon - <span class="number">105.0</span>, lat - <span class="number">35.0</span>);</div><div class="line">  <span class="keyword">const</span> radLat = lat / <span class="number">180.0</span> * PI;</div><div class="line">  <span class="keyword">let</span> magic = <span class="built_in">Math</span>.sin(radLat);</div><div class="line">  magic = <span class="number">1</span> - ee * magic * magic;</div><div class="line">  <span class="keyword">const</span> sqrtMagic = <span class="built_in">Math</span>.sqrt(magic);</div><div class="line">  dLat = (dLat * <span class="number">180.0</span>) / ((a * (<span class="number">1</span> - ee)) / (magic * sqrtMagic) * PI);</div><div class="line">  dLon = (dLon * <span class="number">180.0</span>) / (a / sqrtMagic * <span class="built_in">Math</span>.cos(radLat) * PI);</div><div class="line">  <span class="keyword">return</span> &#123;<span class="attr">lat</span>: dLat, <span class="attr">lon</span>: dLon&#125;;</div><div class="line">&#125;</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">transformLat</span> (<span class="params">x, y</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> ret = <span class="number">-100.0</span> + <span class="number">2.0</span> * x + <span class="number">3.0</span> * y + <span class="number">0.2</span> * y * y + <span class="number">0.1</span> * x * y + <span class="number">0.2</span> * <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.abs(x));</div><div class="line">    ret += (<span class="number">20.0</span> * <span class="built_in">Math</span>.sin(<span class="number">6.0</span> * x * PI) + <span class="number">20.0</span> * <span class="built_in">Math</span>.sin(<span class="number">2.0</span> * x * PI)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    ret += (<span class="number">20.0</span> * <span class="built_in">Math</span>.sin(y * PI) + <span class="number">40.0</span> * <span class="built_in">Math</span>.sin(y / <span class="number">3.0</span> * PI)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    ret += (<span class="number">160.0</span> * <span class="built_in">Math</span>.sin(y / <span class="number">12.0</span> * PI) + <span class="number">320</span> * <span class="built_in">Math</span>.sin(y * PI / <span class="number">30.0</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">transformLon</span> (<span class="params">x, y</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> ret = <span class="number">300.0</span> + x + <span class="number">2.0</span> * y + <span class="number">0.1</span> * x * x + <span class="number">0.1</span> * x * y + <span class="number">0.1</span> * <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.abs(x));</div><div class="line">    ret += (<span class="number">20.0</span> * <span class="built_in">Math</span>.sin(<span class="number">6.0</span> * x * PI) + <span class="number">20.0</span> * <span class="built_in">Math</span>.sin(<span class="number">2.0</span> * x * PI)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    ret += (<span class="number">20.0</span> * <span class="built_in">Math</span>.sin(x * PI) + <span class="number">40.0</span> * <span class="built_in">Math</span>.sin(x / <span class="number">3.0</span> * PI)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    ret += (<span class="number">150.0</span> * <span class="built_in">Math</span>.sin(x / <span class="number">12.0</span> * PI) + <span class="number">300.0</span> * <span class="built_in">Math</span>.sin(x / <span class="number">30.0</span> * PI)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
-<p>这转译过程，要不是有先行者，我怕是要倒在这里了。</p>
-<h3 id="HTML模板"><a href="#HTML模板" class="headerlink" title="HTML模板"></a>HTML模板</h3><p>示例HTML已经工作起来了，现在就是抽出模子的过程。网页并不复杂，可以用简单的HTML template解决问题。John Resig的方案如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Simple JavaScript Templating</span></div><div class="line"><span class="comment">// John Resig - https://johnresig.com/ - MIT Licensed</span></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> cache = &#123;&#125;;</div><div class="line">   </div><div class="line">  <span class="keyword">this</span>.tmpl = <span class="function"><span class="keyword">function</span> <span class="title">tmpl</span>(<span class="params">str, data</span>)</span>&#123;</div><div class="line">    <span class="comment">// Figure out if we're getting a template, or if we need to</span></div><div class="line">    <span class="comment">// load the template - and be sure to cache the result.</span></div><div class="line">    <span class="keyword">var</span> fn = !<span class="regexp">/\W/</span>.test(str) ?</div><div class="line">      cache[str] = cache[str] ||</div><div class="line">        tmpl(<span class="built_in">document</span>.getElementById(str).innerHTML) :</div><div class="line">       </div><div class="line">      <span class="comment">// Generate a reusable function that will serve as a template</span></div><div class="line">      <span class="comment">// generator (and which will be cached).</span></div><div class="line">      <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">"obj"</span>,</div><div class="line">        <span class="string">"var p=[],print=function()&#123;p.push.apply(p,arguments);&#125;;"</span> +</div><div class="line">         </div><div class="line">        <span class="comment">// Introduce the data as local variables using with()&#123;&#125;</span></div><div class="line">        <span class="string">"with(obj)&#123;p.push('"</span> +</div><div class="line">         </div><div class="line">        <span class="comment">// Convert the template into pure JavaScript</span></div><div class="line">        str</div><div class="line">          .replace(<span class="regexp">/[\r\t\n]/g</span>, <span class="string">" "</span>)</div><div class="line">          .split(<span class="string">"&lt;%"</span>).join(<span class="string">"\t"</span>)</div><div class="line">          .replace(<span class="regexp">/((^|%&gt;)[^\t]*)'/g</span>, <span class="string">"$1\r"</span>)</div><div class="line">          .replace(<span class="regexp">/\t=(.*?)%&gt;/g</span>, <span class="string">"',$1,'"</span>)</div><div class="line">          .split(<span class="string">"\t"</span>).join(<span class="string">"');"</span>)</div><div class="line">          .split(<span class="string">"%&gt;"</span>).join(<span class="string">"p.push('"</span>)</div><div class="line">          .split(<span class="string">"\r"</span>).join(<span class="string">"\\'"</span>)</div><div class="line">      + <span class="string">"');&#125;return p.join('');"</span>);</div><div class="line">     </div><div class="line">    <span class="comment">// Provide some basic currying to the user</span></div><div class="line">    <span class="keyword">return</span> data ? fn( data ) : fn;</div><div class="line">  &#125;;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
-<p>看上去很眼熟，以前的项目似乎见到过。</p>
-<p>把之前的示例HTML放在<code>index.html</code>的<code>&lt;script type=&quot;text/template&quot;&gt;&lt;/script&gt;</code>中，在渲染进程里加上代码看看？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(tmpl(<span class="string">'template'</span>));</div></pre></td></tr></table></figure>
-<p>嗯……报错了。提示“<code>Missing &#39;)&#39; after argument list</code>”。加断点调试发现是标签里的<code>&quot;</code>打断了<code>new Function</code>的语句。尝试了多种方法无效后，索性使用<code>encodeURIComponent</code>想处理掉麻烦的特殊符号，但是这么做之后就无法匹配<code>&lt;%=%&gt;</code>了。</p>
-<p>于是最后选择<a href="http://underscorejs.org/" target="_blank" rel="external">underscore</a>的template方法。再试试……</p>
-<p>没问题了。之后把允许用户填写的部分抽出来，就可以把<code>index.html</code>的生成放在转译代码身旁了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> template = <span class="built_in">document</span>.getElementById(<span class="string">'template'</span>).innerHTML</div><div class="line"><span class="comment">// ...</span></div><div class="line">remote.require(<span class="string">'fs'</span>).writeFile(path.join(OUTPUT_PATH, <span class="string">'index.html'</span>), tmpl(template)(data).replace(<span class="regexp">/&amp;lt;/g</span>, <span class="string">'&lt;'</span>),<span class="string">'utf8'</span>, err =&gt; &#123;</div><div class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</div><div class="line">    <span class="keyword">else</span> alert(<span class="string">'生成完毕！\n将output文件夹下所有文件上传到服务器即可查看效果！'</span>)</div><div class="line">  &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>再次运行，测试生成的网页能否工作？答案当然是可以。</p>
-<h3 id="苦力活"><a href="#苦力活" class="headerlink" title="苦力活"></a>苦力活</h3><p>技术上的问题解决了，现在从用户填写信息到最后生成能用的展示页面也没有问题了。初版下面的问题就是美化了。</p>
-<ul>
-<li>CSS修饰样式</li>
-<li>将模板HTML文件压缩（包括JS和CSS），因为反正用户不会修改内容，不需要考虑可读性</li>
-<li>一些保护性编程和边缘情况兜底</li>
-</ul>
-<p>最后测试结果如下：</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhbD91.png" alt="AhbD91.png"></p>
-<p>生成效果如上。</p>
-<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>初版开发已经完成了，只剩发布出来给别人用了，考虑到<a href="https://electronjs.org/docs/tutorial/application-distribution" target="_blank" rel="external">官网文档</a>讲得实在不清不楚，不如用一个好工具帮我们完成。</p>
-<p>这里使用<a href="https://github.com/electron-userland/electron-builder" target="_blank" rel="external">electron-builder</a>。跟着介绍里一步步完善<code>package.json</code>和项目结构。加上依赖后，执行<code>yarn dist</code>生成可分发的文件。</p>
-<p>嗯……果然失败了。原因很简单，网络错误，Electron镜像文件下载失败。还好淘宝有electron镜像。通过设置ELECTRON_MIRROR环境变量，可以大大加快速度。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/</div></pre></td></tr></table></figure>
-<p>然后，再次执行<code>yarn dist</code>，在从Github下载其他相关文件的时候，仍然会网络错误。于是我机智的从网页上下载下来，直接放在了目标目录下。再次执行任务，居然不能识别出来。好吧……</p>
-<p>故事的最后，打包还是完成了。不过由于生成文件的目录写成了相对目录，生成的文件得通过搜索才能找到，考虑后面生成在桌面。</p>
-<p><em>–END–</em></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://www.jianshu.com/p/28bca6529150" target="_blank" rel="external">在windows下用nvm 安装node</a></li>
-<li><a href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html" target="_blank" rel="external">百度地图JavaScript API v2.0类参考</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/24275216" target="_blank" rel="external">Electron 应用实战 (架构篇)</a></li>
-<li><a href="https://en.wikipedia.org/wiki/GPS_Exchange_Format" target="_blank" rel="external">GPS Exchange Format</a></li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest" target="_blank" rel="external">XMLHttpRequest | MDN</a></li>
-<li><a href="https://skalman.github.io/UglifyJS-online/" target="_blank" rel="external">UglifyJS 3: Online JavaScript minifier</a></li>
-<li><a href="https://cssminifier.com/" target="_blank" rel="external">CSS Minifier</a></li>
-<li><a href="https://github.com/pfan123/electron-docs" target="_blank" rel="external">pfan123/electron-docs electron-docs学习文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/blog/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><a class="extend next" rel="next" href="/blog/page/11/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/blog/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><a class="extend next" rel="next" href="/blog/page/11/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1477,7 +1548,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">115</span>
+                <span class="site-state-item-count">119</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1499,7 +1570,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">325</span>
+                <span class="site-state-item-count">337</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

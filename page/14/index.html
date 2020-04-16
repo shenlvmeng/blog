@@ -296,6 +296,922 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/09/08/photogallery-improvement/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/09/08/photogallery-improvement/" itemprop="url">PhotoGallery技术改造</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-08T19:31:17+08:00">
+                2017-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/09/08/photogallery-improvement/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/08/photogallery-improvement/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/blog/images/photogallery.png" alt=""></p>
+<p>最近离职后除了准备面试，多了许多时间对以往的前端个人项目进行改造。<a href="http://shenlvmeng.github.io/gallery/index.html" target="_blank" rel="external">PhotoGallery</a>就是其中一个个人很喜欢，但由于技术原因没做到完美的例子。最近准备抽出时间进行完善。</p>
+<p>PhotoGallery是一个使用瀑布流展示电影海报以及花絮（当然都是个人比较心水的）的展示型页面。所有的电影图片也是从大一就开始收集的，一直囤积在人人上。页面的诸多功能是根据个人爱好设计的，如</p>
+<ul>
+<li>根据标签搜索</li>
+<li>相似图片</li>
+<li>基于tag的推荐等</li>
+</ul>
+<p>总体来说，就是一个展示、介绍、推荐电影的地方。内容上还是很不错的。但是，去年寒假码代码时，前端技术还有待提高，很多地方写得并不严谨甚至比较丑陋。功能上也有些影响体验必须解决的痛点。大概有下面这些</p>
+<ul>
+<li><strong>首屏渲染时间糟糕</strong>，这是因为图片过多（个人看的太多），又使用了Vue。同时Vue这种MVVM框架和精细化DOM操作一山不容二虎，因此，结合懒加载，效果依然不理想</li>
+<li><strong>图片的时序排布并不自然</strong>，当时图省事，使用纯CSS方案实现瀑布流，牺牲了图片排序。图片只能从上到下再从左到右排序，和正常的阅读顺序并不一致。同时，最老的图片在最前，也不合理</li>
+<li><strong>新增图片困难</strong>，这是由于github.io的纯静态的限制，当时采用了静态图片+meta存数据的方式来实现，后面看了电影再往里加图步骤繁琐，没有人性化的办法</li>
+<li>样式老气，细节粗糙</li>
+<li><strong>本地调试困难</strong>，只使用了gulp来压缩js，css和json代码（代码少，不需要打包），不是全家桶脚手架，本地调试困难，且不能使用ES6语法</li>
+<li><strong>代码语法和风格上不严谨</strong>，考虑结合在公司的规矩规范</li>
+</ul>
+<p>针对上面大大小小几点，以及实际情况（比如只能使用github.io），考虑像下面这样优化</p>
+<h3 id="瀑布流布局实现方式待优化"><a href="#瀑布流布局实现方式待优化" class="headerlink" title="瀑布流布局实现方式待优化"></a>瀑布流布局实现方式待优化</h3><p>放弃使用column-count的方案。原因有二：</p>
+<ol>
+<li>排布顺序是从上到下，再从左到右，和日常经验相悖。类似地，使用flex的方案也不行</li>
+<li>本身和懒加载的设计兼容性并不好，懒加载的新图片会导致整个页面的布局完全改变。类似地，使用grid的方案也不适合</li>
+</ol>
+<p>因此考虑借鉴<a href="http://www.zhangxinxu.com/wordpress/2012/03/%E5%A4%9A%E6%A0%8F%E5%88%97%E8%A1%A8%E5%8E%9F%E7%90%86%E4%B8%8B%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80-waterfall-layout/" target="_blank" rel="external">张鑫旭大神的方案</a>，综合CSS和JS实现懒加载的滚动式瀑布流布局。</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201203/2012-03-23_233114.png" alt=""></p>
+<p>首先，根据屏幕宽度设置合理的列数，再逐列插入5张新图片，作为初始情况，同时，使用<code>flex</code>布局，设置<code>flex-grow</code>和<code>justify-content</code>等属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> Wall = &#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  data() &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">columns</span>: <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth),</div><div class="line">      <span class="attr">lastFlag</span>: <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth) * <span class="number">5</span> - <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  computed: &#123;</div><div class="line">    items() &#123;</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    itemsForColumns() &#123;</div><div class="line">      <span class="keyword">let</span> ret = <span class="built_in">Array</span>.apply(<span class="literal">null</span>, <span class="built_in">Array</span>(<span class="keyword">this</span>.columns)).map(<span class="function"><span class="params">()</span> =&gt;</span> []);</div><div class="line">      <span class="keyword">this</span>.items.slice(<span class="number">0</span>, <span class="keyword">this</span>.lastFlag + <span class="number">1</span>).forEach(<span class="function">(<span class="params">item, i</span>) =&gt;</span> &#123;</div><div class="line">        ret[i % <span class="keyword">this</span>.columns].push(item);</div><div class="line">      &#125;)</div><div class="line">      <span class="comment">// 每列先只加载5个</span></div><div class="line">      <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#photos</span> &#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-flow</span>: row wrap;</div><div class="line">  <span class="attribute">align-items</span>: flex-start;</div><div class="line">  <span class="attribute">justify-content</span>: space-around;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.wall-column</span> &#123;</div><div class="line">  <span class="attribute">display</span>: inline-block;</div><div class="line">  <span class="attribute">width</span>: <span class="number">250px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">8px</span>;</div><div class="line">  <span class="attribute">vertical-align</span>: top;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之后，监听可能会改变布局的所有情况，在我这个场景下，大概有三种：</p>
+<ul>
+<li>滚动（scroll）事件</li>
+<li>缩放事件（resize）事件</li>
+<li>筛选图片，在改变筛选条件，会导致图片数目的变化</li>
+</ul>
+<p>下面分情况解决之。</p>
+<p><strong>resize时</strong></p>
+<p>监听<code>window</code>的<code>resize</code>事件，当最后一列的位置变化时，意味着布局已经改变，需要触发重排。可以看到上面的<code>itemForColumns</code>中依赖<code>columns</code>和<code>lastFlag</code>两个状态。这里我们利用MVVM框架的优势，维护这两个值，就可以让Vue帮我们完成重排这样的繁琐操作。如下，当<code>columns</code>改变时，才会触发重绘。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"resize"</span>, e =&gt; &#123;</div><div class="line">  <span class="keyword">this</span>.columns = <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth);</div><div class="line">  <span class="comment">// 已经展示过的图片就不要隐藏了</span></div><div class="line">  <span class="keyword">this</span>.lastFlag = <span class="built_in">Math</span>.max(<span class="keyword">this</span>.columns * <span class="number">5</span> - <span class="number">1</span>, <span class="keyword">this</span>.lastFlag);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p><strong>筛选图片时</strong></p>
+<p>同理，通过关键词筛选图片时，改变了传入Wall的prop <code>factor</code>。会同步更新依赖<code>factor</code>的<code>item</code>，触发重排。有一点有注意的是，<strong><code>lastFlag</code>需要重新开始累加</strong>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">watch: &#123;</div><div class="line">  items() &#123;</div><div class="line">    <span class="comment">// 设置了筛选条件后，lastFlag需要重新开始累加</span></div><div class="line">    <span class="keyword">this</span>.lastFlag = <span class="built_in">Math</span>.floor(<span class="built_in">document</span>.body.clientWidth / columnWidth) * <span class="number">5</span> - <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>scroll时</strong></p>
+<p>页面滚动时，需要加入新的图片到column中，我们要做的只是更改<code>lastFlag</code>即可，Vue会帮我们自动完成依赖<code>lastFlag</code>的<code>itemForColumns</code>更新。重点在，我们如何知道lastFlag应该增加到多少。</p>
+<p>我们回看下<code>itemForColumns</code>的逻辑，可以发现<strong>新增的图片是循环摆放的</strong>。这里额外说一句，尽管新图片放在最短列是最合理的，但是工程上并不合算（一是Vue下做这么精细的DOM操作不合适，二是获知最短列意味着DOM操作已经发生，即会有频繁的回流和重绘，这会影响渲染时间）。我们循环考虑每一列的最底部位置，如果在视口内，将图片更新到该列，直到所有列底部都在视口外。直到图片加载完毕。</p>
+<p>另外，在实践时还发现一个问题，<code>handleScroll</code>里更改了<code>lastFlag</code>后，Vue本身有batch的优化，会在microtask栈空后，才会进行耗时的DOM操作。循环添加图片时，需要通过setTimeout异步完成，避免误判，在一次递归中加载了所有图片。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">handleScroll(top) &#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.items.length &lt;= <span class="keyword">this</span>.lastFlag) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">let</span> delta = <span class="number">-1</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.columns; i++) &#123;</div><div class="line">    <span class="keyword">let</span> col = <span class="built_in">document</span>.getElementById(<span class="string">`wall-<span class="subst">$&#123;i&#125;</span>`</span>);</div><div class="line">    <span class="keyword">if</span> (col &amp;&amp; col.offsetTop + col.clientHeight &lt; top + (<span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight)) &#123;</div><div class="line">      delta = i;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (!!++delta) &#123;</div><div class="line">    <span class="keyword">this</span>.lastFlag += delta;</div><div class="line">    <span class="comment">// 直到所有列下沿都不在视口内，</span></div><div class="line">    <span class="comment">// 同时，设置时延，保证DOM操作完成后再继续handleScroll</span></div><div class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;  <span class="keyword">this</span>.handleScroll(top); &#125;, <span class="number">0</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="新增图片困难"><a href="#新增图片困难" class="headerlink" title="新增图片困难"></a>新增图片困难</h3><p><del>由于github.io是纯静态的页面，我并没有后台环境，这个痛点短期内只能缓解不能根除。不过后面考虑将所有图片迁移到图床上，毕竟把图片数据也存在github上感觉还是……有点怪怪的。日后新增图片应该还是通过上传图片，更新<code>meta.json</code>的形式完成。</del></p>
+<p>目前已将所有图片迁移到图床上，图床选择上参考了知乎上的推荐，使用<a href="https://www.qiniu.com/" target="_blank" rel="external">七牛云存储</a>，在个人实名认证后，免费部分有每月10G国内和国外下载流量，100万次GET和PUT请求次数，和10G存储空间。同时，它还提供对图片的压缩等管理，尽量减少流量。</p>
+<p>迁移之后，仓库体积大大减小。之后日常更新时，图片单独上传，根据外链固定前缀得到最终路径。</p>
+<p><del><code>meta.json</code>的更新上，考虑自己写一个工具，根据新看的电影生成新的content。</del></p>
+<p>已完成自动生成<code>meta.json</code>的<a href="https://shenlvmeng.github.io/meta-maker.html" target="_blank" rel="external">小工具</a>，原理很简单，就不再介绍了。</p>
+<h3 id="细节美化"><a href="#细节美化" class="headerlink" title="细节美化"></a>细节美化</h3><p>点比较细碎。整体借鉴了<a href="https://material.io/guidelines/material-design/introduction.html#introduction-goals" target="_blank" rel="external">material design</a>的思想。</p>
+<p><strong>影片详细信息的遮罩</strong></p>
+<p>考虑使用100%的遮罩，同时禁止背景滚动的形式展示图片的详细信息。起初打算用js去实现，后来发现下面的两点使得方案并不简单</p>
+<ul>
+<li>scroll事件不能被cancel，这意味着不能打断默认的滚动行为</li>
+<li>从Mouse，Keyboard，Touch相关触发scroll事件的事件劫持滚动行为倒是可以，不过要监听的事件太多</li>
+</ul>
+<p>只好作罢，通过纯CSS的方式，弹出浮层时，为body指定<code>noscroll</code>的类名。让浮层的<code>overflow</code>属性为<code>scroll</code>即可，同时设置浮层<code>position</code>属性为<code>fixed</code>即可。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#display</span> &#123;</div><div class="line">  <span class="attribute">position</span>: fixed;</div><div class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</div><div class="line">  <span class="comment">/*...*/</span></div><div class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</div><div class="line">  <span class="attribute">overflow-y</span>: scroll;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>使用缓动函数改进回到开头</strong></p>
+<p>这里使用定义域和值域都是<code>[0,1]</code>的<code>easeInOutCubic</code>函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> easeInOutCubic = <span class="function"><span class="params">t</span> =&gt;</span> (t&lt;<span class="number">.5</span> ? <span class="number">4</span>*t*t*t : (t<span class="number">-1</span>)*(<span class="number">2</span>*t<span class="number">-2</span>)*(<span class="number">2</span>*t<span class="number">-2</span>)+<span class="number">1</span>);</div></pre></td></tr></table></figure>
+<p>有了缓动函数后，使用<code>requestAnimationFrame</code>即可高效率地绘制JS动画。这里封装了一个<code>animate</code>函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> animate = <span class="function">(<span class="params">obj, prop, end, time, ease</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">if</span> (!obj || !obj[prop] || time &lt; <span class="number">100</span>) &#123;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">let</span> start = obj[prop],</div><div class="line">      k = end - start,</div><div class="line">      timer = <span class="literal">null</span>,</div><div class="line">      tick = <span class="function"><span class="params">timestamp</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (timer === <span class="literal">null</span>) &#123;</div><div class="line">          timer = timestamp;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">let</span> progress = timestamp - timer;</div><div class="line">        obj[prop] = start + ease(progress / time) * k;</div><div class="line">        <span class="keyword">if</span> (progress &lt; time) &#123;</div><div class="line">          requestAnimationFrame(tick);</div><div class="line">        &#125;</div><div class="line">      &#125;;</div><div class="line"></div><div class="line">  requestAnimationFrame(tick);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>后面直接使用<code>animate(document.body, &quot;scrollTop&quot;, 0, 1000, easeInOutCubic)</code>就可以圆滑地上移了。</p>
+<p><strong>移动端的优化</strong></p>
+<ul>
+<li>使用媒体查询，在屏幕宽度更改时，隐藏一些元素</li>
+<li>在UA为移动端设备时，给出提醒</li>
+</ul>
+<p><strong>loading样式</strong></p>
+<p>在改变筛选条件时，设置loading样式提升用户体验。通过积累onload的计数和初始加载图片值进行对比，在达到该值时清除遮罩。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ...</span></div><div class="line">loadedCount(newCount) &#123;</div><div class="line">  <span class="keyword">if</span> (newCount &gt;= <span class="built_in">Math</span>.min(<span class="keyword">this</span>.lastFlag + <span class="number">1</span>, <span class="keyword">this</span>.items.length)) &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"全部加载完成"</span>);</div><div class="line">    <span class="keyword">this</span>.isHidden = <span class="literal">true</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// console.log("Loading...");</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p><strong>杂项</strong></p>
+<ul>
+<li>导航条交互优化</li>
+<li>导航条部分设置阴影，更改部分字体颜色和背景色</li>
+<li>修改触发分类方式，由<code>click</code>改为<code>mousemove</code></li>
+<li>修改tab的样式</li>
+<li>将vue和lodash的js文件下载到本地，避免CDN失效的问题（之前已经遇到过一次），增加可靠性</li>
+<li>搜索条件不区分大小写</li>
+</ul>
+<h3 id="本地调试困难"><a href="#本地调试困难" class="headerlink" title="本地调试困难"></a>本地调试困难</h3><p>因为代码较少，也只有一个文件，用不着webpack这样的全套解决方案。小巧易用的gulp就够了。针对我们需要的ES6转码，替换minify方案，本地调试等需要，都有对应的gulp插件解决问题。</p>
+<h4 id="gulp-babel"><a href="#gulp-babel" class="headerlink" title="gulp-babel"></a>gulp-babel</h4><p>使用<a href="https://babeljs.io/" target="_blank" rel="external">babel</a>来转码，<code>gulp-babel</code>依赖<code>babel-core@6</code>或以上版本，同时设置<code>preset</code>为<code>es2015</code>或ES7相关版本时也需要下载对应module。</p>
+<p>我只需要es2015即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install --save-dev babel-core gulp-babel babel-preset-es2015</div></pre></td></tr></table></figure>
+<p>React和ES7的各阶段可以像下面这样选择安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ npm install --save-dev babel-preset-react</div><div class="line">$ npm install --save-dev babel-preset-stage-0</div><div class="line">$ npm install --save-dev babel-preset-stage-1</div><div class="line">$ npm install --save-dev babel-preset-stage-2</div><div class="line">$ npm install --save-dev babel-preset-stage-3</div></pre></td></tr></table></figure>
+<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><ul>
+<li><strong><a href="https://www.npmjs.com/package/gulp-uglify" target="_blank" rel="external">gulp-uglify</a></strong>，压缩代码</li>
+<li><strong>gulp-rename</strong>，为压缩出的js重命名</li>
+<li><strong><a href="https://www.npmjs.com/package/gulp-webserver" target="_blank" rel="external">gulp-webserver</a></strong>，开启本地服务，方便本地调试</li>
+</ul>
+<p>上面这些插件按照文档操作即可，坑比较少，使用webserver时的<code>gulp.src()</code>入参通常为<code>./</code>，指以当前目录为服务器根目录。</p>
+<p>最后还需要加一个watch，方便在调试时的修改能同步转码压缩。像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.js'</span>, [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>最后整个<code>gulpfile.js</code>是下面的样子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>),</div><div class="line">    babel = <span class="built_in">require</span>(<span class="string">'gulp-babel'</span>),</div><div class="line">    uglify = <span class="built_in">require</span>(<span class="string">'gulp-uglify'</span>),</div><div class="line">    rename = <span class="built_in">require</span>(<span class="string">'gulp-rename'</span>),</div><div class="line">    cleanCSS = <span class="built_in">require</span>(<span class="string">'gulp-clean-css'</span>),</div><div class="line">    jsonminify = <span class="built_in">require</span>(<span class="string">'gulp-jsonminify'</span>),</div><div class="line">    webserver = <span class="built_in">require</span>(<span class="string">'gulp-webserver'</span>);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'js'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'assets/src/*.js'</span>)</div><div class="line">    .pipe(babel(&#123;</div><div class="line">      <span class="attr">presets</span>: [<span class="string">'es2015'</span>]</div><div class="line">    &#125;))</div><div class="line">    .pipe(uglify())</div><div class="line">    .pipe(rename(&#123; <span class="attr">suffix</span>: <span class="string">'.min'</span> &#125;))</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'css'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src([<span class="string">'assets/src/*.css'</span>])</div><div class="line">    .pipe(cleanCSS(&#123;<span class="attr">compatibility</span>: <span class="string">'ie8'</span>&#125;))</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'json'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> gulp.src(<span class="string">'assets/src/meta.json'</span>)</div><div class="line">    .pipe(jsonminify())</div><div class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>))</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.src(<span class="string">'./'</span>)</div><div class="line">    .pipe(webserver(&#123;</div><div class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">open</span>: <span class="literal">true</span></div><div class="line">    &#125;));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.js'</span>, [<span class="string">'js'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.css'</span>, [<span class="string">'css'</span>]);</div><div class="line">  gulp.watch(<span class="string">'assets/src/*.json'</span>, [<span class="string">'json'</span>]);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">gulp.task(<span class="string">'dev'</span>, [<span class="string">'default'</span>, <span class="string">'webserver'</span>, <span class="string">'watch'</span>]);</div><div class="line">gulp.task(<span class="string">"default"</span>, [<span class="string">'json'</span>, <span class="string">'css'</span>, <span class="string">'js'</span>]);</div></pre></td></tr></table></figure></p>
+<h3 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h3><p>从略。HTML和CSS部分参照以往写的<a href="https://shenlvmeng.github.io/blog/2017/06/23/HTML-CSS-code-style-guide/" target="_blank" rel="external">建议</a>即可。除此以外，优化了下面的部分：</p>
+<ul>
+<li>删除了为兼容移动端额外使用的touchend事件，增加viewport的meta标签，消除移动端chrome浏览器点击300ms延时情况</li>
+<li>由于引入了babel，删除了兼容ES6语法的自己写的polyfill部分</li>
+<li>使用<a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="external">fetch API</a>请求json</li>
+<li>优化导航条点击事件处理相关的代码</li>
+<li>减少图片数目和json体积</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://segmentfault.com/a/1190000004394726" target="_blank" rel="external">使用gulp 进行ES6开发</a></li>
+<li><a href="http://blog.csdn.net/seven0404/article/details/51880162" target="_blank" rel="external">node.js利用gulp 启动webServer服务</a></li>
+<li><a href="https://stackoverflow.com/questions/2434602/css-setting-width-height-as-percentage-minus-pixels" target="_blank" rel="external">CSS: Setting width/height as Percentage minus pixels</a></li>
+<li><a href="http://easings.net/zh-cn" target="_blank" rel="external">缓动函数速查表</a></li>
+<li><a href="https://gist.github.com/gre/1650294" target="_blank" rel="external">Simple Easing Functions in Javascript</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="external">window.requestAnimationFrame | MDN</a></li>
+<li><a href="https://dribbble.com/" target="_blank" rel="external">dribbble</a></li>
+<li><a href="https://codepen.io/sdthornton/pen/wBZdXq" target="_blank" rel="external">Material Design Box Shadows</a></li>
+<li><a href="http://tobiasahlin.com/spinkit/" target="_blank" rel="external">SpinKit | Simple CSS Spinners</a></li>
+<li><a href="https://www.zhihu.com/question/21667151" target="_blank" rel="external">国内有什么方便的图床？</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/09/04/pwa-and-hybrid-brief/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/09/04/pwa-and-hybrid-brief/" itemprop="url">PWA以及Hybrid开发方案简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-04T17:59:00+08:00">
+                2017-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/09/04/pwa-and-hybrid-brief/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/04/pwa-and-hybrid-brief/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="PWA"><a href="#PWA" class="headerlink" title="PWA"></a>PWA</h2><p>PWA(Progressive Web App)渐进增强的Web App。最早提出在2015年，它最初的设计理念是，保留Web的精髓，让Web逐渐演进成App，而非现在Hybrid App（即现在最常用的UIWebView/WebView+前端）形式。</p>
+<ul>
+<li>可安装性</li>
+<li>离线能力</li>
+<li>推送能力</li>
+</ul>
+<p>在PWA的概念下，网页可以被添加到主屏同时支持全屏运行，在Service Worker帮助下可以离线运行，最后它仍是Web而并不用添加到App Store中。</p>
+<p>说到Service Worker很多人可能会想到Web Worker的概念。这两个看起来是包含关系的概念实际上有区别。</p>
+<ul>
+<li>Web Worker是JS多线程的一种实现方式，借助它可以让脚本在后台运行，worker对象和主线程通过message的方式交流，caniuse上的支持度为93%</li>
+<li>Service Worker是浏览器的一个新特性，配合PWA的概念一起使用，是PWA网络请求的代理，结合缓存管理等方案，提供很好的离线体验，caniuse支持度仅有73%</li>
+</ul>
+<p>一个<a href="https://nolanlawson.github.io/cascadia-2016/#/35" target="_blank" rel="external">介绍ppt</a>上展示了具体的区别：</p>
+<ul>
+<li>和tab的关系，Web Worker是一tab对多Web Worker，Service Worker则是多对一</li>
+<li>生命周期，Web Worker和选项卡同生共死，Service Worker则是完全独立的</li>
+<li>擅长场景，Web Worker用在多线程协同，Service Worker则可以提供很好的离线体验</li>
+<li>为保证安全Service Worker要求scheme为https</li>
+</ul>
+<p>Service Worker通过<code>navigator.serviceWorker.register(&#39;path&#39;).then</code>的方式注册，之后便能通过监听事件拿到所有scope里发生的请求，当然，可以在path后的第二个参数中显式地声明作用域（如<code>{scope: &#39;/js&#39;}</code>）。Service Worker可以监听它声明周期中的各事件</p>
+<ul>
+<li><strong>Install</strong> 发生在第一次注册和sw.js（这里的文件名只是举个例子）改变时，通常在这个阶段设定SW的初始状态和准备好缓存。缓存可以借助<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Cache" target="_blank" rel="external">caches API</a>完成。</li>
+<li><strong>Fetch</strong> 发生在网络请求产生时，任何匹配了Request的网络请求都会被拦截，并返回缓存数据。只有找不到存在的缓存，才会产生一个请求</li>
+<li><strong>Activate</strong> 发生在SW更新或网页关掉再重新打开时，触发在install之后</li>
+<li><strong>Sync</strong> 发生在用户有网络时，用在用户进行依赖网络的操作时，会推迟到有网络时再执行。简单来说，所有的依赖网络的操作，都需要使用sync事件</li>
+</ul>
+<p>除了Service Worker，Manifest也是很重要的一部分。它用来描述应用程序的各种信息。它包括下面一些成员</p>
+<ul>
+<li><strong>background-color</strong> 在css加载前用作应用背景颜色</li>
+<li><strong>name</strong> 应用名，<strong>short_name</strong>也是类似意思</li>
+<li><strong>description</strong> 应用描述</li>
+<li><strong>display</strong> 显示模式，有<code>fullscreen</code>, <code>standalone</code>, <code>minimal-ui</code>和<code>browser</code>几种可以选择</li>
+<li><strong>icons</strong> 应用图标，数组类型，每项包含<code>src</code>, <code>type</code>和<code>sizes</code>几个属性</li>
+<li><strong>orientation</strong> 默认的屏幕朝向</li>
+</ul>
+<p><a href="https://pwa.rocks/" target="_blank" rel="external">这里</a>有一个收集PWA酷站的地方。</p>
+<h2 id="Hybrid方案相关"><a href="#Hybrid方案相关" class="headerlink" title="Hybrid方案相关"></a>Hybrid方案相关</h2><p>离线包管理方案：</p>
+<ol>
+<li>本地开发测试，提交特性分支到远端，</li>
+<li>通过提MR的方式合并在当前迭代分支上，触发basement自动CI为zip格式，根据当前发包的状态，传递给NebulaMng管理</li>
+<li>NebulaMng基于zip生成版本号和配置文件，构建整个离线包，并推送给应用中心</li>
+<li>应用中心负责向客户端推送更新</li>
+<li>客户端根据策略拉取离线包、解压、渲染</li>
+</ol>
+<p>离线包本地渲染方案：</p>
+<ol>
+<li>加载公共资源包</li>
+<li>判断本地是否已安装该离线包，若有，则加载到内存，否则触发离线包下载</li>
+<li>WebView加载离线包url链接，加载前检查内存中是否存在页面数据，若有，从内存中取出并渲染，否则fallback到线上cdn地址</li>
+</ol>
+<p>离线包更新方案：</p>
+<ol>
+<li>应用中心广播或服务端发sync消息触发</li>
+<li>向wapcenter获取当前客户端下所有包信息</li>
+<li>在本地没有当前版本且WiFi条件或auto_install为1时更新本地包</li>
+</ol>
+<p>双向通信和JSBridge原理：</p>
+<ul>
+<li>WebView在载入页面时，注入JSBridge脚本。通过调用JSBridge.call，触发调用参数的序列化，并调用<code>console.log(h5container.message:xxx)</code>或<code>window.prompt</code>事件。WebView监听页面的console或prompt事件，解析传递的参数信息，然后通过NebulaService分发事件</li>
+<li>Service、Session、Page实例化时，内部都有一个H5PluginManager成员，通过类似EventEmitter的形式存储着一个action -&gt; plugin的map。每个plugin都有interceptEvent和handleEvent两个函数，处理事件的拦截和处理两个阶段</li>
+<li>WebView通过loadUrl(“javascript:JsBridge.callback”)的形式输入结果并运行回调</li>
+</ul>
+<p>实现上类似这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">;<span class="comment">//JsBridge</span></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">window</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> callbackList = &#123;&#125;;</div><div class="line"></div><div class="line">  <span class="built_in">window</span>.JsBridge = &#123;</div><div class="line">    <span class="comment">/* 参数说明</span></div><div class="line">     * @evt &#123;string&#125; 调用接口名称 (必须)</div><div class="line">     * @params &#123;object&#125; 配置参数 (可选)</div><div class="line">     * @callback &#123;function&#125; 回调函数 (可选)</div><div class="line">     */</div><div class="line">    call: <span class="function"><span class="keyword">function</span>(<span class="params">evt, params, callback</span>) </span>&#123;</div><div class="line">      <span class="comment">//第一个参数必须为string</span></div><div class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> evt != <span class="string">'string'</span>) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> params == <span class="string">'function'</span>) &#123;</div><div class="line">        callback = params;</div><div class="line">        params = <span class="literal">null</span>;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">typeof</span> params != <span class="string">'object'</span>) &#123;</div><div class="line">        params = <span class="literal">null</span>;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> callbackId = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime() + <span class="string">''</span>;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> callback == <span class="string">'function'</span>) &#123;</div><div class="line">        callbackList[callbackId] = callback;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> msg = &#123;</div><div class="line">        <span class="attr">callbackId</span>: callbackId,</div><div class="line">        <span class="attr">action</span>: evt,</div><div class="line">        <span class="attr">data</span>: params || &#123;&#125;</div><div class="line">      &#125;;</div><div class="line">      prompt(<span class="string">'JsBridgeCall'</span>, <span class="built_in">JSON</span>.stringify(msg));</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">/* 参数说明</span></div><div class="line">     * @params &#123;object&#125; 返回的数据 (必须)</div><div class="line">     * 数据示例：&#123; callbackId: 'xxx', data: '' &#125;</div><div class="line">     */</div><div class="line">    callback: <span class="function"><span class="keyword">function</span>(<span class="params">params</span>) </span>&#123;</div><div class="line">      <span class="comment">// params = JSON.parse(params);</span></div><div class="line">      <span class="keyword">var</span> callbackId = params.callbackId,</div><div class="line">        data = params.data,</div><div class="line">        callbackHandler = callbackList[callbackId];</div><div class="line">      callbackHandler &amp;&amp; callbackHandler.call(<span class="literal">null</span>, data);</div><div class="line">      <span class="keyword">delete</span> callbackList[callbackId]; <span class="comment">//删除回调</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;)(<span class="built_in">window</span>)</div><div class="line"></div><div class="line"></div><div class="line">;<span class="comment">//JsBridgeReady</span></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">document</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> evt = <span class="built_in">document</span>.createEvent(<span class="string">'HTMLEvents'</span>);</div><div class="line">  evt.initEvent(<span class="string">'JsBridgeReady'</span>, <span class="literal">false</span>, <span class="literal">false</span>);</div><div class="line">  <span class="built_in">document</span>.dispatchEvent(evt)</div><div class="line">&#125;)(<span class="built_in">document</span>);</div></pre></td></tr></table></figure>
+<p>native和H5混合方案：</p>
+<ul>
+<li>在RootView中创建离线包View再异步添加进来</li>
+<li>通过JSBridge进行交互</li>
+<li>提前拦截touch事件，防止冲突</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/08/14/rxjs-brief/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/08/14/rxjs-brief/" itemprop="url">RxJS 真·简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-14T20:32:18+08:00">
+                2017-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/08/14/rxjs-brief/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/08/14/rxjs-brief/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文来自RxJS文档的<a href="http://reactivex.io/rxjs/manual/overview.html" target="_blank" rel="external">Overview</a>。</p>
+</blockquote>
+<p>RxJS是Reactive系列的JS版本。它有着下面一些概念。对它们有所理解将让你能得心应手地使用RxJS。</p>
+<h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><ul>
+<li>Observable类似函数定义（回调），Observer类似调用函数</li>
+<li>Observable可以同步或是异步返回值</li>
+<li>Observable在生命周期里可以返回多个值</li>
+</ul>
+<p>Observable有创建（create）、订阅（subscribe）、执行（execute）、析构（dispose）四步。在订阅后，通过<code>create</code>方法创建的Observable体会立即得到执行（不论是同步或是异步内容），同时，传入<code>create</code>的回调函数中可以向Observer调用<code>next</code>，<code>error</code>，<code>complete</code>方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> foo = Rx.Observable.create(<span class="function"><span class="keyword">function</span> (<span class="params">observer</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</div><div class="line">  observer.next(<span class="number">42</span>);</div><div class="line">  observer.next(<span class="number">100</span>);</div><div class="line">  observer.next(<span class="number">200</span>);</div><div class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    observer.next(<span class="number">300</span>); <span class="comment">// happens asynchronously</span></div><div class="line">  &#125;, <span class="number">1000</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</div><div class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(x);</div><div class="line">&#125;);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</div></pre></td></tr></table></figure>
+<h2 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h2><blockquote>
+<p>Observers只是有<code>next</code>,<code>error</code>,<code>complete</code>三个回调的对象，这三个回调分别用来处理Observable传递的三种不同的状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> observer = &#123;</div><div class="line">  <span class="attr">next</span>: <span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Observer got a next value: '</span> + x),</div><div class="line">  <span class="attr">error</span>: <span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">'Observer got an error: '</span> + err),</div><div class="line">  <span class="attr">complete</span>: <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Observer got a complete notification'</span>),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="Subscription"><a href="#Subscription" class="headerlink" title="Subscription"></a>Subscription</h2><blockquote>
+<p>Subscription表述了Observable的执行过程。但是主要提供<code>unsubscribe()</code>方法取消Observable执行</p>
+</blockquote>
+<p>主要由<code>Observable</code>的<code>subscribe</code>方法创建，当然还有<code>add()</code>和<code>remove()</code>方法组合subscription。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> observable1 = Rx.Observable.interval(<span class="number">400</span>);</div><div class="line"><span class="keyword">var</span> observable2 = Rx.Observable.interval(<span class="number">300</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> subscription = observable1.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'first: '</span> + x));</div><div class="line"><span class="keyword">var</span> childSubscription = observable2.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'second: '</span> + x));</div><div class="line"></div><div class="line">subscription.add(childSubscription);</div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">  <span class="comment">// Unsubscribes BOTH subscription and childSubscription</span></div><div class="line">  subscription.unsubscribe();</div><div class="line">&#125;, <span class="number">1000</span>);</div></pre></td></tr></table></figure>
+<h2 id="Subject"><a href="#Subject" class="headerlink" title="Subject"></a>Subject</h2><blockquote>
+<p>Subject是一个广播的Observable（类似<strong>EventEmitter</strong>），它既是Observable又是Observer，既有next方法，又有处理next的回调。</p>
+</blockquote>
+<p>和<code>Observable</code>本质的不同是，</p>
+<ul>
+<li><code>Subject</code><strong>注册多个</strong>回调，<code>Observable</code><strong>指定一个</strong>回调</li>
+<li>回调触发时机上，<code>Subject</code>通过特定时机触发（即<code>Subject.next</code>），<code>Observable</code>在回调定义后立即触发（即<code>subscribe</code>后）</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> subject = <span class="keyword">new</span> Rx.Subject();</div><div class="line"></div><div class="line">subject.subscribe(&#123;</div><div class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'observerA: '</span> + v)</div><div class="line">&#125;);</div><div class="line">subject.subscribe(&#123;</div><div class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'observerB: '</span> + v)</div><div class="line">&#125;);</div><div class="line"></div><div class="line">subject.next(<span class="number">1</span>);</div><div class="line">subject.next(<span class="number">2</span>);</div></pre></td></tr></table></figure>
+<p>Subject又可细分成<code>BehaviorSubject</code>, <code>ReplaySubject</code>, <code>AsyncSubject</code></p>
+<ul>
+<li>使用<code>refCount()</code>替代<code>connect()</code>完成multicasted Observable的自动绑定</li>
+</ul>
+<h3 id="BehaviorSubject"><a href="#BehaviorSubject" class="headerlink" title="BehaviorSubject"></a>BehaviorSubject</h3><p>存储了释放给消费者的最后一个值。在新消费者订阅时会自动下发。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> subject = <span class="keyword">new</span> Rx.BehaviorSubject(<span class="number">0</span>); <span class="comment">// 0 is the initial value</span></div></pre></td></tr></table></figure>
+<h3 id="ReplaySubject"><a href="#ReplaySubject" class="headerlink" title="ReplaySubject"></a>ReplaySubject</h3><p>存储之前释放给消费者的一组值。在新消费者订阅时会自动下发。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> subject = <span class="keyword">new</span> Rx.ReplaySubject(<span class="number">100</span>, <span class="number">500</span> <span class="comment">/* windowTime */</span>);</div></pre></td></tr></table></figure>
+<p>第二个参数描述数据的过期时间</p>
+<h3 id="AsyncSubject"><a href="#AsyncSubject" class="headerlink" title="AsyncSubject"></a>AsyncSubject</h3><p><strong>只存储</strong>最后一次释放的值，并<strong>在<code>complete</code>状态后</strong>下发给消费者</p>
+<h2 id="Operator"><a href="#Operator" class="headerlink" title="Operator"></a>Operator</h2><blockquote>
+<p>RxJS的核心概念，读入一个Observable返回一个全新的Observable，是<strong>纯函数</strong></p>
+</blockquote>
+<p>Operator分为两类：</p>
+<ul>
+<li>instance operator 用来对已有Operator链式调用进行改造，是纯函数，如<code>.map()</code></li>
+<li>static operator 用来从JS原始值中构造Observable，如<code>.of()</code>，<code>.from()</code>等</li>
+</ul>
+<p>RxJS提供的Operator非常多，以至于文档写了个<a href="http://reactivex.io/rxjs/manual/overview.html#choose-an-operator" target="_blank" rel="external">小程序</a>帮助你选择你想要的Operator。借助宝石图(marble diagram)，可以更好理解各operator。</p>
+<h2 id="Scheduler"><a href="#Scheduler" class="headerlink" title="Scheduler"></a>Scheduler</h2><blockquote>
+<p>Scheduler允许你定义Observable发布消息给Observer的执行环境，具体来说如存储tasks，执行任务的时机和顺序，同步/异步等。</p>
+</blockquote>
+<p>选择上，有<code>Rx.Scheduler.queue</code>（当前事件帧）, <code>Rx.Scheduler.asap</code>（microtasks queue）, <code>Rx.Scheduler.async</code>（setInterval）。static operator通常使用Scheduler，通过<code>observeOn</code>和<code>subscribeOn</code>两种方法指定。instance operator可以使用一个Scheduler。</p>
+<p>现在可以跟着<a href="http://reactivex.io/rxjs/manual/tutorial.html" target="_blank" rel="external">Tutorial</a>使用起RxJS了。Enjoy~</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/08/08/redux-and-mobx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/08/08/redux-and-mobx/" itemprop="url">Redux和Mobx：AK47和匕首</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T20:43:13+08:00">
+                2017-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/08/08/redux-and-mobx/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/08/08/redux-and-mobx/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>此前一直未从0开始写过Redux的工程，近日想简单对比下<a href="http://redux.js.org/docs" target="_blank" rel="external">Redux</a>和<a href="https://github.com/mobxjs/mobx" target="_blank" rel="external">Mobx</a>的各自特点，于是动手撸了TodoList，感受了它们的不同。对比上看</p>
+<ul>
+<li>Redux可靠规整，有一整套最佳实践，写大型应用时能避免很多坑</li>
+<li>MobX轻便锋利，概念不多上手容易，在中小型应用中开发效率更高</li>
+</ul>
+<h3 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h3><p>Redux吸收了Flux和Elm的设计特点，正如它在<a href="http://redux.js.org/docs/introduction/ThreePrinciples.html" target="_blank" rel="external">Three Principles</a>中写到的那样，<strong>唯一可信数据源，状态数据只读，状态改变为纯函数</strong>，这三大特点最大可能提升了可预测性，减少了调试的难度。同时，在概念上也易于理解。不过，复杂的设定和较多的代码入侵使得个人项目使用时稍显笨重，团队项目使用在改动已有代码时又会有牵一发动全身的感觉。</p>
+<p>在数据流上，Redux规定<strong>action</strong>描述state的改变情况，<strong>reducer</strong>根据<code>action</code>定义state如何更新。</p>
+<ul>
+<li><strong>action</strong>，由type和payload部分组成，描述发生了什么变化，如<code>{ type: &#39;ADD_TODO&#39;, text: &#39;Eat pie.&#39; }</code></li>
+<li><strong>reducer</strong>，接受state和action作为入参，返回一个<strong>全新的state</strong>，正如文档里所说<strong>Redux assumes you never mutate your data</strong></li>
+</ul>
+<p>在这种设计理念下，我们借助redux创建state，之后所有的状态更新，都通过state.dispatch提交action完成，再借由connect等工具同步更新组件的props实现数据绑定的效果。除了设计理念外，Redux一些工程实践上的设计也值得一提</p>
+<h4 id="和React的互动"><a href="#和React的互动" class="headerlink" title="和React的互动"></a>和React的互动</h4><p>Redux并不是和React绑定了，但确实经常和React同时出现。react-redux是用来和react绑定的库。在结合了Redux后，React会有一些最佳工程实践</p>
+<ul>
+<li><strong>区分开绘制组件和容器组件</strong>，前者只负责将数据转化为标签，后者负责接入数据，完成逻辑，组织绘制组件，并向其传递用户交互触发dispatch的函数。这样的层级设计将会增加解耦，减少后期修改时的工作量</li>
+<li>在最外侧调用<code>createStore</code>生成store并传入<code>&lt;Provider&gt;</code>组件，内部的容器组件，通过<code>connect</code>，<code>mapStateToProps</code>，<code>mapDispatchToProps</code>就能便利地和store进行沟通，就像下面这样</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> mapStateToProps = <span class="function">(<span class="params">state, ownProps</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">active</span>: state.filter === ownProps.filter</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> mapDispatchToProps = <span class="function">(<span class="params">dispatch, ownProps</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">handleClick</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">      dispatch(setFilter(ownProps.filter))</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> FilterLink = connect(</div><div class="line">  mapStateToProps,</div><div class="line">  mapDispatchToProps</div><div class="line">)(Link)</div></pre></td></tr></table></figure>
+<h4 id="Action-Creator"><a href="#Action-Creator" class="headerlink" title="Action Creator"></a>Action Creator</h4><p>使用函数创建标准化的action，而不要把action直接写在dispatch内。就像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTodo</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">type</span>: ADD_TODO,</div><div class="line">    text</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">dispatch(addTodo(text))</div></pre></td></tr></table></figure>
+<p>这么做在action发生更改时，只需要修改定义函数的位置即可，简单方便。可以发现上面的action creator中，完成的工作只是简单的组装type和函数的入参在同一个action object里。当这样的函数很多时，还可以用action creator creator来帮我们一行生成这些类似的action creator。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createActionCreator = <span class="function">(<span class="params">type, ...argNames</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">let</span> action = &#123; type &#125;</div><div class="line">    argNames.forEach(<span class="function">(<span class="params">arg, index</span>) =&gt;</span> &#123;</div><div class="line">      action[arg] = args[index]</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">return</span> action</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> addTodo = createActionCreator(ADD_TODO, <span class="string">'text'</span>)</div><div class="line"><span class="keyword">const</span> setFilter = createActionCreator(SET_FILTER, <span class="string">'filter'</span>)</div><div class="line"><span class="keyword">const</span> toggleTodo = createActionCreator(TOGGLE_TODO, <span class="string">'id'</span>, <span class="string">'to'</span>)</div></pre></td></tr></table></figure>
+<h4 id="Split-Reducer"><a href="#Split-Reducer" class="headerlink" title="Split Reducer"></a>Split Reducer</h4><p>除了上面讲到的Action Creator外，split reducer页很常见，它的应用场景出现在当state比较复杂时，可以针对state的每个field单独写reducer，然后通过Redux的<code>combineReducers</code>组合起来。</p>
+<p>就像TodoList中，筛选条件<code>filter</code>和待办事项<code>todos</code>可以拆出两个reducer去更改。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> todos = <span class="function">(<span class="params">state = [], action</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">    <span class="keyword">case</span> ADD_TODO:</div><div class="line">      <span class="keyword">return</span>  [</div><div class="line">        ...state,</div><div class="line">        &#123;</div><div class="line">          <span class="attr">id</span>: action.id,</div><div class="line">          <span class="attr">text</span>: action.text,</div><div class="line">          <span class="attr">status</span>: <span class="number">0</span></div><div class="line">        &#125;</div><div class="line">      ]</div><div class="line">    <span class="keyword">case</span> TOGGLE_TODO:</div><div class="line">      <span class="keyword">return</span> state.map(<span class="function"><span class="params">todo</span> =&gt;</span></div><div class="line">        (todo.id === action.id) ? &#123;...todo, <span class="attr">status</span>: action.to || +!todo.status&#125; : todo</div><div class="line">      )</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">return</span> state</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> filter = <span class="function">(<span class="params">state = <span class="string">'SHOW_ALL'</span>, action</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">    <span class="keyword">case</span> SET_FILTER:</div><div class="line">      <span class="keyword">return</span> action.filter</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">return</span> state</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> todoApp = combineReducers(&#123;</div><div class="line">  todos,</div><div class="line">  filter</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h4 id="Middleware和Async-Action"><a href="#Middleware和Async-Action" class="headerlink" title="Middleware和Async Action"></a>Middleware和Async Action</h4><p>首先，我们要明确一点，Redux中只有dispatch能改变store，然而默认情况下，dispatch只接受action。因此，当我们想异步修改store时，异步的逻辑只能写在组件里（Vuex里则可以通过action异步提交commit）。设想一下，假如一个<code>fetch</code>API的逻辑在多处都用到时，只能在这些地方重复书写这些代码。好在，Redux提供了middleware的概念，和<a href="https://shenlvmeng.github.io/blog/2017/04/23/express-js/#中间件" target="_blank" rel="external">Express中的中间件</a>类似，不同的是Redux中中间件处理的是用户提交的dispatch请求而已。</p>
+<p><a href="http://redux.js.org/docs/advanced/Middleware.html" target="_blank" rel="external">文档</a>里对中间件的介绍非常到位，鉴于我们对express以及<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">co</a>中类似概念的了解，我们直接从第4步看起：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">logger</span>(<span class="params">store</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> next = store.dispatch</div><div class="line"></div><div class="line">  <span class="comment">// Previously:</span></div><div class="line">  <span class="comment">// store.dispatch = function dispatchAndLog(action) &#123;</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">dispatchAndLog</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">    <span class="keyword">let</span> result = next(action)</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyMiddlewareByMonkeypatching</span>(<span class="params">store, middlewares</span>) </span>&#123;</div><div class="line">  middlewares = middlewares.slice()</div><div class="line">  middlewares.reverse()</div><div class="line"></div><div class="line">  <span class="comment">// Transform dispatch function with each middleware.</span></div><div class="line">  middlewares.forEach(<span class="function"><span class="params">middleware</span> =&gt;</span></div><div class="line">    store.dispatch = middleware(store)</div><div class="line">  )</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，原理其实是类似的，关键点在于使用store的<code>dispatch</code>方法依次暂存上一个节点，这么做的好处是保证最终能抛出最后真正的dispatch，且能实现链式的效果。然而，使用dispatch显得还不自然，于是就有了下面的版本，每次将next主动传入，当让applyMiddleware里需要额外传入next。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> logger = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span> &#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">  <span class="keyword">let</span> result = next(action)</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">  <span class="keyword">return</span> result</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> crashReporter = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span> &#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">return</span> next(action)</div><div class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="built_in">console</span>.error(<span class="string">'Caught an exception!'</span>, err)</div><div class="line">    Raven.captureException(err, &#123;</div><div class="line">      <span class="attr">extra</span>: &#123;</div><div class="line">        action,</div><div class="line">        <span class="attr">state</span>: store.getState()</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">throw</span> err</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Warning: Naïve implementation!</span></div><div class="line"><span class="comment">// That's *not* Redux API.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyMiddleware</span>(<span class="params">store, middlewares</span>) </span>&#123;</div><div class="line">  middlewares = middlewares.slice()</div><div class="line">  middlewares.reverse()</div><div class="line">  <span class="keyword">let</span> dispatch = store.dispatch</div><div class="line">  middlewares.forEach(<span class="function"><span class="params">middleware</span> =&gt;</span></div><div class="line">    dispatch = middleware(store)(dispatch)</div><div class="line">  )</div><div class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, store, &#123; dispatch &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>借助中间件的帮助，我们可以在dispatch前完成我们想要的操作：打log，catch错误，甚至提前终止流程。而异步dispatch正是借助了thunk中间件的帮助。它的实现很简单。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> thunk = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span></div><div class="line">  <span class="keyword">typeof</span> action === <span class="string">'function'</span></div><div class="line">    ? action(store.dispatch, store.getState)</div><div class="line">    : next(action)</div></pre></td></tr></table></figure>
+<p>在我们通过<code>applyMiddleware</code>注入到store中后，就可以在<code>dispatch</code>中写入函数了！就像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchPosts</span>(<span class="params">subreddit</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="params">dispatch</span> =&gt;</span> &#123;</div><div class="line">    dispatch(requestPosts(subreddit))</div><div class="line">    <span class="keyword">return</span> fetch(<span class="string">`https://www.reddit.com/r/<span class="subst">$&#123;subreddit&#125;</span>.json`</span>)</div><div class="line">      .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</div><div class="line">      .then(<span class="function"><span class="params">json</span> =&gt;</span> dispatch(receivePosts(subreddit, json)))</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchPostsIfNeeded</span>(<span class="params">subreddit</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch, getState</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">if</span> (shouldFetchPosts(getState(), subreddit)) &#123;</div><div class="line">      <span class="keyword">return</span> dispatch(fetchPosts(subreddit))</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在使用时正常dispatch即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch(fetchPostsIfNeeded(selectedSubreddit))</div></pre></td></tr></table></figure>
+<h4 id="其他常用的store-API"><a href="#其他常用的store-API" class="headerlink" title="其他常用的store API"></a>其他常用的store API</h4><ul>
+<li><code>getState()</code> 获取当前的state状态</li>
+<li><code>subscribe(listener)</code> 在每次更改state时触发</li>
+<li><code>createStore()</code> 根据输入的reducer，initState，middleware等生成store</li>
+</ul>
+<h4 id="脚手架"><a href="#脚手架" class="headerlink" title="脚手架"></a>脚手架</h4><p>官网在介绍时列举了许多依赖库，却并没有给出示例的脚手架。没有舒服的脚手架，效率和工作热情都会受影响。这里介绍一种使用<a href="https://github.com/facebookincubator/create-react-app" target="_blank" rel="external">create-react-app</a>快速搭建Redux脚手架的过程，下面的Mobx类似。</p>
+<p>项目依赖大概有下面这些</p>
+<ul>
+<li><a href="https://facebook.github.io/react/" target="_blank" rel="external">react</a></li>
+<li><a href="http://redux.js.org/" target="_blank" rel="external">redux</a></li>
+<li><a href="https://github.com/reactjs/react-redux" target="_blank" rel="external">react-redux</a></li>
+<li><a href="https://github.com/ReactTraining/react-router" target="_blank" rel="external">react-router</a>/<a href="https://github.com/ReactTraining/history" target="_blank" rel="external">history</a></li>
+<li><a href="https://webpack.github.io/" target="_blank" rel="external">webpack</a> 打包工具</li>
+<li><a href="http://babeljs.io/" target="_blank" rel="external">babel</a> polyfill方案</li>
+<li><a href="http://eslint.org/" target="_blank" rel="external">eslint</a> JS代码风格标准化</li>
+<li><a href="https://stylelint.io/" target="_blank" rel="external">stylelint</a> CSS代码风格标准化</li>
+<li><a href="http://postcss.org/" target="_blank" rel="external">postcss</a></li>
+</ul>
+<p>但其实<a href="https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html" target="_blank" rel="external">create-react-app</a>可以帮你搭好其中包括react、react-dom、eslint、babel、webpack、postcss等绝大多数依赖环境，且完成配置。剩下的react-redux和react-router手动安装即可。</p>
+<p>create-react-app类似于vue-cli，创建的默认配置不满意时，还可以<code>npm run eject</code>将默认配置撤销成用户配置，交给用户自己配置。</p>
+<h3 id="MobX"><a href="#MobX" class="headerlink" title="MobX"></a>MobX</h3><p>对比Redux，诞生于2015年3月的MobX在概念上吸收Vue，Knockout等MVVM框架要更多一些<a href="https://github.com/mobxjs/mobx#credits" target="_blank" rel="external">1</a>，号称是TFRP（Transparent Functional Reactive Programming）。Transparent在依赖项的更新是隐式完成的，Functional在Computed中的使用，Reactive就不说了。MobX原名Mobservable，而后改名为MobX，官方并未说明如何发音，姑且读作moʊ-bex。和Redux对比来看，巧合的是<a href="https://mobx.js.org/intro/overview.html" target="_blank" rel="external">MobX的设计理念</a>也可以分为三部分：</p>
+<ul>
+<li>将所有的状态抽出来，用observable修饰</li>
+<li>描述出状态到视图的映射关系，这个过程因框架而异，但是一般React多一些，使用observer修饰</li>
+<li>在要修改状态的位置使用action包裹（强烈建议你这么做）</li>
+</ul>
+<p>不过还有很核心的一点，文档里并没有提到</p>
+<ul>
+<li>把所有state修改的副作用放在<code>autorun/reaction/when</code>体内，在必要时在体内继续使用action</li>
+</ul>
+<p>哇，是不是简洁了很多。你对observable对象做的所有修改（不论有没有用action包裹）都会自动反映在视图中，在项目结构上，你完全可以根据自己需要组织。不过，没有Redux里transaction的概念，MobX中对状态的修改在时间上都是不可回溯的。同时，没有中间件的概念，意味着在状态比较复杂时，可维护性就会下降。</p>
+<p>整个MobX的关键API主要是由下面几部分组成的</p>
+<ul>
+<li>observable 创建被依赖项，在设计中即state</li>
+<li>computed 被依赖项的计算值，和Vue中的computed属性一致</li>
+<li>action 动作，用来修改state，显式的使用可以使逻辑更清楚，当然不在action里修改observable也是允许的</li>
+<li>observer和autorun/reaction/when，前者是derivation即根据state衍生出的结果，后者是reaction即state变化会触发的副作用（如IO等）</li>
+</ul>
+<h4 id="与React的结合"><a href="#与React的结合" class="headerlink" title="与React的结合"></a>与React的结合</h4><p>MobX和React相结合的方式就自由了很多。大体上使用<code>components</code>存储组件，<code>stores</code>描述状态。</p>
+<p>在<code>stores</code>描述状态时，</p>
+<ul>
+<li>通过<code>@observable</code>描述需要响应变化的状态变量，同时尽量将所有改变状态变量的操作封装成整个class的方法（并不强制），便于管理。</li>
+<li>通过<code>@computed</code>声明能够直接根据当前状态变量得到的衍生值。有意思的是，MobX只在observable变化时更新这个值，而不是在用户需要时去计算，从而节省了许多时间</li>
+<li>通过<code>autorun()</code>，<code>reaction()</code>，<code>when()</code>声明式地定义状态改变时的side effect，它们的执行结果都会返回一个dispose函数，在它们的生命周期结束后方便显式垃圾回收。它们三个都是除了用户操作外几乎唯一能进行副作用操作的地方，其中<ul>
+<li><code>autorun()</code>在定义时就会被执行一次</li>
+<li><code>reaction()</code>仅在变化时执行，且对函数内部改变状态不敏感</li>
+<li><code>when()</code>则是在变化时执行一次即失效</li>
+</ul>
+</li>
+<li>通过<code>@action</code>描述对状态做修改的行为，推荐使用，修饰在方法名前，开启strict模式后，则是强制要求使用</li>
+</ul>
+<p>上面这些关键字都有修饰词（如：<code>@action.bound</code>）还有对应的ES5语法。（如：<code>@observable key = value</code>等同于<code>extendObservable(this, { key: value })</code>）。MobX并不要求使用单一的状态树，可以用多个文字组织你的状态。其中的一个store文件可能像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TodoList</span> </span>&#123;</div><div class="line">  id = <span class="number">0</span></div><div class="line">  @observable todos = []</div><div class="line"></div><div class="line">  @computed get activeTodoCount() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.todos.filter(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status === <span class="number">0</span>).length</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  saveToStorage() &#123;</div><div class="line">    <span class="comment">// 第一次不会触发</span></div><div class="line">    reaction(</div><div class="line">      <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.toJS(),</div><div class="line">      todos =&gt; localStorage.setItem(<span class="string">'todo-mobx'</span>, <span class="built_in">JSON</span>.stringify(&#123; todos &#125;))</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  addTodo(title) &#123;</div><div class="line">    <span class="keyword">this</span>.id++;</div><div class="line">    <span class="keyword">this</span>.todos.push(<span class="keyword">new</span> TodoItem(&#123;<span class="attr">id</span>: <span class="keyword">this</span>.id, title, <span class="attr">status</span>: <span class="number">0</span>&#125;))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toggleAll(status) &#123;</div><div class="line">    <span class="keyword">this</span>.todos.forEach(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status = +status)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">delete</span>(id) &#123;</div><div class="line">    <span class="keyword">let</span> todoId = <span class="keyword">this</span>.todos.findIndex(<span class="function"><span class="params">todo</span> =&gt;</span> todo.id === id)</div><div class="line">    <span class="keyword">if</span> (todoId !== <span class="number">-1</span>) &#123;</div><div class="line">      <span class="keyword">this</span>.todos.splice(todoId, <span class="number">1</span>)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  clearCompleted() &#123;</div><div class="line">    <span class="keyword">this</span>.todos = <span class="keyword">this</span>.todos.filter(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status === <span class="number">0</span>)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toJS() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.todos.map(<span class="function"><span class="params">todo</span> =&gt;</span> todo.toJS())</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> fromJS(arr) &#123;</div><div class="line">    <span class="keyword">const</span> todoStore = <span class="keyword">new</span> TodoList();</div><div class="line">    todoStore.todos = arr.map(<span class="function"><span class="params">todo</span> =&gt;</span> TodoItem.from(todo))</div><div class="line">    <span class="keyword">return</span> todoStore</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>components</code>文件夹下做的事和使用其他框架其实差别不大。区别主要在引入observer后，用<code>@observer</code>装饰组件类。需要修改状态时，可以直接对props中传入的store进行<br>修改（不过还是建议使用store中定义好的方法修改），视图就会同步更新，副作用也会同步完成。一个使用了mobx-react的组件大概像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">@observer</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TodoList</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">const</span> &#123; todoStore, filterStore &#125; = <span class="keyword">this</span>.props</div><div class="line">    <span class="keyword">if</span> (!todoStore.todos.length) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="literal">null</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      &lt;section&gt;</div><div class="line">        &lt;input</div><div class="line">          type="checkbox"</div><div class="line">          onChange=&#123;this.toggleAll&#125;</div><div class="line">          checked=&#123;todoStore.activeTodoCount === 0&#125;</div><div class="line">        /&gt;</div><div class="line">        &lt;ul&gt;</div><div class="line">          &#123;this.getVisibleTodos().map(todo =&gt; (</div><div class="line">            &lt;TodoItem</div><div class="line">              key=&#123;todo.id&#125;</div><div class="line">              todo=&#123;todo&#125;</div><div class="line">              filterStore=&#123;filterStore&#125;</div><div class="line">              handleDestroy=&#123;this.handleDestroy&#125;</div><div class="line">            /&gt;</div><div class="line">          ))&#125;</div><div class="line">        &lt;/ul&gt;</div><div class="line">      &lt;/section&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  getVisibleTodos() &#123;</div><div class="line">    const &#123; todoStore, filterStore &#125; = this.props</div><div class="line">    return todoStore.todos.filter(todo =&gt; &#123;</div><div class="line">      switch (filterStore.filter) &#123;</div><div class="line">        case ACTIVE:</div><div class="line">          return todo.status === 0</div><div class="line">        case COMPLETED:</div><div class="line">          return todo.status === 1</div><div class="line">        case REMOVED:</div><div class="line">          return todo.status === 2</div><div class="line">        default:</div><div class="line">          return true</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toggleAll = (e) =&gt; &#123;</div><div class="line">    let checked = e.target.checked;</div><div class="line">    this.props.todoStore.toggleAll(checked !== 0)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  handleDestroy = (id) =&gt; &#123;</div><div class="line">    this.props.todoStore.delete(id)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了直接使用store外，<a href="https://github.com/mobxjs/mobx-react" target="_blank" rel="external">mobx-react</a>还提供了将observable对象通过<code>&lt;Provider&gt;</code>和<code>inject</code><a href="https://github.com/mobxjs/mobx-react#provider-and-inject" target="_blank" rel="external">2</a>传入组件的方式。其他的用法可以参看<a href="https://mobx.js.org/index.html" target="_blank" rel="external">文档</a>，还有<a href="http://cn.mobx.js.org" target="_blank" rel="external">中文版翻译</a>。</p>
+<h4 id="脚手架-1"><a href="#脚手架-1" class="headerlink" title="脚手架"></a>脚手架</h4><p>除了Redux里面提到的，因为MobX中用到了最新的decorator特性，<code>.babelrc</code>配置文件大概是下面这样</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"presets"</span>: [</div><div class="line">    <span class="string">"react"</span>,</div><div class="line">    <span class="string">"es2015"</span>,</div><div class="line">    <span class="string">"stage-1"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"plugins"</span>: [<span class="string">"transform-decorators-legacy"</span>, <span class="string">"react-hot-loader/babel"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>package.json</code>中需要额外引入”mobx”和”mobx-react”两个库（至少）。官方还提供了<a href="https://github.com/mobxjs/mobx-react-boilerplate" target="_blank" rel="external">mobx-react-boilerplate</a>，这些环境都已帮你配置好，按照<code>README.md</code>操作即可。另外，官方提供的<a href="https://github.com/mobxjs/awesome-mobx" target="_blank" rel="external">awesome list</a>是一个非常好学习mobx的地方</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="https://github.com/mobxjs/mobx#credits" target="_blank" rel="external">https://github.com/mobxjs/mobx#credits</a></li>
+<li><a href="https://github.com/mobxjs/mobx-react#provider-and-inject" target="_blank" rel="external">https://github.com/mobxjs/mobx-react#provider-and-inject</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/07/27/interview-algorithm-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -727,994 +1643,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/07/10/hacker-and-artist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/07/10/hacker-and-artist/" itemprop="url">黑客与画家 —— 关于编程和创业</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-10T21:21:02+08:00">
-                2017-07-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/思考/" itemprop="url" rel="index">
-                    <span itemprop="name">思考</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/07/10/hacker-and-artist/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/07/10/hacker-and-artist/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>《黑客与画家》是Paul Graham的博文集。出版于2006年。它从一个“黑客”的角度阐述了编程，互联网程序等时兴的概念。深刻新鲜而发人深省。其对工作、语言的认识别具特色，而在学校教育和贫富分化等方面的认识却略显偏颇。</p>
-<p>全书大致分为3部分</p>
-<ul>
-<li>1-4章解释黑客如何成长以及如何看待世界</li>
-<li>5-9章介绍创业、工作的方法论</li>
-<li>10-15章讨论编程语言的特点和使用方法</li>
-</ul>
-<p>下面仅摘出些句子。个人评注已加粗。</p>
-<h2 id="为什么书呆子不受欢迎"><a href="#为什么书呆子不受欢迎" class="headerlink" title="为什么书呆子不受欢迎"></a>为什么书呆子不受欢迎</h2><ul>
-<li>在人产生良知前，折磨是种娱乐。</li>
-<li>学校的真正目的是把儿童都关在一个地方，以便大人们白天可以腾出手来把事情做完（<strong>哈哈哈</strong>）</li>
-</ul>
-<h2 id="黑客与画家"><a href="#黑客与画家" class="headerlink" title="黑客与画家"></a>黑客与画家</h2><ul>
-<li>编程语言是用来帮助思考程序的，而不是用来表达你已经想好的程序</li>
-<li>大多数黑客不是通过大学课程学会编程的，他们从实践中学习，13岁时就已经自己动手写程序了。</li>
-<li>debug对我来说属于轻松的工作</li>
-<li>软件的部分功能就是解释自身，软件的使用方式最好能符合用户的直觉，源代码应该可以自己解释自己</li>
-<li>程序是写出来给人看的，附带能在机器上运行</li>
-</ul>
-<h2 id="不能说的话"><a href="#不能说的话" class="headerlink" title="不能说的话"></a>不能说的话</h2><ul>
-<li>（流行）第一批的接收者总是带有很强的抱负心，他们有自觉的精英意识，想把自己与普通人区分开来</li>
-<li>流行趋势确立以后，第二接收者就加入进来了，他们接受流行，不是因为想要与众不同，而是害怕与众不同</li>
-<li>与笨蛋辩论，你也会变成笨蛋</li>
-</ul>
-<h2 id="良好的坏习惯"><a href="#良好的坏习惯" class="headerlink" title="良好的坏习惯"></a>良好的坏习惯</h2><ul>
-<li>在我看来，一个人们拥有言论自由和行动自由的社会，往往最有可能采纳最优方案（<strong>真的么？</strong>）</li>
-</ul>
-<h2 id="另一条路"><a href="#另一条路" class="headerlink" title="另一条路"></a>另一条路</h2><ul>
-<li>（互联网程序）不需要为新版本付出额外的费用，或者做额外的准备，甚至可能你都不知道软件已经升级了</li>
-<li>互联网软件则完全不同，修改起来很方便。软件的发布过程可以分解成一系列的渐进式修改（<strong>快步小跑</strong>）</li>
-<li>软件应该做到用户认为它可以做到的事情。但是，你不知道用户到底怎么想</li>
-<li>没有盗版是一种“优势”，但也是一个问题。一定数量的盗版对软件公司时有好处的。因为不管你的软件定价多少，有些用户永远不会购买</li>
-<li>要求用户做得越多，你担的风险就越大</li>
-<li>管理企业其实很简单，只要记住两点就可以了：做出用户喜欢的产品，保证开支小于收入</li>
-<li>从制造简洁的产品开始着手，首先要保证你自己愿意使用。然后，迅速作出1.0版，并不断加以改进</li>
-<li><strong>无论如何，你都要使用自己的软件</strong></li>
-</ul>
-<h2 id="如何创造财富"><a href="#如何创造财富" class="headerlink" title="如何创造财富"></a>如何创造财富</h2><div class="tip">注意：标题不等于“如何致富”</div>
-
-<ul>
-<li>从经济学观点看，你可以把创业想象成一个压缩过程</li>
-<li>如果你想赚100万美元，就不得不忍受相当于100万美元的痛苦。创业公司将你所有的压力压缩到三四年</li>
-<li>通过创造有价值的东西而致富，优势不仅在于它合法，还在于它更简单，因为你只需要做出别人需要的东西就可以了</li>
-<li>金钱不是财富，而只是我们用来转移财富所有权的东西</li>
-<li>公司就是许多人聚在一起创造财富的地方，能够制造更多人们需要的东西</li>
-<li>人们需要的东西就是财富</li>
-<li>上班的日子不如上学的日子有趣，但是有人付钱给你，而不是你付钱给学校</li>
-<li>创造财富是大多数公司盈利的手段</li>
-<li>上班的日子为什么会差别这么大？不要搞糊涂了，你现在已经从顾客变成了仆人</li>
-<li>收入和风险是对称的，所以如果有巨大的获利可能，就必然存在巨大的失败可能。如果你有一个令你感到安全的工作，你是不会致富的</li>
-<li>创业的付出和回报虽然总体上是成比例的，但是在个体上是不成比例的</li>
-<li>只有在快速获得巨大利益的激励下，你才会去挑战那些困难的问题，否则你根本不愿意去碰它们</li>
-</ul>
-<h2 id="关注贫富分化"><a href="#关注贫富分化" class="headerlink" title="关注贫富分化"></a>关注贫富分化</h2><ul>
-<li>进入社会以后，你不能总是靠父母养活，如果你需要什么东西，要么你自己做出来，要么做其他东西与需要的人交换金钱，再用金钱去买你想要的东西</li>
-<li>技术肯定加剧了有技术者与无技术者之间的生产效率差异</li>
-<li>技术在加大收入差距的同时，缩小了大部分的其他差距</li>
-</ul>
-<h2 id="防止垃圾邮件的一种方法"><a href="#防止垃圾邮件的一种方法" class="headerlink" title="防止垃圾邮件的一种方法"></a>防止垃圾邮件的一种方法</h2><ul>
-<li>我对贝叶斯方法寄予厚望，因为它的过滤能力可以随着垃圾邮件一起进化</li>
-</ul>
-<h2 id="设计者的品味"><a href="#设计者的品味" class="headerlink" title="设计者的品味"></a>设计者的品味</h2><ul>
-<li>他想要的学生不仅应该技术过硬，还应当能够使用技术做出优美的产品</li>
-<li>你需要的是咬牙向前冲刺的痛苦，而不是脚被钉子扎破的痛苦。解决难题的痛苦对设计师有好处，但是对付挑剔的客户的痛苦或者对付质量低劣的建材的痛苦就是另外一回事了</li>
-<li>在历史的任何时刻都有一些热点项目，一些团体在这些项目上做出伟大的成绩。如果你远离这些中心，几乎不可能单靠自己就取得伟大成果</li>
-</ul>
-<h2 id="编程语言解析"><a href="#编程语言解析" class="headerlink" title="编程语言解析"></a>编程语言解析</h2><ul>
-<li>程序员的时间要比计算机的时间昂贵得多</li>
-<li>长期使用某种语言，你就会慢慢按照这种语言的思维模式进行思考</li>
-<li>有些人认为编程语言应该防止程序员干蠢事，另一些人则认为程序员应该可以用编程语言干一切他们想干的事（<strong>即静态类型语言和动态类型语言</strong>）</li>
-<li>事实上，有两种程度的面向对象编程：某些语言允许你以这种风格编程，另一些语言则强迫你一定要这样编程</li>
-</ul>
-<h2 id="一百年后的编程语言"><a href="#一百年后的编程语言" class="headerlink" title="一百年后的编程语言"></a>一百年后的编程语言</h2><ul>
-<li>当我说Java不会成功时，我的意思是它和Cobol一样，进化之路已经走到了尽头（<strong>哦？</strong>）</li>
-<li>一种语言的内核设计越小、越干净，它的生命力就越顽强</li>
-<li>（<strong>用足够灵活的语言，聪明的程序员能写多好，笨的程序员就能写多烂</strong>）</li>
-<li>一百年后的程序员最需要的编程语言就是可以让你毫不费力写出程序第一版的编程语言</li>
-</ul>
-<h2 id="拒绝平庸"><a href="#拒绝平庸" class="headerlink" title="拒绝平庸"></a>拒绝平庸</h2><ul>
-<li>Lisp很值得学习。你掌握它之后，会感动它给你带来的极大启发</li>
-<li>大概在1960年，Lisp语言引入了垃圾回收机制。……闭包是20世纪60年代Lisp语言引入的功能……宏也是60年代中期Lisp语言引入的，现在还是一片处女地（这里的“宏”为Lisp中的<code>defmacro</code>）</li>
-<li>这里有一个评估竞争对手的妙招——关注他们的招聘职位</li>
-</ul>
-<h2 id="书呆子的复仇"><a href="#书呆子的复仇" class="headerlink" title="书呆子的复仇"></a>书呆子的复仇</h2><ul>
-<li>符号（Symbol）实际上是一种指针，指向存储在散列表中的字符串</li>
-<li>列表是Lisp的基本数据结构</li>
-<li>让客户感到满意才是你的设计方向。只要赢得用户，其他的事情就会接踵而至</li>
-<li>JavaScript的写法比Lisp和Ruby稍微长一点，因为JavaScript依然区分语句和表达式</li>
-<li>所有这些语言都是图灵等价的</li>
-<li>“任何C或Fortran程序复杂到一定程度之后，都会包含一个临时开发的、只有一半功能的、不完全符合规格的、到处都是bug的、运行速度很慢的Common Lisp实现。”</li>
-<li>想解决一个困难的问题，有三条路：1）使用一种强大的语言，2）为这个难题写一个事实上的解释器，3）你自己变成这个难题的人肉编译器（<strong>翻译过来就是语言本身/设计模式/问题抽象</strong>）</li>
-</ul>
-<h2 id="梦寐以求的编程语言"><a href="#梦寐以求的编程语言" class="headerlink" title="梦寐以求的编程语言"></a>梦寐以求的编程语言</h2><ul>
-<li>优秀的函数库的重要性将超过语言本身</li>
-<li>就算委员会只有两个人，还是会妨碍“再设计”，典型例子就是软件内部的各个接口有不同的人负责。这时除非两个人都同意改变接口，否则接口就无法改变</li>
-</ul>
-<h2 id="设计与研究"><a href="#设计与研究" class="headerlink" title="设计与研究"></a>设计与研究</h2><ul>
-<li>“用户需要的设计”≠“用户要求的设计”</li>
-<li>设计必须以人为本</li>
-<li>在软件领域，贴近用户的设计思想被归纳为“弱即是强”模式。</li>
-<li>一种功能有限但易于使用的软件可能对用户有更大吸引力</li>
-<li>先做出原型，在逐步加工做出成品，这种方式有利于鼓舞士气，因为它使得你随时都可以看到工作的成效</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/06/27/webpage-visit-speed-guide/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/06/27/webpage-visit-speed-guide/" itemprop="url">H5页面性能优化方案参考</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T20:20:35+08:00">
-                2017-06-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/06/27/webpage-visit-speed-guide/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/06/27/webpage-visit-speed-guide/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>由于开发时间短，迭代速度快的特点，H5页面已大量用在各种移动端App和活动页中。响应时间作为和用户体验的重要部分，如果不能在这上面给用户可靠性和安全感，将会大大影响用户体验，进而影响用户使用产品的积极性。当页面并不复杂时，用户若能在1s内打开页面，看到信息的展示，会感觉速度还行，可以接受。当界面需要5s甚至以上才能显示时，对用户来说时不可接受的。</p>
-<p>下文的标准和建议主要来自钉钉团队的<a href="http://ddtalk.github.io/blog/2015/09/07/dingding-first/" target="_blank" rel="external">H5性能优化方案</a></p>
-<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>通常来说首屏（onload）时间即资源加载完成时间建议在600ms内，首字时间时间在150ms内，根据网络类型做相应调整：</p>
-<ul>
-<li>2G，完全加载时间10s内，10s内占比80%</li>
-<li>3G，完全加载时间6s内，6s内占比60%</li>
-<li>4G和WiFi，完全加载时间3s内，3s内占比70%</li>
-</ul>
-<p><em>（标准不是死的，上面只是举个范例）</em></p>
-<p>这个时间可以在Chrome开发者工具里的Network中看到，也可以通过JS的performance API查询到<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">performance.timing.domContentLoadedEventEnd - performance.timing.connectStart</div></pre></td></tr></table></figure></p>
-<h2 id="优化手段"><a href="#优化手段" class="headerlink" title="优化手段"></a>优化手段</h2><h3 id="资源加载"><a href="#资源加载" class="headerlink" title="资源加载"></a>资源加载</h3><ul>
-<li><strong>按需加载</strong>，减少不必要资源的加载，不过这可能会增加页面的重绘</li>
-<li><strong>Lazyload</strong>，延迟加载，即不影响整体效果的图片展现给用户后再加载</li>
-<li><strong>滚屏加载</strong>，根据字面意义，在下拉滚屏时加载额外数据，减少翻页时的重新加载和渲染</li>
-<li><strong>响应式加载</strong>，即根据用户终端媒介加载不同大小的图片资源</li>
-<li><strong>异步记载</strong>，异步加载第三方资源，防止影响本身的页面性能</li>
-</ul>
-<p>此外，还有一些优化加载体验的方式：</p>
-<ul>
-<li><strong>显示loading进度条</strong>，让用户能明确感知到页面的加载进度</li>
-<li><strong>避免3xx、4xx、5xx的http状态码</strong>，因为3xx的跳转会影响加载时间，4xx和5xx通常是第三方资源的问题，可能会影响整个页面的展示。</li>
-<li><strong>favicon.ico</strong>，需要保证这个图标存在，且尽可能地小，并设置一个较长的缓存时间</li>
-<li>首次加载资源越小越好</li>
-<li>避免使用自定义中文字体（因为体积大）</li>
-</ul>
-<h3 id="图片使用"><a href="#图片使用" class="headerlink" title="图片使用"></a>图片使用</h3><ul>
-<li><strong>格式</strong>，webp，jpg，png24/32较常用。jpg较为常用，避免使用png的大图片</li>
-<li><strong>像素</strong>，一般来说不建议宽度超过640px</li>
-<li><strong>合并</strong>，使用CSS Sprites，尤其是基本不变，大小类似的操作类型图标</li>
-<li><strong>避免重设大小</strong>，即展示多大就加载多大的图片</li>
-<li><strong>避免DataURL</strong>，DataURL是用Base64的方式，将图片变成一串文本编码放入代码的方式。尽管它能减少一次http交互的请求，但数据体积通常比二进制图片大1/3，且不会被缓存。</li>
-<li><strong>使用替代方案</strong>，如CSS3，SVG或iconfont来完成简单的图片</li>
-</ul>
-<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
-<li><strong>Gzip</strong>，服务端要开启Gzip压缩</li>
-<li><strong>设置合理的缓存时间</strong>，对静态资源，将缓存过期时间设置得长一些</li>
-<li><strong>分域名部署</strong>，将动态资源和静态资源放置在不同的域名下，这样，静态资源请求时，不会带上动态域名中所设置的cookie头信息，从而减少http请求的大小</li>
-<li><strong>减少Cookie</strong>，这部分数据使用的是上行流量，上行带宽更小，所以传输速度更慢，因此要尽量精简其大小。</li>
-<li><strong>CDN加速</strong>，部署CDN服务器，或使用第三方CDN服务，优化不同地域的接入速度。</li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><ul>
-<li><strong>JS，CSS合并</strong>，除特殊情况外，所有JS压缩打包成一个文件，所有CSS压缩打包成一个文件，减少请求次数</li>
-<li><strong>外联使用JS，CSS</strong>，有效利用缓存</li>
-<li><strong>压缩HTML，JS，CSS</strong>，压缩代码可以减少大小到原来的1/3以下</li>
-<li><strong>使用版本号标注JS、CSS等资源</strong>，让用户及时获取到最新的代码</li>
-<li><strong>位置</strong>，通常CSS在前，JS在后。基础的JS文件，如日志，polyfill可以放在头部</li>
-<li><strong>避免空src地址</strong>，在某些浏览器中可能会导致增加一个无效的http请求</li>
-<li><strong>禁止CSS表达式</strong>，会让页面多次执行计算，造成卡顿等性能问题</li>
-<li><strong>避免空css规则</strong>，降低渲染成本</li>
-<li><strong>避免直接设置元素style</strong>，不利于复用和缓存，不过有些情况下确实是没有办法的办法</li>
-</ul>
-<h3 id="后台接口"><a href="#后台接口" class="headerlink" title="后台接口"></a>后台接口</h3><ul>
-<li><strong>接口合并</strong>，尽量减少http请求次数</li>
-<li><strong>缓存</strong>，在一些数据新旧敏感性不高的场景下，缓存接口数据</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/06/23/HTML-CSS-code-style-guide/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/06/23/HTML-CSS-code-style-guide/" itemprop="url">HTML和CSS编码规范</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-23T20:06:46+08:00">
-                2017-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
-                    <span itemprop="name">工程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/06/23/HTML-CSS-code-style-guide/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/06/23/HTML-CSS-code-style-guide/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>写个人项目是最爽的，再稀烂的代码都是自己的孩子，一把屎一把尿写出来的，总能认得。但是阅读本文的你，多半是给别人写码，面向老板编程的。你的码保不齐日后要别人维护。为了写出放心的码，提高搬砖效率，统一编码规范是必然的选择。</p>
-<p><img src="/blog/images/code-quality.png" alt="Boss Oriented Programming"></p>
-<p>有观众可能要问了，我们不是有lint工具吗？</p>
-<p><img src="/blog/images/say-more.jpg" alt="就你话多"></p>
-<h2 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h2><h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><h4 id="doctype"><a href="#doctype" class="headerlink" title="doctype"></a>doctype</h4><p>每个页面开头，使用简单的<code>&lt;!DOCTYPE html&gt;</code>来启用标准模式。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div></pre></td></tr></table></figure></p>
-<h4 id="charset"><a href="#charset" class="headerlink" title="charset"></a>charset</h4><p>无特殊情况时，统一使用<code>UTF-8</code></p>
-<h4 id="lang"><a href="#lang" class="headerlink" title="lang"></a>lang</h4><p><strong>推荐</strong>在html元素上使用<code>lang</code>属性</p>
-<h4 id="viewport"><a href="#viewport" class="headerlink" title="viewport"></a>viewport</h4><p><strong>建议</strong>指定页面的viewport属性，保证移动端的友好展示</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, maximum-scale=1.0, minimum-scale=1, user-scalable=no"</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="title"><a href="#title" class="headerlink" title="title"></a>title</h4><p><code>head</code>中<strong>必须</strong>要有<code>title</code>标签。</p>
-<h4 id="IE兼容模式"><a href="#IE兼容模式" class="headerlink" title="IE兼容模式"></a>IE兼容模式</h4><p>如不是特殊需要，通过<strong>edge mode</strong>通知IE使用最新的兼容模式。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=Edge,chrome=1"</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<h4 id="CSS和JavaScript引入"><a href="#CSS和JavaScript引入" class="headerlink" title="CSS和JavaScript引入"></a>CSS和JavaScript引入</h4><ul>
-<li><p>引入CSS和JavaScript时不需要指明<code>type</code>，因为<code>text/css</code>和<code>text/javascript</code>分别是他们的默认值。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"index.css"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"index.css"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>CSS在<code>&lt;head&gt;&lt;/head&gt;</code>中引入，基础JS脚本在<code>&lt;head&gt;&lt;/head&gt;</code>引入，其余在<code>&lt;body&gt;</code>结束标签前引入</p>
-</li>
-</ul>
-<h4 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h4><p><strong>必须</strong>使用两个空格表示一个缩进层级，<strong>禁止</strong>使用tab</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>just a example<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>just a example<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h4><p>单行<strong>不能</strong>超过120个字符</p>
-<h4 id="标签名称和标签属性统一使用小写"><a href="#标签名称和标签属性统一使用小写" class="headerlink" title="标签名称和标签属性统一使用小写"></a>标签名称和标签属性统一使用小写</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">Div</span> <span class="attr">Id</span>=<span class="string">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="name">Div</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>综上，下面是一个建议的html脚手架</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, maximum-scale=1.0, minimum-scale=1, user-scalable=no"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"renderer"</span> <span class="attr">content</span>=<span class="string">"webkit"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"shenlvmeng"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"描述"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"keyword"</span> <span class="attr">content</span>=<span class="string">"关键词"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Foo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"index.css"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><ul>
-<li><p>非自闭合标签<strong>必须</strong>有开始和结束标签，自动闭合标签<strong>不建议</strong>在结尾处使用斜线<code>/</code></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foo"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"foo.png"</span> /&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"foo.png"</span>&gt;</span></div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>建议</strong>使用语义化标签</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">section</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">nav</span>&gt;</span>Navbar<span class="tag">&lt;/<span class="name">nav</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">article</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">time</span>&gt;</span>2017<span class="tag">&lt;/<span class="name">time</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">figure</span>&gt;</span><span class="tag">&lt;/<span class="name">figure</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">article</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">aside</span>&gt;</span><span class="tag">&lt;/<span class="name">aside</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">section</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>避免</strong>标签嵌套层级过深，尤其是无语义的嵌套</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foo"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bar"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><h4 id="标签名"><a href="#标签名" class="headerlink" title="标签名"></a>标签名</h4><p><strong>必须</strong>使用小写字母加连字符的命名方式</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">MyTag</span>&gt;</span><span class="tag">&lt;/<span class="name">MyTag</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">my-tag</span>&gt;</span><span class="tag">&lt;/<span class="name">my-tag</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="class属性"><a href="#class属性" class="headerlink" title="class属性"></a><code>class</code>属性</h4><p>使用小写字母加连字符，需要在Javascript中使用时，以<code>J_</code>开头，接大驼峰命名</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"FooBar J_foo-bar"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foo-bar J_FooBar"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="id属性"><a href="#id属性" class="headerlink" title="id属性"></a><code>id</code>属性</h4><p>同上。<strong>建议</strong>使用<code>class</code>属性关联CSS。</p>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><h4 id="使用双引号包裹"><a href="#使用双引号包裹" class="headerlink" title="使用双引号包裹"></a>使用双引号包裹</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'foo'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="Boolean属性"><a href="#Boolean属性" class="headerlink" title="Boolean属性"></a>Boolean属性</h4><p><strong>不要</strong>为Boolean属性指定值。</p>
-<blockquote>
-<p>一个元素中 Boolean 属性的存在表示取值true，不存在则表示取值false。</p>
-</blockquote>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"nickname"</span> <span class="attr">disabled</span>=<span class="string">"disabled"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"hobbies"</span> <span class="attr">value</span>=<span class="string">"bicycle"</span> <span class="attr">checked</span>=<span class="string">"checked"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">select</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"FrontEnd"</span> <span class="attr">selected</span>=<span class="string">"selected"</span>&gt;</span>FrontEnd<span class="tag">&lt;/<span class="name">option</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"nickname"</span> <span class="attr">disabled</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"hobbies"</span> <span class="attr">value</span>=<span class="string">"bicycle"</span> <span class="attr">checked</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">select</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"FrontEnd"</span> <span class="attr">selected</span>&gt;</span>FrontEnd<span class="tag">&lt;/<span class="name">option</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h4><p><strong>必须</strong>以<code>data-</code>为前缀，保证可读</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">age</span>=<span class="string">"10"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">data-age</span>=<span class="string">"10"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
-<h4 id="顺序"><a href="#顺序" class="headerlink" title="顺序"></a>顺序</h4><p>保证可读性，一致的属性顺序可以提高压缩率。按照出现频率，依次是：</p>
-<ul>
-<li><code>class</code></li>
-<li><code>id</code></li>
-<li><code>data-*</code></li>
-<li>…</li>
-</ul>
-<h4 id="少用style属性"><a href="#少用style属性" class="headerlink" title="少用style属性"></a>少用<code>style</code>属性</h4><p><strong>建议</strong>使用<code>class</code>来控制样式，可以提高可维护性和可读性。</p>
-<h4 id="不在属性值中使用JavaScript语句"><a href="#不在属性值中使用JavaScript语句" class="headerlink" title="不在属性值中使用JavaScript语句"></a>不在属性值中使用JavaScript语句</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"hello"</span> <span class="attr">href</span>=<span class="string">"javascript:alert('hi');"</span> <span class="attr">onclick</span>=<span class="string">";(function()&#123;alert('hello');&#125;)()"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">  <span class="built_in">document</span>.getElementById(<span class="string">"hello"</span>).addEventListener(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">'hello'</span>);</div><div class="line">  &#125;);</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="多媒体"><a href="#多媒体" class="headerlink" title="多媒体"></a>多媒体</h3><ul>
-<li><code>img</code>的<code>src</code>属性<strong>禁止</strong>留空</li>
-<li>为<code>img</code>标签添加<code>alt</code>属性以声明替代文本</li>
-<li>在多媒体标签内部提供指示浏览器不支持该标签的说明，如<code>object</code>、<code>audio</code>、<code>video</code></li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- bad --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"cat.png"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">controls</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"foo.ogg"</span> <span class="attr">type</span>=<span class="string">"audio/ogg"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"bar.mp3"</span> <span class="attr">type</span>=<span class="string">"audio/mpeg"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- good --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"cat.png"</span> <span class="attr">alt</span>=<span class="string">"cat"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">controls</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"baz.ogg"</span> <span class="attr">type</span>=<span class="string">"audio/ogg"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"qaz.mp3"</span> <span class="attr">type</span>=<span class="string">"audio/mpeg"</span>&gt;</span></div><div class="line">  Your browser does not support the audio tag.</div><div class="line"><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></div></pre></td></tr></table></figure>
-<hr>
-<h2 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h2><h3 id="基本-1"><a href="#基本-1" class="headerlink" title="基本"></a>基本</h3><ul>
-<li><p><strong>推荐</strong>使用两个空格缩进</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">    <span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">color</span>: <span class="number">#000</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>单行不能超过120个字符，除非不可分割，如URL</p>
-</li>
-<li><p>声明块左花括号前<strong>推荐</strong>添加空格</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span>&#123;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">height</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>声明块右花括号<strong>推荐</strong>单独成行</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">height</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>声明语句<code>:</code>后<strong>需要</strong>有空格，前无空格</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">left</span>:<span class="number">15px</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">top</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>声明语句<strong>必须</strong>以分号结尾</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">left</span>:<span class="number">15px</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">top</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><h4 id="文档注释"><a href="#文档注释" class="headerlink" title="文档注释"></a>文档注释</h4><p>声明在文件头部，表示文件作用<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 这个文件的作用</div><div class="line"> */</div></pre></td></tr></table></figure></p>
-<h4 id="代码注释"><a href="#代码注释" class="headerlink" title="代码注释"></a>代码注释</h4><p>传达代码上下文和目标，应该容易被人类理解。<strong>不要</strong>简单重复类名等冗余信息。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/* bad */</div><div class="line"></div><div class="line">/* header */</div><div class="line">.header &#123;</div><div class="line">  text-align: center;</div><div class="line">  ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* good */</div><div class="line"></div><div class="line">/* Wrapping contents of .title and .user-info */</div><div class="line">.header &#123;</div><div class="line">  text-align: center;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="命名-1"><a href="#命名-1" class="headerlink" title="命名"></a>命名</h3><p>同HTML规范，小写字母加短划线<code>-</code>。在JavaScript中出现的类名用<code>J_</code>开头，后接大驼峰命名，这类的<code>class</code><strong>不能</strong>出现在CSS文件中。</p>
-<h3 id="值"><a href="#值" class="headerlink" title="值"></a>值</h3><ul>
-<li><p>文本内容<strong>必须</strong>使用双引号包裹</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-tag">html</span><span class="selector-attr">[lang|=zh]</span> <span class="selector-tag">q</span><span class="selector-pseudo">:before</span> &#123;</div><div class="line">    <span class="attribute">font-family</span>: <span class="string">'Microsoft YaHei'</span>, sans-serif;</div><div class="line">    <span class="attribute">content</span>: <span class="string">'“'</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-tag">html</span><span class="selector-attr">[lang|="zh"]</span> <span class="selector-tag">q</span><span class="selector-pseudo">:before</span> &#123;</div><div class="line">    <span class="attribute">font-family</span>: <span class="string">"Microsoft YaHei"</span>, sans-serif;</div><div class="line">    <span class="attribute">content</span>: <span class="string">"“"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>“0”值后<strong>不要</strong>使用单位。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0px</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.example</span> &#123;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>长度数值是0 - 1间的小数时，忽略整数部分的<code>0</code></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-tag">panel</span> &#123;</div><div class="line">  <span class="attribute">opacity</span>: <span class="number">0.8</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-tag">panel</span> &#123;</div><div class="line">  <span class="attribute">opacity</span>: .<span class="number">8</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>颜色值<strong>必须</strong>使用小写的十六进制表示，<strong>禁止</strong>使用颜色名和<code>rgb()</code>，带有透明度时<strong>可以</strong>使用<code>rgba()</code></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.success</span> &#123;</div><div class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">2px</span> <span class="built_in">rgba</span>(0,128,0,.3);</div><div class="line">  <span class="attribute">border-color</span>: <span class="built_in">rgb</span>(0, 128, 0);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.success</span> &#123;</div><div class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">2px</span> <span class="built_in">rgba</span>(0, 128, 0, .3);</div><div class="line">  <span class="attribute">border-color</span>: <span class="number">#008000</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>可以缩写时，颜色值<strong>必须</strong>缩写</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.success</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>: <span class="number">#aaccaa</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.success</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>: <span class="number">#aca</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>url()</code>函数中的路径<strong>禁止</strong>带引号，绝对路径时<strong>可以</strong>省去协议名</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.logo</span> &#123;</div><div class="line">  <span class="attribute">background</span>: <span class="built_in">url</span>(//assets/logo.png);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><ul>
-<li><p>一个rule包含多个选择器时，每个选择器<strong>必须</strong>独占一行</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.post</span>, <span class="selector-class">.page</span>, <span class="selector-class">.comment</span> &#123;</div><div class="line">  <span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.post</span>,</div><div class="line"><span class="selector-class">.page</span>,</div><div class="line"><span class="selector-class">.comment</span> &#123;</div><div class="line">  <span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>属性选择器中的值<strong>必须</strong>用双引号包裹</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">p</span><span class="selector-attr">[lang|="zh"]</span> &#123;</div><div class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>选择器层级<strong>不要</strong>超过5级，靠后的选择器尽量精确</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.main</span> <span class="selector-class">.top</span> <span class="selector-class">.left</span> <span class="selector-class">.mod-a</span> <span class="selector-class">.content</span> <span class="selector-class">.detail</span> &#123;</div><div class="line">  <span class="attribute">padding-left</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.content</span> <span class="selector-class">.detail</span> &#123;</div><div class="line">  <span class="attribute">padding-left</span>: <span class="number">15px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><ul>
-<li><p><strong>建议</strong>相关的属性说明放在一组，并按下面顺序排列</p>
-<ol>
-<li>定位（position、left、right、top、bottom、z-index）</li>
-<li>盒子模型（display、float、width、height、margin、padding、border、border-radius）</li>
-<li>排印（font、color、background、line-height、text-align）<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.mod-example</span> &#123;</div><div class="line">  <span class="comment">/* 定位 */</span></div><div class="line">  <span class="attribute">position</span>: absolute;</div><div class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">right</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">bottom</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</div><div class="line">  <span class="comment">/* 盒模型 */</span></div><div class="line">  <span class="attribute">display</span>: block;</div><div class="line">  <span class="attribute">float</span>: right;</div><div class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</div><div class="line">  <span class="attribute">height</span>: <span class="number">100px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">15px</span> auto;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">10px</span> <span class="number">15px</span>;</div><div class="line">  <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#ccc</span>;</div><div class="line">  <span class="comment">/* 排印 */</span></div><div class="line">  <span class="attribute">font</span>: normal <span class="number">13px</span> <span class="string">"Helvetica Neue"</span>, sans-serif;</div><div class="line">  <span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">  <span class="attribute">color</span>: <span class="number">#333</span>;</div><div class="line">  <span class="attribute">background-color</span>: <span class="number">#f5f5f5</span>;</div><div class="line">  <span class="attribute">text-align</span>: center;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-<li><p>可以缩写时，<strong>建议</strong>缩写属性，如<code>font</code>, <code>margin</code>等</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.post</span> &#123;</div><div class="line">  <span class="attribute">font</span>: <span class="number">12px</span>/<span class="number">1.5</span> arial, sans-serif;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="selector-class">.post</span> &#123;</div><div class="line">  <span class="attribute">font-family</span>: arial, sans-serif;</div><div class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</div><div class="line">  <span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>尽量不使用<code>!important</code>声明</p>
-</li>
-</ul>
-<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><ul>
-<li><p><code>font-family</code>中<strong>必须</strong>使用字体族的英文名称，其中如有空格等特殊字符，<strong>必须</strong>使用双引号包裹。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">h1</span> &#123;</div><div class="line">  <span class="attribute">font-family</span>: <span class="string">"Microsoft YaHei"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>font-family</code>按效果从优到通用顺序编写</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">h1</span> &#123;</div><div class="line">  <span class="attribute">font-family</span>: <span class="string">"Helvetica Neue"</span>, Arial, <span class="string">"Hiragino Sans GB"</span>, <span class="string">"WenQuanYi Micro Hei"</span>, <span class="string">"Microsoft YaHei"</span>, sans-serif;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>需要在Windows平台下显示的内容，<code>font-size</code><strong>禁止</strong>小于12px，否则会模糊不清</p>
-</li>
-<li><p><code>ling-height</code><strong>建议</strong>使用数值</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.text</span> &#123;</div><div class="line">  <span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>建议</strong>减少使用自定义中文字体，通常体积很大，很影响页面加载</p>
-</li>
-</ul>
-<h3 id="响应式"><a href="#响应式" class="headerlink" title="响应式"></a>响应式</h3><ul>
-<li><p>媒体查询<strong>必须</strong>放在尽可能相关的规则附近，不得单独编排</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bad */</span></div><div class="line"><span class="comment">/* header styles */</span></div><div class="line"><span class="comment">/* main styles */</span></div><div class="line"><span class="comment">/* footer styles */</span></div><div class="line"></div><div class="line">@<span class="keyword">media</span> (...) &#123;</div><div class="line">    <span class="comment">/* header styles */</span></div><div class="line">    <span class="comment">/* main styles */</span></div><div class="line">    <span class="comment">/* footer styles */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="comment">/* header styles */</span></div><div class="line">@<span class="keyword">media</span> (...) &#123;</div><div class="line">    <span class="comment">/* header styles */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* main styles */</span></div><div class="line">@<span class="keyword">media</span> (...) &#123;</div><div class="line">    <span class="comment">/* main styles */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* footer styles */</span></div><div class="line">@<span class="keyword">media</span> (...) &#123;</div><div class="line">    <span class="comment">/* footer styles */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>媒体查询有多个条件分隔时，每个条件<strong>必须</strong>另起一行</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">media</span></div><div class="line">(-webkit-min-device-pixel-ratio: <span class="number">2</span>), /* Webkit-based browsers */</div><div class="line">(min--moz-device-pixel-ratio: <span class="number">2</span>),    /* Older Firefox browsers (prior to Firefox <span class="number">16</span>) */</div><div class="line">(min-resolution: <span class="number">2dppx</span>),             /* The standard way */</div><div class="line">(min-resolution: <span class="number">192dpi</span>) &#123;           <span class="comment">/* dppx fallback */</span></div><div class="line">  <span class="comment">/* Retina-specific stuff here */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>媒体查询针对每一个种屏幕（大、中、小）的<strong>建议</strong>单独组织为一个文件</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* base.css */</span></div><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.element-avatar</span> &#123;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.element-selected</span> &#123;</div><div class="line">&#125;</div><div class="line"><span class="comment">/* base-media-small.css */</span></div><div class="line">@<span class="keyword">media</span> (min-width: <span class="number">480px</span>) &#123;</div><div class="line">  <span class="selector-class">.element</span> &#123;</div><div class="line">  &#125;</div><div class="line">  <span class="selector-class">.element-avatar</span> &#123;</div><div class="line">  &#125;</div><div class="line">  <span class="selector-class">.element-selected</span> &#123;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
-<li><strong>禁止</strong>使用JavaScript</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://groups.alidemo.cn/f2e-specs/style-guide/_book/index.html" target="_blank" rel="external">集团前端代码规约</a><br><a href="https://github.com/fex-team/styleguide" target="_blank" rel="external">文档与源码编写风格</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/06/20/functional-programming-brief/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/06/20/functional-programming-brief/" itemprop="url">函数式编程扫盲</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-20T19:45:44+08:00">
-                2017-06-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/06/20/functional-programming-brief/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/06/20/functional-programming-brief/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>名谓扫盲，实则是为自己扫盲。前些日子通过Elm的学习接触到了函数式编程的概念，发现语言风格和以C为代表的命令式编程大不相同，接触不同的编程思维还是很有助于自我提升的。在回顾的同时，这里走马观花地带过一些函数式编程的“热门词汇”。</p>
-<h2 id="历史故事"><a href="#历史故事" class="headerlink" title="历史故事"></a><a href="http://www.defmacro.org/ramblings/fp.html" target="_blank" rel="external">历史故事</a></h2><p>什么是函数式编程（Functional Programming，FP）？它从何而来？可以吃吗？这得从20世纪30年代开始讲起：</p>
-<blockquote>
-<p>新建成的哥特式办公楼给普林斯顿大学带来一种天堂般的安全感。来自世界各地的逻辑学者应邀来到普林斯顿，他们将组建一个新的学部。正当大部分美国人还在为找不到一片面包做晚餐而发愁的时候，在普林斯顿却是这样一番景象：高高的天花板和木雕包覆的墙，每天品茶论道，漫步丛林。 一个名叫<a href="http://zh.wikipedia.org/zh/%E9%98%BF%E9%9A%86%E4%BD%90%C2%B7%E9%82%B1%E5%A5%87" target="_blank" rel="external">阿隆佐·邱奇</a>(Alonzo Church)的年轻数学家就过着这样优越的生活。阿隆佐本科毕业于普林斯顿后被留在研究院。他觉得这样的生活完全没有必要，于是他鲜少出现在那些数学茶会中也不喜欢到树林里散心。阿隆佐更喜欢独处：自己一个人的时候他的工作效率更高。尽管如此他还是和普林斯顿学者保持着联系，这些人当中有<a href="https://zh.wikipedia.org/zh/%E8%89%BE%E4%BC%A6%C2%B7%E5%9B%BE%E7%81%B5" target="_blank" rel="external">艾伦·图灵</a>、<a href="http://zh.wikipedia.org/zh/%E7%BA%A6%E7%BF%B0%C2%B7%E5%86%AF%C2%B7%E8%AF%BA%E4%BC%8A%E6%9B%BC" target="_blank" rel="external">约翰·冯·诺伊曼</a>、<a href="https://zh.wikipedia.org/zh-hant/%E5%BA%93%E5%B0%94%E7%89%B9%C2%B7%E5%93%A5%E5%BE%B7%E5%B0%94" target="_blank" rel="external">库尔特·哥德尔</a>。</p>
-</blockquote>
-<p>在与这些人的合作下，阿隆佐设计了一个名为<a href="https://en.wikipedia.org/wiki/Lambda_calculus" target="_blank" rel="external">lambda演算</a>的形式系统。在这种语言里面，函数的参数是函数，返回值也是函数。篇幅和本人能力限制，不对lambda演算做更多讲解。</p>
-<p>除了阿隆佐·邱奇，艾伦·图灵也在进行类似的研究。他设计了一种完全不同的系统（后来被称为图灵机），并用这种系统得出了和阿隆佐相似的答案。到了后来人们证明了图灵机和lambda演算的能力是一样的。</p>
-<p>到了50年代末，一个叫John McCarthy的MIT教授（他也是普林斯顿的硕士）对阿隆佐的成果产生了兴趣。1958年他发明了一种列表处理语言（Lisp），这种语言是一种阿隆佐lambda演算在现实世界的实现，而且它能在冯·诺伊曼计算机上运行！而后的诸多函数式编程语言（如Haskell，ML等）也多少收到Lisp的影响。</p>
-<h2 id="法则"><a href="#法则" class="headerlink" title="法则"></a><a href="https://www.byvoid.com/upload/fl/images/FP/FP.pdf" target="_blank" rel="external">法则</a></h2><p>函数式编程的思想来源Lambda演算在最初设计时就是用来解决计算相关问题，它是一种相对于“命令式编程”完全不同的编程范式，后者告诉计算机怎么做，前者着眼在从数学角度描述问题。它的特点也很明显：</p>
-<ul>
-<li><strong>变量不可变</strong>，即默认带上<code>const</code>或是<code>final</code>（当然函数式编程里压根没有<code>const</code>和<code>final</code>的概念）。这么来看，叫它为“符号”似乎更合适</li>
-<li><strong>惰性求值</strong>，变量直到使用时才会真正计算它的值，因为这个特点，Haskell甚至允许无限列表的出现。同时，这也意味着语句的出现顺序和执行顺序并不相关。</li>
-<li><strong>高阶函数</strong>，函数可以作为入参或是返回值，这个也被很多不那么OOP的语言借鉴去了</li>
-<li><strong>无副作用</strong>，<strong>函数只负责映射数据</strong>，更像是个管道，绝不改变外部状态，同样的输入在任何时候会得到同样的输出（测试人员笑开了花）。这一点使得函数式编程语言天生支持并发执行。</li>
-<li><strong>一切皆函数</strong>，函数是第一公民</li>
-</ul>
-<p>λ演算用来描述一种形式系统，它的语法只有三条：</p>
-<table>
-<thead>
-<tr>
-<th>语法</th>
-<th>术语</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>a</td>
-<td>变量</td>
-<td>一个代表参数或数字/逻辑值的符号或字符串</td>
-</tr>
-<tr>
-<td>(λx.M)</td>
-<td>定义</td>
-<td>函数定义，<code>.</code>前面的标识符<code>x</code>为入参，M为表达式</td>
-</tr>
-<tr>
-<td>(M N)</td>
-<td>调用</td>
-<td>应用函数到一个入参</td>
-</tr>
-</tbody>
-</table>
-<p>例如：<code>((λ x y. x + y) 1 2)</code>表示1和2相加。</p>
-<p>λ演算公理只有两个：</p>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>(λx.M[x]) → (λy.M[y])</td>
-<td>α变换</td>
-<td>改变入参名不影响结果</td>
-</tr>
-<tr>
-<td>((λx.M) E) → (M[x:=E])</td>
-<td>β规约</td>
-<td>将入参传入λ意味着对它做演算</td>
-</tr>
-</tbody>
-</table>
-<p>还以上面的相加为例，α变换就是<code>λ x y. x + y → λ a b. a + b</code>；β规约就是<code>(λ x y. x + y) a b → a + b</code>。是不是很好理解。</p>
-<p>通过这两个基本的公理，结合基本变量类型可以构造各种函数。如not函数，and函数，or函数，甚至if函数。<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="title">let</span> and =</div><div class="line"><span class="title">true</span> value  -&gt;  value</div><div class="line"><span class="title">false</span> value -&gt;  false</div><div class="line"><span class="title">value</span> true  -&gt;  value</div><div class="line"><span class="title">value</span> false -&gt;  false</div><div class="line"></div><div class="line"><span class="title">let</span> <span class="keyword">if</span> =</div><div class="line">λ cond tvalue fvalue. (cond and tvalue) or (not cond  and fvalue)</div></pre></td></tr></table></figure></p>
-<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>高阶函数意味着，我们可以把函数直接作为入参传入，或作为返回值返回。这早已不是函数式编程语言的专利，Python，JavaScript等也吸收了这个设计理念。</p>
-<p><a href="https://en.wikipedia.org/wiki/Currying" target="_blank" rel="external">函数柯里化</a>即部分求值，就利用了高阶函数的特点提出的技术，它使得函数可以一个一个接受入参，返回相同的计算结果。类似于下面的感觉：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">pow</span>(<span class="params">i, j</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> i^j;</div><div class="line">&#125;</div><div class="line">funtion square(j) &#123;</div><div class="line">  <span class="keyword">return</span> pow(i, <span class="number">2</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><code>square</code>函数返回的函数需要指定<code>i</code>才可执行。柯里的名字来自于第一次提出这个技巧的逻辑学家<a href="https://en.wikipedia.org/wiki/Haskell_Curry" target="_blank" rel="external">Haskell Curry</a>。</p>
-<p>另外，值得注意的是，在函数式编程下，高阶函数通过将函数作为参数惰性求值实现。那命令式编程下呢，答案是<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="_blank" rel="external">闭包</a>（lexical closure）。</p>
-<h2 id="递归？"><a href="#递归？" class="headerlink" title="递归？"></a>递归？</h2><p>函数式编程里没有状态变量（可以用其他方式实现），因此自然没有循环结构。实际上，函数式编程中的循环都是通过递归实现的。比如，斐波那契数列函数像下面这样：<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">let</span> fact = λ n. <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="number">1</span> (n * fact n<span class="number">-1</span>)</div></pre></td></tr></table></figure></p>
-<p>这里<code>fact</code>函数引用了自身，虽然编译器可以识别这种写法，但是显然它并不符合严格的数学公理。</p>
-<p>重新审视这个变换，我们可以通过传入自身的方式来让它“数学化”。<code>let P = λ self n. if (n == 0) 1 (n * self(self n-1))</code>，然后在令<code>let fact n = P (P n)</code>。如此这般：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">fact 4</div><div class="line">-&gt; P (P 4)</div><div class="line">-&gt; if (4 == 0) (1) (4 * P(P 3))</div><div class="line">-&gt; 4 * P(P 3)</div><div class="line">-&gt; 4 * 3 * P(P 2)</div><div class="line">-&gt; 4 * 3 * 2 * P(P 1)</div><div class="line">-&gt; 4 * 3 * 2 * 1</div></pre></td></tr></table></figure></p>
-<p>可是，这个函数看上去并不自然，不像一个真正的递归函数，且λ演算的公理里并没有这样一条公理可以让你在定义函数的时候引用本身。还好，已经有人做了<a href="https://en.wikipedia.org/wiki/Fixed-point_combinator" target="_blank" rel="external">研究</a>，借助Y组合子的帮助，可以实现真正的递归函数。<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">let</span> <span class="type">Y</span> = λ <span class="type">F</span>. <span class="type">G</span>(<span class="type">G</span>)</div><div class="line"><span class="type">G</span> = λ self. <span class="type">F</span>(self(self))</div></pre></td></tr></table></figure></p>
-<p>这相当于我们在λ演算公理体系中添加了一条“可以在函数调用时引用自身”。这也是证明λ演算图灵等价的关键一步。这意味着它的计算能力和计算机是一致的，能通过λ演算描述的函数一定可以由计算机计算。</p>
-<h2 id="Haskell"><a href="#Haskell" class="headerlink" title="Haskell"></a>Haskell</h2><p><a href="https://www.zhihu.com/question/27355585" target="_blank" rel="external">Haskell</a>是一个纯函数式编程语言，它得名于上面提到过的Haskell Curry。Y组合子也是他发现的。</p>
-<p>Haskell中一切都是函数，甚至没有指令式编程中变量的概念，它的变量全部都是只允许一次赋值，不可改变。</p>
-<p>Haskell还没有一般意义上的控制流结构，如for循环，取而代之的是递归。同样，Haskell还有两个重要的特性，即无副作用和惰<br>性求值。偏数学的问题，用Haskell解决通常代码量都很小。下面是一个列表去重例子<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">cut</span> cond  []  = []</div><div class="line"><span class="title">cut</span> cond  (elem:rest) = <span class="keyword">if</span>  cond elem <span class="keyword">then</span></div><div class="line"><span class="title">cut</span> cond  rest  <span class="keyword">else</span>  elem:rest</div><div class="line"><span class="title">compress</span>  []  = []</div><div class="line"><span class="title">compress</span>  (elem:rest) = elem  : compress</div><div class="line">(cut  (== elem) rest)</div></pre></td></tr></table></figure></p>
-<p>还有一个快排（不过借助了filter函数）的例子，也是短得不行<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="title">qsort</span> (elem:rest) = (qsort lesser) ++ [elem] ++ (qsort greater)</div><div class="line">  <span class="keyword">where</span></div><div class="line">    lesser = filter (&lt; elem) rest</div><div class="line">    greater = filter (&gt;= elem) rest</div></pre></td></tr></table></figure></p>
-<p>Haskell中还可以定义无穷列表，如[1..]表示所有正整数。这也是惰性求值特性带来的。<code>[1,3..] !! 42</code>将会返回85。</p>
-<h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><blockquote>
-<p>Monad其实就是自函子范畴上的一个幺半群而已</p>
-</blockquote>
-<p>这节将展示一个图文并茂的说明但并不致力于解释清楚monad到底是个什么（因为我自己也不明白）。这篇对比<a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html" target="_blank" rel="external">functor，applicatives，monad</a>的文章写得很透彻易懂，尽管这可能并不能描述一个100%的monad。要更深刻了解monad还是需要学习范畴论的内容。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.byvoid.com/upload/fl/images/FP/FP.pdf" target="_blank" rel="external">函数式编程.pdf</a><br><a href="http://www.defmacro.org/ramblings/fp.html" target="_blank" rel="external">Functional Programming For The Rest of Us</a><br><a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html" target="_blank" rel="external">Functors, Applicatives, And Monads In Pictures</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/blog/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><a class="extend next" rel="next" href="/blog/page/15/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/blog/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><a class="extend next" rel="next" href="/blog/page/15/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1760,7 +1693,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">115</span>
+                <span class="site-state-item-count">119</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1782,7 +1715,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">325</span>
+                <span class="site-state-item-count">337</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
