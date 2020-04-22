@@ -296,184 +296,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-1/" itemprop="url">JavaScript中的异步编程 上</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/29/javascript-async-programming-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>下篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">JavaScript中的异步编程 下</a></p>
-</blockquote>
-<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
-<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
-<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">Event Loop</a> 的体现。</p>
-<p>在<a href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html" target="_blank" rel="external">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
-<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
-<p>大概是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></div><div class="line">asy(), cal();</div><div class="line"><span class="comment">//它们的定义和使用像下面这样</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asy</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//异步工作代码</span></div><div class="line">        callback();</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cal</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello!'</span>); <span class="comment">//或其它什么</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">asy(cal);</div></pre></td></tr></table></figure>
-<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
-<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
-<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
-<p>大概是这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target.on(<span class="string">'someevent'</span>, handler); <span class="comment">// 注册事件</span></div><div class="line">target.emit(<span class="string">'someevent'</span>); <span class="comment">//触发事件</span></div></pre></td></tr></table></figure>
-<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="comment">// 全局事件管理</span></div><div class="line">    <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">    <span class="comment">// 注册事件</span></div><div class="line">        on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">                events[type].push(handler);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                events[type] = [handler];</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">        emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">                events[type][i];</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
-<p>也就是<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>和<a href="https://vuex.vuejs.org/" target="_blank" rel="external">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
-<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a href="http://callbackhell.com/" target="_blank" rel="external">回调地狱</a>”也为人诟病。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">async</span>(<span class="params">request, callback</span>) </span>&#123;</div><div class="line">    <span class="comment">// Do something.</span></div><div class="line">    asyncA(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="comment">// Do something</span></div><div class="line">        asyncB(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="comment">// Do something</span></div><div class="line">            asyncC(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">// Do something</span></div><div class="line">                callback(data);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
-<p>ES6中的<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
-<p>它的使用方法像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</div><div class="line">        resolve(val);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        reject(err)</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//failure handler</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 或是</span></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;).catch(err) &#123;</div><div class="line">    <span class="comment">//error handler</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 处理一批次的异步任务</span></div><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1, p2, p3]),</div><div class="line">    q = <span class="built_in">Promise</span>.race([p1, p2, p3]);</div></pre></td></tr></table></figure>
-<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//constructor</span></div><div class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.callbacks = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.prototype = &#123;</div><div class="line">    <span class="attr">construct</span>: <span class="built_in">Promise</span>,</div><div class="line">    <span class="attr">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"resolve"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">reject</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"reject"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">complete</span>: <span class="function"><span class="keyword">function</span>(<span class="params">type, result</span>) </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.callbacks[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">this</span>.callbacks.shift()[type](result);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">then</span>: <span class="function"><span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callbacks.push(&#123;</div><div class="line">            <span class="attr">resolve</span>: successHandler,</div><div class="line">            <span class="attr">reject</span>: failedHandler</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
-<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://segmentfault.com/a/1190000003028634" target="_blank" rel="external">异步编程 promise模式 的简单实现</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -639,6 +461,184 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">args</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> spawn(<span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spawn</span> (<span class="params">genF, self</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> gen = genF.call(self);</div><div class="line">    step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(<span class="literal">undefined</span>));</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">step</span> (<span class="params">nextF</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> next;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        next = nextF();</div><div class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="comment">// finished with failure, reject the promise</span></div><div class="line">        reject(e);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (next.done) &#123;</div><div class="line">        <span class="comment">// finished with success, resolve the promise</span></div><div class="line">        resolve(next.value);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></div><div class="line">      <span class="built_in">Promise</span>.resolve(next.value).then(</div><div class="line">        <span class="function"><span class="params">v</span> =&gt;</span> step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(v)),</div><div class="line">        e =&gt; step(<span class="function"><span class="params">()</span> =&gt;</span> gen.throw(e))</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="external">This API is so Fetching!</a><br><a href="https://github.com/tj/co" target="_blank" rel="external">co</a><br><a href="https://nswbmw.github.io/N-club/1/1.3.html" target="_blank" rel="external">co和koa</a><br><a href="https://ponyfoo.com/articles/understanding-javascript-async-await" target="_blank" rel="external">Understanding JavaScript’s async await</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-1/" itemprop="url">JavaScript中的异步编程 上</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/03/29/javascript-async-programming-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
+</blockquote>
+<p><span></span></p>
+<blockquote>
+<p>下篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">JavaScript中的异步编程 下</a></p>
+</blockquote>
+<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
+<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
+<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">Event Loop</a> 的体现。</p>
+<p>在<a href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html" target="_blank" rel="external">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
+<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
+<p>大概是这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></div><div class="line">asy(), cal();</div><div class="line"><span class="comment">//它们的定义和使用像下面这样</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asy</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//异步工作代码</span></div><div class="line">        callback();</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cal</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello!'</span>); <span class="comment">//或其它什么</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">asy(cal);</div></pre></td></tr></table></figure>
+<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
+<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
+<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
+<p>大概是这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target.on(<span class="string">'someevent'</span>, handler); <span class="comment">// 注册事件</span></div><div class="line">target.emit(<span class="string">'someevent'</span>); <span class="comment">//触发事件</span></div></pre></td></tr></table></figure>
+<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="comment">// 全局事件管理</span></div><div class="line">    <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">    <span class="comment">// 注册事件</span></div><div class="line">        on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">                events[type].push(handler);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                events[type] = [handler];</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">        emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">                events[type][i];</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
+<p>也就是<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>和<a href="https://vuex.vuejs.org/" target="_blank" rel="external">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
+<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a href="http://callbackhell.com/" target="_blank" rel="external">回调地狱</a>”也为人诟病。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">async</span>(<span class="params">request, callback</span>) </span>&#123;</div><div class="line">    <span class="comment">// Do something.</span></div><div class="line">    asyncA(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="comment">// Do something</span></div><div class="line">        asyncB(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="comment">// Do something</span></div><div class="line">            asyncC(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">// Do something</span></div><div class="line">                callback(data);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
+<p>ES6中的<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
+<p>它的使用方法像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</div><div class="line">        resolve(val);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        reject(err)</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//failure handler</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 或是</span></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;).catch(err) &#123;</div><div class="line">    <span class="comment">//error handler</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 处理一批次的异步任务</span></div><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1, p2, p3]),</div><div class="line">    q = <span class="built_in">Promise</span>.race([p1, p2, p3]);</div></pre></td></tr></table></figure>
+<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//constructor</span></div><div class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.callbacks = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.prototype = &#123;</div><div class="line">    <span class="attr">construct</span>: <span class="built_in">Promise</span>,</div><div class="line">    <span class="attr">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"resolve"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">reject</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"reject"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">complete</span>: <span class="function"><span class="keyword">function</span>(<span class="params">type, result</span>) </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.callbacks[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">this</span>.callbacks.shift()[type](result);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">then</span>: <span class="function"><span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callbacks.push(&#123;</div><div class="line">            <span class="attr">resolve</span>: successHandler,</div><div class="line">            <span class="attr">reject</span>: failedHandler</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
+<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://segmentfault.com/a/1190000003028634" target="_blank" rel="external">异步编程 promise模式 的简单实现</a></p>
 
           
         

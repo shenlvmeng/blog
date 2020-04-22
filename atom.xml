@@ -740,6 +740,8 @@
       <category term="日记" scheme="http://shenlvmeng.github.com/blog/categories/%E6%97%A5%E8%AE%B0/"/>
     
     
+      <category term="总结" scheme="http://shenlvmeng.github.com/blog/tags/%E6%80%BB%E7%BB%93/"/>
+    
       <category term="展望" scheme="http://shenlvmeng.github.com/blog/tags/%E5%B1%95%E6%9C%9B/"/>
     
       <category term="flag" scheme="http://shenlvmeng.github.com/blog/tags/flag/"/>
@@ -748,8 +750,6 @@
     
       <category term="2020" scheme="http://shenlvmeng.github.com/blog/tags/2020/"/>
     
-      <category term="总结" scheme="http://shenlvmeng.github.com/blog/tags/%E6%80%BB%E7%BB%93/"/>
-    
   </entry>
   
   <entry>
@@ -757,10 +757,11 @@
     <link href="http://shenlvmeng.github.com/blog/2019/12/24/golang-learning/"/>
     <id>http://shenlvmeng.github.com/blog/2019/12/24/golang-learning/</id>
     <published>2019-12-24T15:03:54.000Z</published>
-    <updated>2020-04-16T16:47:23.891Z</updated>
+    <updated>2020-04-22T15:00:42.754Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>更多：<a href="https://golang.org" target="_blank" rel="external">go官网</a></p>
+<p>题解：<a href="https://github.com/shenlvmeng/go-learning-exercise" target="_blank" rel="external">https://github.com/shenlvmeng/go-learning-exercise</a></p>
 </blockquote>
 <h1 id="Part-1：基础"><a href="#Part-1：基础" class="headerlink" title="Part 1：基础"></a>Part 1：基础</h1><h2 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h2><p>Go语言构想与2007年9月，于2009年11月发布。主要思想来自3种语言：</p>
 <ul>
@@ -1523,14 +1524,73 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">go list github.com/go-sql-driver/mysql</div><div class="line">go list ...</div><div class="line">go list gopl.io/ch3/...</div><div class="line">go list ...xml...</div></pre></td></tr></table></figure>
 <p>结合<code>-json</code>可以打印json格式的包详情，或者结合<code>-f</code>加上<code>text/template</code>语法打印特定格式的字符串。</p>
 <p>更多使用方式查看<code>go help list</code>。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>同行评审和测试是两种避免代码错误的方式。Go尽量让写自动化测试代码不是一件很困难的事。在Go中进行测试，你需要了解的只不过是普通的Go语法规范和一些约定而已。</p>
+<h3 id="go-test工具"><a href="#go-test工具" class="headerlink" title="go test工具"></a><code>go test</code>工具</h3><p>Go的测试都借助<code>go test</code>完成。所有和测试相关的文件必须以<code>_test.go</code>结尾，这些文件不会在打包时包括进去，只会在运行测试时运行。在文件中有三类函数会被特殊处理：</p>
+<ul>
+<li>测试函数：必须以<code>Test</code>开头，表示检测一些逻辑的正确性，运行后会给出<code>PASS</code>或<code>FAIL</code></li>
+<li>基准测试函数：必须以<code>Benchmark</code>开头，表示测量一些操作的性能，运行后会给出运行时间</li>
+<li>样例函数：必须以<code>Example</code>开头，表示提供一些格式化的文档</li>
+</ul>
+<p><code>go test</code>运行完成时，会生成一个临时的<code>main</code>包，构建并运行，最后给出结果并清理现场</p>
+<h3 id="测试函数"><a href="#测试函数" class="headerlink" title="测试函数"></a>测试函数</h3><p>测试函数均以<code>Test</code>开头，函数入参是test包提供的用来打印错误或其他日志的工具集。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">"testing"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestSin</span><span class="params">(t *test.T)</span></span> &#123; <span class="comment">/* ... */</span>&#125;</div></pre></td></tr></table></figure>
+<p>接着就像写普通Go代码一样去执行case就行了。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> word</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"testing"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestPalindrome</span><span class="params">(t *testing.T)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> !IsPalindrome(<span class="string">"kayak"</span>) &#123;</div><div class="line">        t.Error(<span class="string">`IsPalindrome("kayak") = false`</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行时，结合<code>-v</code>标记可以打印详细信息，结合<code>-run</code>标识可以只运行符合指定模式的case。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">go <span class="built_in">test</span> -v -run=<span class="string">"French|Canal"</span></div></pre></td></tr></table></figure>
+<p>case之间的代码相似性很高，建议用配置的方式批量运行case，减少模板代码书写。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestPalindrome</span><span class="params">(t *tesing.T)</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> tests = []<span class="keyword">struct</span>&#123;</div><div class="line">        input <span class="keyword">string</span></div><div class="line">        want <span class="keyword">bool</span></div><div class="line">    &#125; &#123;</div><div class="line">        &#123;<span class="string">""</span>, <span class="literal">true</span>&#125;,</div><div class="line">        &#123;<span class="string">"a"</span>, <span class="literal">true</span>&#125;,</div><div class="line">        &#123;<span class="string">"ab"</span>, <span class="literal">false</span>&#125;,</div><div class="line">        &#123;<span class="string">"A man, a plan, a canal: Panama"</span>: <span class="literal">true</span>&#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> _, test := <span class="keyword">range</span> tests &#123;</div><div class="line">        <span class="keyword">if</span> got := IsPalindrome(test.input); got != test.want &#123;</div><div class="line">            t.Errorf(<span class="string">"IsPalindrome(%q) = %v"</span>, test.input, got)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>go test</code>在运行测试时，每个case的错误不会中断其他case的执行，也不会panic，来保证一次运行能获得所有case的执行结果。对于需要中断的情况，可以使用<code>t.Fatal</code>或者<code>t.Fatalf</code>。</p>
+<h4 id="随机化测试"><a href="#随机化测试" class="headerlink" title="随机化测试"></a>随机化测试</h4><p>不同于上面提到的选择特定case进行测试。随机化测试可以覆盖更广的范围。在验证随机化测试是否符合预期上，有两种思路：</p>
+<ul>
+<li>使用另外一种方式给出结果，对比两种方式的结果是否相同</li>
+<li>使用固定的模式生成随机化case，使其预期结果可以事先推导出来</li>
+</ul>
+<p>另外，在随机化测试时还要考虑能否再次复现问题case的情况。</p>
+<h4 id="测试一个命令"><a href="#测试一个命令" class="headerlink" title="测试一个命令"></a>测试一个命令</h4><p>对于<code>go test</code>而言，<code>main</code>包只是一个库，可以将<code>main</code>函数中需要测试的逻辑抽离成函数，在<code>*_test.go</code>中测试即可。最好将<code>log.Fatal</code>或者<code>os.Exit</code>这种中断程序执行的语句放在<code>main</code>函数中，避免中断测试流程。</p>
+<h4 id="白盒测试"><a href="#白盒测试" class="headerlink" title="白盒测试"></a>白盒测试</h4><p>白盒测试即在对测试对象有清楚认识的情形下进行测试；黑盒测试则相反，更站在客户端的角度去测试包。在白盒测试下，我们可以修改原先包的一些实现方式，使之更易被测试。比如，可以将其中会有副作用的部分，如发邮件、写数据库、发短信的函数覆盖。（类似mock的思路）</p>
+<p>但是，在覆盖后，别忘了还原回去，避免影响后续测试。类似下面这样：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestCheckQuotaNotificationUser</span><span class="params">(t *testing.T)</span></span> &#123;</div><div class="line">    saved := notifyUser</div><div class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; notifyUser = saved &#125;()</div><div class="line"></div><div class="line">    <span class="comment">//...</span></div><div class="line">    notifyUser = <span class="function"><span class="keyword">func</span><span class="params">(user, msg <span class="keyword">string</span>)</span></span> &#123;</div><div class="line">        notifiedUser, notifiedMsg = user, msg</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种覆盖方式正常情况下不会有风险，因为<code>go test</code>通常不会并行运行多个测试。</p>
+<h4 id="外部测试包"><a href="#外部测试包" class="headerlink" title="外部测试包"></a>外部测试包</h4><p>上面提到的都是直接在包下新建<code>*_test.go</code>文件的方式进行测试。有些情况下，如果测试文件内需要引用更高层包，会产生循环引用，这是上一章提到不允许的。这时可以定义为外部包。如：</p>
+<p><code>net/url</code>下的测试文件导入了<code>net/http</code>包，而<code>net/http</code>包中又导入了<code>net/url</code>。这个时候在<code>net/url</code>下的测试文件使用<code>package url_test</code>声明，表示是另一个包<code>net/url_test</code>。然后，通过导入<code>net/url</code>和<code>net/http</code>的方式进行测试。就可以避免循环引用。</p>
+<p>可以通过<code>go list -f</code>指定<code>.GoFiles</code>，<code>.TestGoFiles</code>和<code>.XTestGoFiles</code>分别查看包中的源文件、测试文件和外部测试包文件。</p>
+<p>然而，外部测试包并不能访问到包内对外不可见的变量或函数。这个时候，可以在包内创建一个后门测试文件，用于导出一些内部变量或函数对外部包测试可见，通常命名为<code>export_test.go</code>。这类文件内不包含实际的测试。如<code>fmt</code>包下的<code>export_test.go</code>。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> fmt</div><div class="line"></div><div class="line"><span class="keyword">var</span> IsSpace = isSpace</div></pre></td></tr></table></figure>
+<h4 id="写高效的测试"><a href="#写高效的测试" class="headerlink" title="写高效的测试"></a>写高效的测试</h4><p>Go在设计上和其他很多语言不同，并不包含一个大而全的测试框架，也没有创建、清除操作，和常用的断言、判断方法等。Go认为写case是作者自己的事，而且就像写普通的程序一样，不要有死记硬背和长篇大论，只需简明扼要地表达测试意图。</p>
+<p>在写测试代码时，避免过早抽象，先想着把功能实现，然后再想怎么通过抽象减少重复和复杂度。</p>
+<h4 id="避免“脆弱”的测试"><a href="#避免“脆弱”的测试" class="headerlink" title="避免“脆弱”的测试"></a>避免“脆弱”的测试</h4><p>有两种应用：一种是真正bug很多的（buggy），另一种是合理改动也过不了case的（brittle）。而这里过不了case可能只是因为判断逻辑写的不够宽容，死抠细节导致很容易过时。避免这种情况一个很直接的办法是只检查你关心的特性，使用更简单和时间稳定的方式检查，如不要依赖字符串匹配。去检查本质。</p>
+<h3 id="覆盖率"><a href="#覆盖率" class="headerlink" title="覆盖率"></a>覆盖率</h3><blockquote>
+<p>Testing shows the presence, not the absence of bugs —— Edsger Dijkstra</p>
+</blockquote>
+<p>覆盖率一定程度上能对测试的覆盖程度有启发性的指示作用。使用<code>go test -coverprofile</code>可以指定覆盖率数据输出，如果不需要输出，只看摘要，可以只用<code>go test -cover</code>。使用<code>go tool cover</code>可以显示覆盖率使用介绍。</p>
+<p>最后要说明的是，被覆盖到的代码并不是没有bug，测试是一种<strong>务实</strong>的努力。它是在写测试代价和失败代价的中间的一个折中。</p>
+<h3 id="性能测试函数"><a href="#性能测试函数" class="headerlink" title="性能测试函数"></a>性能测试函数</h3><p>这类函数都以<code>Benchmark</code>开头，和测试函数类似，函数入参是<code>*testing.B</code>类型的变量。默认情况下，不会执行任何性能测试，需要指定<code>-bench</code>值，去匹配对应函数执行，“<code>.</code>”表示匹配所有。如<code>go test -bench=.</code>性能测试函数写法如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">"testing"</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkIsPalindrome</span><span class="params">(b *testing.B)</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</div><div class="line">        IsPalindrome(<span class="string">"A man, a plan, a canal: Panama"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之所以需要自己在基准测试函数中写循环，而不集成在测试驱动中，是避免一些一次性操作影响执行时间测量。<code>-benchmem</code>标识会显示内存分配的使用情况。性能测试函数可以用来对比两种策略或算法的相对时间优劣，以及通过调整循环次数，整体上考察代码设计。</p>
+<h3 id="性能侧写（Profilling）"><a href="#性能侧写（Profilling）" class="headerlink" title="性能侧写（Profilling）"></a>性能侧写（Profilling）</h3><p>性能测试函数能帮你发现整体的性能好坏，但不能告诉你哪里做得不够好。</p>
+<p>Knuth曾说过“不要过早优化”，然而结合上下文的原话的意思则是，寻找性能优化点并不那么容易，程序员们在写需求前浪费了大量时间在寻找优化点上，先把事情做出来，不要杞人忧天过早优化。但是优秀的程序员会努力找到优化点并改善之。</p>
+<p>寻找关键点的方式就叫<em>profiling</em>。profile通过采样的方式给出占用时间、资源最多的对象，从而可以对应去优化。Go提供3种profile</p>
+<ul>
+<li>CPU profile，标记占用CPU时间最长的函数</li>
+<li>heap profile，标记分配内存最多的声明</li>
+<li>blocking profile，标记阻塞goroutine时间最久的操作</li>
+</ul>
+<p>对应在<code>go test</code>上的标识为<code>-cpuprofile</code>，<code>-memprofile</code>，<code>-blockprofile</code>。借助<code>go tool pprof</code>可以打印侧写数据，以及可视化数据。</p>
+<h3 id="样例函数"><a href="#样例函数" class="headerlink" title="样例函数"></a>样例函数</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExampleIsPalindrome</span><span class="params">()</span></span> &#123;</div><div class="line">    fmt.Println(IsPalindrome(<span class="string">"A man, a plan, a canal: Panama"</span>))</div><div class="line">    fmt.Println(IsPalindrome(<span class="string">"palindrome"</span>))</div><div class="line">    <span class="comment">// Output:</span></div><div class="line">    <span class="comment">// true</span></div><div class="line">    <span class="comment">// false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后一种会被<code>go test</code>特殊处理的是样例函数，这类函数以<code>Example</code>开头，并没有入参，也没有返回。它的作用主要有以下3点：</p>
+<ul>
+<li>文档记录，且更能传达意图，同时由于样例函数是实际的Go代码，对比文档，随着代码演化，不会有过期风险。命名单纯叫<code>Example</code>的函数作为整个包的样例函数。</li>
+<li>函数最火包含<code>// Output:</code>注释的话，<code>go test</code>会检查标准输出是否能匹配注释中的输出</li>
+<li>在<code>godoc</code>中可以作为playground，提供给用户动态编辑、运行的功能</li>
+</ul>
 ]]></content>
     
     <summary type="html">
     
       &lt;blockquote&gt;
 &lt;p&gt;更多：&lt;a href=&quot;https://golang.org&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;go官网&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;Part-1：基础&quot;&gt;&lt;a href=&quot;#Part-
+&lt;p&gt;题解：&lt;a href=&quot;https://github.com/shenlvmeng/go-
     
     </summary>
     
@@ -2670,9 +2730,9 @@
       <category term="思考" scheme="http://shenlvmeng.github.com/blog/categories/%E6%80%9D%E8%80%83/"/>
     
     
-      <category term="心理学" scheme="http://shenlvmeng.github.com/blog/tags/%E5%BF%83%E7%90%86%E5%AD%A6/"/>
-    
       <category term="爱情" scheme="http://shenlvmeng.github.com/blog/tags/%E7%88%B1%E6%83%85/"/>
+    
+      <category term="心理学" scheme="http://shenlvmeng.github.com/blog/tags/%E5%BF%83%E7%90%86%E5%AD%A6/"/>
     
       <category term="社会关系" scheme="http://shenlvmeng.github.com/blog/tags/%E7%A4%BE%E4%BC%9A%E5%85%B3%E7%B3%BB/"/>
     
@@ -2838,13 +2898,13 @@
     
       <category term="攻略" scheme="http://shenlvmeng.github.com/blog/tags/%E6%94%BB%E7%95%A5/"/>
     
+      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
+    
       <category term="云南" scheme="http://shenlvmeng.github.com/blog/tags/%E4%BA%91%E5%8D%97/"/>
     
       <category term="丽江" scheme="http://shenlvmeng.github.com/blog/tags/%E4%B8%BD%E6%B1%9F/"/>
     
       <category term="大理" scheme="http://shenlvmeng.github.com/blog/tags/%E5%A4%A7%E7%90%86/"/>
-    
-      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
