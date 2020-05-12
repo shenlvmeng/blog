@@ -503,11 +503,11 @@
   </entry>
   
   <entry>
-    <title>Chrome Extension开始</title>
+    <title>Chrome Extension开发须知</title>
     <link href="http://shenlvmeng.github.com/blog/2020/04/16/crx-intro/"/>
     <id>http://shenlvmeng.github.com/blog/2020/04/16/crx-intro/</id>
     <published>2020-04-16T15:42:29.000Z</published>
-    <updated>2020-04-16T15:44:26.763Z</updated>
+    <updated>2020-04-25T12:49:25.861Z</updated>
     
     <content type="html"><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Extension是由HTML、CSS、JavaScript和图片等其他资源文件组成的压缩包。它可以增强浏览器体验，实现个性化。</p>
 <h2 id="Files"><a href="#Files" class="headerlink" title="Files"></a>Files</h2><p>Extension没有做目录的约定，但是它们需要已配置文件的形式写在manifest中。<code>manifest.json</code>中描述了Extension的基本信息、使用能力和重要文件。</p>
@@ -744,9 +744,9 @@
     
       <category term="展望" scheme="http://shenlvmeng.github.com/blog/tags/%E5%B1%95%E6%9C%9B/"/>
     
-      <category term="flag" scheme="http://shenlvmeng.github.com/blog/tags/flag/"/>
-    
       <category term="2019" scheme="http://shenlvmeng.github.com/blog/tags/2019/"/>
+    
+      <category term="flag" scheme="http://shenlvmeng.github.com/blog/tags/flag/"/>
     
       <category term="2020" scheme="http://shenlvmeng.github.com/blog/tags/2020/"/>
     
@@ -757,13 +757,13 @@
     <link href="http://shenlvmeng.github.com/blog/2019/12/24/golang-learning/"/>
     <id>http://shenlvmeng.github.com/blog/2019/12/24/golang-learning/</id>
     <published>2019-12-24T15:03:54.000Z</published>
-    <updated>2020-04-22T15:00:42.754Z</updated>
+    <updated>2020-05-12T14:34:39.296Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>更多：<a href="https://golang.org" target="_blank" rel="external">go官网</a></p>
 <p>题解：<a href="https://github.com/shenlvmeng/go-learning-exercise" target="_blank" rel="external">https://github.com/shenlvmeng/go-learning-exercise</a></p>
 </blockquote>
-<h1 id="Part-1：基础"><a href="#Part-1：基础" class="headerlink" title="Part 1：基础"></a>Part 1：基础</h1><h2 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h2><p>Go语言构想与2007年9月，于2009年11月发布。主要思想来自3种语言：</p>
+<h2 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h2><p>Go语言构想与2007年9月，于2009年11月发布。主要思想来自3种语言：</p>
 <ul>
 <li>C，基础语法和编译</li>
 <li>Pascal，包概念</li>
@@ -1584,6 +1584,58 @@
 <li>函数最火包含<code>// Output:</code>注释的话，<code>go test</code>会检查标准输出是否能匹配注释中的输出</li>
 <li>在<code>godoc</code>中可以作为playground，提供给用户动态编辑、运行的功能</li>
 </ul>
+<h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><p>反射能在<strong>运行时</strong>不知道变量类型情况下去修改和查询变量值。反射还能让我们将类型作为第一成员的值来使用。类似<code>fmt.Sprintf</code>和<code>text/template</code>中就有用到这个特性</p>
+<h3 id="reflect-Type和reflect-Value"><a href="#reflect-Type和reflect-Value" class="headerlink" title="reflect.Type和reflect.Value"></a><code>reflect.Type</code>和<code>reflect.Value</code></h3><p><code>reflect.Type</code>和<code>reflect.Value</code>分别表示变量的类型和值。其中类型通过<code>reflect.TypeOf</code>得到，得到的<code>reflect.Type</code>可以保存任何类型值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">t := reflect.TypeOf(<span class="number">3</span>) <span class="comment">// a reflect.Type</span></div><div class="line">fmt.Println(t.String()) <span class="comment">// "int"</span></div><div class="line">fmt.Println(t) <span class="comment">// "int"</span></div></pre></td></tr></table></figure>
+<p>返回的类型总是interface的动态类型，所以总是确切类型。</p>
+<p><code>reflect.ValueOf</code>可以得到任意类型的变量值。返回的<code>reflect.Value</code>满足<code>fmt.Stringer</code>接口，不过打印出来的是变量类型。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">v := reflect.ValueOf(<span class="number">3</span>) <span class="comment">// a reflect.Value</span></div><div class="line">fmt.Println(v) <span class="comment">// "3"</span></div><div class="line">fmt.Printf(<span class="string">"%v\n"</span>, v) <span class="comment">// "3"</span></div><div class="line">fmt.Println(v.String()) <span class="comment">// "&lt;int Value&gt;"</span></div></pre></td></tr></table></figure>
+<p><code>reflect.Value.Interface</code>方法返回一个保存相同值的<code>interface{}</code>类型。它和<code>reflect.Value</code>不同在于，一个<code>interface{}</code>类型的变量掩盖了外部表现和内部实现细节，因此无从对其操作。<code>`reflect.Value</code>的<code>Kind</code>方法可以返回类型的底层表示方法，因此使用时，可以只关心Go中定义的类型。</p>
+<h3 id="递归值输出函数Display"><a href="#递归值输出函数Display" class="headerlink" title="递归值输出函数Display"></a>递归值输出函数<code>Display</code></h3><p>利用上面提到的<code>Kind</code>方法，可以实现递归打印任意类型值的函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">display</span><span class="params">(path <span class="keyword">string</span>, v reflect.Value)</span></span> &#123;</div><div class="line">    <span class="keyword">switch</span> v.Kind()&#123;</div><div class="line">    <span class="keyword">case</span> reflect.Invalid:</div><div class="line">        fmt.Printf(<span class="string">"%s = invalid\n"</span>, path)</div><div class="line">    <span class="keyword">case</span> reflect.Slice, reflect.Array:</div><div class="line">        <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; v.Len(); i++ &#123;</div><div class="line">            display(fmt.Sprintf(<span class="string">"%s[%d]"</span>, path, i), v.Index(i))</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">case</span> reflect.Struct:</div><div class="line">        <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; v.NumField(); i++ &#123;</div><div class="line">            fieldPath := fmt.Sprintf(<span class="string">"%s.%s"</span>, path, v.Type().Field(i).Name)</div><div class="line">            display(fieldPath, v.Field(i))</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">case</span> reflect.Map:</div><div class="line">        <span class="keyword">for</span> _, key := <span class="keyword">range</span> v.MapKeys() &#123;</div><div class="line">            display(fmt.Sprintf(<span class="string">"%s[%s]"</span>, path, formatAtom(key), v.MapIndex(key)))</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">case</span> reflect.Ptr:</div><div class="line">        <span class="keyword">if</span> v.IsNil() &#123;</div><div class="line">            fmt.Printf(<span class="string">"%s = nil\n"</span>, path)</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            display(fmt.Sprintf(<span class="string">"(*%s)"</span>, path), v.Elem())</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">case</span> reflect.Interface:</div><div class="line">        <span class="keyword">if</span> v.IsNil() &#123;</div><div class="line">            fmt.Printf(<span class="string">"%s = nil\n"</span>, path)</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            fmt.Printf(<span class="string">"%s.type = %s\n"</span>, path, v.Elem().Type())</div><div class="line">            display(path+<span class="string">".value"</span>, v.Elem())</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">default</span>: <span class="comment">// 基础类型、信道、函数</span></div><div class="line">        fmt.Printf(<span class="string">"%s = %s\n"</span>, path, formatAtom(v))</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面用到了许多<code>reflect.Value</code>的方法，不是所有的都安全：</p>
+<ul>
+<li><code>v.Index()</code>和<code>v.Len()</code>类似<code>len()</code>和<code>[i]</code>下标取值</li>
+<li><code>v.NumbField()</code>返回结构体中的字段数目，<code>v.Field(i)</code>则返回第i位的<code>reflect.Value</code>类型值</li>
+<li><code>v.MapKeys()</code>返回无序的map key</li>
+<li><code>v.IsNil()</code>和<code>v.Elem()</code>分别判断是否为空和获取值</li>
+</ul>
+<p>上述方法在遇到有环的数据结构时，会无限打印，可以借助下一章里的<code>unsafe</code>包解决。</p>
+<h3 id="使用reflect-Value设置变量"><a href="#使用reflect-Value设置变量" class="headerlink" title="使用reflect.Value设置变量"></a>使用<code>reflect.Value</code>设置变量</h3><p>Go中的变量都是有地址的，可以通过这个地址去修改变量的值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">x := <span class="number">2</span></div><div class="line">a := reflect.ValueOf(<span class="number">2</span>)</div><div class="line">b := reflect.ValueOf(x)</div><div class="line">c := reflect.ValueOf(&amp;x)</div><div class="line">d := c.Elem() <span class="comment">// variable</span></div></pre></td></tr></table></figure>
+<p>上面的<code>d</code>即变量<code>x</code>。借助这个方式我们可以用<code>Addr()</code>获取地址，用<code>Interface()</code>获取<code>interface{}</code>类型的值，再使用类型断言转成具体的变量类型。像下面这样。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">px := d.Addr().Interface().(*<span class="keyword">int</span>)</div><div class="line">*px = <span class="number">3</span></div><div class="line">fmt.Println(x) <span class="comment">// 3</span></div></pre></td></tr></table></figure>
+<p>又或者，可以通过<code>Set</code>方法设置一个<code>reflect.Value</code>。针对特定类型，还有<code>SetInt</code>、<code>SetUint</code>、<code>SetString</code>这样的方法。注意，这些方法只使用在特定类型上，对于<code>interface{}</code>或其他类型使用，会引起panic。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">d.Set(reflect.ValueOf(<span class="number">4</span>))</div><div class="line"></div><div class="line"><span class="keyword">var</span> y <span class="keyword">interface</span>&#123;&#125;</div><div class="line">ry := reflect.ValueOf(&amp;y).Elem()</div><div class="line">ry.SetInt(<span class="number">2</span>) <span class="comment">// panic: SetInt called on interface Value</span></div><div class="line">ry.SetInt(reflect.Value(<span class="number">3</span>)) <span class="comment">// OK, y = int(3)</span></div></pre></td></tr></table></figure>
+<p>另外，反射不能更新那些没有对外导出的结构体字段，尽管这些字段可以在发射中读取到。<code>CanSet()</code>可以判断一个<code>reflect.Value</code>是否可以修改，类似的，<code>CanAddr()</code>可以判断一个<code>reflect.Value</code>是否可以获取到地址。</p>
+<p>利用上面的特性，可以实现encoding/json中类似的解析JSON字符串的效果。</p>
+<h3 id="访问结构体的field-tag"><a href="#访问结构体的field-tag" class="headerlink" title="访问结构体的field tag"></a>访问结构体的field tag</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> data <span class="keyword">struct</span> &#123;</div><div class="line">    Labels []<span class="keyword">string</span> <span class="string">`http:"l"`</span></div><div class="line">    MaxResults <span class="keyword">int</span> <span class="string">`http:"max"`</span></div><div class="line">    Exact <span class="keyword">bool</span> <span class="string">`http:"x"`</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们在JSON一节提到，可以在结构体后使用<em>field tag</em>作为JSON解析过程中的metadata。实际上，除了<code>json</code>还可以设置其他tag。这个tag也可以通过反射特性拿到。</p>
+<p><code>reflect.Type</code>的<code>Field()</code>方法可以返回一个<code>reflect.StructField</code>类型，其中包含了字段名、字段类型以及可选的标签。其中<code>Tag</code>字段即field tag对应的字符串，它的<code>Get</code>方法可以返回特定标识后的标签值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Unpack</span><span class="params">(req *http.Request, ptr <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> err := req.ParseForm(); err != <span class="literal">nil</span> &#123;</div><div class="line">        <span class="keyword">return</span> err</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    fields := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]reflect.Value)</div><div class="line">    v := reflect.ValueOf(ptr).Elem()</div><div class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; v.NumField(); i++ &#123;</div><div class="line">        fieldInfo := v.Type().Field(i) <span class="comment">// reflect.StructField类型</span></div><div class="line">        tag := fieldInfo.Tag <span class="comment">// reflect.StructTag类型</span></div><div class="line">        name := tag.Get(<span class="string">"http"</span>) <span class="comment">// 获取http标识</span></div><div class="line">        <span class="keyword">if</span> name == <span class="string">""</span> &#123;</div><div class="line">            name = strings.ToLower(fieldInfo.Name)</div><div class="line">        &#125;</div><div class="line">        field[name] = v.Field(i)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="展示类型的方法"><a href="#展示类型的方法" class="headerlink" title="展示类型的方法"></a>展示类型的方法</h3><p><code>reflect.Type</code>和<code>reflect.Value</code>都有一个<code>Method()</code>方法。<code>reflect.Type</code>中的方法返回<code>reflect.Method</code>实例，结构体中包含方法名和方法类型。<code>reflect.Value</code>中的<code>Method()</code>方法则返回一个<code>reflect.Value</code>类型，即一个绑定到receiver上的方法。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Print</span><span class="params">(x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</div><div class="line">    v := reflect.ValueOf(x)</div><div class="line">    t := v.Type()</div><div class="line">    fmt.Println(<span class="string">"type %s\n"</span>, t)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; v.NumMethod(); i++ &#123;</div><div class="line">        methType := v.Method(i).Type()</div><div class="line">        fmt.Printf(<span class="string">"func (%s) %s%s\n"</span>, t, t.Method(i).Name, strings.TrimPrefix(methType.String(), <span class="string">"func"</span>))</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="一些忠告-1"><a href="#一些忠告-1" class="headerlink" title="一些忠告"></a>一些忠告</h3><p>反射在规范的类型系统外，引入了更高自由度和编程的灵活性，但同时也带来了弱类型解释型语言（没错，JS就是你）的弊病：编译期问题会变成运行时问题、代码可读性变差、性能更差。</p>
+<p>反射虽然提供了很强大的功能，但是失去了类型的保护，需要额外处理类型的边界case，否则很容易在运行时出现panic。而这些在使用特定类型时会在编译期就被发现。因此，在使用时，建议将包中使用反射的部分完全封装在内，不对外暴露，同时做一些额外的动态检查。同时，在出错时，给出类型上更友好的提示。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fmt.Printf(<span class="string">"%d %s\n"</span>, <span class="string">"hello"</span>, <span class="number">42</span>) <span class="comment">// "%!d(string=hello) %!s(int=42)"</span></div></pre></td></tr></table></figure>
+<p>另外，<code>interface{}</code>类型和大量出现的反射代码会让代码安逸理解，需要辅以更加完善的文档和注释来解释。</p>
+<p>最后，基于反射的函数执行速度比普通基于特定类型的函数慢至少一两个级别。因此，尽量不要在代码执行的关键路径上使用反射实现，类似测试代码这种小数据量和执行覆盖频率的代码就可以使用。</p>
+<h2 id="低阶特性"><a href="#低阶特性" class="headerlink" title="低阶特性"></a>低阶特性</h2><p>Go已经尽量掩盖了它在底层的实现，用来避免出现难以调试的神秘问题。但在有些时候，比如为了追求性能，或者希望和操作系统底层交互，可能希望绕开这个限制。这一章的内容介绍的<code>unsafe</code>包提供了这么一个窗口，<code>cgo</code>工具可以将创建C库和Go的绑定关系。</p>
+<h3 id="unsafe-Sizeof，unsafe-Alignof和unsafe-Offsetof"><a href="#unsafe-Sizeof，unsafe-Alignof和unsafe-Offsetof" class="headerlink" title="unsafe.Sizeof，unsafe.Alignof和unsafe.Offsetof"></a><code>unsafe.Sizeof</code>，<code>unsafe.Alignof</code>和<code>unsafe.Offsetof</code></h3><p>这三个API能让你了解一些Go在内存结构上的一些细节。其中</p>
+<ul>
+<li><code>Sizeof</code>返回操作数在内存中占用的大小</li>
+<li><code>Alignof</code>返回操作数“对齐”需要的内存大小</li>
+<li><code>Offsetof</code>返回结构体中字段在结构体内存的偏移量</li>
+</ul>
+<p>这几个API并不像它们名字里写的不安全，对于了解底层的内存表示是有帮助的，比如在需要优化内存性能时。</p>
+<h3 id="unsafe-Pointer"><a href="#unsafe-Pointer" class="headerlink" title="unsafe.Pointer"></a><code>unsafe.Pointer</code></h3><p><code>unsafe.Pointer</code>是一个可以指向任意类型变量的指针，同时<strong>也可以把<code>unsafe.Pointer</code>类型指针转换回特定类型指针</strong>。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> math</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Float64bits</span><span class="params">(f <span class="keyword">float64</span>)</span> <span class="title">uint64</span></span> &#123; <span class="keyword">return</span> *(*<span class="keyword">uint64</span>)(unsafe.Pointer(&amp;f)) &#125;</div><div class="line">fmt.Printf(<span class="string">"%#016x\n"</span>, Float64bits(<span class="number">1.0</span>)) <span class="comment">// "03xff00000000000000"</span></div></pre></td></tr></table></figure>
+<p>同时<code>unsafe.Pointer</code>可以转换为<code>uintptr</code>类型，这个类型用整数表示了地址。这个整数类型足够大，足以表示任何类型的指针。但在使用时要多加注意，因为Go的垃圾回收机制使得一个变量的地址很可能会在运行过程中改变，从而使之前的<code>uintptr</code>类型变量失去意义。建议尽可能减少<code>unsafe.Pointer</code>到<code>uintptr</code>和对<code>uintptr</code>的使用。如果有包返回了一个<code>uintptr</code>类型，建议立即将其转换为<code>unsafe.Pointer</code>类型，确保指针能指向同一个变量。</p>
+<h3 id="cgo"><a href="#cgo" class="headerlink" title="cgo"></a>cgo</h3><p>使用cgo可以在go中使用C语言，反之亦然，这里从略，具体参考<a href="https://golang.org/cmd/cgo。" target="_blank" rel="external">https://golang.org/cmd/cgo。</a></p>
+<h3 id="再一些忠告"><a href="#再一些忠告" class="headerlink" title="再一些忠告"></a>再一些忠告</h3><p><code>unsafe</code>包和<code>reflect</code>包很像，提供了一些高级特性，但是更甚。它绕开了语言对不可控因素的隔离，会带来一些风险。所以，在特殊场景下，经过仔细考量和验证证实，使用<code>unsafe</code>确实会带来关键性能提升时，再在代码的关键位置使用<code>unsafe</code>，同时，尽量保证对代码其他地方透明。</p>
+<p>最后，忘掉最后两章吧，先去踏踏实实写一些Go程序，在能用上<code>reflect</code>和<code>unsafe</code>的时候，你自然回想起来的。</p>
+<p>祝，happy Go programming。</p>
+<p><em>-END-</em></p>
 ]]></content>
     
     <summary type="html">
@@ -2898,13 +2950,13 @@
     
       <category term="攻略" scheme="http://shenlvmeng.github.com/blog/tags/%E6%94%BB%E7%95%A5/"/>
     
-      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
-    
       <category term="云南" scheme="http://shenlvmeng.github.com/blog/tags/%E4%BA%91%E5%8D%97/"/>
     
       <category term="丽江" scheme="http://shenlvmeng.github.com/blog/tags/%E4%B8%BD%E6%B1%9F/"/>
     
       <category term="大理" scheme="http://shenlvmeng.github.com/blog/tags/%E5%A4%A7%E7%90%86/"/>
+    
+      <category term="随笔" scheme="http://shenlvmeng.github.com/blog/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
