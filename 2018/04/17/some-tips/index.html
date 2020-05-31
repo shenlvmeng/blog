@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="mock,ssh,fis-receiver,tmux,origami,promise,encodeURI,encodeURIComponent,axios,charles," />
+
+
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Shenlvmeng's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="持续更新…
+免密ssh步骤一句命令代替繁琐的ssh远程登录开发机。
+Step 1：免密
+ssh-keygen生成公钥。ssh-keygen
+拷贝公钥。ssh-copy-id -i ~/.ssh/id_rsa.pub &amp;lt;your-remote-host&amp;gt;
+免密登录。ssh &amp;lt;your-remote-host&amp;gt;
+
+Step 2：简化命令使用alias，比如：alias time">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/04/17/some-tips/index.html">
+<meta property="og:site_name" content="Shenlvmeng's Blog">
+<meta property="og:description" content="持续更新…
+免密ssh步骤一句命令代替繁琐的ssh远程登录开发机。
+Step 1：免密
+ssh-keygen生成公钥。ssh-keygen
+拷贝公钥。ssh-copy-id -i ~/.ssh/id_rsa.pub &amp;lt;your-remote-host&amp;gt;
+免密登录。ssh &amp;lt;your-remote-host&amp;gt;
+
+Step 2：简化命令使用alias，比如：alias time">
+<meta property="og:updated_time" content="2020-05-18T09:01:46.841Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="工作中的遇到的一些小知识">
+<meta name="twitter:description" content="持续更新…
+免密ssh步骤一句命令代替繁琐的ssh远程登录开发机。
+Step 1：免密
+ssh-keygen生成公钥。ssh-keygen
+拷贝公钥。ssh-copy-id -i ~/.ssh/id_rsa.pub &amp;lt;your-remote-host&amp;gt;
+免密登录。ssh &amp;lt;your-remote-host&amp;gt;
+
+Step 2：简化命令使用alias，比如：alias time">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '01WTSQD4O5',
+      apiKey: '594aedcbfa1fad5b80958ce48f1bc16a',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/04/17/some-tips/"/>
+
+
+
+
+
+  <title>工作中的遇到的一些小知识 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shenlvmeng's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/some-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">工作中的遇到的一些小知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T23:48:27+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/04/17/some-tips/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/17/some-tips/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><em>持续更新…</em></p>
+<h2 id="免密ssh步骤"><a href="#免密ssh步骤" class="headerlink" title="免密ssh步骤"></a>免密ssh步骤</h2><p>一句命令代替繁琐的ssh远程登录开发机。</p>
+<h3 id="Step-1：免密"><a href="#Step-1：免密" class="headerlink" title="Step 1：免密"></a>Step 1：免密</h3><ol>
+<li>ssh-keygen生成公钥。<code>ssh-keygen</code></li>
+<li>拷贝公钥。<code>ssh-copy-id -i ~/.ssh/id_rsa.pub &lt;your-remote-host&gt;</code></li>
+<li>免密登录。<code>ssh &lt;your-remote-host&gt;</code></li>
+</ol>
+<h3 id="Step-2：简化命令"><a href="#Step-2：简化命令" class="headerlink" title="Step 2：简化命令"></a>Step 2：简化命令</h3><p>使用<code>alias</code>，比如：<code>alias timetowork=&quot;ssh &lt;your-remote-host&gt;&quot;</code></p>
+<h3 id="Step-3：get-back-to-work"><a href="#Step-3：get-back-to-work" class="headerlink" title="Step 3：get back to work"></a>Step 3：get back to work</h3><p>输入<code>timetowork</code>。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id" target="_blank" rel="external">http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id</a>]</li>
+<li>[<a href="http://www.linfo.org/alias.html" target="_blank" rel="external">http://www.linfo.org/alias.html</a>]</li>
+</ul>
+<h2 id="fis-receiver"><a href="#fis-receiver" class="headerlink" title="fis-receiver"></a>fis-receiver</h2><p>简写为<code>fisrcv</code>。使用fis进行项目构建时，若需要release到远端开发机，可以通过配置<code>fis-conf.js</code>里的<code>deploy</code>项目实现，fis会通过HTTP的方式上传压缩过的代码到远端指定位置，这需要远端有receiver接收上传的文件。</p>
+<p>fis-receiver是在远端接收上传文件的服务端脚本，node、python、PHP等都可以。<code>fisrcv</code>实际上是使用node服务在远端接收deploy文件的服务端脚本而已。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/zhoujq/fis-receiver" target="_blank" rel="external">https://github.com/zhoujq/fis-receiver</a>]</li>
+<li>[<a href="http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6" target="_blank" rel="external">http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6</a>]</li>
+</ul>
+<h2 id="webpack-release"><a href="#webpack-release" class="headerlink" title="webpack-release"></a>webpack-release</h2><p>等同于webpack版的<code>fis release</code>，不过原先写在<code>fis-conf.js</code>中的部署设置，现在写在<code>webpack.config.js</code>中。<code>receiveUrl</code>和<code>remotePath</code>即远端开发机位置。实现上也采用HTTP POST的方式。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://www.npmjs.com/package/webpack-release" target="_blank" rel="external">https://www.npmjs.com/package/webpack-release</a>]</li>
+<li>[<a href="https://github.com/markate/webpack-release/blob/master/index.js" target="_blank" rel="external">https://github.com/markate/webpack-release/blob/master/index.js</a>]</li>
+</ul>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><p>tmux是终端复用工具，允许在单个终端下相互隔离地运行多个后台程序。甚至在关闭终端时可以让程序在后台运行。使用<code>tmux attach</code>和<code>tmux detach</code>进入和离开各个session。<code>attach</code>后还可以接<code>-t</code>指定连接的session。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/tmux/tmux/wiki" target="_blank" rel="external">https://github.com/tmux/tmux/wiki</a>]</li>
+</ul>
+<h2 id="HtmlWebpackPlugin"><a href="#HtmlWebpackPlugin" class="headerlink" title="HtmlWebpackPlugin"></a>HtmlWebpackPlugin</h2><p>把html和js或css文件对应组织起来，可以指定<code>filename</code>，<code>template</code>，<code>chunks</code>等。</p>
+<p>参考：</p>
+<ul>
+<li>[<a href="https://github.com/jantimon/html-webpack-plugin" target="_blank" rel="external">https://github.com/jantimon/html-webpack-plugin</a>]</li>
+</ul>
+<h2 id="encodeURI和encodeURIComponent"><a href="#encodeURI和encodeURIComponent" class="headerlink" title="encodeURI和encodeURIComponent"></a>encodeURI和encodeURIComponent</h2><p>前者用于对整段URI转码，后者用于对URI中被分割符隔开的部分进行边编码。因此，</p>
+<ul>
+<li><code>encodeURI</code>会忽略允许出现在URI的符号，包括特殊符号。对空格、中文等进行转码</li>
+<li><code>encodeURIComponent</code>也会转码特殊符号，如/，$，@，.等</li>
+</ul>
+<h2 id="origami"><a href="#origami" class="headerlink" title="origami"></a>origami</h2><p>origami是sublime中的一个拆分窗口的插件，用快捷键可以像在vim中一样方便地创建和转移到各个窗口编码。通过command + K开启快捷键。</p>
+<ul>
+<li>+up/down/left/right 转移到其他窗口</li>
+<li>+command+up/down/left/right 在该方向上打开新的工作窗口</li>
+<li>+shift+command+up/down/left/right 销毁该方向上的新窗口</li>
+</ul>
+<h2 id="nrm与n"><a href="#nrm与n" class="headerlink" title="nrm与n"></a>nrm与n</h2><p>npm registry管理工具nrm，能够查看和切换当前使用的registry，在切换和查看registry时非常有用。常用命令:</p>
+<ul>
+<li><code>nrm ls</code></li>
+<li><code>nrm use</code></li>
+<li><code>nrm help</code></li>
+<li><code>nrm home</code></li>
+<li><code>nrm add/delete</code> 增加和删除registry</li>
+<li><code>nrm test</code> 测速</li>
+</ul>
+<p><a href="https://www.npmjs.com/package/n" target="_blank" rel="external">n</a>是类似nvm的node.js版本管理工具。</p>
+<h2 id="Promise-then的链式调用"><a href="#Promise-then的链式调用" class="headerlink" title="Promise then的链式调用"></a>Promise then的链式调用</h2><p><code>then()</code>方法返回一个Promise 。它最多需要有两个参数：Promise的成功和失败情况的回调函数。</p>
+<p><code>then</code>方法会返回一个Promise，它的行为与then中指定的回调函数返回值有关：</p>
+<ul>
+<li>如果then中的回调函数<strong>返回一个值</strong>，那么then返回的Promise将会成为接受状态（即使原Promise始Rejected状态），并且将返回的值作为接受状态的回调函数的参数值。</li>
+<li>如果then中的回调函数<strong>抛出一个错误</strong>，那么then返回的Promise将会成为拒绝状态，并且将抛出的错误作为拒绝状态的回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个已经是接受状态的Promise，那么then返回的Promise也会成为接受状态，并且将那个Promise的接受状态的回调函数的参数值作为该被返回的Promise的接受状态回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个已经是拒绝状态的Promise，那么then返回的Promise也会成为拒绝状态，并且将那个Promise的拒绝状态的回调函数的参数值作为该被返回的Promise的拒绝状态回调函数的参数值。</li>
+<li>如果then中的回调函数返回一个未定状态（pending）的Promise，那么then返回Promise的状态也是未定的，并且它的终态与那个Promise的终态相同；同时，它变为终态时调用的回调函数参数与那个Promise变为终态时的回调函数的参数是相同的。 </li>
+</ul>
+<p>下面是几个官网上的例子:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Promise</span>.resolve(<span class="string">"foo"</span>)</div><div class="line">  <span class="comment">// 1. 接收 "foo" 并与 "bar" 拼接，并将其结果做为下一个resolve返回。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        string += <span class="string">'bar'</span>;</div><div class="line">        resolve(string);</div><div class="line">      &#125;, <span class="number">1</span>);</div><div class="line">    &#125;);</div><div class="line">  &#125;)</div><div class="line">  <span class="comment">// 2. 接收 "foobar", 放入一个异步函数中处理该字符串</span></div><div class="line">  <span class="comment">// 并将其打印到控制台中, 但是不将处理后的字符串返回到下一个。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      string += <span class="string">'baz'</span>;</div><div class="line">      <span class="built_in">console</span>.log(string);</div><div class="line">    &#125;, <span class="number">1</span>)</div><div class="line">    <span class="keyword">return</span> string;</div><div class="line">  &#125;)</div><div class="line">  <span class="comment">// 3. 打印本节中代码将如何运行的帮助消息，</span></div><div class="line">  <span class="comment">// 字符串实际上是由上一个回调函数之前的那块异步代码处理的。</span></div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">string</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"Last Then:  oops... didn't bother to instantiate and return "</span> +</div><div class="line">                <span class="string">"a promise in the prior then so the sequence may be a bit "</span> +</div><div class="line">                <span class="string">"surprising"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 注意 `string` 这时不会存在 'baz'。</span></div><div class="line">    <span class="comment">// 因为这是发生在我们通过setTimeout模拟的异步函数中。</span></div><div class="line">    <span class="built_in">console</span>.log(string);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Promise</span>.resolve()</div><div class="line">  .then( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 使 .then() 返回一个 rejected promise</span></div><div class="line">    <span class="keyword">throw</span> <span class="string">'Oh no!'</span>;</div><div class="line">  &#125;)</div><div class="line">  .catch( <span class="function"><span class="params">reason</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.error( <span class="string">'onRejected function called: '</span>, reason );</div><div class="line">  &#125;)</div><div class="line">  .then( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log( <span class="string">"I am always called even if the prior then's promise rejects"</span> );</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<h2 id="SOLID原则"><a href="#SOLID原则" class="headerlink" title="SOLID原则"></a>SOLID原则</h2><p>程序设计领域，尤其是面向对象编程的优秀实践里，有着一些实现原则，如SOLID（单一功能、开闭原则、里氏替换、接口隔离、依赖翻转）。这些设计模式原则可以有助于编写可维护、可拓展、清晰可读的代码。</p>
+<ul>
+<li>S，Single Responsibility Principle，每个类都应有<strong>单一</strong>的功能，且被类封装起来。</li>
+<li>O，Open-Closed Principle，对象（类、接口、函数等）对于拓展是开放的，对于修改是封闭的。即易拓展、保证可靠。</li>
+<li>L，Liskov Substitution Principle，子类可以在不改变正确性的情况下替换父类</li>
+<li>I，Interface-segregation Principle，多个特定功能的接口好于单个宽泛功能的接口</li>
+<li>D，Dependency Inversion Principle，方法应该依赖于一个抽象（接口）而不是一个实例（类）</li>
+</ul>
+<h2 id="axios-mock-adpter"><a href="#axios-mock-adpter" class="headerlink" title="axios-mock-adpter"></a>axios-mock-adpter</h2><p>使用axios获取数据时，通过<code>axios-mock-adapter</code>mock数据。MockAdapter可以绑定在axios上，拦截通过绑定的axios发送的请求。使用方式如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> axios = <span class="built_in">require</span>(<span class="string">'axios'</span>);</div><div class="line"><span class="keyword">var</span> MockAdapter = <span class="built_in">require</span>(<span class="string">'axios-mock-adapter'</span>);</div><div class="line"></div><div class="line"><span class="comment">// This sets the mock adapter on the default instance</span></div><div class="line"><span class="keyword">var</span> mock = <span class="keyword">new</span> MockAdapter(axios);</div><div class="line"></div><div class="line"><span class="comment">// Mock any GET request to /users</span></div><div class="line"><span class="comment">// arguments for reply are (status, data, headers)</span></div><div class="line">mock.onGet(<span class="string">'/users'</span>).reply(<span class="number">200</span>, &#123;</div><div class="line">  <span class="attr">users</span>: [</div><div class="line">    &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">'John Smith'</span> &#125;</div><div class="line">  ]</div><div class="line">&#125;);</div><div class="line"></div><div class="line">axios.get(<span class="string">'/users'</span>)</div><div class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(response.data);</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p>另外，可以用<code>mock.restore()</code>撤销所有mocking行为，或通过<code>mock.reset()</code>除去所有mocking的handler。通过<code>mock.on&lt;方法名&gt;</code>还可以链式调用其他方法：</p>
+<ul>
+<li><code>onAny()</code> 绑定任何方法</li>
+<li><code>networkError()</code> 返回网络错误</li>
+<li><code>timeout()</code> 返回请求超时</li>
+<li><code>passThrough()</code> 跳过mocking直接请求</li>
+</ul>
+<p>在reply中可以使用函数进行更复杂的操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> normalAxios = axios.create();</div><div class="line"><span class="keyword">var</span> mockAxios = axios.create();</div><div class="line"><span class="keyword">var</span> mock = MockAdapter(mockAxios);</div><div class="line"></div><div class="line">mock</div><div class="line">  .onGet(<span class="string">'/orders'</span>)</div><div class="line">  .reply(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">Promise</span>.all([</div><div class="line">      normalAxios</div><div class="line">        .get(<span class="string">'/api/v1/orders'</span>)</div><div class="line">        .then(<span class="function"><span class="params">resp</span> =&gt;</span> resp.data),</div><div class="line">      normalAxios</div><div class="line">        .get(<span class="string">'/api/v2/orders'</span>)</div><div class="line">        .then(<span class="function"><span class="params">resp</span> =&gt;</span> resp.data),</div><div class="line">      &#123; <span class="attr">id</span>: <span class="string">'-1'</span>, <span class="attr">content</span>: <span class="string">'extra row 1'</span> &#125;,</div><div class="line">      &#123; <span class="attr">id</span>: <span class="string">'-2'</span>, <span class="attr">content</span>: <span class="string">'extra row 2'</span> &#125;</div><div class="line">    ]).then(</div><div class="line">      <span class="function"><span class="params">sources</span> =&gt;</span> [<span class="number">200</span>, sources.reduce(<span class="function">(<span class="params">agg, source</span>) =&gt;</span> agg.concat(source))]</div><div class="line">    )</div><div class="line">  );</div></pre></td></tr></table></figure>
+<h2 id="移动端Charles调试经验"><a href="#移动端Charles调试经验" class="headerlink" title="移动端Charles调试经验"></a>移动端Charles调试经验</h2><ol>
+<li>设置http代理为8888端口</li>
+<li>设置SSL代理，填写对应的域名，设置端口为443，安装根证书</li>
+<li>手机打开无线设置，设置代理IP和端口8888</li>
+<li>打开<a href="http://chls.pro/ssl" target="_blank" rel="external">chls.pro/ssl</a>，安装根证书并信任</li>
+<li>使用Map remote访问开发机位置</li>
+<li>使用Map local可以劫持WebView中请求的JS等资源到本地，通过alert的方式打印调试信息，进行临时的线上Webview环境debug</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/mock/" rel="tag"># mock</a>
+          
+            <a href="/blog/tags/ssh/" rel="tag"># ssh</a>
+          
+            <a href="/blog/tags/fis-receiver/" rel="tag"># fis-receiver</a>
+          
+            <a href="/blog/tags/tmux/" rel="tag"># tmux</a>
+          
+            <a href="/blog/tags/origami/" rel="tag"># origami</a>
+          
+            <a href="/blog/tags/promise/" rel="tag"># promise</a>
+          
+            <a href="/blog/tags/encodeURI/" rel="tag"># encodeURI</a>
+          
+            <a href="/blog/tags/encodeURIComponent/" rel="tag"># encodeURIComponent</a>
+          
+            <a href="/blog/tags/axios/" rel="tag"># axios</a>
+          
+            <a href="/blog/tags/charles/" rel="tag"># charles</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/04/17/quill-md/" rel="next" title="使用quill搭建文本编辑器">
+                <i class="fa fa-chevron-left"></i> 使用quill搭建文本编辑器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/04/25/webrtc-practice/" rel="prev" title="webrtc学习笔记">
+                webrtc学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.jpg"
+               alt="shenlvmeng" />
+          <p class="site-author-name" itemprop="name">shenlvmeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">Be sharp, my friend.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives/">
+                <span class="site-state-item-count">121</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">342</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/blog/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/shenlvmeng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/shenlvmeng" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#免密ssh步骤"><span class="nav-number">1.</span> <span class="nav-text">免密ssh步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1：免密"><span class="nav-number">1.1.</span> <span class="nav-text">Step 1：免密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2：简化命令"><span class="nav-number">1.2.</span> <span class="nav-text">Step 2：简化命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3：get-back-to-work"><span class="nav-number">1.3.</span> <span class="nav-text">Step 3：get back to work</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fis-receiver"><span class="nav-number">2.</span> <span class="nav-text">fis-receiver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-release"><span class="nav-number">3.</span> <span class="nav-text">webpack-release</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tmux"><span class="nav-number">4.</span> <span class="nav-text">tmux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HtmlWebpackPlugin"><span class="nav-number">5.</span> <span class="nav-text">HtmlWebpackPlugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#encodeURI和encodeURIComponent"><span class="nav-number">6.</span> <span class="nav-text">encodeURI和encodeURIComponent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#origami"><span class="nav-number">7.</span> <span class="nav-text">origami</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nrm与n"><span class="nav-number">8.</span> <span class="nav-text">nrm与n</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-then的链式调用"><span class="nav-number">9.</span> <span class="nav-text">Promise then的链式调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SOLID原则"><span class="nav-number">10.</span> <span class="nav-text">SOLID原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#axios-mock-adpter"><span class="nav-number">11.</span> <span class="nav-text">axios-mock-adpter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动端Charles调试经验"><span class="nav-number">12.</span> <span class="nav-text">移动端Charles调试经验</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://shenlvmengs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://shenlvmeng.github.com/blog/blog/2018/04/17/some-tips/';
+          this.page.identifier = '2018/04/17/some-tips/';
+          this.page.title = '工作中的遇到的一些小知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://shenlvmengs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/blog/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/blog/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/blog/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
