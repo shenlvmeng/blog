@@ -296,6 +296,1014 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/06/29/http-2-for-frontend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2020/06/29/http-2-for-frontend/" itemprop="url">面向前端的HTTP/2介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-29T22:41:51+08:00">
+                2020-06-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2020/06/29/http-2-for-frontend/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/29/http-2-for-frontend/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>正式版HTTP/2发布于2015年5月，距今已经快5年了，相比老一辈HTTP 1.1有了许多改进。在具体讨论这些改进前，我们先简单回顾下HTTP这一路以来的历程。</p>
+<h2 id="历史回顾"><a href="#历史回顾" class="headerlink" title="历史回顾"></a>历史回顾</h2><p>HTTP在1991年发布了最初的HTTP0.9版本，主要用于学术交流，目的也只是用来在网络之间传递HTML超文本的内容。HTTP0.9基于TCP，只有一个GET请求类型，请求和文档响应都是ASCII字符流，响应数据类型只有HTML类型，在响应结束后立即断开连接。</p>
+<p>随着互联网发展，1994年底出现了拨号上网，网景推出浏览器后，WWW已经不仅局限于学术交流，浏览器中除了承载HTML以外，还包括了JavaScript、CSS、图片、音视频等资源。HTTP1.0在这个背景下于1996年推出（RFC1945），它支持了状态码、方法、头部的概念，响应内容不局限于超文本文件，编码类型也不仅限于ASCII。但是TCP连接在响应返回后依旧会断开连接。</p>
+<p>在浏览器等技术发展，HTTP请求更多也更复杂，HTTP1.0的已有问题暴露得越来越明显。TCP频繁建立连接的时延，缓存协商机制的不完整、大文件下载的支持等问题需要解决。于是HTTP1.1在1999年推出（RFC2616），这是个很庞大的协议，全文长达176页，在后续IETF对该规范进行更新时，则被拆分成了总页数更多的六个文档（即RFC7230协议族）。HTTP1.1包含了太多细节和可选的部分，包含不常用的功能和不合适的优化，因此几乎没有任何实现包含完整的协议功能。总的来看，HTTP1.1做了一些尝试：</p>
+<ul>
+<li>TCP持久连接（keep-alive），即在一个TCP连接上发起HTTP请求</li>
+<li>支持范围请求（Accept-Ranges）</li>
+<li>更强大的缓存机制（协商缓存和强缓存，以及相关的头部）</li>
+<li>提出了HTTP pipeline，尝试改善串行HTTP请求引起的线头阻塞（Head-of-line blocking）问题</li>
+<li>更多的错误相关状态码</li>
+<li>Host头处理</li>
+</ul>
+<p>之后HTTP1.1便被一直使用至今，随着互联网页面请求资源的数量和体积增大，HTTP1.1中没能妥善解决的问题越来越明显。HTTPbis工作组在2007年夏天便着手于HTTP1.1标准的更新，并最终在2014年初形成上面提到的RFC7230系列协议族。</p>
+<p><a href="http://en.wikipedia.org/wiki/SPDY" target="_blank" rel="external">SPDY</a>（SPeeDY）是由Google牵头开发的开源协议，意图在TLS和HTTP中间插入中间层，解决HTTP协议的问题。大约在2012年提出，也被大多数主流浏览器支持。最终在2015年HTTP/2协议发布后，逐步放弃支持。实际上HTTP/2也是在SPDY/3草案的基础上形成的协议初稿。</p>
+<h2 id="历史问题"><a href="#历史问题" class="headerlink" title="历史问题"></a>历史问题</h2><h3 id="传输资源与延迟"><a href="#传输资源与延迟" class="headerlink" title="传输资源与延迟"></a>传输资源与延迟</h3><p>当今的互联网环境和20世纪末那会儿已经有了很大的不同，现在的Web页面更像一个应用的概念，而非一个简单的页面（SPA）。从HTTPArchive一个页面下请求的资源数已经上百，请求的资源体积也接近2M。</p>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/transfer-size-growth.png" alt="http-transfer-size"></p>
+<p>随着这些年网络硬件条件的迅猛发展，<strong>带宽</strong>已经不再是影响人们体验的因素，而<strong>网络延迟</strong>仍然没有太好的改善。高延迟的网络上（比如移动设备），即使拥有高连接速率，也很难获得优质快速的网络体验。页面从访问到打开的近70%时间都发生在网络上。</p>
+<h3 id="请求-响应模型"><a href="#请求-响应模型" class="headerlink" title="请求-响应模型"></a>请求-响应模型</h3><p>HTTP1.1是无状态协议，需要以客户端请求开始，然后才能响应。一个TCP上同时只能有一个请求/响应。TCP协议的能力并没有被充分利用。在HTTP1.1启用keep-alive后，TCP连接重复建立的问题被解决。但是请求还是需要排队一个一个发送，TCP的RTT（round-trip time）还是比较可观。后续的HTTP1.1提出了<strong>HTTP管线化</strong>（pipeline），即将多个HTTP请求合并成一个，一起发送，这样的确提高了服务器的资源利用率，但是也会带来线头阻塞（head-of-line blocking）问题，即一个比较耗时的请求会影响后续的所有请求。另外，它会给重试带来麻烦，需要网络中间节点的支持。所以这个特性并没有得到浏览器和服务器认可，实现也并不普及。目前大多数桌面浏览器也是默认关闭这个特性的。</p>
+<p><img src="https://mdn.mozillademos.org/files/13727/HTTP1_x_Connections.png" alt="http-pipeline"></p>
+<h4 id="那些年，我们一起克服延迟的办法"><a href="#那些年，我们一起克服延迟的办法" class="headerlink" title="那些年，我们一起克服延迟的办法"></a>那些年，我们一起克服延迟的办法</h4><p>针对上面的困难，智慧的开发者们自然也是有了许多应对办法。</p>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/spriting.jpg" alt=""></p>
+<ul>
+<li>雪碧图：将小图片整合成一张大图。</li>
+<li>内联：将高优先级资源或小资源通过script标签或style标签或dataUrl的形式直接内嵌在页面里</li>
+<li>分片（sharding）与域名散列：将图片或者其他资源分发到不同主机。最初的HTTP1.1规范（RFC2616）提到一个客户端最多只能对同一主机建立两个TCP连接。后来，两个连接的限制被取消了（RFC7230），现在的浏览器一般允许每个域名主机建立6-8个连接。根据httparchive.org的记录显示，在Top30万个URL中平均使用40个TCP连接来显示页面</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/expressen-sharding.jpg" alt="http-sharding"></p>
+<p>除此之外，为了减少请求数，前端会将代码合并并打包，这也是webpack这样的工具诞生的背景。</p>
+<h3 id="冗长的头部"><a href="#冗长的头部" class="headerlink" title="冗长的头部"></a>冗长的头部</h3><p>HTTP1.1中1000+字节的头部都是常见的且体积较大的，如<code>Cookie</code>。头部信息有许多多余信息。这也让许多大请求建立连接的过程变得很慢。</p>
+<p>总结来看，HTTP1.1遗留了下面几个问题：</p>
+<ul>
+<li>对TCP利用较差，同时只能有一个请求/响应<ul>
+<li>目前应对方法：开多个TCP连接（分片），减少请求数（合并资源）；这些方法多少会遇到TCP慢启动、DNS开销等问题</li>
+</ul>
+</li>
+<li>HTTP头部没有压缩，占用较大空间<ul>
+<li>目前应对方法：减少请求数、使用cookie-less域名</li>
+</ul>
+</li>
+<li>固有的请求-响应模式，重要资源无法优先推送<ul>
+<li>目前应对方法：内联资源</li>
+</ul>
+</li>
+</ul>
+<p>HTTP/2对于上面这些问题自然是重拳出击。</p>
+<h2 id="HTTP-2概述"><a href="#HTTP-2概述" class="headerlink" title="HTTP/2概述"></a>HTTP/2概述</h2><blockquote>
+<p>“HTTP/2 enables a more efficient use of network resources and a reduced perception of latency by introducing header field compression and allowing multiple concurrent exchanges on the same connection. It also introduces unsolicited push of representations from servers to clients.”</p>
+</blockquote>
+<p>根据<a href="https://httpwg.org/specs/rfc7540.html" target="_blank" rel="external">RFC7540</a>的摘要，简明扼要地点出了HTTP/2带来的几个重要特性：</p>
+<ul>
+<li>多路复用的二进制协议；一个TCP连接上不再只有1个请求/响应，同时采用二进制而非文本传输数据</li>
+<li>头部压缩；用二进制分帧配合专门设计的头部压缩算法（HPACK）大大减少头部体积，HPACK有专门的<a href="https://httpwg.github.io/specs/rfc7541.html" target="_blank" rel="external">RFC7541</a>来规范。</li>
+<li>服务器推送；在客户端发送请求前，主动将资源推送给客户端</li>
+</ul>
+<p>整个HTTP/2实际上还是在HTTP的框架下的，对HTTP1.1也是完全兼容的，这意味着你可以像以前一样使用HTTP的API、方法、头部、状态码这些：</p>
+<ul>
+<li>HTTP/2必须维持HTTP的范式。它只是一个让客户端发送请求到服务器的基于TCP的协议</li>
+<li>不能改变<code>http://</code>和<code>https://</code>这样的URL，也不能对其添加新的结构。使用这类URL的网站太多了，没法指望他们全部改变。</li>
+<li>HTTP1.1的服务器和客户端依然会存在很久，所以必须提供HTTP1.1到HTTP/2服务器的代理</li>
+<li>不再使用小版本号。服务器和客户端都必须确定自己是否完整兼容http2或者彻底不兼容</li>
+</ul>
+<h3 id="协商"><a href="#协商" class="headerlink" title="协商"></a>协商</h3><p>SPDY依赖于TLS，不过从SPDY中诞生的HTTP/2却可以选择是否基于TLS。由此带来2种HTTP/2协商机制。对于普通的HTTP1.1，通过给服务器发送一个带升级头部的报文。如果服务器支持HTTP/2，它将以“101 Switching”作为回复的状态码，并从此开始在该连接上使用HTTP/2。这种连接方式也被称为<strong>h2c</strong>（HTTP/2 cleartext），此时HTTP/2在TCP之上运行。出于安全性考虑。<strong>几乎所有的主流浏览器都不支持这种协商实现</strong>（curl可以支持）。</p>
+<p>对于在TLS之上的https，Next Protocol Negotiation (NPN)是一个用来在TLS服务器上协商SPDY的协议。IETF将这个非正式标准进行规范化，从而演变成了ALPN（Application Layer Protocol Negotiation）。ALPN会伴随HTTP/2中的使用而推广，考虑到SPDY会使用NPN，而许多服务器又会同时提供SPDY以及HTTP/2，所以在这些服务器上同时支持ALPN以及NPN显然会成为最理所当然的选择。ALPN和NPN的主要区别在于，ALPN中由服务端最终决定通信协议，NPN中由客户端最终决定。</p>
+<h2 id="HTTP-2特性"><a href="#HTTP-2特性" class="headerlink" title="HTTP/2特性"></a>HTTP/2特性</h2><p>在HTTP/2的介绍中提到，协议通过定义一个优化的基础连接的HTTP语义映射来解决HTTP1.1的问题。具体地，它允许在<strong>同一连接</strong>上<strong>交错</strong>地建立请求和响应消息，并使用<strong>高效率编码</strong>的HTTP报头字段。它还允许<strong>请求的优先级</strong>，让更多的重要的请求更快速的完成，进一步提升了性能。最终协议设计为对网络更友好，因为它相对HTTP/1.x减少了TCP连接。最后，这种封装也通过使用<strong>二进制消息帧</strong>使信息处理更具扩展性。</p>
+<p>里面加粗的部分即HTTP/2带来的几个新特性：</p>
+<ul>
+<li>单一TCP连接</li>
+<li>二进制分帧<ul>
+<li>请求优先级</li>
+<li>服务端推送</li>
+<li>流量控制</li>
+</ul>
+</li>
+<li>多路复用</li>
+<li>头部压缩（HPACK）</li>
+</ul>
+<h3 id="二进制分帧“层”"><a href="#二进制分帧“层”" class="headerlink" title="二进制分帧“层”"></a>二进制分帧“层”</h3><p>首先，HTTP/2是个二进制协议。它的请求和响应都是流的形式，它基本的协议单位是帧。每个帧都有不同的类型和用途。HTTP/2所有性能增强的核心也在于这个新的二进制分帧层，它定义了如何封装 HTTP 消息并在客户端与服务器之间传输。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/binary_framing_layer01.svg" alt="http2-framing-layer"></p>
+<p>从图中能看到，在TLS之上，HTTP/2之下新增了一个二进制分帧层。这里所谓的“层”，指的是位于套接字接口与应用可见的高级HTTP API之间一个经过优化的新编码机制：HTTP的语义（包括各种动词、方法、标头）都不受影响，不同的是传输期间对它们的<strong>编码方式</strong>变了。不同于HTTP1.x里面用换行符作为分隔，HTTP/2中将信息分割成帧，并进行二进制编码。整个分帧过程由客户端和服务端替我们完成。</p>
+<h3 id="数据流和帧"><a href="#数据流和帧" class="headerlink" title="数据流和帧"></a>数据流和帧</h3><p>上面这种二进制分帧机制改变了客户端与服务器之间交换数据的方式，也带来了流的概念。</p>
+<ul>
+<li>流（Stream）：一个双向字节帧流穿过HTTP/2连接中的虚拟通道，可以承载一条或多条消息。</li>
+<li>消息：与逻辑请求或响应消息对应的完整的一系列帧。</li>
+</ul>
+<p>流的生存周期包含idle、reserved(local)、reserved(remote)、open、half closed(local)、half closed(remote)、closed多个阶段。状态间通过特定的帧类型流转。在不同状态下对应着不同的能力，对于<a href="https://tools.ietf.org/html/rfc7540#section-5.1" target="_blank" rel="external">状态规范</a>描述以外的操作请求都会给出协议错误（PROTOCOL_ERROR）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">                         +--------+</div><div class="line">                 send PP |        | recv PP</div><div class="line">                ,--------|  idle  |--------.</div><div class="line">               /         |        |         \</div><div class="line">              v          +--------+          v</div><div class="line">       +----------+          |           +----------+</div><div class="line">       |          |          | send H /  |          |</div><div class="line">,------| reserved |          | recv H    | reserved |------.</div><div class="line">|      | (local)  |          |           | (remote) |      |</div><div class="line">|      +----------+          v           +----------+      |</div><div class="line">|          |             +--------+             |          |</div><div class="line">|          |     recv ES |        | send ES     |          |</div><div class="line">|   send H |     ,-------|  open  |-------.     | recv H   |</div><div class="line">|          |    /        |        |        \    |          |</div><div class="line">|          v   v         +--------+         v   v          |</div><div class="line">|      +----------+          |           +----------+      |</div><div class="line">|      |   half   |          |           |   half   |      |</div><div class="line">|      |  closed  |          | send R /  |  closed  |      |</div><div class="line">|      | (remote) |          | recv R    | (local)  |      |</div><div class="line">|      +----------+          |           +----------+      |</div><div class="line">|           |                |                 |           |</div><div class="line">|           | send ES /      |       recv ES / |           |</div><div class="line">|           | send R /       v        send R / |           |</div><div class="line">|           | recv R     +--------+   recv R   |           |</div><div class="line">| send R /  `-----------&gt;|        |&lt;-----------&apos;  send R / |</div><div class="line">| recv R                 | closed |               recv R   |</div><div class="line">`-----------------------&gt;|        |&lt;----------------------&apos;</div><div class="line">                         +--------+</div><div class="line"></div><div class="line">   send:   endpoint sends this frame</div><div class="line">   recv:   endpoint receives this frame</div><div class="line"></div><div class="line">   H:  HEADERS frame (with implied CONTINUATIONs)</div><div class="line">   PP: PUSH_PROMISE frame (with implied CONTINUATIONs)</div><div class="line">   ES: END_STREAM flag</div><div class="line">   R:  RST_STREAM frame</div></pre></td></tr></table></figure>
+<p>流和帧的关系是：</p>
+<ul>
+<li>所有通信都在一个TCP连接上完成，这个连接可以承载任意数量的流</li>
+<li>每个流上面都有唯一标识符和<em>可选</em>的优先级信息，里面会承载要传递的消息</li>
+<li>每条消息都是一条逻辑HTTP信息（如请求或相应），有完整的HTTP语义，其中可能有一个或多个帧</li>
+<li>帧是最小的通信单位，承载着特定类型的数据，例如HTTP 标头、消息负载等等。帧可以<strong>交错发送</strong>，然后再根据帧头的数据流标识符进行组装</li>
+</ul>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/streams_messages_frames01.svg" alt="http2-frame"></p>
+<p>所有的帧以8字节的报头开始并且跟着0到16383字节长度的主体。帧格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> 0                   1                   2                   3</div><div class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">| R |     Length (14)           |   Type (8)    |   Flags (8)   |</div><div class="line">+-+-+-----------+---------------+-------------------------------+</div><div class="line">|R|                 Stream Identifier (31)                      |</div><div class="line">+=+=============================================================+</div><div class="line">|                   Frame Payload (0...)                      ...</div><div class="line">+---------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>R：保留字段</li>
+<li>Length：14位无符号整数的帧主体长度</li>
+<li>Type：帧类型，它描述了剩余的帧报头和帧主体将如何被解释</li>
+<li>Flags：为帧类型保留的8位布尔类型字段，根据不同帧类型赋予不同语义</li>
+<li>Stream Identifier：31字节的流标识符(见StreamIdentifiers)。0是保留的，标明帧是与连接相关作为一个整体而不是一个单独的流。</li>
+</ul>
+<h3 id="请求与响应复用"><a href="#请求与响应复用" class="headerlink" title="请求与响应复用"></a>请求与响应复用</h3><p>在HTTP1.1中，客户端要想发起多个并行请求以提升性能，则必须使用多个TCP连接，这种对TCP效率低下的利用，在HTTP/2中得到改善。二进制分帧层将HTTP消息分解为互不依赖的帧，然后交错发送，最后再在另一端把它们重新组装起来。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/multiplexing01.svg" alt="http2-reusing"></p>
+<p>在上图中，流1和流3交错在同一个TCP连接上并行运行。这种机制带来了下面一些具体的提升：</p>
+<ul>
+<li>请求之间交错且互不影响</li>
+<li>响应之间交错且互不影响</li>
+<li>可以使用一个连接并行发送多个请求和响应</li>
+<li>不必再为了优化HTTP1.1性能做雪碧图、分片等骚操作</li>
+<li>一定程度上解决了线头阻塞问题</li>
+</ul>
+<h3 id="流控制"><a href="#流控制" class="headerlink" title="流控制"></a>流控制</h3><p>HTTP/2的流控制类似TCP，但是更为精细和更靠近应用层。借助HTTP/2流控制，可以实现在用户暂停一个大型视频流后，减少或阻塞视频里带来的HTTP流量，又或者中间代理匹配上下游流量速率。HTTP/2流控制提出了一些规则，但<strong>并没有指出特定算法</strong>，目标在于允许不需要协议改动的情况下改进流量控制算法。</p>
+<ul>
+<li>流量控制是逐跳的，而不是头尾端点的</li>
+<li>流量控制是基于窗口更新帧的。接收端广播自己准备在流及整个连接过程中接收的字节大小。这是一个信用为基础的方案。</li>
+<li>流量控制是有方向性的，由接收端全权掌握。</li>
+<li>流量控制窗口初始值是65,535字节，不过接收方可以设置一个更大的值</li>
+<li>帧类型决定了是否适用流量控制规则。目前只有DATA帧受流量控制</li>
+<li>不能被禁用</li>
+<li>通过使用<code>WINDOW_UPDATE</code>帧类型来实现</li>
+</ul>
+<h3 id="流优先级"><a href="#流优先级" class="headerlink" title="流优先级"></a>流优先级</h3><p>HTTP/2标准允许每个数据流都有一个关联的权重和依赖关系：</p>
+<ul>
+<li>可以向每个数据流分配一个介于1至256之间的整数。</li>
+<li>每个数据流与其他数据流之间可以存在显式依赖关系。</li>
+</ul>
+<p>优先级的目的是让客户端可以构建和传递“优先级树”，表明它倾向于如何接收响应。反过来，服务器可以使用此信息通过控制CPU、内存和其他资源的分配设定数据流处理的优先级。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/stream_prioritization01.svg" alt="http2-priority"></p>
+<p>数据流依赖关系通过将另一个数据流的唯一标识符作为父项引用进行声明；如果忽略标识符，相应数据流将依赖于“根数据流”。分配时，会尽可能先向父数据流分配资源，然后再向其依赖项分配资源。共享相同父项的数据流按其权重比例分配资源。在上图中，数据流B获得的资源是数据流A所获资源的三分之一。</p>
+<p>新建流的终端可以在报头帧中包含优先级信息来对流标记优先级。对于已存在的流，优先级帧可以用来改变流优先级。</p>
+<p>更详细规范参考<a href="https://tools.ietf.org/html/rfc7540#section-5.3" target="_blank" rel="external">RFC</a>。</p>
+<h3 id="帧类型"><a href="#帧类型" class="headerlink" title="帧类型"></a>帧类型</h3><h4 id="DATA"><a href="#DATA" class="headerlink" title="DATA"></a>DATA</h4><p>数据帧，类型0x0，传递和流关联的任意变量值长度的字节数据。例如，一个或多个数据帧被用来携带HTTP请求或者响应的载体。数据帧定义了以下标记：</p>
+<ul>
+<li>END_STREAM (0x1) ：用来表示当前帧是确定的流发送的最后一帧。设置这个标记时流进入到一种半封闭状态或者关闭状态。</li>
+<li>END_SEGMENT (0x2) ：表示是当前端的最后一帧。代理端绝对不能跨越多个端的边界来合并帧，转发帧的时候代理端必须保持片段的边界。</li>
+<li>PADDED (0x8) ： 位4用来表示Pad Length字段是可见的。</li>
+</ul>
+<p>数据帧绝对需要与流相关联，且遵从流量控制。</p>
+<h4 id="HEADERS"><a href="#HEADERS" class="headerlink" title="HEADERS"></a>HEADERS</h4><p>报头帧，类型0x1，用来打开一个流，并携带头部片段。能在流打开或者半封闭(远程)的状态下发送。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">+---------------+</div><div class="line">|Pad Length? (8)|</div><div class="line">+-+-------------+-----------------------------------------------+</div><div class="line">|E|                 Stream Dependency? (31)                     |</div><div class="line">+-+-------------+-----------------------------------------------+</div><div class="line">|  Weight? (8)  |</div><div class="line">+-+-------------+-----------------------------------------------+</div><div class="line">|                   Header Block Fragment (*)                 ...</div><div class="line">+---------------------------------------------------------------+</div><div class="line">|                           Padding (*)                       ...</div><div class="line">+---------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<p>它有以下标记：</p>
+<ul>
+<li>END_STREAM (0x1) ：用来标识这是发送端对确定的流发送的最后报头区块。设置这个标记将使流进入一种半封闭状态。后面伴随带有END_STREAM标记的延续帧的报头帧表示流的终止。延续帧不用来终止流。</li>
+<li>END_SEGMENT (0x2) ：表示这是当前端的最后一帧。中介端绝对不能跨片段来合并帧，且在转发帧的时候必须保持片段的边界。</li>
+<li>END_HEADERS (0x4) ：表示帧包含了整个的报头块，且后面没有延续帧。不带有END_HEADERS标记的报头帧在同个流上后面必须跟着延续帧。</li>
+<li>PADDED (0x8) ：表示Pad Length字段会呈现。</li>
+<li>PRIORITY (0x8) ：设置指示专用标记(E)，流依赖及权重字段将会呈现</li>
+</ul>
+<h4 id="PRIORITY"><a href="#PRIORITY" class="headerlink" title="PRIORITY"></a>PRIORITY</h4><p>优先级帧，类型0x2。明确了发送者建议的流的优先级，它可以在任意时间的流中发送。优先级帧不包含任何标记（flag）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> 0                   1                   2                   3</div><div class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">|E|                  Stream Dependency (31)                     |</div><div class="line">+-+-------------+-----------------------------------------------+</div><div class="line">|   Weight (8)  |</div><div class="line">+-+-------------+</div></pre></td></tr></table></figure>
+<h4 id="RST-STREAM"><a href="#RST-STREAM" class="headerlink" title="RST_STREAM"></a>RST_STREAM</h4><p>类型0x3，允许流的立即终止。通常用来取消一个流，或表示有错误发生。绝不应该在idle状态下发出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0                   1                   2                   3</div><div class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">|                        Error Code (32)                        |</div><div class="line">+---------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<h4 id="SETTINGS"><a href="#SETTINGS" class="headerlink" title="SETTINGS"></a>SETTINGS</h4><p>设置帧，类型0x4。包含影响如何与终端通信的设置参数，并且用来确认这些参数的接收。设置帧<em>必须</em>由两个终端在连接开始的时候发送，并且<em>可以</em>由各个终端在连接生存期的任意时间发送。</p>
+<h4 id="PUSH-PROMISE"><a href="#PUSH-PROMISE" class="headerlink" title="PUSH_PROMISE"></a>PUSH_PROMISE</h4><p>推送承诺帧，类型0x5。用来在流发送者准备发送流之前告知对等端。包含了终端准备创建的长流的31位无符号标记以及提供附加上下文的报头的集合。通常在服务器中使用。推送承诺的接收端可以选择给推送承诺的发送端返回一个与被承诺的流标识符相关的RST_STREAM标记来拒绝接收承诺流。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">0                   1                   2                   3</div><div class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">| [Pad High(8)] | [Pad Low (8)] |X|  Promised Stream ID (31)  ...</div><div class="line">+---------------+---------------+-+-----------------------------+</div><div class="line">...    Promised Stream ID       | Header Block Fragment (*)   ...</div><div class="line">+-------------------------------+-------------------------------+</div><div class="line">|                   Header Block Fragment (*)                 ...</div><div class="line">+---------------------------------------------------------------+</div><div class="line">|                           Padding (*)                       ...</div><div class="line">+---------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<h4 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h4><p>类型0x6。从发送端测量最小的RTT时间的机制，同样也是一种检测连接是否可用的方法。PING帧可以被任何终端发送，且必须在载体中包含一个8字节长度的任意数据。</p>
+<h4 id="GOAWAY"><a href="#GOAWAY" class="headerlink" title="GOAWAY"></a>GOAWAY</h4><p>超时帧，类型0x7。通知远端对等端不要在这个连接上建立新流。超时帧可以由客户端或者服务端发送。发送后，可以针对新的流创建一个新的连接。这个帧的目的是允许终端优雅的停止接收新的流，但仍可以继续完成之前已经建立的流的处理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">0                   1                   2                   3</div><div class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">|X|                  Last-Stream-ID (31)                        |</div><div class="line">+-+-------------------------------------------------------------+</div><div class="line">|                      Error Code (32)                          |</div><div class="line">+---------------------------------------------------------------+</div><div class="line">|                  Additional Debug Data (*)                    |</div><div class="line">+---------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<p>32位的错误码中包含了关闭连接的原因。</p>
+<h4 id="WINDOW-UPDATE"><a href="#WINDOW-UPDATE" class="headerlink" title="WINDOW_UPDATE"></a>WINDOW_UPDATE</h4><p>窗口更新帧，类型0x8。用来实现流控制。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0                   1                   2                   3</div><div class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</div><div class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div><div class="line">|X|              Window Size Increment (31)                     |</div><div class="line">+-+-------------------------------------------------------------+</div></pre></td></tr></table></figure>
+<h4 id="CONTINUATION"><a href="#CONTINUATION" class="headerlink" title="CONTINUATION"></a>CONTINUATION</h4><p>延续帧，类型0x9，用来延续一个报头区块。在END_HEADERS标记前，可以在HEADERS帧、PUSH_PROMISE帧以及CONTINUATION帧后接续任意数量的CONTINUATION帧。它包含一个flag：</p>
+<ul>
+<li>END_HEADERS (0x4) : 设置指示这个帧的报头区块的终止</li>
+</ul>
+<p>延续帧必须与流相关联。如果延续帧的相关流表示字段是0x0，终端必须响应一个类型为协议错误的连接错误。</p>
+<h3 id="服务器推送"><a href="#服务器推送" class="headerlink" title="服务器推送"></a>服务器推送</h3><p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/push01.svg" alt="http2-server-push"></p>
+<p>HTTP/2中的服务器推送打破了原来HTTP中的请求-响应语义（对原有语义也做了<a href="https://tools.ietf.org/html/rfc7540#section-8.1" target="_blank" rel="external">改进</a>），支持服务器可以对一个客户端请求发送多个响应。在原先的HTTP1.1中我们可能会将重要资源内联到网页中，减少网络延迟，这实际上等同于HTTP/2中的强制推送。在HTTP/2中的服务器推送还有下面一些功能：</p>
+<ul>
+<li>推送的资源能被客户端缓存（服务器也只能推送可被缓存的资源）</li>
+<li>在不同页面之间可以重用</li>
+<li>可以由服务器设定优先级</li>
+<li>可以被客户端拒绝</li>
+</ul>
+<p>服务器推送数据流由PUSH_PROMISE帧发起，需要先于请求推送资源的响应数据传输。实现上的策略是先于父响应（即，DATA 帧）发送所有PUSH_PROMISE帧，其中包含所承诺资源的HTTP头部。客户端接收到PUSH_PROMISE帧后，它可以根据自身情况选择接受拒绝（通过RST_STREAM帧）数据流。（例如，如果资源已经位于缓存中）</p>
+<p>客户端完全掌控服务器推送的使用方式。客户端可以限制并行推送的数据流数量；调整初始的流控制窗口以控制在数据流首次打开时推送的数据量；或完全停用服务器推送。这些在HTTP/2连接开始时通过SETTINGS帧传输，可能随时更新。</p>
+<h3 id="头部压缩"><a href="#头部压缩" class="headerlink" title="头部压缩"></a>头部压缩</h3><p>在HTTP1.1中，头部数据使用以纯文本的形式传输，所占空间较大，在使用HTTP Cookie后，更是会达到上千字节。为了减少此开销和提升性能，HTTP/2使用专门设计的<a href="https://httpwg.github.io/specs/rfc7541.html" target="_blank" rel="external">HPACK</a>压缩格式压缩请求和响应头部，这种格式通过静态霍夫曼编码对传输的头部字段进行编码。HPACK要求客户端和服务器同时维护和更新一个包含之前见过的标头字段的索引列表，利用之前传输值的索引列表，我们可以通过传输索引值的方式对重复值进行编码，索引值可用于有效查询和重构完整的头部键值对。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/header_compression01.svg" alt="hpack"></p>
+<p>作为一种进一步优化方式，HPACK压缩上下文包含一个<a href="https://httpwg.org/specs/rfc7541.html#static.table.definition" target="_blank" rel="external">静态表</a>和一个动态表：静态表在规范中定义，并提供了一个所有连接都可能使用的常用HTTP头部字段列表；动态表最初为空，将根据在特定连接内交换的值进行更新。</p>
+<p>早期版本的HTTP/2和SPDY使用的<a href="https://tools.ietf.org/html/rfc1951" target="_blank" rel="external">DEFLATE</a>对头部进行压缩，但是在2012年夏天出现了<a href="https://en.wikipedia.org/w/index.php?title=CRIME&amp;oldid=660948120" target="_blank" rel="external">CRIME</a>这种安全攻击。因此，之后HTTP/2的头部压缩采用了专门设计的HPACK方案。在使用HPACK后，初次访问后的压缩率能达到70%~80%，甚至90%+。</p>
+<h2 id="支持度与调试"><a href="#支持度与调试" class="headerlink" title="支持度与调试"></a>支持度与调试</h2><p>支持度上，<a href="https://caniuse.com/#search=http%2F2" target="_blank" rel="external">主流浏览器</a>和<a href="https://github.com/http2/http2-spec/wiki/Implementations" target="_blank" rel="external">服务器程序</a>都已支持。你也可以访问<a href="https://http2.akamai.com/demo" target="_blank" rel="external">这个网址</a>体验HTTP/2和HTTP1.1在load大量图片时的延迟对比。</p>
+<p>如果你想确认当前网页中的哪些请求是使用的HTTP/2，可以在chrome devTools下的network选项卡里查看“Protocol”列（未发现此列的可以在表头右键找到并勾选显示），其中HTTP/2将显示为h2。正如之前所说，支持HTTP/2的浏览器会和服务器使用特定协议协商，对于不支持HTTP/2的情况，会自动会退到HTTP1.1版本。</p>
+<p>尽管HTTP/2使用二进制传输数据，然而浏览器为我们掩盖了实现细节。如果想要深入查看甚至是调试二进制分帧层的功能，如何去debug呢？</p>
+<ul>
+<li>Wireshark</li>
+<li>curl</li>
+<li><a href="https://github.com/bradfitz/http2/tree/master/h2i" target="_blank" rel="external">h2i</a>，不过这个好像已经不维护了</li>
+</ul>
+<h2 id="TLS调优"><a href="#TLS调优" class="headerlink" title="TLS调优"></a>TLS调优</h2><p>目前各大浏览器只在<code>https://</code>的基础上支持HTTP/2，即在TLS层之上的HTTP/2。多出的TLS的层也是会增加时延和成本的，具体涉及到的TLS握手、会话和加密套件协商过程还有优化空间，如减少证书层级、减少证书大小等。其余优化方向可以查看参考中一些文章介绍。</p>
+<h2 id="之前的优化还应该继续用么"><a href="#之前的优化还应该继续用么" class="headerlink" title="之前的优化还应该继续用么"></a>之前的优化还应该继续用么</h2><h3 id="继续保持的"><a href="#继续保持的" class="headerlink" title="继续保持的"></a>继续保持的</h3><ul>
+<li>减少DNS查询<ul>
+<li>减少域名</li>
+<li>启用预读：dns-prefetch</li>
+</ul>
+</li>
+<li>使用CDN</li>
+<li>避免重定向</li>
+<li>资源压缩<ul>
+<li>代码压缩（JS、HTML、CSS）</li>
+<li>资源压缩（图片、字体、音频、视频）</li>
+<li>文本压缩（Gzip）</li>
+</ul>
+</li>
+<li>使用缓存</li>
+</ul>
+<h3 id="不再需要的"><a href="#不再需要的" class="headerlink" title="不再需要的"></a>不再需要的</h3><ul>
+<li>分片与域名散列：HTTP/2对于一个域名只使用一个TCP连接，分片反而会浪费资源，同时也会影响流控制、头部压缩的表现。</li>
+<li>资源打包合并：HTTP/2支持多路复用，资源合并会降低缓存利用率，且会让开发流程更复杂。（<a href="https://github.com/pikapkg/snowpack" target="_blank" rel="external">snowpack</a>了解一下）</li>
+<li>资源内联：可以由服务器推送解决这类需求，资源内联一方面无法缓存，另一方面会让页面代码更大</li>
+</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
+<li>Q: 既然HTTP/2是在SPDY工作基础上设计的，那HTTP/2推出后，SPDY还使用吗</li>
+<li>A: Google公开声明了他们会在2016年移除Chrome里对SPDY和NPN的支持，并且极力推动服务器迁移至HTTP/2。2016年2月他们<a href="https://blog.chromium.org/2016/02/transitioning-from-spdy-to-http2.html" target="_blank" rel="external">声明</a>了SPDY和NPN会在Chrome 51之后被移除。</li>
+<li>Q: 这个协议是否只对大型网站有效</li>
+<li>A: 由于缺乏内容分发网络，小网站的网络延迟往往较高，而多路复用的能力可以极大的改善在高网络延迟下的体验。</li>
+<li>Q: 基于TLS让速度变得更慢</li>
+<li>A: 正如上一节提到的，TLS的握手确实增加了额外的开销，也有越来越多的方案提出来减少TLS往返的时间。TLS同时也会更多消耗CPU等资源，更多例子可见<a href="https://istlsfastyet.com/" target="_blank" rel="external">istlsfastyet.com</a>。不过一方面HTTP/2并不强制要求基于TLS，另一方面HTTP/2带来的性能提升使得即使基于TLS，通常也会比HTTP1.1更快</li>
+<li>Q: 为什么不使用文本传输</li>
+<li>A: 的确，如果可以直接读出协议内容，那么调试和追踪都会变得更为简单。但是二进制带来的灵活度更高，何况浏览器会自动帮你解析。</li>
+<li>Q: 看起来，HTTP1.1中的一些短板并没有改彻底</li>
+<li>A: 实际上，设计HTTP/2之初的目标就包括向前兼容HTTP/1.1的范式，来保证升级协议也不用重写底层的很多东西。老的HTTP功能，如协议头、状态码、可怕的Cookie，这些都保留了。性能优化更多通过增加了一个中间分帧层解决的。</li>
+<li>Q: 目前使用的广泛程度如何</li>
+<li>A: 在2015年年底大多数浏览器就已经支持HTTP/2，目前约96%的浏览器支持HTTP/2，同时约46%的网站支持HTTP/2。</li>
+</ul>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><ul>
+<li>官网在给出HTTP/2规范时，也曾预计要10年时间和HTTP1.1并存，在这个期间，Web优化的思路也可能会有调整</li>
+<li><a href="https://wiki.openssl.org/index.php/TLS1.3" target="_blank" rel="external">TLS1.3</a>。2020年2月的<a href="https://tools.ietf.org/html/rfc8740" target="_blank" rel="external">RFC8740</a>中给出了基于TLS1.3的HTTP/2的实现建议。</li>
+<li>既然TCP容易遇到线头阻塞问题，那么能不用使用UDP呢？Google提出的<a href="https://www.chromium.org/quic" target="_blank" rel="external">QUIC</a>（Quick UDP Internet Connection）它在很大程度上继承了SPDY的衣钵。QUIC可以理解成TCP + TLS + HTTP/2替代实现。</li>
+<li>2018年10月，互联网工程任务组HTTP及QUIC工作小组正式将基于QUIC协议的HTTP（英语：HTTP over QUIC）重命名为<a href="https://datatracker.ietf.org/doc/draft-ietf-quic-http/" target="_blank" rel="external">HTTP/3</a>以为确立下一代规范做准备。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://imququ.com/post/http2-new-opportunities-and-challenges.html" target="_blank" rel="external">HTTP/2：新的机遇与挑战</a></li>
+<li><a href="https://imququ.com/post/http2-resource.html" target="_blank" rel="external">HTTP/2 资料汇总</a></li>
+<li><a href="https://http2.github.io/" target="_blank" rel="external">HTTP/2官网</a></li>
+<li><a href="https://httpwg.org/specs/rfc7540.html" target="_blank" rel="external">HTTP/2规范</a></li>
+<li><a href="https://httpwg.github.io/specs/rfc7541.html" target="_blank" rel="external">HPACK规范</a></li>
+<li><a href="https://developers.google.com/web/fundamentals/performance/http2" target="_blank" rel="external">HTTP/2简介</a></li>
+<li><a href="https://ye11ow.gitbooks.io/http2-explained/content/" target="_blank" rel="external">HTTP/2讲解</a></li>
+<li><a href="https://imququ.com/post/header-compression-in-http2.html" target="_blank" rel="external">HTTP/2 头部压缩技术介绍</a></li>
+<li><a href="https://github.com/fex-team/http2-spec/blob/master/HTTP2%E4%B8%AD%E8%8B%B1%E5%AF%B9%E7%85%A7%E7%89%88(06-29" target="_blank" rel="external">HTTP/2草案13中英对照</a>.md)</li>
+<li><a href="https://www.mnot.net/talks/h2fe/#8" target="_blank" rel="external">HTTP/2 for Front-End Developers</a></li>
+<li><a href="http://velocityconf.com/devops-web-performance-2015/public/schedule/detail/42385" target="_blank" rel="external">HTTP/2 is here, let’s optimize!</a></li>
+<li><a href="https://caniuse.com/#search=HTTP%2F2" target="_blank" rel="external">HTTP/2支持度</a></li>
+<li><a href="https://github.com/http2/http2-spec/wiki/Implementations" target="_blank" rel="external">HTTP/2实现列表</a></li>
+<li><a href="https://www.chainnews.com/articles/401950499827.htm" target="_blank" rel="external">HTTP发展史梳理笔记</a></li>
+<li><a href="https://http2.akamai.com/demo" target="_blank" rel="external">HTTP/2 is the future of the Web | Akamai</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/06/01/principles-of-macroeconomics-terms/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2020/06/01/principles-of-macroeconomics-terms/" itemprop="url">principles-of-macroeconomics-terms</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-01T23:55:58+08:00">
+                2020-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/思考/" itemprop="url" rel="index">
+                    <span itemprop="name">思考</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2020/06/01/principles-of-macroeconomics-terms/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/01/principles-of-macroeconomics-terms/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>正文：<a href="//shenlvmeng.github.io/blog/2020/06/01/principles-of-macroeconomics/">《经济学原理》 - 宏观经济学原理笔记</a></p>
+</blockquote>
+<h2 id="宏观经济学的数据"><a href="#宏观经济学的数据" class="headerlink" title="宏观经济学的数据"></a>宏观经济学的数据</h2><h3 id="一国收入的衡量"><a href="#一国收入的衡量" class="headerlink" title="一国收入的衡量"></a>一国收入的衡量</h3><ul>
+<li>微观经济学：研究家庭和企业如何做出决策，以及它们如何在市场上相互影响</li>
+<li>宏观经济学：研究整体经济现象，包括通货膨胀、失业和经济增长</li>
+<li>国内生产总值（gross domestic product，GDP）：在某一既定时期一个国家内生产的所有最终物品和服务的市场价值</li>
+<li>消费：家庭处购买新住房外用于物品和服务的支出</li>
+<li>投资：用于资本设备、存活、建筑物的支出</li>
+<li>净出口：外国人对国内生产物品的支出减国内居民对外国物品的支出</li>
+<li>名义GDP：按现期价格评价的物品和服务的生产</li>
+<li>真实GDP：按不变价格评价的物品和服务的生产</li>
+<li>GDP平减指数：用名义GDP与真实GDP的比率乘以100得到的物价水平衡量指标</li>
+</ul>
+<h3 id="生活费用的衡量"><a href="#生活费用的衡量" class="headerlink" title="生活费用的衡量"></a>生活费用的衡量</h3><ul>
+<li>消费物价指数（CPI）：普通消费者所购买的物品和服务的总费用的衡量指标</li>
+<li>通货膨胀率：从前一个时期以来，物价指数变动的百分比</li>
+<li>生产物价指数：企业所购买的一揽子物品与服务的费用的衡量指标</li>
+<li>指数化：根据法律或合同按照通货膨胀的影响对货币数量的自动调整</li>
+<li>名义利率：通常公布的、为根据通货膨胀影响校正的利率</li>
+<li>真实利率：根据通货膨胀影响校正过的利率</li>
+</ul>
+<h2 id="长期中的真实经济"><a href="#长期中的真实经济" class="headerlink" title="长期中的真实经济"></a>长期中的真实经济</h2><h3 id="生产与增长"><a href="#生产与增长" class="headerlink" title="生产与增长"></a>生产与增长</h3><ul>
+<li>生产率：每单位劳动投入所生产的物品和服务的数量</li>
+<li>收益递减：随着投入量的增加，每一单位额外投入得到的收益减少的特性</li>
+<li>追赶效应：开始贫穷的国家倾向于比开始富裕的国家增长更快的特征</li>
+</ul>
+<h3 id="储蓄、投资和金融体系"><a href="#储蓄、投资和金融体系" class="headerlink" title="储蓄、投资和金融体系"></a>储蓄、投资和金融体系</h3><ul>
+<li>金融体系：经济中促使一个人的储蓄和另一个人的投资相匹配的一组机构</li>
+<li>金融市场：储蓄者可以借以直接向借款者提供资金的金融机构</li>
+<li>债券：一种债务证明书</li>
+<li>股票：企业部分所有权的索取权</li>
+<li>金融中介机构：储蓄者借以间接向借款者提供资金的金融机构</li>
+<li>共同基金：向公共出售股份，并用收入来购买股票和债券资产组合的机构</li>
+<li>国民储蓄（储蓄），用于消费和政府购买后剩下的一个经济中的总收入</li>
+<li>私人储蓄：家庭支付税收和消费后剩下的收入</li>
+<li>公共储蓄：政府在支付支出后剩下的税收收入</li>
+<li>预算盈余：税收收入大于政府支出的余额</li>
+<li>预算赤字：政府支出引起的税收收入短缺</li>
+<li>可贷资金市场：想储蓄的人借以提供资金、想借钱投资的人借以借贷资金的市场</li>
+<li>挤出：政府借款引起的投资减少</li>
+</ul>
+<h3 id="金融学基本工具"><a href="#金融学基本工具" class="headerlink" title="金融学基本工具"></a>金融学基本工具</h3><ul>
+<li>金融学：研究人们如何在某时期内做出关于配置资源和应对风险的决策的学科</li>
+<li>现值：用现行利率产生一定量未来货币所需要的现在货币量</li>
+<li>终值：现行利率既定时，现在货币量将带来的未来货币量</li>
+<li>复利：货币量的累积，赚得的利润停留在账户中赚取更多利息</li>
+<li>风险厌恶：不喜欢不确定性</li>
+<li>多元化：通过用大量<strong>不相关</strong>的小风险代替一种风险来降低风险</li>
+<li>企业特有风险：只影响单独公司的风险</li>
+<li>市场风险：影响股市上所有公司的风险</li>
+<li>基本面分析：为决定一家公司的价值而对其会计报表和未来前景进行的研究</li>
+<li>有效市场假说：认为资产价格反映了关于一种资产价值的所有公开、可获得的信息的理论</li>
+<li>信息有效：以理性方式反映所有可获得信息的关于资产价格的描述</li>
+</ul>
+<h3 id="失业"><a href="#失业" class="headerlink" title="失业"></a>失业</h3><ul>
+<li>劳动力：就业者和失业者的工人总数</li>
+<li>失业率：劳动力中失业者所占比例</li>
+<li>劳动力参工率：劳动力占成年人口的百分比</li>
+<li>自然失业率：失业率曲线围绕波动的正常失业率</li>
+<li>周期性失业：失业率对自然失业率的周期性背离</li>
+<li>丧失信心的工人：想工作但已放弃寻找工作的人</li>
+<li>摩擦性失业：由于工人寻找符合自己嗜好和技能的工作需要时间带来的失业</li>
+<li>结构性失业：由于劳动市场提供的工作岗位不足或工资高于均衡工资引起的失业</li>
+<li>失业保险：工人失业时，位置提供部分收入保障的政府计划</li>
+<li>工会：与雇主就工资、津贴、工作条件进行谈判的工人协会</li>
+<li>集体谈判：工会和企业就就业条件达成一致的过程</li>
+<li>效率工资：企业为了提供工人生产率而支付的高于均衡水平的工资</li>
+</ul>
+<h2 id="长期中的货币与物价"><a href="#长期中的货币与物价" class="headerlink" title="长期中的货币与物价"></a>长期中的货币与物价</h2><h3 id="货币制度"><a href="#货币制度" class="headerlink" title="货币制度"></a>货币制度</h3><ul>
+<li>货币：经济中人们经常用于向其他人购买物品和服务的一组资产</li>
+<li>交互媒介：卖者在购买物品和服务时给予卖者的东西</li>
+<li>计价单位：人们用来表示价格和记录债务的标准</li>
+<li>价值储藏手段：人们用来把现在的购买力转变为未来购买力的东西</li>
+<li>流动性：一种资产兑换为经济中交换媒介的容易程度</li>
+<li>商品货币：以由内在价值的商品为形式的货币</li>
+<li>法定货币：没有内在价值、由政府法令确定通货使用的货币</li>
+<li>通货：公众手中持有的纸币钞票和铸币</li>
+<li>中央银行：为了监管银行体系和调节经济中货币量设计的机构</li>
+<li>准备金：银行得到但是没有贷出去的存款</li>
+<li>部分准备金银行：只把部分存款作为准备金的银行</li>
+<li>准备金率：作为准备金持有的存款比例</li>
+<li>货币乘数：银行体系有1单位准备金产生的货币量</li>
+<li>银行资本：银行的所有者投入机构的资源</li>
+<li>杠杆：将借到的货币追加到投资的现有资金上</li>
+<li>杠杆率：资产和银行资本的比率</li>
+<li>资本需要量：政府管制确定的最低银行资本量</li>
+<li>公开市场操作：美联储买卖美国政府债券</li>
+<li>贴现率：美联储向银行发放贷款的利率</li>
+<li>法定准备金：银行必须根据其存款持有的最低准备金量的规定</li>
+<li>联邦基准利率：银行向另一家银行进行隔夜贷款时的利率</li>
+</ul>
+<h3 id="货币增长和通货膨胀"><a href="#货币增长和通货膨胀" class="headerlink" title="货币增长和通货膨胀"></a>货币增长和通货膨胀</h3><ul>
+<li>货币数量论：一种认为可得到的货币量决定物价水平，可得到货币量增长率决定通货膨胀率的理论</li>
+<li>名义变量：按货币单位衡量的变量</li>
+<li>真实变量：按实物单位衡量的变量</li>
+<li>古典二分法：名义变量和真实变量的理论区分</li>
+<li>货币流通速度：货币易手的速度</li>
+<li>通货膨胀税：政府通过创造货币而筹集的收入</li>
+<li>费雪效应：名义利率对通货膨胀率所进行的一对一的调整</li>
+<li>皮鞋成本：当通货膨胀鼓励人们减少货币持有量时所浪费的资源</li>
+<li>菜单成本：改变价格的成本</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/06/01/principles-of-macroeconomics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2020/06/01/principles-of-macroeconomics/" itemprop="url">《经济学原理》 - 宏观经济学原理笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-01T23:55:46+08:00">
+                2020-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/思考/" itemprop="url" rel="index">
+                    <span itemprop="name">思考</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2020/06/01/principles-of-macroeconomics/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/01/principles-of-macroeconomics/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="宏观经济学中的数据"><a href="#宏观经济学中的数据" class="headerlink" title="宏观经济学中的数据"></a>宏观经济学中的数据</h2><h3 id="一国收入的衡量"><a href="#一国收入的衡量" class="headerlink" title="一国收入的衡量"></a>一国收入的衡量</h3><p>微观经济学研究家庭和企业如何做决策，宏观经济学研究整个经济，本章主要考察<strong>国内生产总值（GDP）</strong>。</p>
+<p>GDP<strong>同时衡量着经济中所有人的总支出和总收入</strong>。因为对于一个整体经济来说，收入必定等于支出。</p>
+<h4 id="衡量方式"><a href="#衡量方式" class="headerlink" title="衡量方式"></a>衡量方式</h4><p><strong>国内生产总值是在一个既定时期一个国家内生产的所有最终物品和服务的市场价值</strong>。</p>
+<ul>
+<li>既定时期：一般是一个季度公布一次，统计时会调整季度数据，避开季节性周期</li>
+<li>一个国家内：GDP衡量的生产价值局限于一个国家的地理范围内。即外国人在本国的工作产出会计入GDP，但是本国人在外国的产出则不会</li>
+<li>所有：GDP包括经济中生产并在市场上合法出售的所有物品，如家庭内生产和消费没有进入市场的这种则不会被计入</li>
+<li>生产的：不包括过去生产的物品交易，比如二手车</li>
+<li>最终：GDP只包括最终物品，而不包含中间物品。当然如果生产出来的中间物品没有被使用，而是增加了企业存货，这时可以暂时算作最终物品</li>
+<li>物品和服务：实体物品和无形服务</li>
+<li>市场价值：市场价格能反映物品的价值，如鱼子酱就是比汉堡包要贵</li>
+</ul>
+<p>上面这种描述是从支出出发，也可以从收入角度出发。还有几个和GDP类似的指标：</p>
+<ul>
+<li>GNP：国民生产总值，一国永久居民赚到的收入</li>
+<li>NNP：国民生产净值，是GNP减去折旧</li>
+<li>国民收入：一国居民在物品和服务生产中赚到的总收入，几乎和NNP相等</li>
+<li>个人收入：家庭和非公司制企业得到的收入，和国民收入不同，它不包括留存收益——公司获得但是没有支付给所得者的收入</li>
+<li>个人可支配收入：个人收入扣减对政府的义务后剩下的收入，如个税、非税收支付</li>
+</ul>
+<h4 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h4><p>Y = C + I + G + NX</p>
+<p>其中Y是GDP，C是消费，I是投资，G是政府购买，NX是净出口。</p>
+<ul>
+<li>消费：家庭<strong>除购买新住房外</strong>用于物品和服务的支出，也包括教育支出。</li>
+<li>投资：对用于未来生产更多物品和服务的物品的购买，把汗家庭用于购买新住房的支出</li>
+<li>政府购买：包括地方、州、政府用于物品和服务的支出，一部分“转移支付”，如社会保障补助，不计入考虑</li>
+<li>净出口：外国与国内生产的物品的购买减去国内对外国物品的购买</li>
+</ul>
+<h4 id="真实GDP和名义GDP"><a href="#真实GDP和名义GDP" class="headerlink" title="真实GDP和名义GDP"></a>真实GDP和名义GDP</h4><p>GDP的增长来自两种形式：</p>
+<ul>
+<li>生产了更多的物品的服务</li>
+<li>物品和服务的价格增高</li>
+</ul>
+<p><strong>真实GDP</strong>去掉了物价水平的增长部分，使用<strong>固定在过去水平</strong>上的价格评价现期生产。真实GDP首先需要选择一个<strong>基年</strong>，然后用基年的价格计算各年的物品和服务的价值。由于真实GDP不受价格变动的影响，所以只会反映<em>产量</em>的变动。真实GDP作为衡量经济福利的指标要优于名义GDP。</p>
+<p>对应的有<strong>GDP平减指数</strong>的概念，用于衡量物价水平。它等于名义GDP除以真实GDP再乘以100。通常我们用<strong>通货膨胀</strong>来描述经济中整体物价水平上升的情况。通货膨胀率是一个时期到下一个时期某个物价水平衡量指标变动的百分比。它可以由两年的GDP平减指数推算出来。</p>
+<h4 id="GDP能衡量幸福吗"><a href="#GDP能衡量幸福吗" class="headerlink" title="GDP能衡量幸福吗"></a>GDP能衡量幸福吗</h4><p>GDP是个好指标，但是不是全面的指标。大多数人都希望有更高的收入和支出，人均GDP自然成为平均经济福利的衡量指标。然后在闲暇、环境质量、收入分配等方面，GDP并不能作为唯一的衡量因素。不过，GDP倒是衡量我们追求这些方面的能力。</p>
+<h3 id="生活费用的衡量"><a href="#生活费用的衡量" class="headerlink" title="生活费用的衡量"></a>生活费用的衡量</h3><p>消费物价指数可以比较好地反映消费者购买的物品和服务，是较常用的通货膨胀指标。</p>
+<h4 id="消费物价指数（CPI）"><a href="#消费物价指数（CPI）" class="headerlink" title="消费物价指数（CPI）"></a>消费物价指数（CPI）</h4><p>消费物价指数（Customer Price Index，CPI）是普通消费者所购买的物品和服务的总费用的衡量指标。一般由国家统计局统计并发布，包含下面几步：</p>
+<ul>
+<li>确定“篮子”：即根据购买数量的多少，确定哪些物价对普通消费者是最重要的，订下不同物品的权数</li>
+<li>找出价格：确定时间点上的物品物价</li>
+<li>计算不同权数下所有物品的总费用</li>
+<li>选择基年并计算指数</li>
+<li>通过CPI的增长率确定通货膨胀率</li>
+</ul>
+<p>一般在统计CPI的同时，也会统计生产物价指数，即衡量企业而不是消费者购买的一篮子物品与服务的费用，由于企业最终会把这些费用以更高价格转移给消费者，它对于预测CPI的变动是有意义的。在使用CPI的时候会遇到3个问题:</p>
+<ul>
+<li>CPI无法衡量消费者的<em>替代偏好</em>，即使用便宜的物品替代昂贵的物品</li>
+<li>CPI无法衡量新物品的引进带来的生活费用下降</li>
+<li>CPI无法衡量质量的变动</li>
+</ul>
+<p>CPI和GDP平减指数比较相似，都可以衡量物价的变化，但由于计算方式的不同，两个数字还是有所差异：</p>
+<ul>
+<li>GDP平减指数反映了<strong>国内生产</strong>的物品和服务的价格，而CPI反映<strong>消费者购买</strong>的物品和服务，如波音生产的飞机会影响GDP，但不会影响CPI；石油价格的上涨对CPI影响很大，但是对GDP影响较小</li>
+<li>GDP平减指数在加权时跟<strong>现期生产</strong>的所有物品和服务的比例有关，而CPI则是通过<strong>固定篮子</strong>的物品和服务的价格来计算</li>
+</ul>
+<h4 id="根据通货膨胀校正经济变量"><a href="#根据通货膨胀校正经济变量" class="headerlink" title="根据通货膨胀校正经济变量"></a>根据通货膨胀校正经济变量</h4><ul>
+<li>衡量物价水平的目的之一是能让我们比较不同时期的美元数字。使用物价水平指数换算就可以比较不同时代明星的薪水或是电影的票房。</li>
+<li>当某货币量根据法律或合同<strong>自动</strong>按物价水平变动校正时，成为通货膨胀的<strong>指数化</strong></li>
+<li>储蓄时，<strong>名义利率</strong>只衡量货币量的变动，<strong>真实利率</strong>是根据通货膨胀校正后的衡量货币<strong>购买力</strong>变动的利率。除非通货紧缩，否则名义利率永远大于真实利率<ul>
+<li><strong>真实利率 = 名义利率 - 通货膨胀率</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="长期中的真实经济"><a href="#长期中的真实经济" class="headerlink" title="长期中的真实经济"></a>长期中的真实经济</h2><h3 id="生产与增长"><a href="#生产与增长" class="headerlink" title="生产与增长"></a>生产与增长</h3><p>一国的生活水平取决于它生产物品和服务的能力。在《鲁滨逊漂流记》中，鲁滨逊捕获鱼类的生产率直接影响他能享用多少食物。生产率取决于下面几个因素：</p>
+<ul>
+<li><strong>人均物质资本</strong>，即人均用于生产物品和服务的设备和建筑物存量，或简称为<strong>资本</strong>。工具越多，越高级，自然可以生产更多更好的产品。资本的重要特征是，它是一种<strong>生产出来的生产要素</strong>。</li>
+<li><strong>人均人力资本</strong>，指工人通过教育、培训和经验获得的知识和技能，可以通过学习或培训得到，实际上，学生的日常学习就是用来未来生产的人力资本</li>
+<li><strong>人均自然资源</strong>，即自然界提供的用于生产物品和服务的投入</li>
+<li><strong>技术知识</strong>，即对生产物品和服务的最好方法的了解。技术知识是指社会对世界如何运行的理解，而人力资本是把这种理解传递给劳动力的资源消耗</li>
+</ul>
+<p>以上几点可以构成生产函数：<code>Y=AF(L,K,H,N)</code>。其中：</p>
+<ul>
+<li>L指劳动量</li>
+<li>A代表生产技术</li>
+<li>K代表物质资本</li>
+<li>N代表自然资源</li>
+</ul>
+<p>去掉规模带来的收益能得到<code>Y/L=AF(1, K/L, H/L, N/L)</code>。即生产率取决于技术知识、<strong>人均</strong>物质资本、<strong>人均</strong>人力资本和<strong>人均</strong>自然资源。</p>
+<h3 id="经济增长与公共政策"><a href="#经济增长与公共政策" class="headerlink" title="经济增长与公共政策"></a>经济增长与公共政策</h3><p>上面提到的生产率的影响因素，那么那些政策有助于提高生产率和生活水平呢？</p>
+<ul>
+<li>储蓄和投资：即减少现期资源的消费，用于投资资本的生产。不过资本会受到<strong>收益递减</strong>和<strong>追赶效应</strong>的影响，即随着资源的投入，边际产出越来越少，且贫穷的国家在同样政策下的增长更高</li>
+<li>来自国外的投资：一种是由外国实体拥有并经营的资本投资，叫做<strong>外国直接投资</strong>，或者由外国实体购买国内公司的股票，叫做<strong>外国有价证券投资</strong>。这种投资可以有效增加一国的资本存量。因此大多数穷国都鼓励吸引外国投资</li>
+<li>教育：属于一种人力资本投资，且具有<strong>正外部性</strong>，即一个人的行为对旁观者福利有积极影响。不过，<strong>人才外流</strong>是穷国面临的一个问题</li>
+<li>健康与营养：健康的身体可以使工人获得更高的生产率，从而促进经济增长，而经济增长又会改善人们的健康状况，形成一个良性循环</li>
+<li>产权和政治稳定：尊重产权即保护人们对自己拥有资源行使权力的能力，不尊重产权的环境下，人们不糊积极地利用资源；类似地，稳定的政治可以比较好地保护产权。经济繁荣也部分取决于政治繁荣。</li>
+<li>自由贸易：外向型经济比内向型经济更容易提高生活水平</li>
+<li>研究与开发：对技术知识研究的鼓励或者资助</li>
+<li>人口增长：正面上，人口增长带来劳动力规模提升，且消费人群提升，同时从事技术研究的人更多；反面上，导致了自然资源紧张（这个可以通过创造新技术改善），稀释了资本存量，比如人力资本。</li>
+</ul>
+<h3 id="储蓄、投资和金融系统"><a href="#储蓄、投资和金融系统" class="headerlink" title="储蓄、投资和金融系统"></a>储蓄、投资和金融系统</h3><p>前面提到了，储蓄和投资是一国长期经济增长的关键因素。然后储蓄和投资间是需要协调的，有一些人为未来考虑将收入储蓄起来，也有一些人想借钱为新的增长中的企业投资筹资。金融机构应运而生。</p>
+<h4 id="美国经济中的金融机构"><a href="#美国经济中的金融机构" class="headerlink" title="美国经济中的金融机构"></a>美国经济中的金融机构</h4><p>金融体系会使经济中的稀缺资源从储蓄者流动到借款者的手中。金融体系就由帮助协调储蓄者和借款者的各种金融机构组成。这些机构可以分为两类：<strong>金融市场</strong>和<strong>金融中介机构</strong>。</p>
+<h5 id="金融市场"><a href="#金融市场" class="headerlink" title="金融市场"></a>金融市场</h5><p>金融市场即想储蓄的人可以借以直接向想借款的人提供资金的机构。它包含<strong>债券市场</strong>和<strong>股票市场</strong>。</p>
+<ul>
+<li>债券市场：债券即借款人向债券持有人负有债务的证明，通常会说明到期日和利率，在到期日时偿还债券利息以及本金。债券间有3个不同的特性：<ul>
+<li>期限：从短期债券到长期债券甚至永久债券（只付利息，不偿还本金）。通常任务长期债券风险更高，所以利率也通常更高</li>
+<li>信用风险：即拖欠的可能性。国家发型的债券信用风险较低，利率一般也比较低；状况不稳定公司发行的<strong>垃圾债券</strong>的利率则很高。</li>
+<li>税收待遇：绝大多数债券都属于应纳税收入，而政府发行的债券则一般不需缴纳所得税</li>
+</ul>
+</li>
+<li>股票市场：股票代表企业的部分所有权，也代表对企业获得利润的索取权。不同于<strong>债务融资</strong>，出售股票的筹集资金方式称为<strong>权益融资</strong>。和债券相比，股票会面临公司发展波动的不确定性，风险更高，然而潜在收益也会更高。公司在向公众出售股份而发行股票后，股票持有者可以在有组织的股票市场上交易。<strong>股票市场上股票的价格由股票本身的供求状况决定</strong>，即人们对公司<strong>未来盈利性</strong>的预期。<ul>
+<li>股票指数：计算出来的一组股票价格的平均数，如道琼斯指数由美国最主要的30家公司平均而来，标准普尔500指数由500家主要公司股票价格计算得到</li>
+</ul>
+</li>
+</ul>
+<p>对于股市观察者来说，股票的价格、红利（公司把一些利润支付给股东，没有支付的利润称为<em>留存收益</em>，用于增加投资）、价格-收益比都是需要关心的关键数字。</p>
+<h5 id="金融中介机构"><a href="#金融中介机构" class="headerlink" title="金融中介机构"></a>金融中介机构</h5><p>储蓄者可以借以中介机构向借款者提供资金。下面分析两种中介机构：</p>
+<ul>
+<li>银行：从想储蓄的人手里吸收存款，并用存款向想借款的人发放贷款，从中收取利润。同时，银行借助存款帮助创造出人们借以作为交换媒介的特殊资产，如信用卡、支票等</li>
+<li>共同基金：向公众出售股份，并用收入购买股票和债券组合。它的首要优点是可以使钱不多的人也可以进行多元化投资，其次可以使普通人获得专业资金管理者的服务。第二点会受到金融学家的质疑。在资金管理者都密切关注每家公司的前景时，跑赢市场是很困难的。实际上，有种<strong>指数基金</strong>的共同基金，按一个既定的股票指数购买所有股票，它的表现甚至更好些。</li>
+</ul>
+<h4 id="国民收入账户中的储蓄和投资"><a href="#国民收入账户中的储蓄和投资" class="headerlink" title="国民收入账户中的储蓄和投资"></a>国民收入账户中的储蓄和投资</h4><p>首先回忆一个恒等式：<code>Y=C+I+G+NX</code>。为了更好分析，我们考虑一个<em>封闭经济</em>，即<code>NX</code>为0的经济。换算一下得到<code>Y-C-G=I</code>。我们把左边算式即总收入减去消费和政府购买的结果称为<strong>国民储蓄</strong>，又叫储蓄，简写为<code>S</code>，因此<code>S=I</code>，即<strong>储蓄等于投资</strong>。</p>
+<p>假设<code>T</code>为政府以税收形式从家庭得到的数量减去转移支付（社保和福利）形式返回家庭的数量。则有<code>S=(Y-T-C)+(T-G)</code>。其中，<code>(Y-T-G)</code>称为私人储蓄，即家庭支付了税收和消费后剩下的收入，<code>(T-G)</code>称为公共储蓄，即政府在支付其指出后剩下的税收收入。T大于G时，政府得到的资金大于其指出而有<strong>预算盈余</strong>，T小于G时，政府会有<strong>预算赤字</strong>。</p>
+<h4 id="可贷资金市场"><a href="#可贷资金市场" class="headerlink" title="可贷资金市场"></a>可贷资金市场</h4><p><strong>可贷资金</strong>是指<strong>人们选择储蓄并贷出而不是用于消费的所有收入</strong>。</p>
+<ul>
+<li>可贷资金的供给来自有额外收入想储蓄和贷出的人。贷出可以直接购买债券或者借助银行进行。这种情况，储蓄是可贷资金供给的来源。</li>
+<li>可贷资金的需求来自希望借款进行投资的家庭和企业，可以用来用抵押贷款购置住房、或者企业借款购买新设备、建设新工厂。这种情况下，投资是可贷资金需求的来源。</li>
+</ul>
+<p>利率可以视为贷款的价格。综合上面可贷资金的供需，可以绘制出可贷资金的供求图。利率会自行调整使可贷资金供给、需求达到平衡。在分析中的“利率”指“真实利率”。</p>
+<ul>
+<li>储蓄激励。在这种激励下，借款成本较低，家庭和企业倾向于更多借款为投资筹资，从而<strong>利率下降且投资增加</strong></li>
+<li>投资激励。比如对投资付税减免政策。此时会<strong>利率上升且储蓄增加</strong></li>
+<li>政府预算赤字，赤字减少了国民储蓄，也就减少了可用于家庭和企业筹资的可贷资金的供给。由于政府借款引起的投资减少也被称为<strong>挤出</strong>。最终导致<strong>利率上升和投资减少</strong></li>
+<li>政府预算英语，相反会增加可贷资金的攻击，<strong>减低利率并刺激投资</strong></li>
+</ul>
+<p>金融市场也是市场的一种，可贷资金的价格——利率——也由供求的力量决定。金融市场的一个特点是，它有联系着现在和未来的重要作用。</p>
+<h3 id="金融学的基本工具"><a href="#金融学的基本工具" class="headerlink" title="金融学的基本工具"></a>金融学的基本工具</h3><h4 id="现值"><a href="#现值" class="headerlink" title="现值"></a>现值</h4><p><strong>现值</strong>，即用当下利率产生给定未来货币量所需的当下货币量。是基础的用来衡量货币时间价值的工具。今天的钱永远比未来同样数量的钱更值钱。寻找未来货币量对应到当下货币量的过程，被称为<strong>贴现</strong>。计算现值时，会用到复利的概念，根据<strong>70规则</strong>，如果变量每年的增长率为x%，那么大约70/x年后，变量会翻一番。</p>
+<h4 id="风险管理"><a href="#风险管理" class="headerlink" title="风险管理"></a>风险管理</h4><p>经济学家用<strong>效用</strong>的概念衡量一个人对福利或满足的主观衡量，效用函数会体现出边际递减的性质。即拥有的财富越多，获得等量财富得到的效用越少。同时，也由于边际递减性质，几乎所有人都有<strong>风险厌恶</strong>的特征。即不愿冒着失去x元的风险赌可能获得x元的可能性。那么怎么应对这种风险厌恶呢？</p>
+<ul>
+<li><strong>保险市场</strong>，购买保险，用保险费的方式让保险公司帮你承担风险。保险的作用并不是消除风险，而是能够更有效的分摊风险。保险市场受到两个制约分摊能力的因素影响：<ul>
+<li>逆向选择：高风险的人申请保险的几率更高</li>
+<li>道德风险：购买保险后，人们规避风险的激励变小了</li>
+</ul>
+</li>
+<li><strong>企业特有风险</strong>的<strong>多元化</strong>：即选择更丰富的<strong>不相关</strong>的股票组合，避免受到一家公司的风险影响。也即“不要把所有鸡蛋都放在一个篮子里”。需要注意的是，多元化只能解决企业特有风险，不能消除市场固有风险，比如金融危机。</li>
+</ul>
+<p>人们可以在收益和风险间选择取舍，股票收益更高，但是标准差也更大。政府债券等安全替代品基本没有标准差，因此收益也更低。</p>
+<h4 id="资产评估"><a href="#资产评估" class="headerlink" title="资产评估"></a>资产评估</h4><p>OK！我们现在对时间以及风险都有了了解，那么怎样去购买股票呢？股票的价格时怎么受供给和需求控制的呢？我们在购买股票的时候，更希望所购买的股票<strong>价格</strong>低于其<strong>价值</strong>。</p>
+<ul>
+<li><strong>基本面分析</strong>，即对一家公司做足够详尽的分析，以确定其价值。你可以自行阅读公司年报来做研究，或者听从专业分析师的建议，再或者购买<strong>共同基金</strong>让它来帮你进行基本面分析</li>
+<li><strong>有效市场假说</strong>，这种假说认为股市上的所有上市公司信息足够透明，也处于基金管理者的跟踪之下，他们的工作就是在价格低于价值时买进，高于时抛出；从而让价格稳定在价值附近。另外，供求均衡也决定了市场价值，即所有股票都已被公正的估价。根据这一理论，股票市场表现出<strong>信息有效</strong>，它反映了关于资产价值可获得的所有信息。从而股票价格应该是<strong>随机游走</strong>的，因为有关股票价格的所有信息都已在当下体现在价格上了。</li>
+</ul>
+<p>有效市场假说最有力的证据来自指数基金的业绩。即按照既定股票指数购买所有股票的共同基金。它的表现大体上优于经过精心挑选的股票组合的共同基金。普通共同基金的频繁交易也导致了更多的交易费用。关于金融市场的研究证实了，<strong>胜过市场是极为困难的</strong>。</p>
+<p>在有效市场假说外，也有经济学家认为，非理性的心理因素也会影响资产的价格，当你评价一个股票时，你不仅必须估算企业的价值，还有估算其他人认为企业未来值多少。</p>
+<h3 id="失业"><a href="#失业" class="headerlink" title="失业"></a>失业</h3><p>很显然，那些<em>想工作</em>但是找不到工作的人对经济中物品和服务的生产没有做出贡献。失业对于GDP自然是有所影响的。失业问题中包含<strong>自然失业率</strong>和<strong>周期性失业</strong>，前者是经济中长期存在的失业量。</p>
+<p>在政府衡量失业率时，会同时统计<strong>就业者</strong>、<strong>失业者</strong>和<strong>非劳动力</strong>。</p>
+<ul>
+<li>就业者：作为得到报酬的员工工作的人，在自己企业工作得到报酬的人，在家族企业工作但没有报酬的人等。不论是全职还是兼职都计算在内。</li>
+<li>失业者：能够工作且有努力找工作，但没有找到的人，还包括被解雇正在等待重新回到工作岗位的人</li>
+<li>非劳动力：上面两类以外的人，如全日制学生、退休人员、家务劳动者</li>
+</ul>
+<p>劳动力由就业者和失业者组成。失业率也等于失业者和劳动力的比值。劳动率参工率等于劳动力和成年人口的比值。在美国的统计结果中，最佳工作年龄的女性参工率低于男性，黑人失业率更高，青少年参工率低很多，失业率也更高。随着时代的变化，新技术和社会态度的变化让女性的参工率渐渐向男性靠拢。</p>
+<p>衡量失业其实并不仅仅是失业率那么简单。一方面，有<strong>丧失信心的工人</strong>和避免纳税等人群存在，会影响失业率指标的准确性。我们同事也要具体细分失业人群。大多数情况下，<strong>大多数失业是短期的，然而既定时间段内观察到的失业都是长期的</strong>。那么为什么会有人一直失业呢？在一个理想的劳动市场，工资会调整劳动的供给和需求，并保证工人充分就业。但是这只是宏观的结论，对于具体的每个人，可能有因为个人偏好和技能不匹配引发的<strong>摩擦性失业</strong>，另外，由于某些原因引发的工作岗位不足、工资高于均衡水平（最低工资法、工会、效率工资），也会带来<strong>结构性失业</strong>。</p>
+<h4 id="寻找工作"><a href="#寻找工作" class="headerlink" title="寻找工作"></a>寻找工作</h4><p>经济中总存在失业一方面和寻找工作有关。因为部门转移或经济发生结构性变化，总会带来摩擦性失业。摩擦性失业是不可避免的，因为经济总处在变化之中。针对这种情况，政府可以组织就业培训，或干脆直接发布职位。但也有人认为应该把决策交给工人和雇主。</p>
+<p>美国的<strong>失业保险</strong>政策可以给享有的普通工人在26周内提供以前工资50%的补助。这提高了工人与工作相匹配的能力，但这一方面也反方面激励人们不认真找工作，和不在乎雇主对工作保障的保证。</p>
+<h4 id="最低工资"><a href="#最低工资" class="headerlink" title="最低工资"></a>最低工资</h4><p>最低工资在少数情况下，会高于劳动市场供需平衡的均衡价格（绝大多数情况下，工人的工资都大大高于最低工资）。因此，最低工资的存在值解释了那些工资极低的劳动力存在结构性失业的可能性。这些工人通常都是年轻人、受教育少的人、从事兼职的人。</p>
+<h4 id="工会和集体谈判"><a href="#工会和集体谈判" class="headerlink" title="工会和集体谈判"></a>工会和集体谈判</h4><p>工会作为工人的一种卡特尔，代表工人和雇主就津贴、工资、工作条件等进行谈判，并以罢工作为抗议手段。经过调查发现，参与工会的工人得到的收入比类似条件下，不参与工会的工人高出10%-20%。当工会把工资提高到均衡水平之上时，劳动供给增加、需求减少，引发结构性失业。这部分因此失业的劳动力情况反而变差。政府对于工会出台了一些政策和法律加以保护。</p>
+<p>至于工会对于经济是好是坏，没有准确的答案，有人说工会对于工人的收益是以另一些工人的损失为代价的，也有人说工会可以平衡企业的市场势力，保护工人免受企业所有者的摆布。</p>
+<h4 id="效率工资理论"><a href="#效率工资理论" class="headerlink" title="效率工资理论"></a>效率工资理论</h4><p><strong>均衡工资</strong>理论告诉我们，如果<strong>工资高于均衡水平，企业的经营会更有效率</strong>。这也是导致结构性失业的一个原因。乍一听这个理论和我们的第一印象相反。但实际高工资可以提高企业的工人效率。</p>
+<ul>
+<li><strong>工人健康</strong>，高工资可以提高工人身体素质</li>
+<li><strong>工人流动率</strong>，高工资下，更少工人选择辞职，降低了工人流动率；企业雇佣和培训新工人也是有成本的，且新工人一开始的生产率也不如有经验的工人高</li>
+<li><strong>高素质工人</strong>，重赏之下必有勇夫，同样的，高工资能吸引更好的工人来申请工作。</li>
+<li><strong>工人忠诚度</strong>，高工资使工人更渴望保持他们的工作，从而给予工人付出最大努力的激励。</li>
+</ul>
+<h2 id="长期中的货币与物价"><a href="#长期中的货币与物价" class="headerlink" title="长期中的货币与物价"></a>长期中的货币与物价</h2><h3 id="货币制度"><a href="#货币制度" class="headerlink" title="货币制度"></a>货币制度</h3><h4 id="货币的含义"><a href="#货币的含义" class="headerlink" title="货币的含义"></a>货币的含义</h4><p>在没有货币这种被大众接受的媒介出现时，你们不得不依靠物物交换，这种经济需要需求的双向一致性，即刚好彼此都有对方想要的物品或服务；货币在经济中有着相当重要的作用。</p>
+<p>货币是经济中人们经常用于相互购买物品和服务的一组资产。它有着多种职能：<strong>交换媒介</strong>、<strong>计价单位</strong>、<strong>价值储藏手段</strong>。经济中通常用<strong>流动性</strong>来说明一种资产兑换为经济中交换媒介的容易程度，如货币的流动性是最强的，而房产、艺术品就比较弱。人们决定以不同形式持有自己财富时，会努力在流动性和价值储藏手段上寻求平衡。货币在流动性上很好，但是作为价值储藏手段就不大行了。</p>
+<p>货币大体上可以分为<strong>商品货币</strong>和<strong>法定货币</strong>两类：</p>
+<ul>
+<li>商品货币：货币本身有内在价值，如黄金</li>
+<li>法定货币：由政府法令确定的货币，没有内在价值</li>
+</ul>
+<p>经济中流通的货币量称为货币存量，它包含<strong>通货</strong>（手中持有的纸币和铸币）、活期存款等。在美国有美联储负责管理法定货币制度。它主要有两个工作：</p>
+<ul>
+<li>管制银行并保证银行的正常运作，充当银行的<em>最后贷款者</em>，保证银行体系的稳定</li>
+<li>控制经济中可以得到的货币量，又称<strong>货币供给</strong>，从而调节经济。美联储的主要工具是<em>公开市场操作</em>——买卖美国政府债券</li>
+</ul>
+<h4 id="银行和货币供给"><a href="#银行和货币供给" class="headerlink" title="银行和货币供给"></a>银行和货币供给</h4><p>你持有的货币量除了通货还包含你的活期存款。因此银行也会影响货币供给。在一家得到不贷出的银行里，<strong>准备金</strong>即存款，且<strong>准备金率</strong>为100%。这种情况下，银行不增加货币供给。如果银行将一部分存款贷出来收取利息，准备金率则小于1，这种银行也叫作<strong>部分准备金银行</strong>。准备金率是由政府管制和银行政策一同制定的。在有部分存款被贷出后，增加的货币量以贷款人的负债形式存在，整体上看增加了货币量。最终通过准备金可以产生的货币量等于准备金乘以准备金率的倒数。这个系数也被称为<strong>货币乘数</strong>，即1单位准备金所产生的货币量。准备金率越高，银行贷出的款越少，货币乘数也越小。准备金率为1时，货币乘数为1，银行不贷款，也不创造货币。</p>
+<p>上面的讨论是一种简单的场景，实际上银行的资产负债表上，还会包括银行向其所有者发行的股票中的得到的<strong>银行资本</strong>，以及发行债券得到的债务，利用<strong>存款、债务和自身资本</strong>，银行在保留一定准备金时，可以向外贷款或购买有价证券。经济中许多经营活动依赖<strong>杠杆</strong>，即将借到的货币追加到用于投资的现有资金上。银行正是利用了杠杆。银行的<strong>杠杆率</strong>是银行总资产和银行资本的比值。在下面的假设中，银行资本只有50，剩下的部分用过吸收存款和发行债券得到。杠杆率为20,。资产价值5%的增加就会使所有者权益增加100%，相反如果资产价值下降超过5%，银行的资本就会减少到低于负债，从而<strong>破产</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">    资产         负债和所有者权益</div><div class="line">——————————————————————————————————</div><div class="line">准备金   200   |   存款         800</div><div class="line">贷款    700    |   债务         150</div><div class="line">有价证券 100   |资本（所有者权益）  50</div></pre></td></tr></table></figure>
+<p>银行管制者要求银行持有一定量资本，保证银行能偿还储户的存款（不依赖政府帮助情况下）。</p>
+<h4 id="美联储控制货币的工具"><a href="#美联储控制货币的工具" class="headerlink" title="美联储控制货币的工具"></a>美联储控制货币的工具</h4><p>美联储主要通过<strong>影响准备金量</strong>和<strong>影响准备金率</strong>来影响货币乘数。</p>
+<ul>
+<li>影响准备金量：可以通过公开市场操作，即公开买卖政府债券，增大和减小货币供给；也可以通过<em>贴现窗口</em>向银行发放贷款，贷款的利率被称为<strong>贴现率</strong>。提高和降低贴现率分别会减少和鼓励向美联储借款，从而减少和增加货币供给</li>
+<li>影响准备金率：可以通过改变<strong>法定准备金</strong>规定银行持有的最低准备金量，由于许多银行超额持有准备金，这个方法现在使用不多；还可以通过支付准备金利息，即以美联储存款的方式持有准备金时，向银行支付利息。</li>
+</ul>
+<p>在实际场景中，美联储并不能控制家庭选择以存款的方式持有的货币量，以及不能控制银行选择的贷款量，所以经济中的货币量部分取决于储户和银行家的行为。比如银行挤兑。现在，银行挤兑已经不是美国银行体系或美联储的主要问题，因为联邦存款保险公司（FDIC）保证大多数银行存款的安全。储户确信即使银行破产，他们的存款也将完好无损。</p>
+<h5 id="联邦基金利率"><a href="#联邦基金利率" class="headerlink" title="联邦基金利率"></a>联邦基金利率</h5><p>联邦基金利率即银行向另一家银行进行隔夜贷款时的利率。这种贷款是短期的，通常只有一夜。它和贴现率有所不同，一个是向银行借款，一个是向美联储借款，一般在银行缺乏准备金时，哪个方法便宜用哪个。由于金融体系各部分高度相关，联邦基金利率虽然只和银行借钱有关，但实际上也和其他类型贷款利率密切相关。美联储会定期开会确定联邦基金利率的目标，并通过公开市场操作等方式去实现该目标。</p>
+<h3 id="货币增长和通货膨胀"><a href="#货币增长和通货膨胀" class="headerlink" title="货币增长和通货膨胀"></a>货币增长和通货膨胀</h3><p>人们日常感受到的物价升高是通货膨胀的一种体现，相反还有通货紧缩。在<a href="https://shenlvmeng.github.io/blog/2019/05/07/principles-of-microeconomics/" target="_blank" rel="external">微观经济学</a>第一章中的经济学十大原理之一：政府发行货币过多时，物价上升。通货膨胀的成本可能并不像民众想象的那么大。</p>
+<h4 id="古典通货膨胀理论"><a href="#古典通货膨胀理论" class="headerlink" title="古典通货膨胀理论"></a>古典通货膨胀理论</h4><p>古典通货膨胀理论可以用来说明物价水平和通货膨胀率的长期决定因素。物价水平的上升从另一个角度理解即<strong>每单位货币的价值下降</strong>。因此<strong>物价水平也可以看做货币价值的一种衡量指标</strong>。</p>
+<p>而货币的价值也通过<strong>货币供给</strong>和<strong>货币需求</strong>决定。</p>
+<ul>
+<li>货币供给：美联储的公开市场操作，出售或买入政府债券时可以减少和扩大货币供给</li>
+<li>货币需求：热门想以流动性形式持有的财富量</li>
+</ul>
+<p><strong>在长期中，物价总水平总会调整到使货币需求等于货币供给的水平</strong>。当有货币注入时，根据<strong>货币数量论</strong>，经济中可得到的货币量决定了货币的价值。而在两个稳态间的整个调整过程可以描述为：人们会试图用消费或储蓄的方式花掉超额货币供给，储蓄的方式又可以通过贷款再度转化到消费，去<strong>增加人们对物品和服务的需求</strong>。然而经济中生成物品和服务的能力并不会随着货币注入而增加（它和物质资本、人力资源、自然资源、生产技术相关），因此需求的增加引起价格上升，这增加了人们的货币需求量。从而达到新的均衡。</p>
+<h5 id="古典二分法、货币中性和流通速度"><a href="#古典二分法、货币中性和流通速度" class="headerlink" title="古典二分法、货币中性和流通速度"></a>古典二分法、货币中性和流通速度</h5><p>大卫·休谟提出，所有的经济变量可以分为两类：<strong>名义变量</strong>是按货币单位衡量的变量，如农民的收入，<strong>真实变量</strong>是按实物单位衡量的变量，如玉米的产量。这种将名义变量和真实变量区分开的理论成为<strong>古典二分法</strong>。根据古典分析，名义变量会受到货币制度发展影响，而货币和真实变量是基本无关的。如我们在前面曾讨论过的：</p>
+<ul>
+<li>经济中物品和服务的生产主要取决于生产率和要素供给</li>
+<li>真实利率的调节可以使可贷资金供给平衡</li>
+<li>真实工资调整高于均衡水平时，会引起失业</li>
+</ul>
+<p>这种货币供给对真实变量的无关性称为<strong>货币中性</strong>。货币中性在短期内不完全正确，但是在长期经济上是正确的。</p>
+<p>货币流通速度用来衡量货币易手的速度。用Y代表真实GDP，P代表GDP平减指数，M代表货币量，V作为货币流通速度，则有MV = PY，即<strong>数量方程式</strong>。在经济体中，货币流通速度基本是不变的，它主要和社会观念、人们习惯、科学发展等相关。在货币数量论中有下面几个关键结论：</p>
+<ol>
+<li>货币流通速度一直是比较稳定的</li>
+<li>由于1，所以当货币量M改变时，PY也会等比例变动</li>
+<li>Y由要素供给（劳动、物质资本、人力资本、自然资源）和生产技术决定，由于货币中性，它并不影响产量</li>
+<li>由于3，M的变动会反映在物价水平P的变动上</li>
+<li>从而中央银行迅速增加货币供给时，结果就是高通货膨胀率</li>
+</ol>
+<h5 id="通货膨胀税和费雪效应"><a href="#通货膨胀税和费雪效应" class="headerlink" title="通货膨胀税和费雪效应"></a>通货膨胀税和费雪效应</h5><p>尽管通货膨胀会导致货币贬值，有些国家政府为了更方便快捷支付其支出（通常在高额支出且税收借款能力不足时），会选择创造货币。政府在通过印发货币筹集收入时，可以认为在征收一种<strong>向每个持有货币的人征收的通货膨胀税</strong>。这样导致的物价水平飞涨一般会随着货币制度改革而消除。</p>
+<p>我们在前面提到，真实利率=名义利率-通货膨胀率。可贷资金的供求决定<strong>真实利率</strong>。货币增长的变动不会影响真实利率，但是会一比一地体现在名义利率上，因为反过来名义利率=真实利率+通货膨胀率。这种<strong>名义利率根据通货膨胀率所做的调整</strong>也称为<strong>费雪效应</strong>。</p>
+<h4 id="通货膨胀的成本"><a href="#通货膨胀的成本" class="headerlink" title="通货膨胀的成本"></a>通货膨胀的成本</h4><p>首先，通货膨胀并不会导致购买力下降。因为在物价膨胀时，出卖物品、服务的人收入也得到了膨胀。也正如上一节所说，真实收入是由真实变量决定的。不过通胀还是会带来一些成本。</p>
+<ul>
+<li><strong>皮鞋成本</strong>：通货膨胀像一种税，税收这种激励的扭曲给社会带来了无谓损失。皮鞋成本字面意义是更经常去银行会使你的鞋磨损得更快。实际上是指减少货币持有量的成本，比如你牺牲的时间和便利。</li>
+<li><strong>菜单成本</strong>：相反地，企业为应对通胀不得不改变定价。这种改变价格的成本成为菜单成本。</li>
+<li>通胀会扭曲相对价格，扭曲消费者的决策，从而带来<strong>资源配置不当</strong></li>
+<li>税收扭曲：许多税收都以名义量作为标尺,通胀夸大了资本收益的规模，无形中增加了这种收入的税收负担。税收<strong>指数化</strong>可以缓解这种情况</li>
+<li>通胀侵蚀计价单位的真实价值带来的<strong>混乱和不方便</strong></li>
+<li>未预期到的通货膨胀会带来意料之外的<strong>财富再分配</strong>。<em>超速通货膨胀</em>会转移债务人负担到债权人，相反通货紧缩会增大债务人负担</li>
+</ul>
+<p>整体来看，超速通胀期间，上面这些成本是可观的。不过温和通胀期间，如每年物价上涨10%以内时，这些成本的大小则还没有定论。另一方面，通货紧缩会减小经济中物品和服务的需求，从而带来收入减少和失业增加。这可能比通胀的成本更高。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/05/31/pragmatic-thinking-and-learning/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -859,834 +1867,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/04/17/fe-coverage-improve/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2020/04/17/fe-coverage-improve/" itemprop="url">前端代码覆盖率实时统计改进方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-17T00:08:03+08:00">
-                2020-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2020/04/17/fe-coverage-improve/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2020/04/17/fe-coverage-improve/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><a href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/" target="_blank" rel="external">旧的覆盖率方案</a>实现了覆盖率采集的可行性探索。但是旧方案中也存在着侵入较多，适用场景有局限性，istanbul版本老旧，sourcemap支持不足等问题需要优化。有关覆盖率采集、维护、呈现、上报需要一个更通用和更具可拓展性的方案。</p>
-<p>因此，在对整个覆盖率要解决的问题和目标进行抽象后，可以得到以下的实现方案。</p>
-<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img src="https://s1.ax1x.com/2020/04/16/JEZ1J0.png" alt="整体结构"></p>
-<p>新的覆盖率方案可以分为3层：</p>
-<ul>
-<li><strong>采集层</strong>，这一层主要解决对代码进行<strong>插桩</strong>（instrument）的过程，只有插桩过的代码才能在执行的过程中不断积累覆盖率数据，从而通过端到端测试得到代码的覆盖率情况</li>
-<li><strong>数据层</strong>，采集到的覆盖率数据有上报的需求，浏览器端数据只有上报到服务端才能查看和操作，如果接入第三方平台，就更需要有专门数据<strong>处理和上报</strong>，这一层正是完成这部分工作</li>
-<li><strong>视图层</strong>，方案要自带<strong>视图化</strong>能力，给开发者更直观的反馈，同时要有<strong>可交互性</strong>，满足开发者的日常需求。这一层要能比较方便地绑定到流行的服务端环境中，减少侵入成本</li>
-</ul>
-<p>整体实现上，基于新版本<a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">istanbuljs</a>。下面分层介绍各层实现中需要进行的工作。</p>
-<h2 id="采集层"><a href="#采集层" class="headerlink" title="采集层"></a>采集层</h2><p>代码插桩实现中，拆分为下面几点：</p>
-<h3 id="babel-preset"><a href="#babel-preset" class="headerlink" title="babel preset"></a>babel preset</h3><p>对于使用babel转码的工程来说，<a href="https://github.com/istanbuljs/babel-plugin-istanbul" target="_blank" rel="external">babel-plugin-istanbul</a>直接提供了一个可以插桩代码的插件。这里要做的只是区分线上和其他环境，以及预定义preset，减少用户babel配置成本。</p>
-<p>babel preset的书写可以参考<a href="https://babeljs.io/docs/en/presets#creating-a-preset" target="_blank" rel="external">babel preset</a>一节，我们只需将原先<code>.babelrc</code>或<code>babel.config.js</code>中的配置项用<code>require</code>包裹即可。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">env</span>: &#123;</div><div class="line">            <span class="attr">development</span>: &#123;</div><div class="line">                <span class="attr">plugins</span>: [</div><div class="line">                    [<span class="built_in">require</span>(<span class="string">'babel-plugin-istanbul'</span>)]</div><div class="line">                ]</div><div class="line">            &#125;,</div><div class="line">            <span class="attr">boe</span>: &#123;</div><div class="line">                <span class="attr">plugins</span>: [</div><div class="line">                    [<span class="built_in">require</span>(<span class="string">'babel-plugin-istanbul'</span>)]</div><div class="line">                ]</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>相对应的，接入方需要额外在<code>scm_build.sh</code>脚本中额外传入boe环境变量来区分boe和线上环境：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [ <span class="variable">$BUILD_TYPE</span> = <span class="string">"offline"</span> ]; <span class="keyword">then</span></div><div class="line">    BABEL_ENV=boe yarn build</div><div class="line"><span class="keyword">else</span></div><div class="line">    yarn build</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
-<p>同时，默认情况下，istanbul只会对后缀为<code>[&#39;.js&#39;, &#39;.cjs&#39;, &#39;.mjs&#39;, &#39;.ts&#39;, &#39;.tsx&#39;, &#39;.jsx&#39;]</code>的文件进行处理，为了处理<code>.vue</code>文件，需要显式给<code>babel-plugin-istanbul</code>文件传入<code>extension</code>字段。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">env</span>: &#123;</div><div class="line">            <span class="attr">development</span>: &#123;</div><div class="line">                <span class="attr">plugins</span>: [</div><div class="line">                    [<span class="built_in">require</span>(<span class="string">'babel-plugin-istanbul'</span>), &#123; <span class="attr">extension</span>: [<span class="string">'.js'</span>, <span class="string">'.cjs'</span>, <span class="string">'.mjs'</span>, <span class="string">'.ts'</span>, <span class="string">'.tsx'</span>, <span class="string">'.jsx'</span>, <span class="string">'.vue'</span>] &#125;]</div><div class="line">                ]</div><div class="line">            &#125;,</div><div class="line">            <span class="attr">boe</span>: &#123;</div><div class="line">                <span class="attr">plugins</span>: [</div><div class="line">                    [<span class="built_in">require</span>(<span class="string">'babel-plugin-istanbul'</span>), &#123; <span class="attr">extension</span>: [<span class="string">'.js'</span>, <span class="string">'.cjs'</span>, <span class="string">'.mjs'</span>, <span class="string">'.ts'</span>, <span class="string">'.tsx'</span>, <span class="string">'.jsx'</span>, <span class="string">'.vue'</span>] &#125;]</div><div class="line">                ]</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h3 id="hookRequire动态插桩"><a href="#hookRequire动态插桩" class="headerlink" title="hookRequire动态插桩"></a><code>hookRequire</code>动态插桩</h3><p>有些场景下并不使用babel进行转码，这里以最典型的TypeScript为例，<code>.ts</code>文件可以用<code>tsc</code>编译。<code>tsc</code>编译后的js代码只有插桩后，才可能采集到的覆盖率数据，因此接入方需要在所有业务代码的import之前调用hook，保证所有的服务端js代码在被执行前都完成了插桩。</p>
-<p>实现上，新版本istanbuljs整个是个monorepo，原来istanbul各模块的功能拆分到了packages的各子项目中。其中和hook相关的位于<strong>istanbul-lib-hook</strong>。这个库虽然并没有API和文档。但还好，和老版本的hook.js区别不大。使用暴露出来的<strong>hookRequire</strong>方法即可，使用方式也与之前无异。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// old</span></div><div class="line"><span class="keyword">import</span> * as istanbul from <span class="string">'istanbul'</span>;</div><div class="line"><span class="keyword">const</span> &#123; hook &#125; = istanbul;</div><div class="line"></div><div class="line">instrumenter = <span class="keyword">new</span> Instrumenter(options);</div><div class="line"><span class="keyword">const</span> transformer = instrumenter.instrumentSync.bind(instrumenter);</div><div class="line">hook.hookRequire(matcher, transformer, &#123;</div><div class="line">    postLoadHook: (file: <span class="built_in">any</span>) =&gt; &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// new</span></div><div class="line"><span class="keyword">import</span> &#123; hookRequire &#125; from <span class="string">'istanbul-lib-hook'</span>;</div><div class="line"><span class="keyword">import</span> &#123; createInstrumenter &#125; from <span class="string">'istanbul-lib-instrument'</span>;</div><div class="line"></div><div class="line">instrumenter = createInstrumenter(options);</div><div class="line"><span class="keyword">const</span> transformer = instrumenter.instrumentSync.bind(instrumenter);</div><div class="line">hookRequire(matcher, transformer, &#123;</div><div class="line">    postLoadHook: (file: <span class="built_in">any</span>) =&gt; &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p><code>hookRequire</code>方法接受3个参数：</p>
-<ul>
-<li><code>matcher</code>，来自用户输入，用来判断当前文件是否要被hook</li>
-<li><code>transformer</code>，最关键的代码转换函数，读入代码，返回转换后的代码，插桩的转换由<strong>istanbul-lib-instrument</strong>提供（原先的instrumenter.js），理论上也能支持其他的转换函数。这里使用<code>instrumentSync</code>这个同步转换。</li>
-<li><code>options</code>，支持verbose和postLoadHook两个选项<ul>
-<li><code>verbose</code>，boolean，是否打印详细日志</li>
-<li><code>postLoadHook</code>，function，成功回调，函数会传入完整的文件名</li>
-</ul>
-</li>
-</ul>
-<h3 id="sourcemap处理"><a href="#sourcemap处理" class="headerlink" title="sourcemap处理"></a>sourcemap处理</h3><p>由于istanbuljs插桩的是编译后的js代码，需要借助sourcemap才能找到源文件的覆盖情况。编译后文件的覆盖情况对开发者没有借鉴意义。使用<code>hookRequire</code>动态插桩时，还是需要自己处理sourcemap。</p>
-<p>老版本istanbul对sourcemap并不支持，需要借助<a href="https://github.com/SitePen/remap-istanbul" target="_blank" rel="external">remap-istanbul</a>才能实现。新版本的istanbuljs有一个独立的包<strong>istanbul-lib-source-maps</strong>支持这方面的功能。遗憾的是，再次没有文档介绍如何使用。</p>
-<p>通过查看测试样例和阅读源码可以发现，istanbul-lib-instrument中的<code>instrumentSync</code>支持第三个<code>sourcemap</code>参数，如果传入，则会在采集文件的覆盖率数据中附加该文件的sourcemap信息到<code>inputSourceMap</code>字段。而istanbul-lib-source-maps这个包可以对覆盖率数据中带有<code>inputSourceMap</code>字段的数据进行反映射，得到源文件覆盖情况。最终达到我们的目的。</p>
-<p>源文件的sourcemap信息需要自己采集，这里借鉴的nyc中使用的方案：<a href="https://github.com/thlorenz/convert-source-map" target="_blank" rel="external">convert-source-map</a>。这个npm包可以读取文件末尾的sourcemap字符串并转换为sourcemap对象。所以整体上，实现sourcemap处理的流程如下：</p>
-<ol>
-<li>在hookRequire的transformer中拿到代码字符串</li>
-<li>通过convert-source-map的<code>fromSource</code>方法拿到sourcemap对象</li>
-<li>在调用istanbul-lib-instrument的<code>instrumentSync</code>方法时，传入该对象<ol>
-<li>instrumenter内部的visitor.js调用source-coverage.js的<code>inputSourceMap</code>方法将文件的sourcemap传入</li>
-<li>source-coverage.js将sourcemap存入覆盖率数据中</li>
-</ol>
-</li>
-<li>使用istanbul-lib-source-maps中的<code>transformCoverage</code>方法转换覆盖率数据即可得到原始的覆盖率</li>
-</ol>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; createInstrumenter &#125; from <span class="string">'istanbul-lib-instrument'</span>;</div><div class="line"><span class="keyword">import</span> convert from <span class="string">'convert-source-map'</span>;</div><div class="line"></div><div class="line">instrumenter = createInstrumenter(&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;);</div><div class="line"><span class="comment">// Step 1</span></div><div class="line"><span class="keyword">const</span> transformer: Transformer = (code, options) =&gt; &#123;</div><div class="line">    <span class="comment">// Step 2</span></div><div class="line">    <span class="keyword">const</span> sourceMap = convert.fromSource(code);</div><div class="line">    <span class="comment">// Step 3</span></div><div class="line">    <span class="keyword">const</span> transformed = instrumenter.instrumentSync(</div><div class="line">        code,</div><div class="line">        options.filename,</div><div class="line">        sourceMap ? sourceMap.toObject() : <span class="literal">undefined</span></div><div class="line">    );</div><div class="line">    <span class="keyword">return</span> transformed;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">hook(matcher, transformer, &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h2 id="数据层"><a href="#数据层" class="headerlink" title="数据层"></a>数据层</h2><p>在覆盖率数据维护上，主要有下面几点工作：</p>
-<h3 id="sourcemap处理-1"><a href="#sourcemap处理-1" class="headerlink" title="sourcemap处理"></a>sourcemap处理</h3><p>在代码插桩附带上sourcemap信息后，可以参考istanbul-lib-source-maps的测试用例，用<code>transformCoverage</code>方法转换得到原始的覆盖率，即上一个同名小节中的第4步。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">async <span class="function"><span class="keyword">function</span> <span class="title">getOriginalCoverage</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// 采集到的覆盖率</span></div><div class="line">    <span class="keyword">const</span> currCoverage = <span class="keyword">this</span>.getCoverage();</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">const</span> coverageMap = createCoverageMap(currCoverage);</div><div class="line">    <span class="keyword">const</span> mapStore = createSourceMapStore(&#123;&#125;);</div><div class="line">    <span class="comment">// Step 4</span></div><div class="line">    <span class="keyword">const</span> transformed = await mapStore.transformCoverage(coverageMap);</div><div class="line">    <span class="comment">// 对应到源文件的覆盖率</span></div><div class="line">    <span class="keyword">return</span> transformed.data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>实现时，还需要注意对一些sourcemap结构体中的<code>sourceRoot</code>进行特殊处理，避免反映射后得到嵌套的错误路径。</p>
-<h3 id="覆盖率数据维护"><a href="#覆盖率数据维护" class="headerlink" title="覆盖率数据维护"></a>覆盖率数据维护</h3><p>在一个测试覆盖率的周期下，需要merge每次产生的新的覆盖率。同时，要能通过原始的覆盖率数据生成摘要，方便UI展示。</p>
-<p>istanbul-lib-coverage的<code>CoverageMap</code>类型自带的<code>merge</code>方法，可以merge新的覆盖率数据到源<code>CoverageMap</code>中。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">mergeClientCoverage</span>(<span class="params">clientCoverage: CoverageMap</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!clientCoverage) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> currCoverage = getCoverageObject();</div><div class="line">    <span class="keyword">const</span> coverageMap = createCoverageMap(currCoverage)</div><div class="line">    coverageMap.merge(clientCoverage)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="基准覆盖数据维护"><a href="#基准覆盖数据维护" class="headerlink" title="基准覆盖数据维护"></a>基准覆盖数据维护</h3><p>有些js代码在未访问到业务代码时就会被执行到，比如<code>import</code>和<code>export</code>语句。这些覆盖率如果被清空，就再也无法通过端到端测试找回来，所以需要对于这部分覆盖数据专门维护，这里称作<strong>基准覆盖数据</strong>。</p>
-<p>实现上，在hook完成后，取得hook文件的覆盖率数据，即可得到。这里需要异步执行，保证能够取到。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">hook(matcher, transformer, &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    postLoadHook: (filename: <span class="built_in">string</span>) =&gt; &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        matcher(filename) &amp;&amp; setTimeout(() =&gt; Coverage.saveBaselineCoverage(filename));</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>每次reset操作，实现上并非简单的清空数据，而是将覆盖率数据置为基准覆盖数据。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// express</span></div><div class="line">app.post(<span class="string">'/reset'</span>, (req, res) =&gt; &#123;</div><div class="line">    Coverage.restoreBaselineCoverage();</div><div class="line">    res.json(&#123; code: <span class="number">0</span> &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="数据上报"><a href="#数据上报" class="headerlink" title="数据上报"></a>数据上报</h3><p>数据上报只需实现定期上报，在上报时通过使用方预先定义好的中间件，便于使用方做预处理的工作。同时，提供一个关闭方法，可以在适当时机停止上报，形如：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> CoverageCollector &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    use(middleware: Middleware) &#123;</div><div class="line">        <span class="keyword">this</span>.middlewares.push(middleware);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    init() &#123;</div><div class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.intervalFlag) &#123;</div><div class="line">            <span class="keyword">this</span>.intervalFlag = setInterval(() =&gt; <span class="keyword">this</span>.send(), <span class="keyword">this</span>.interval);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    close() &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.intervalFlag) &#123;</div><div class="line">            clearInterval(<span class="keyword">this</span>.intervalFlag);</div><div class="line">            <span class="keyword">this</span>.intervalFlag = <span class="literal">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> async send() &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        <span class="keyword">const</span> coverageData = <span class="keyword">this</span>.middlewares.reduce((data, middle) =&gt; middle(data), coverage);</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            await axios.post(<span class="keyword">this</span>.url, coverageData);</div><div class="line">        &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">            <span class="keyword">this</span>.log(<span class="string">'Send coverage data failed: '</span>, err);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="视图层"><a href="#视图层" class="headerlink" title="视图层"></a>视图层</h2><p>视图化和可操作性上，有下面几点工作：</p>
-<h3 id="路由提供"><a href="#路由提供" class="headerlink" title="路由提供"></a>路由提供</h3><p>中间件对于开发者的受益，体现在能够通过浏览器访问得到视图化和可操作性的覆盖率数据。在功能上，中间件提供5个路由：</p>
-<ul>
-<li><code>/</code>，GET，提供整个项目的覆盖率摘要页面</li>
-<li><code>/show</code>，GET，访问文件或文件夹时，提供文件覆盖率详情或文件夹覆盖率摘要</li>
-<li><code>/reset</code>，POST，重置当前项目的覆盖率，开始一次新的采集周期</li>
-<li><code>/object</code>，GET，返回覆盖率的原始数据的JSON格式</li>
-<li><code>/client</code>，POST，用来接收来自浏览器端的覆盖率数据，merge到整体的覆盖率数据中</li>
-</ul>
-<p>实现上，直接提供预定义好的app或express应用，npm包暴露一个attachHandler API，使用方直接挂载即可拥有上述功能。类似下面所示。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app.use(mount(<span class="string">'/coverage'</span>, attachHandler.koa()));</div></pre></td></tr></table></figure>
-<p>由于绑定一定发生在服务端环境，可以的话，需要顺便区分线上和其他环境。</p>
-<h3 id="报告html页面生成"><a href="#报告html页面生成" class="headerlink" title="报告html页面生成"></a>报告html页面生成</h3><p>开发者应该能在每个测试周期内（即请求<code>/reset</code>前），通过访问特定路由得到渲染好的html页面。istanbuljs通过istanbul-lib-report和istanbul-reports两个包相互配合实现导出report的功能。其中：</p>
-<ul>
-<li>istanbul-lib-report：重点负责构建文件层级结构和生成摘要数据，定义遍历每个节点时行为的几个抽象类</li>
-<li>istanbul-reports：重点实现各种各样导出格式下内容的生成（只考虑了生成静态文件），通过实现istanbul-lib-report中ReportBase基类，完成遍历中内容的生成</li>
-</ul>
-<p>下面是README.md给出的示例</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> libReport = <span class="built_in">require</span>(<span class="string">'istanbul-lib-report'</span>);</div><div class="line"><span class="keyword">const</span> reports = <span class="built_in">require</span>(<span class="string">'istanbul-reports'</span>);</div><div class="line"></div><div class="line"><span class="comment">// coverageMap, for instance, obtained from istanbul-lib-coverage</span></div><div class="line"><span class="keyword">const</span> coverageMap;</div><div class="line"></div><div class="line"><span class="keyword">const</span> configWatermarks = &#123;</div><div class="line">    statements: [<span class="number">50</span>, <span class="number">80</span>],</div><div class="line">    <span class="function"><span class="keyword">function</span><span class="title">s</span>: [50, 80],</span></div><div class="line">    <span class="title">branches</span>: [50, 80],</div><div class="line">    <span class="title">lines</span>: [50, 80]</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// create a context for report generation</span></div><div class="line"><span class="keyword">const</span> context = libReport.createContext(&#123;</div><div class="line">    dir: <span class="string">'report/output/dir'</span>,</div><div class="line">    <span class="comment">// The summarizer to default to (may be overridden by some reports)</span></div><div class="line">    <span class="comment">// values can be nested/flat/pkg. Defaults to 'pkg'</span></div><div class="line">    defaultSummarizer: <span class="string">'nested'</span>,</div><div class="line">    watermarks: configWatermarks,</div><div class="line">    coverageMap,</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment">// create an instance of the relevant report class, passing the</span></div><div class="line"><span class="comment">// report name e.g. json/html/html-spa/text</span></div><div class="line"><span class="keyword">const</span> report = reports.create(<span class="string">'json'</span>, &#123;</div><div class="line">    skipEmpty: configSkipEmpty,</div><div class="line">    skipFull: configSkipFull</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment">// call execute to synchronously create and write the report to disk</span></div><div class="line">report.execute(context)</div></pre></td></tr></table></figure>
-<p>在istanbul-reports/lib/html中主要定义了html相关内容的生成，但是其中对于fs模块的使用，限制了该npm包在server侧的应用。经过<a href="https://github.com/istanbuljs/istanbuljs/issues/530" target="_blank" rel="external">询问作者</a>得到，istanbuljs并没有想法支持动态生成html响应。另外，istanbul-lib-report和istanbul-reports关联较多，新开发一个report类型用于生成html响应成本较大。</p>
-<p>综上，使用旧的方案，即旧版本istanbul生成html响应比较合适。</p>
-<h2 id="新方案"><a href="#新方案" class="headerlink" title="新方案"></a>新方案</h2><p>上述工作完成后，最终可以实现一个新的覆盖率方案，基本解决了上面提到的侵入较多，适用场景有局限性，istanbul版本老旧，sourcemap支持不足等问题。</p>
-<h2 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h2><p>上面的改进方案解决了方案接入上的困难，和实现上的一些纰漏，满足了开发者自测时的需求。但同时也有以下不足：</p>
-<ul>
-<li>对于更复杂的数据呈现和与业务流程的整合，即<a href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/" target="_blank" rel="external">旧方案</a>已知问题的第4点：“不能以分支、版本、仓库等空间维度或以历史信息、趋势等时间维度查看覆盖率报告，也没有diff内容覆盖率功能”，还需要更多努力。</li>
-<li>对于一些特殊场景，如没有使用babel转码的纯前端，不使用express或koa框架的服务端等无法支持</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://github.com/thlorenz/convert-source-map" target="_blank" rel="external">convert-source-map</a></li>
-<li><a href="https://github.com/istanbuljs/istanbuljs" target="_blank" rel="external">istanbuljs</a></li>
-<li><a href="https://github.com/istanbuljs/nyc" target="_blank" rel="external">nyc</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/04/16/istanbuljs/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2020/04/16/istanbuljs/" itemprop="url">JS代码覆盖率工具instanbuljs及其思路介绍</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-16T23:51:13+08:00">
-                2020-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2020/04/16/istanbuljs/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2020/04/16/istanbuljs/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="https://s1.ax1x.com/2020/04/16/JEZ3WV.png" alt="istanbul介绍"></p>
-<p><a href="https://istanbul.js.org/" target="_blank" rel="external">intanbuljs</a>是JS语言中最流行的覆盖率采集工具。其前身是个人发起的<a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">istanbul</a>项目。日常使用中，经常将相关的CLI工具<a href="https://github.com/istanbuljs/nyc" target="_blank" rel="external">nyc</a>配合着<a href="https://istanbul.js.org/docs/tutorials/" target="_blank" rel="external">流行的前端测试框架</a>一起使用，达到在单元/集成/e2e测试的同时，输出测试覆盖率数据的效果。</p>
-<p>当然，你也可以通过<a href="https://github.com/istanbuljs/babel-plugin-istanbul" target="_blank" rel="external">babel-plugin-istanbul</a>配合测试框架<a href="https://istanbul.js.org/docs/tutorials/" target="_blank" rel="external">使用</a>。</p>
-<h2 id="和istanbul的对比"><a href="#和istanbul的对比" class="headerlink" title="和istanbul的对比"></a>和istanbul的对比</h2><p>对于此前对前端测试覆盖率稍有了解了的人来说，可能更熟悉的是旧版的istanbul。istanbuljs在功能上和istanbul没有太大的区别，但在项目组织和实现细节上有着些许不同。</p>
-<ul>
-<li><a href="https://github.com/istanbuljs/istanbuljs" target="_blank" rel="external">istanbuljs</a>使用monorepo组织整个项目，将相对独立的插桩、hook、覆盖率、sourcemap、报告等拆分成多个包独立实现和发版</li>
-<li>使用babel实现源代码的AST解析和插桩（instrument）代码的生成</li>
-<li>内置支持sourcemap</li>
-<li>报告生成上取消了对express的依赖，只在本地产出报告</li>
-</ul>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>对于希望借助istanbuljs实现代码覆盖率相关功能的（nyc也基于istanbuljs实现），了解其各个包工作原理将会有所帮助。下面就按功能范畴介绍各个包的实现原理。</p>
-<h3 id="代码插桩-和hook"><a href="#代码插桩-和hook" class="headerlink" title="代码插桩)和hook"></a>代码<a href="https://en.wikipedia.org/wiki/Instrumentation_(computer_programming" target="_blank" rel="external">插桩</a>)和hook</h3><p>覆盖率产出建立在<strong>代码插桩</strong>的基础上。根据插桩时机，分为<strong>编译时插桩</strong>和<strong>运行时插桩</strong>。</p>
-<ul>
-<li><strong>编译时插桩</strong>，即在代码转译过程中插入覆盖率采集代码，产出代码本身即拥有采集能力，譬如babel-plugin-istanbul</li>
-<li><strong>运行时插桩</strong>，即产出代码本身不具有采集能力，在运行时通过hook的方式在使用的代码中插入覆盖率采集代码，譬如<code>hookRequire</code></li>
-</ul>
-<p>不同于使用babel的编译时插桩，运行时插桩需要额外的hook一步。插桩和hook分别由<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument" target="_blank" rel="external">istanbul-lib-instrument</a>和<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-hook" target="_blank" rel="external">istanbul-lib-hook</a>实现。</p>
-<h4 id="istanbul-lib-instrument"><a href="#istanbul-lib-instrument" class="headerlink" title="istanbul-lib-instrument"></a>istanbul-lib-instrument</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; createInstrumenter &#125; from <span class="string">'istanbul-lib-instrument'</span>;</div><div class="line"><span class="keyword">const</span> instrumenter = createInstrumenter(&#123;</div><div class="line">    coverageVariable,</div><div class="line">    debug: options &amp;&amp; options.debug</div><div class="line">&#125;);</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">const</span> transformed = instrumenter.instrumentSync(</div><div class="line">    code,</div><div class="line">    options.filename,</div><div class="line">    sourceMap ? sourceMap.toObject() : <span class="literal">undefined</span></div><div class="line">);</div></pre></td></tr></table></figure>
-<p>istanbul-lib-instrument利用babel实现了代码插桩。仓库暴露了3个API：</p>
-<h5 id="createInstrumenter"><a href="#createInstrumenter" class="headerlink" title="createInstrumenter"></a><code>createInstrumenter</code></h5><p>最主要的API。以入参作为配置项创建一个<code>Instrumenter</code>实例，配置项如下：</p>
-<ul>
-<li><code>coverageVariable</code> 覆盖率全局变量名，可选，默认<code>__coverage__</code></li>
-<li><code>preserveComments</code> 是否保留注释，可选，默认<code>false</code></li>
-<li><code>esModules</code> 是否插桩ES6代码，可选，默认<code>false</code></li>
-<li><code>produceSourceMap</code> 是否为插桩前后代码生成sourcemap，可选，默认<code>false</code></li>
-<li><code>debug</code> 是否打印详细信息，可选，默认<code>false</code></li>
-<li>… 更多配置参见<a href="https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md#parameters-4" target="_blank" rel="external">文档介绍</a></li>
-</ul>
-<p>通常使用时，配置项均使用默认值即可。<code>Instrumenter</code>实例有下面几个重要的方法</p>
-<p><strong><code>instrumentSync</code></strong></p>
-<p>同步插桩代码，支持ES6和ES5，插桩ES6代码时，需要配置项中的<code>esModules</code>为<code>true</code>。解析代码出错时会抛出错误。方法返回插桩后的代码字符串，入参如下：</p>
-<ul>
-<li><code>code</code> 代码字符串</li>
-<li><code>filename</code> 文件名（包含路径）</li>
-<li><code>inputSourceMap</code> 用来将当前代码的覆盖率反映射到源文件中的覆盖率，需要是sourcemap格式。</li>
-</ul>
-<p>在指定了<code>inputSourceMap</code>后，当前文件采集覆盖率时，会附带上传入的这个sourcemap，从而可以结合istanbul-lib-sourcemaps使用。</p>
-<p><strong><code>instrument</code></strong></p>
-<p>callback风格的插桩，此时抛出错误将通过回调的入参传入，而非直接抛出。插桩的代码也会在回调中传入而非直接返回。需要注意的是，回调的执行和语句的执行在同一个process tick中，而不是异步的。</p>
-<p>函数入参即<code>instrumentSync</code>的第三个位置插入函数类型的<code>callback</code>入参。</p>
-<p>剩余的两个方法：</p>
-<ul>
-<li><code>lastFileCoverage</code>，返回最近一次的文件覆盖率对象</li>
-<li><code>lastSourceMap</code>，返回最近一次的文件的sourcemap</li>
-</ul>
-<h5 id="programVisitor"><a href="#programVisitor" class="headerlink" title="programVisitor"></a><code>programVisitor</code></h5><p><code>programVisitor</code>是一个将babel用于插桩的适配器函数，该函数会返回一个具有<code>enter</code>以及<code>exit</code>方法的对象，这两个方法必须应用在<code>Program</code>的enter和exit属性上，实现插桩效果。istanbuljs内部也是通过<code>programVisitor</code>实现的功能。<code>programVisitor</code>内部并不依赖babel的状态，因此也可以用在babel以外的环境。</p>
-<p>该函数支持以下入参：</p>
-<ul>
-<li><code>types</code>，babel-types实例，语法节点类型</li>
-<li><code>sourceFilePath</code>，文件路径，可选，默认为<code>unknown.js</code></li>
-<li><code>opts</code>，插桩配置项，可以参见<a href="https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md#parameters-4" target="_blank" rel="external">文档介绍</a></li>
-</ul>
-<p>在函数内部集中了插桩的细节实现，即对于特定类型语法树节点插入对应逻辑。</p>
-<h5 id="readInitialCoverage"><a href="#readInitialCoverage" class="headerlink" title="readInitialCoverage"></a><code>readInitialCoverage</code></h5><p>配合<code>Instrumenter</code>的<code>lastFileCoverage</code>方法使用，读取文件的初始覆盖率。</p>
-<p>上面这些API中，最常用和最核心的即<code>instrumentSync</code>方法。在实现上，方法分为下面几步：</p>
-<ol>
-<li>根据<code>Instrumenter</code>的配置项确定babel的配置项，同时，引入<code>programVisitor</code>作为babel的plugin，指定遍历节点的操作</li>
-<li>使用<code>@babel/core</code>的<code>transformSync</code>API，得到生成的代码</li>
-<li>更新<code>fileCoverage</code>和<code>sourcemap</code></li>
-<li>返回代码</li>
-</ol>
-<h4 id="istanbul-lib-hook"><a href="#istanbul-lib-hook" class="headerlink" title="istanbul-lib-hook"></a>istanbul-lib-hook</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; hookRequire &#125; from <span class="string">'istanbul-lib-hook'</span>;</div><div class="line">hookRequire(matcher, transformer, &#123;</div><div class="line">    verbose: <span class="literal">true</span>,</div><div class="line">    postLoadHook: (filename: <span class="built_in">string</span>) =&gt; &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>istanbul-lib-hook提供了下面一些API，用来hook JS中对代码的引用，其中后三个API都有对应的unhook API：</p>
-<ul>
-<li><code>hookRequire</code>，hook了<code>require</code>引入的代码</li>
-<li><code>hookCreateScript</code>，hook了<code>vm.createScript</code>引入的代码</li>
-<li><code>hookRunInThisContext</code>，hook了<code>vm.runInThisContext</code>引入的代码</li>
-<li><code>hookRunInContext</code>，hook了<code>vm.runInContext</code>引入的代码、</li>
-</ul>
-<p>在其中最常用的是<code>hookRequire</code>，入参如下：</p>
-<ul>
-<li><code>matcher</code>，函数类型，接收文件的完整路径，返回bool类型，用来判断是否对文件插桩</li>
-<li><code>transformer</code>，函数类型，接收代码和文件路径，返回插桩后的代码，可以通过对上面提到的<code>Instrumenter</code>的<code>instrumentSync</code>封装得到</li>
-<li><code>options</code>，配置项<ul>
-<li><code>verbose</code>，是否打印详细信息</li>
-<li><code>postLoadHook</code>，文件hook之后的回调</li>
-</ul>
-</li>
-</ul>
-<p><code>hookRequire</code>借助Nodejs的Module加载机制实现，hook了后缀为<code>.js</code>文件的编译过程，在每次<code>require</code>的时候触发。详细的原理可以参见<a href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/" target="_blank" rel="external">这里</a>。唯一的不同是，在istanbuljs中，这一实现被封装在<a href="https://github.com/istanbuljs/append-transform" target="_blank" rel="external">append-transform</a>包中实现，来兼容异常情况。实现如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> appendTransform = <span class="built_in">require</span>(<span class="string">'append-transform'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">hookRequire</span>(<span class="params">matcher, transformer, options</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">const</span> fn = transformFn(matcher, transformer, options.verbose);</div><div class="line">    <span class="keyword">const</span> extensions = options.extensions || [<span class="string">'.js'</span>];</div><div class="line"></div><div class="line">    extensions.forEach(<span class="function"><span class="params">ext</span> =&gt;</span> &#123;</div><div class="line">        appendTransform(<span class="function">(<span class="params">code, filename</span>) =&gt;</span> &#123;</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">const</span> ret = fn(code, filename);</div><div class="line">            <span class="keyword">if</span> (postLoadHook) &#123;</div><div class="line">                postLoadHook(filename);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> ret.code;</div><div class="line">        &#125;, ext);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="数据维护"><a href="#数据维护" class="headerlink" title="数据维护"></a>数据维护</h3><p>在代码插桩的基础上，产出的覆盖率数据会积累在全局变量上。在数据可视化和统计结果展示前，还需要将数据封装成更贴近实际场景的形态，便于进行合并、输出、摘要等操作。</p>
-<p>这部分工作在<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-coverage" target="_blank" rel="external">istanbul-lib-coverage</a>中完成。</p>
-<h4 id="覆盖率数据结构"><a href="#覆盖率数据结构" class="headerlink" title="覆盖率数据结构"></a>覆盖率数据结构</h4><p>下面是采集到的原始数据的结构定义，这也是istanbul-lib-coverage的基础。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">interface</span> CoverageMapData &#123;</div><div class="line">    [key: <span class="built_in">string</span>]: FileCoverageData;</div><div class="line">&#125;</div><div class="line"><span class="keyword">interface</span> FileCoverageData &#123;</div><div class="line">    path: <span class="built_in">string</span>;</div><div class="line">    statementMap: &#123; [key: <span class="built_in">string</span>]: Range &#125;;</div><div class="line">    fnMap: &#123; [key: <span class="built_in">string</span>]: FunctionMapping &#125;;</div><div class="line">    branchMap: &#123; [key: <span class="built_in">string</span>]: BranchMapping &#125;;</div><div class="line">    s: &#123; [key: <span class="built_in">string</span>]: <span class="built_in">number</span> &#125;;</div><div class="line">    f: &#123; [key: <span class="built_in">string</span>]: <span class="built_in">number</span> &#125;;</div><div class="line">    b: &#123; [key: <span class="built_in">string</span>]: <span class="built_in">number</span>[] &#125;;</div><div class="line">&#125;</div><div class="line"><span class="keyword">interface</span> Location &#123;</div><div class="line">    line: <span class="built_in">number</span>;</div><div class="line">    column: <span class="built_in">number</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">interface</span> Range &#123;</div><div class="line">    start: Location;</div><div class="line">    end: Location;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">interface</span> BranchMapping &#123;</div><div class="line">    loc: Range;</div><div class="line">    <span class="keyword">type</span>: <span class="built_in">string</span>;</div><div class="line">    locations: Range[];</div><div class="line">    line: <span class="built_in">number</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">interface</span> FunctionMapping &#123;</div><div class="line">    name: <span class="built_in">string</span>;</div><div class="line">    decl: Range;</div><div class="line">    loc: Range;</div><div class="line">    line: <span class="built_in">number</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="istanbul-lib-coverage"><a href="#istanbul-lib-coverage" class="headerlink" title="istanbul-lib-coverage"></a>istanbul-lib-coverage</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> libCoverage from <span class="string">'istanbul-lib-coverage'</span>;</div><div class="line"><span class="keyword">const</span> map = libCoverage.createCoverageMap(globalCoverageVar);</div><div class="line"><span class="keyword">const</span> summary = libCoverage.createCoverageSummary();</div><div class="line"></div><div class="line">map.merge(otherCoverageMap);</div><div class="line"></div><div class="line"><span class="comment">// 获取摘要</span></div><div class="line">map.files().forEach((f) =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> fc = map.fileCoverageFor(f);</div><div class="line">    <span class="keyword">const</span> s = fc.toSummary();</div><div class="line">    summary.merge(s);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'Global summary'</span>, summary);</div></pre></td></tr></table></figure>
-<p>包暴露了3个API, 用来创建封装好的覆盖率数据。</p>
-<h5 id="createCoverageMap"><a href="#createCoverageMap" class="headerlink" title="createCoverageMap"></a><code>createCoverageMap</code></h5><p>传入原始数据（<code>CoverageMapData</code>类型）或<code>CoverageMap</code>类型，返回一个<code>CoverageMap</code>类型对象，在覆盖率数据基础上，提供了方法，包含：</p>
-<ul>
-<li><code>merge</code>，合并另一个<code>CoverageMap</code>对象或数据</li>
-<li><code>filter</code>，传入filter函数，删除部分覆盖率数据</li>
-<li><code>toJSON</code>，返回原始数据</li>
-<li><code>files</code>，返回文件列表</li>
-<li><code>fileCoverageFor</code>，返回特定文件的覆盖率</li>
-<li><code>addFileCoverage</code>，增加特定文件的覆盖率</li>
-<li><code>getCoverageSummary</code>，生成覆盖率摘要数据</li>
-</ul>
-<p>摘要数据数据结构如下：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">interface</span> CoverageSummaryData &#123;</div><div class="line">    lines: Totals;</div><div class="line">    statements: Totals;</div><div class="line">    branches: Totals;</div><div class="line">    <span class="function"><span class="keyword">function</span><span class="title">s</span>: <span class="title">Totals</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">interface</span> Totals &#123;</div><div class="line">    total: <span class="built_in">number</span>;</div><div class="line">    covered: <span class="built_in">number</span>;</div><div class="line">    skipped: <span class="built_in">number</span>;</div><div class="line">    pct: <span class="built_in">number</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="createFileCoverage"><a href="#createFileCoverage" class="headerlink" title="createFileCoverage"></a><code>createFileCoverage</code></h5><p>类似<code>createCoverageMap</code>，通过传入原始数据或对象的方式，创建<code>FileCoverage</code>对象。对象有如下方法：</p>
-<ul>
-<li><code>getLineCoverage</code>，返回每一行的执行次数</li>
-<li><code>getUncoveredLines</code>，返回未覆盖的行序号列表</li>
-<li><code>getBranchCoverageByLine</code>，获取每个分支按行计算的覆盖率比例</li>
-<li><code>toJSON</code>，返回原始数据</li>
-<li><code>merge</code>，合并另一个<code>FileCoverage</code>或原始数据</li>
-<li><code>computeSimpleTotals</code>，根据输入的属性，计算覆盖率摘要</li>
-<li><code>computeBranchTotals</code>，根据分支计算覆盖率摘要</li>
-<li><code>resetHits</code>，重置所有已执行的数据</li>
-<li><code>toSummary</code>，生成摘要数据</li>
-</ul>
-<h5 id="createCoverageSummary"><a href="#createCoverageSummary" class="headerlink" title="createCoverageSummary"></a><code>createCoverageSummary</code></h5><p>根据输入数据，创建摘要。方法较简单：</p>
-<ul>
-<li><code>merge</code>，合并一个摘要数据</li>
-<li><code>toJSON</code>，返回原始摘要数据</li>
-<li><code>isEmpty</code>，是否为空</li>
-</ul>
-<p>整体来看istanbul-lib-coverage所做的工作，即按照约定好的格式，将数据组织起来，为可视化输出做了基础。</p>
-<h4 id="istanbul-lib-source-maps"><a href="#istanbul-lib-source-maps" class="headerlink" title="istanbul-lib-source-maps"></a>istanbul-lib-source-maps</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; createSourceMapStore &#125; from <span class="string">'istanbul-lib-source-maps'</span>;</div><div class="line"><span class="keyword">import</span> libCoverage from <span class="string">'istanbul-lib-coverage'</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> mapStore = createSourceMapStore(&#123;&#125;);</div><div class="line"></div><div class="line"><span class="keyword">const</span> coverageMap = libCoverage.createCoverageMap(coverageData);</div><div class="line"><span class="keyword">const</span> transformed = await mapStore.transformCoverage(coverageMap);</div><div class="line"><span class="keyword">const</span> transformedCoverage = transformed.data;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(transformedCoverage);</div></pre></td></tr></table></figure>
-<p>绝大多数情况下，istanbuljs采集到的都是转译后目标文件的代码覆盖率，这个数据对于开发者来讲意义不大，需要将这里采集到的行列数据反映射到源文件的位置上。内置<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-source-maps" target="_blank" rel="external">istanbul-lib-source-maps</a>包用来处理这种情况的。</p>
-<p>istanbul-lib-source-maps只负责转换代码位置和目录，并不能负责收集代码或文件的sourcemap信息，这一步交给使用者自己实现。就像我们在<code>instrumentSync</code>一节提到的，通过第三个入参<code>inputSourceMap</code>可以产出满足istanbul-lib-source-maps需要的覆盖率数据，从而借助istanbul-lib-source-maps获取到源文件的覆盖率。</p>
-<p>这个包本身只暴露<code>createSourceMapStore</code>这一个API，通过传入配置的方式，初始化一个sourcemap的store。配置项如下：</p>
-<ul>
-<li><code>verbose</code>，是否打印详细信息</li>
-<li><code>baseDir</code>，sourcemap文件的基础目录</li>
-<li><code>SourceStore</code>，一个<code>SourceStore</code>对象</li>
-<li><code>sourceStoreOpts</code>，初始化<code>SourceStore</code>对象的参数列表</li>
-</ul>
-<p>初始化好的<code>MapStore</code>对象有如下方法：</p>
-<ul>
-<li><code>registerURL</code>，通过dataURL注册一个sourcemap到store中</li>
-<li><code>registerMap</code>，通过sourcemap对象注册一个sourcemap到store中</li>
-<li><code>getSourceMapSync</code>，从当前store中获取指定文件的sourcemap</li>
-<li><code>addInputSourceMapsSync</code>，为当前覆盖率数据同步添加store中的sourcemap数据</li>
-<li><code>sourceFinder</code>，寻找指定文件的源文件路径</li>
-<li><code>transformCoverage</code>，利用当前store中的sourcemap信息，将覆盖率对应到源文件上。<strong>覆盖率信息中有<code>inputSourceMap</code>字段时，优先使用<code>inputSourceMap</code>字段里的sourcemap信息</strong></li>
-<li><code>dispose</code>，清除store数据</li>
-</ul>
-<p>包中的其余文件也都基于<code>MapStore</code>实现诸如路径转换，数据转换等工具方法。更多细节，可以参见<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-source-maps" target="_blank" rel="external">源文件</a>。</p>
-<p>使用时，有两种方式：</p>
-<ul>
-<li>先导入没有sourcemap的覆盖率信息，再逐个注册sourcemap到store中，最后执行<code>transformCoverage</code></li>
-<li>直接导入有<code>inputSourceMap</code>信息的覆盖率数据，执行<code>transformCoverage</code></li>
-</ul>
-<p>可以根据实际场景选择使用方式。例如，nyc中就使用的第2种方式，利用<a href="https://github.com/thlorenz/convert-source-map" target="_blank" rel="external">convert-source-map</a>采集到文件内的sourcemap信息，在代码插桩时传入。</p>
-<h3 id="可视化与报告"><a href="#可视化与报告" class="headerlink" title="可视化与报告"></a>可视化与报告</h3><p>覆盖率工具的最终目的是向使用者呈现可读的数据样式，通常是以UI或文件的形式。因此，要将上一章中维护好的数据按使用者需求输出。可视化和报告由<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-report" target="_blank" rel="external">istanbul-lib-report</a>以及<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports" target="_blank" rel="external">istanbul-reports</a>实现。</p>
-<p>其中，前者定义了产出报告的抽象行为，后者实现了各种具体的报告形态。两个包结合在一起使用的方式如下：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> libReport from <span class="string">'istanbul-lib-report'</span>;</div><div class="line"><span class="keyword">import</span> reports from <span class="string">'istanbul-reports'</span>;</div><div class="line"><span class="keyword">const</span> coverageMap;</div><div class="line"></div><div class="line"><span class="keyword">const</span> configWatermarks = &#123;</div><div class="line">    statements: [<span class="number">50</span>, <span class="number">80</span>],</div><div class="line">    <span class="function"><span class="keyword">function</span><span class="title">s</span>: [50, 80],</span></div><div class="line">    <span class="title">branches</span>: [50, 80],</div><div class="line">    <span class="title">lines</span>: [50, 80]</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">const</span> context = libReport.createContext(&#123;</div><div class="line">    dir: <span class="string">'report/output/dir'</span>,</div><div class="line">    <span class="comment">// 摘要的生成方式</span></div><div class="line">    <span class="comment">// 可以是nested/flat/pkg 默认为'pkg'</span></div><div class="line">    defaultSummarizer: <span class="string">'nested'</span>,</div><div class="line">    watermarks: configWatermarks,</div><div class="line">    coverageMap,</div><div class="line">&#125;);</div><div class="line"><span class="keyword">const</span> report = reports.create(<span class="string">'json'</span>, &#123;</div><div class="line">    skipEmpty: configSkipEmpty,</div><div class="line">    skipFull: configSkipFull</div><div class="line">&#125;);</div><div class="line"><span class="comment">// 同步操作</span></div><div class="line">report.execute(context);</div></pre></td></tr></table></figure>
-<h4 id="istanbul-lib-report"><a href="#istanbul-lib-report" class="headerlink" title="istanbul-lib-report"></a>istanbul-lib-report</h4><p>维护好的覆盖率数据会和具体的文件节点绑定，形成树状数据结构。遍历每个树节点就是产出报告的基本步骤，只不过不同报告格式，遍历节点的操作也不同。istanbul-lib-report中定义了基本的树状结构和遍历规则。</p>
-<p>包暴露了3个API，</p>
-<ul>
-<li><code>createContext</code>，创建一个包含产出报告配置信息context对象</li>
-<li><code>getDefaultWatermarks</code>，返回默认的评级指标，默认是0到50到80，分别对应差中好</li>
-<li><code>ReportBase</code>，所有报告必须继承的基类</li>
-</ul>
-<p>其中context和ReportBase是配合实现生成报告的。先来看简单的ReportBase，<code>ReportBase</code>类中简单地描述了管理摘要树的方法和定义了通用的<code>execute</code>方法来生成报告。具体会在istanbul-reports中提到。</p>
-<p>再来看Context类。Context入参配置项包含：</p>
-<ul>
-<li><code>dir</code>，产出报告的目标目录</li>
-<li><code>watermarks</code>，评级指标，默认使用0-50-80-100</li>
-<li><code>sourceFinder</code>，通过文件路径返回代码的函数，默认为文件读取操作</li>
-<li><code>coverageMap</code>，覆盖率数据</li>
-<li><code>defaultSummarizer</code>，摘要树生成的风格，有<code>flat</code>,<code>pkg</code>,<code>nested</code>3种选择<ul>
-<li><code>flat</code>，所有文件全部打平到1层里，挂载到最近的公共祖先上</li>
-<li><code>pkg</code>，所有文件向上追溯1层文件夹，挂载到最近的公共祖先上</li>
-<li><code>nested</code>，所有文件向上追溯，直到追溯到最近的公共祖先上</li>
-</ul>
-</li>
-</ul>
-<p>构建好的<code>Context</code>有一个<code>writer</code>属性挂载在<code>this</code>和<code>this.data</code>上，它决定了报告的产出形式，目前这个包提供了两种产出形式：<strong>文件</strong>和<strong>字符串</strong>，后者只用在产出XML数据时。其余报告基本都通过文件的形式产出，这也是istanbuljs和istanbul的一大不同。在istanbul中，html可以借助express依赖以HTML响应的形式返回。</p>
-<p>文件的输出类定义在<code>file-writer.js</code>中，其中的<code>FileWriter</code>定义了基本的<code>copyFile</code>，<code>writerForDir</code>，<code>writeFile</code>操作用来递归的复制和写入文件。另外在<code>writeFile</code>中，根据目标是否是file，选择使用<code>ConsoleWriter</code>或者<code>FileContentWriter</code>。这两者继承自基本的<code>ContentWriter</code>。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> ContentWriter &#123;</div><div class="line">    colorize(str <span class="comment">/*, clazz*/</span>) &#123;</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">    println(str) &#123;</div><div class="line">        <span class="keyword">this</span>.write(<span class="string">`<span class="subst">$&#123;str&#125;</span>\n`</span>);</div><div class="line">    &#125;</div><div class="line">    close() &#123;&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">class</span> FileContentWriter extends ContentWriter &#123;</div><div class="line">    <span class="keyword">constructor</span>(<span class="params">fd</span>) &#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.fd = fd;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    write(str) &#123;</div><div class="line">        fs.writeSync(<span class="keyword">this</span>.fd, str);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    close() &#123;</div><div class="line">        fs.closeSync(<span class="keyword">this</span>.fd);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">class</span> ConsoleWriter extends ContentWriter &#123;</div><div class="line">    write(str) &#123;</div><div class="line">        <span class="keyword">if</span> (capture) &#123;</div><div class="line">            output += str;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            process.stdout.write(str);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    colorize(str, clazz) &#123;</div><div class="line">        <span class="keyword">const</span> colors = &#123;</div><div class="line">            low: <span class="string">'31;1'</span>,</div><div class="line">            medium: <span class="string">'33;1'</span>,</div><div class="line">            high: <span class="string">'32;1'</span></div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (supportsColor.stdout &amp;&amp; colors[clazz]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="string">`\u001b[<span class="subst">$&#123;colors[clazz]&#125;</span>m<span class="subst">$&#123;str&#125;</span>\u001b[0m`</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>字符串的输出类只有<code>XMLWriter</code>，位于<code>xml-writer.js</code>中，在其中定义了xml的开闭标签和缩进操作。</p>
-<p>这个Context还有一些方法提供给reports使用：</p>
-<ul>
-<li><code>getWriter</code>/<code>getXMLWriter</code>，返回输出数据的writer</li>
-<li><code>getSource</code>，通过<code>sourceFinder</code>寻找源码</li>
-<li><code>classForPercent</code>，将评价转化为HTML类名</li>
-<li><code>getVisitor</code>，获取一个遍历的vistor对象</li>
-<li><code>getTree</code>，根据摘要风格返回一个用于遍历的树，</li>
-</ul>
-<p>下面具体介绍vistor和tree的概念</p>
-<h5 id="Visitor和BaseTree"><a href="#Visitor和BaseTree" class="headerlink" title="Visitor和BaseTree"></a><code>Visitor</code>和<code>BaseTree</code></h5><p><code>Visitor</code>类和<code>BaseNode</code>类定义了遍历和节点的基本操作，其中Visitor使用代理人模式，在构造时传入一个回调函数对象，当<code>visitor</code>对象触发特定事件时，会将当前节点和状态交给回调函数，实现遍历效果。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Visitor &#123;</div><div class="line">    <span class="keyword">constructor</span>(<span class="params">delegate</span>) &#123;</div><div class="line">        <span class="keyword">this</span>.delegate = delegate;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">[<span class="string">'Start'</span>, <span class="string">'End'</span>, <span class="string">'Summary'</span>, <span class="string">'SummaryEnd'</span>, <span class="string">'Detail'</span>]</div><div class="line">    .map(k =&gt; <span class="string">`on<span class="subst">$&#123;k&#125;</span>`</span>)</div><div class="line">    .forEach(fn =&gt; &#123;</div><div class="line">        <span class="built_in">Object</span>.defineProperty(Visitor.prototype, fn, &#123;</div><div class="line">            writable: <span class="literal">true</span>,</div><div class="line">            value(node, state) &#123;</div><div class="line">                <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span>.delegate[fn] === <span class="string">'function'</span>) &#123;</div><div class="line">                    <span class="keyword">this</span>.delegate[fn](node, state);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
-<p>相对应的<code>BaseNode</code>类定义了用于遍历的<code>visit</code>方法</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> BaseNode &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="comment">// 递归遍历</span></div><div class="line">    visit(visitor, state) &#123;</div><div class="line">        <span class="comment">// 文件夹没有详情，只有摘要</span></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.isSummary()) &#123;</div><div class="line">            visitor.onSummary(<span class="keyword">this</span>, state);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            visitor.onDetail(<span class="keyword">this</span>, state);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.getChildren().forEach(child =&gt; &#123;</div><div class="line">            child.visit(visitor, state);</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.isSummary()) &#123;</div><div class="line">            visitor.onSummaryEnd(<span class="keyword">this</span>, state);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>最后在<code>BaseTree</code>中从Root开始遍历即可：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> BaseTree &#123;</div><div class="line">    <span class="keyword">constructor</span>(<span class="params">root</span>) &#123;</div><div class="line">        <span class="keyword">this</span>.root = root;</div><div class="line">    &#125;</div><div class="line">    getRoot() &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.root;</div><div class="line">    &#125;</div><div class="line">    visit(visitor, state) &#123;</div><div class="line">        <span class="keyword">if</span> (!(visitor <span class="keyword">instanceof</span> Visitor)) &#123;</div><div class="line">            visitor = <span class="keyword">new</span> Visitor(visitor);</div><div class="line">        &#125;</div><div class="line">        visitor.onStart(<span class="keyword">this</span>.getRoot(), state);</div><div class="line">        <span class="keyword">this</span>.getRoot().visit(visitor, state);</div><div class="line">        visitor.onEnd(<span class="keyword">this</span>.getRoot(), state);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>不同的摘要风格形成的树状结构不同，它们都是<code>ReportTree</code>类型，而<code>ReportTree</code>正是继承自<code>BaseTree</code>。<code>ReportTree</code>由继承自<code>BaseNode</code>的<code>ReportNode</code>构建。在<code>ReportNode</code>上定义了和覆盖率或文件操作相关的一些方法，如<code>getFileCoverage</code>，<code>getCoverageSummary</code>等。</p>
-<p>一个context内的visitor和tree可以通过<code>getVisitor</code>和<code>getTree</code>得到</p>
-<h4 id="istanbul-reports"><a href="#istanbul-reports" class="headerlink" title="istanbul-reports"></a>istanbul-reports</h4><p>istanbul-reports包中定义了种类繁多的导出格式，在入口文件通过指定的配置项选择使用，如上面样例中的<code>const report = reports.create(&#39;json&#39;, {/* ... */})</code>即使用<code>json/lib/index.js</code>下导出的<code>JsonReport</code>类。istanbul-reports所有格式都基于istanbul-lib-report中基类的定义。这里以简单的json格式为例。</p>
-<p>其中定义了对于<code>onStart</code>，<code>onDetail</code>，<code>onEnd</code>的定义和上面<code>BaseNode</code>中介绍的回调函数相对应，在遍历<code>ReportTree</code>的各个阶段被触发，通过context的writer去输出。而writer从<code>ReportBase</code>中可以发现是通过context确定的，在context中默认是filewriter。而遍历是如何执行的呢？</p>
-<p>回头看下ReportBase的实现。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> _summarizer = Symbol(<span class="string">'ReportBase.#summarizer'</span>);</div><div class="line"></div><div class="line"><span class="keyword">class</span> ReportBase &#123;</div><div class="line">    <span class="keyword">constructor</span>(<span class="params">opts = &#123;&#125;</span>) &#123;</div><div class="line">        <span class="keyword">this</span>[_summarizer] = opts.summarizer;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    execute(context) &#123;</div><div class="line">        context.getTree(<span class="keyword">this</span>[_summarizer]).visit(<span class="keyword">this</span>, context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在<code>execute</code>中传入context，即可把带有覆盖率信息的树形数据结构交给report代表的visitor遍历，逐个节点地打印出覆盖率报告。</p>
-<p>其余类型的报告也是类似的原理。</p>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><ul>
-<li><a href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/" target="_blank" rel="external">前端代码覆盖率实时统计方案探索</a></li>
-<li><a href="https://shenlvmeng.github.io/blog/2020/04/17/fe-coverage-improve/" target="_blank" rel="external">前端代码覆盖率实时统计改进方案</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2020/04/16/fe-coverage-scheme/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2020/04/16/fe-coverage-scheme/" itemprop="url">前端代码覆盖率实时统计方案探索</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-16T23:46:17+08:00">
-                2020-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2020/04/16/fe-coverage-scheme/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2020/04/16/fe-coverage-scheme/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>随着业务增长，代码逐渐复杂，前端有些时候不能通过自测保证代码质量，而测试同学从用户角度进行端到端的case测试，也有可能存在测试case不够全面或重复覆盖的情况。而测试覆盖质量只能通过测试case评审来保证，没有量化的、直观的客观数据。</p>
-<p>然而前端场景和后端不同，UI测试因为业务形态原因，变更会更频繁，编写和维护单测成本比较高。因此目前且短期内前端工程还是以传统的用户角度的端到端测试为主。另外，在SSR项目中，前端开发也会书写API层，这部分代码也需要测试覆盖到。目前前端生态还没有一个能同时覆盖UI层和API层的覆盖率统计框架，需要借助已有的工具实现这点。</p>
-<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>提升开发自测质量和提测质量，避免case覆盖不全的问题，同时有直观的统计指标衡量。</p>
-<h3 id="预期效果"><a href="#预期效果" class="headerlink" title="预期效果"></a>预期效果</h3><p>分3个阶段：</p>
-<p>第一阶段：<strong>基本可用版本</strong>，能够采集UI层和API层的代码覆盖率，覆盖率采集过程对前端开发透明，无需开发业务以外的开发成本。能够打开浏览器页面直观查看各个代码覆盖率。</p>
-<p>第二阶段：<strong>丰富统计数据</strong>，在第一阶段基础上，能够<em>记录</em>不同分支甚至不同版本历史的覆盖率，能够借助gitlab只查看<em>增量文件</em>的覆盖率。</p>
-<p>第三阶段：<strong>打通QA平台</strong>，在第二阶段基础上，接入QA已有平台或自建平台，在第三方页面查看数据；形成一套覆盖率采集方案。</p>
-<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>本地、特性分支上使用</p>
-<h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p>覆盖率采集建立在<a href="https://en.wikipedia.org/wiki/Instrumentation_(computer_programming" target="_blank" rel="external">代码插桩</a>)基础上。前端生态里比较成熟的工具是<a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">istanbuljs</a>，该库的0.x.x版本位于<a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">istanbul</a>库。关于该库的科普介绍，可以阅读ruanyifeng的<a href="https://www.ruanyifeng.com/blog/2015/06/istanbul.html" target="_blank" rel="external">科普文</a>。</p>
-<p>istanbul提供两种插桩方式：<strong>编译时</strong>和<strong>运行时</strong>。</p>
-<ul>
-<li>编译时<ul>
-<li>nyc命令行的<a href="https://github.com/istanbuljs/nyc/blob/master/docs/instrument.md" target="_blank" rel="external">instrument子命令</a>可以完成手动插桩</li>
-<li><a href="https://github.com/istanbuljs/babel-plugin-istanbul" target="_blank" rel="external">babel-plugin-istanbul</a>可以在使用babel的前端工程里，在<strong>编译阶段</strong>植入插桩代码。TypeScript项目可以使用<a href="https://www.npmjs.com/package/@istanbuljs/nyc-config-typescript" target="_blank" rel="external">@istanbuljs/nyc-config-typescript</a>插件</li>
-</ul>
-</li>
-<li>运行时，需要借助<a href="https://github.com/gotwarlost/istanbul-middleware" target="_blank" rel="external">istanbul-middleware</a>中间件的帮助<ul>
-<li><code>im.hookLoader</code>，适用于服务端文件的动态插桩，方法利用istanbul-lib-hook中的<code>hookRequire</code>方法，hook被require引入的<strong>js文件</strong>，返回插桩后的js文件。因此需要在业务代码require前引入</li>
-<li><code>im.createClientHandler</code>，用于客户端<strong>js文件</strong>的动态插桩，它会把指定根路径下的js文件请求拦截，返回插桩后的代码。</li>
-</ul>
-</li>
-</ul>
-<p>在后台项目中，服务端代码使用<code>.ts</code>书写，本地使用<code>ts-node</code>启动，boe和线上使用<code>tsc</code>编译后的js文件启动。前端代码使用<code>.ts</code>书写，本地使用webpack + babel预编译成js。结合这个场景看，在node侧使用<code>hookLoader</code>，在UI测使用babel-plugin-istanbul插件更合适。</p>
-<p>总体来讲，工作分两步：<strong>代码插桩</strong>和<strong>可视化</strong>。</p>
-<h3 id="代码插桩"><a href="#代码插桩" class="headerlink" title="代码插桩"></a>代码插桩</h3><p>规划里一切功能的基础和本质都来自代码插桩。</p>
-<h4 id="client端"><a href="#client端" class="headerlink" title="client端"></a>client端</h4><p>client端可以直接使用目前仍良好维护的<a href="https://github.com/istanbuljs/babel-plugin-istanbul" target="_blank" rel="external">babel-plugin-istanbul</a>插件。在<code>.babelrc</code>中引入相关配置：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"env"</span>: &#123;</div><div class="line">    <span class="string">"test"</span>: &#123;</div><div class="line">      <span class="string">"plugins"</span>: [<span class="string">"istanbul"</span>]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>仅在test环境下开启该插件。可以用<a href="https://www.npmjs.com/package/cross-env" target="_blank" rel="external">cross-env</a>这样的工具设置<code>NODE_ENV=test</code></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"scripts"</span>: &#123;</div><div class="line">    <span class="string">"test"</span>: <span class="string">"cross-env NODE_ENV=test npm run start"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>插件还有<code>include</code>，<code>exclude</code>，<code>useInlineSourceMaps</code>这样的配置项。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"env"</span>: &#123;</div><div class="line">    <span class="string">"test"</span>: &#123;</div><div class="line">      <span class="string">"plugins"</span>: [</div><div class="line">        [<span class="string">"istanbul"</span>, &#123;</div><div class="line">          <span class="string">"useInlineSourceMaps"</span>: <span class="literal">false</span>,</div><div class="line">          <span class="string">"exclude"</span>: [</div><div class="line">            <span class="string">"**/*.spec.js"</span></div><div class="line">          ]</div><div class="line">        &#125;]</div><div class="line">      ]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>插桩后的业务代码如下所示：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> cov_ac7rkuoyv = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> path = <span class="string">"/Users/test/shenlvmeng/nyc-demo/src/App.js"</span>;</div><div class="line">  <span class="keyword">var</span> hash = <span class="string">"7dec600464f484deef063d183319f809a7c25687"</span>;</div><div class="line">  <span class="keyword">var</span> global = <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">"return this"</span>)();</div><div class="line">  <span class="keyword">var</span> gcv = <span class="string">"__coverage__"</span>;</div><div class="line">  <span class="keyword">var</span> coverageData = &#123;</div><div class="line">    <span class="attr">path</span>: <span class="string">"/Users/shenlvmeng/nyc-demo/src/App.js"</span>,</div><div class="line">    <span class="attr">statementMap</span>: &#123;</div><div class="line">      <span class="string">"0"</span>: &#123;</div><div class="line">        <span class="attr">start</span>: &#123;</div><div class="line">          <span class="attr">line</span>: <span class="number">8</span>,</div><div class="line">          <span class="attr">column</span>: <span class="number">2</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">end</span>: &#123;</div><div class="line">          <span class="attr">line</span>: <span class="number">14</span>,</div><div class="line">          <span class="attr">column</span>: <span class="number">9</span></div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">fnMap</span>: &#123;</div><div class="line">      <span class="string">"0"</span>: &#123;</div><div class="line">        <span class="attr">name</span>: <span class="string">"App"</span>,</div><div class="line">        <span class="attr">decl</span>: &#123;</div><div class="line">          <span class="attr">start</span>: &#123;</div><div class="line">            <span class="attr">line</span>: <span class="number">7</span>,</div><div class="line">            <span class="attr">column</span>: <span class="number">9</span></div><div class="line">          &#125;,</div><div class="line">          <span class="attr">end</span>: &#123;</div><div class="line">            <span class="attr">line</span>: <span class="number">7</span>,</div><div class="line">            <span class="attr">column</span>: <span class="number">12</span></div><div class="line">          &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">loc</span>: &#123;</div><div class="line">          <span class="attr">start</span>: &#123;</div><div class="line">            <span class="attr">line</span>: <span class="number">7</span>,</div><div class="line">            <span class="attr">column</span>: <span class="number">15</span></div><div class="line">          &#125;,</div><div class="line">          <span class="attr">end</span>: &#123;</div><div class="line">            <span class="attr">line</span>: <span class="number">33</span>,</div><div class="line">            <span class="attr">column</span>: <span class="number">1</span></div><div class="line">          &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">line</span>: <span class="number">7</span></div><div class="line">      &#125;,</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">branchMap</span>: &#123;&#125;,</div><div class="line">    <span class="attr">s</span>: &#123;</div><div class="line">      <span class="string">"0"</span>: <span class="number">0</span>,</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">f</span>: &#123;</div><div class="line">      <span class="string">"0"</span>: <span class="number">0</span>,</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">b</span>: &#123;&#125;,</div><div class="line">    <span class="attr">_coverageSchema</span>: <span class="string">"43e27e138ebf9cfc5966b082cf9a028302ed4184"</span>,</div><div class="line">    <span class="attr">hash</span>: <span class="string">"7dec600464f484deef063d183319f809a7c25687"</span></div><div class="line">  &#125;;</div><div class="line">  <span class="keyword">var</span> coverage = global[gcv] || (global[gcv] = &#123;&#125;);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (coverage[path] &amp;&amp; coverage[path].hash === hash) &#123;</div><div class="line">    <span class="keyword">return</span> coverage[path];</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> coverage[path] = coverageData;</div><div class="line">&#125;();</div><div class="line"></div><div class="line"><span class="keyword">var</span> _jsxFileName = <span class="string">"/Users/test/shenlvmeng/nyc-demo/src/App.js"</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  cov_ac7rkuoyv.f[<span class="number">0</span>]++;</div><div class="line">  cov_ac7rkuoyv.s[<span class="number">0</span>]++;</div><div class="line">  <span class="built_in">Object</span>(react__WEBPACK_IMPORTED_MODULE_0__[<span class="string">"useEffect"</span>])(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    cov_ac7rkuoyv.f[<span class="number">1</span>]++;</div><div class="line">    cov_ac7rkuoyv.s[<span class="number">1</span>]++;</div><div class="line"></div><div class="line">    <span class="function">(<span class="params"><span class="keyword">async</span> (</span>) =&gt;</span> &#123;</div><div class="line">      cov_ac7rkuoyv.f[<span class="number">2</span>]++;</div><div class="line">      cov_ac7rkuoyv.s[<span class="number">2</span>]++;</div><div class="line">      <span class="built_in">console</span>.log(<span class="built_in">window</span>.__coverage__);</div><div class="line">      cov_ac7rkuoyv.s[<span class="number">3</span>]++;</div><div class="line">      axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.post[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span>;</div><div class="line">      cov_ac7rkuoyv.s[<span class="number">4</span>]++;</div><div class="line">      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(<span class="string">'http://localhost:4000/coverage/client'</span>, <span class="built_in">window</span>.__coverage__);</div><div class="line">    &#125;)();</div><div class="line">  &#125;, []);</div><div class="line">  cov_ac7rkuoyv.s[<span class="number">5</span>]++;</div><div class="line">  <span class="keyword">return</span> react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"div"</span>, &#123;</div><div class="line">    <span class="attr">className</span>: <span class="string">"App"</span>,</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">16</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"header"</span>, &#123;</div><div class="line">    <span class="attr">className</span>: <span class="string">"App-header"</span>,</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">17</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"img"</span>, &#123;</div><div class="line">    <span class="attr">src</span>: _logo_svg__WEBPACK_IMPORTED_MODULE_2___default.a,</div><div class="line">    <span class="attr">className</span>: <span class="string">"App-logo"</span>,</div><div class="line">    <span class="attr">alt</span>: <span class="string">"logo"</span>,</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">18</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"p"</span>, &#123;</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">19</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;, <span class="string">"Edit "</span>, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"code"</span>, &#123;</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">20</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;, <span class="string">"src/App.js"</span>), <span class="string">" and save to reload."</span>), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(<span class="string">"a"</span>, &#123;</div><div class="line">    <span class="attr">className</span>: <span class="string">"App-link"</span>,</div><div class="line">    <span class="attr">href</span>: <span class="string">"https://reactjs.org"</span>,</div><div class="line">    <span class="attr">target</span>: <span class="string">"_blank"</span>,</div><div class="line">    <span class="attr">rel</span>: <span class="string">"noopener noreferrer"</span>,</div><div class="line">    <span class="attr">__source</span>: &#123;</div><div class="line">      <span class="attr">fileName</span>: _jsxFileName,</div><div class="line">      <span class="attr">lineNumber</span>: <span class="number">22</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">__self</span>: <span class="keyword">this</span></div><div class="line">  &#125;, <span class="string">"Learn React"</span>)));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到针对每个文件，插桩后的代码新建了一个函数，用于更新这个文件的覆盖率信息。在业务代码执行时，会不断更新对应的计数器。前端代码run起来后，可以通过<code>window.__coverage</code>直接得到当前项目的覆盖率情况。</p>
-<p><strong>覆盖率计算原理</strong></p>
-<p>拿到代码字符串后，使用AST解析库解析出语法树，在对应树节点插入覆盖率语句，之后将语法树转成插桩后的代码。这个过程在0.x.x版本的实现可以参加<a href="http://gotwarlost.github.io/istanbul/public/apidocs/files/lib_instrumenter.js.html#l467" target="_blank" rel="external">这里</a>。</p>
-<p>0.x.x版本的instanbul使用<a href="https://github.com/jquery/esprima" target="_blank" rel="external">esprima</a>和<a href="https://github.com/estools/escodegen" target="_blank" rel="external">escodegen</a>。在最新的istanbuljs的<a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument" target="_blank" rel="external">istanbul-lib-instrument</a>中使用babel相关的包完成解析、生成等功能，但插桩思路不变。</p>
-<h4 id="node端"><a href="#node端" class="headerlink" title="node端"></a>node端</h4><p>node端使用istanbul-middleware中间件的<code>hookLoader</code>完成动态插桩。该中间件为<a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">instanbul</a>作者所写，所依赖的istanbul版本是目前已经不再维护的0.x.x版本，同时中间件也是基于express所写，年代较老。中间件的设计和我们的场景有些距离，因此需要在其基础上进行改造。</p>
-<p>在预期场景下，我们主要使用<code>im.hookLoader</code>和<code>im.createHandler</code>两个方法。</p>
-<h5 id="im-hookLoader"><a href="#im-hookLoader" class="headerlink" title="im.hookLoader"></a><code>im.hookLoader</code></h5><p><code>im.hookLoader</code>只是在instanbul hook的基础上做的简单封装。看<a href="http://gotwarlost.github.io/istanbul/public/apidocs/files/lib_hook.js.html#l77" target="_blank" rel="external">文档</a>可以发现：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">hookRequire</span>(<span class="params">matcher, transformer, options</span>) </span>&#123;</div><div class="line">    options = options || &#123;&#125;;</div><div class="line">    <span class="keyword">var</span> fn = transformFn(matcher, transformer, options.verbose),</div><div class="line">        postLoadHook = options.postLoadHook &amp;&amp;</div><div class="line">            <span class="keyword">typeof</span> options.postLoadHook === <span class="string">'function'</span> ? options.postLoadHook : <span class="literal">null</span>;</div><div class="line"> </div><div class="line">    Module._extensions[<span class="string">'.js'</span>] = <span class="function"><span class="keyword">function</span> (<span class="params">module, filename</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> ret = fn(fs.readFileSync(filename, <span class="string">'utf8'</span>), filename);</div><div class="line">        <span class="keyword">if</span> (ret.changed) &#123;</div><div class="line">            <span class="built_in">module</span>._compile(ret.code, filename);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            originalLoader(<span class="built_in">module</span>, filename);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (postLoadHook) &#123;</div><div class="line">            postLoadHook(filename);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>hook require是利用CommonJS的模块加载规范实现的。这里介绍下模块加载流程相关的背景。</p>
-<h5 id="模块加载流程"><a href="#模块加载流程" class="headerlink" title="模块加载流程"></a>模块加载流程</h5><p>require和module来自nodejs的<a href="https://nodejs.org/api/modules.html#modules_module" target="_blank" rel="external">Modules</a>模块。无需显式引入（原因下面会提）即可使用里面的<code>module</code>, <code>require</code>, <code>exports</code>的关键字。在require一个包时，分为了<strong>解析、加载、封装、求值、缓存</strong>几步。</p>
-<ol>
-<li>解析一步交给<code>module.require(modulename)</code>方法实现，该方法调用静态方法<code>Module._load</code>加载模块。</li>
-<li>加载时首先调用<code>Module._resolveFilename</code>解析路径，解析过程大致分为粗筛和精确定位<ol>
-<li>粗筛，原生模块则直接返回模块名，否则从当前目录逐步向上寻找node_modules目录下的模块文件夹</li>
-<li>精确定位，首先在上面的目录下寻找有无没有拓展名的同名文件，再寻找以<code>js</code>、<code>json</code>、<code>node</code>拓展名结尾的文件；再寻找同名目录下<code>package.json</code>中<code>main</code>字段指定的路径，最后寻找同名目录下的index.js</li>
-</ol>
-</li>
-<li>得到路径后，先试图从<code>Module._cache</code>中寻找有无模块缓存，若没有，则新建模块对象并缓存，之后调用<code>module.load()</code>方法加载该模块</li>
-<li>node默认只能load以<code>js</code>, <code>json</code>, <code>node</code>结尾的文件，除此之外均视为<code>.js</code>文件</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Module.prototype.load = <span class="function"><span class="keyword">function</span>(<span class="params">filename</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.filename = filename;</div><div class="line">    <span class="keyword">this</span>.paths = Module._nodeModulePaths(path.dirname(filename));</div><div class="line">    <span class="keyword">var</span> extension = path.extname(filename) || <span class="string">'.js'</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!Module._extensions[extension]) extension = <span class="string">'.js'</span>;</div><div class="line">    Module._extensions[extension](<span class="keyword">this</span>, filename);</div><div class="line">    <span class="keyword">this</span>.loaded = <span class="literal">true</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<ol>
-<li><code>Module._extensions</code>键值对默认只包含对上述三种文件的处理。其中json和node文件较简单<ul>
-<li>json，读取文件 =&gt; <code>JSON.parse</code> =&gt; 注入到<code>module.exports</code>上</li>
-<li>node，调用<code>process.dlopen</code>加载</li>
-<li>js，调用<code>module._compile()</code>处理文件内容</li>
-</ul>
-</li>
-<li><code>module._compile</code>执行js文件编译，编译前调用<code>Module.wrap</code>方法将模块封装在函数内，这也是<code>module</code>，<code>require</code>，<code>exports</code>，<code>__filename</code>，<code>__dirname</code>可以直接在模块内使用，且模块间的<code>module</code>，<code>require</code>，<code>exports</code>不相互干扰的原因。</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Module.wrap = <span class="function"><span class="keyword">function</span>(<span class="params">script</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> Module.wrapper[<span class="number">0</span>] + script + Module.wrapper[<span class="number">1</span>];</div><div class="line">&#125;;</div><div class="line">Module.wrapper = [</div><div class="line">    <span class="string">'(function (exports, require, module, __filename, __dirname) &#123; '</span>,</div><div class="line">    <span class="string">'\n&#125;);'</span></div><div class="line">];</div></pre></td></tr></table></figure>
-<ol>
-<li>wrap后，调用<code>vm.runInThisContext</code>将字符串转为可执行的js函数。最后一句执行封装的函数，注入当前module的相关信息到模块中</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Module.prototype._compile = <span class="function"><span class="keyword">function</span>(<span class="params">content, filename</span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="keyword">var</span> wrapper = Module.wrap(content);</div><div class="line">  <span class="keyword">var</span> compiledWrapper = vm.runInThisContext(wrapper, &#123;</div><div class="line">    <span class="attr">filename</span>: filename,</div><div class="line">    <span class="attr">lineOffset</span>: <span class="number">0</span>,</div><div class="line">    <span class="attr">displayErrors</span>: <span class="literal">true</span></div><div class="line">  &#125;);</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="comment">// 执行</span></div><div class="line">  result = compiledWrapper.call(<span class="keyword">this</span>.exports, <span class="keyword">this</span>.exports, <span class="built_in">require</span>, <span class="keyword">this</span>, filename, dirname);</div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>实际上，可以在REPL中输入<code>require.extensions</code>看到nodejs支持的3种文件拓展。而hookRequire所做的就是hook了加载<code>.js</code>的步骤，在交由<code>module._compile</code>处理前，前进行了插桩处理。</p>
-<blockquote>
-<p>注：<code>ts-node</code>能够import<code>.ts</code>文件也是因为在<code>module._extendsion</code>中添加了<code>.ts</code>的处理方法</p>
-</blockquote>
-<p>综上，在本地测试时，由于通过<code>ts-node</code>启动，<code>im.hookLoader</code>只会hook<code>.js</code>文件（0.x.x版本），会导致没有服务端代码覆盖率，上线前tsc后，就可以顺利注入，从<code>global.__coverage__</code>中拿到覆盖率数据。</p>
-<h4 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h4><p>服务端覆盖率数据采集借助上述的<code>im.hookLoader</code>就已完成。前端页面的代码覆盖率需要自行周期性上报。<code>im.createHandler</code>提供的API可以接收前端覆盖率，该方法创建的路由回调会调用<code>utils.mergeFileCoverage</code>最终将增量覆盖率数据累加在<code>global.__coverage__</code>中。</p>
-<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><p>可视化需要借助istanbul（0.x版本）本身提供的相关API，又或者直接更方便地使用<code>im.createHandler</code>。其方便封装了一些istanbul的API，实现的简单的可视化功能，更多介绍可以直接参考istanbul-middleware使用文档。</p>
-<h4 id="im-createHandler"><a href="#im-createHandler" class="headerlink" title="im.createHandler"></a><code>im.createHandler</code></h4><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createHandler</span>(<span class="params">opts</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">var</span> app = express();</div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="comment">//send static file for /asset/asset-name</span></div><div class="line">    app.use(<span class="string">'/asset'</span>, express.static(ASSETS_DIR));</div><div class="line">    app.use(<span class="string">'/asset'</span>, express.static(path.join(ASSETS_DIR, <span class="string">'vendor'</span>)));</div><div class="line"></div><div class="line">    app.use(bodyParser.urlencoded(urlOptions));</div><div class="line">    app.use(bodyParser.json(jsonOptions));</div><div class="line"></div><div class="line">    app.get(<span class="string">'/'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        core.render(<span class="literal">null</span>, res, origUrl);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>从上面的使用上看，<code>im.createHandler</code>的使用是和express绑定的，并不适配koa的风格，要想使用在非express服务端场景里，或者增加额外功能，就需要重构这个方法。不过，由于一些API的使用从0.x.x版本迁移到新的monorepo的版本并不平滑，且新版本API暂无文档。所以尽管instanbul已经不再更新，对istanbul-middleware中间件的重构还只能保持对旧版本istanbul的依赖。</p>
-<h4 id="重构设计"><a href="#重构设计" class="headerlink" title="重构设计"></a>重构设计</h4><p>为了兼容koa环境，从istanbul-middleware库fork新版本istanbul-koa-middleware，使用ts重写。去掉无用的代码，重点需要改造的就是<code>createKoaHandler</code>方法。</p>
-<p>为减少istanbul-koa-middleware使用方的依赖，考虑使用类似istanbul-middleware的形式，在<code>createKoaHandler</code>内部定义koa应用，使用方只需引入koa-mount和istanbul-koa-middleware即可在任意路由上挂载覆盖率可视化相关子路由。</p>
-<p>除此之外：</p>
-<ul>
-<li>使用koa-static替代<code>express.static</code></li>
-<li>使用koa-mount替代<code>app.use(&#39;/some/path&#39;, someMiddleware)</code></li>
-<li>使用koa-router替代<code>app.get</code>和<code>app.post</code></li>
-<li>定义<code>WebFramework</code>接口，掩盖对回调中<code>res</code>使用方式的不同</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">interface</span> WebFramework &#123;</div><div class="line">    setHeader: (key: <span class="built_in">string</span>, value: <span class="built_in">string</span>) =&gt; <span class="built_in">void</span>;</div><div class="line">    status: (code: <span class="built_in">number</span>) =&gt; <span class="built_in">void</span>;</div><div class="line">    write: (content: <span class="built_in">any</span>) =&gt; <span class="built_in">void</span>;</div><div class="line">    end: (content?: <span class="built_in">string</span>) =&gt; <span class="built_in">void</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">genWebFrameworkCtxFromKoaCtx</span>(<span class="params">ctx: Koa.ParameterizedContext</span>): <span class="title">WebFramework</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        setHeader(key, value) &#123;</div><div class="line">            ctx.set(key, value);</div><div class="line">        &#125;,</div><div class="line">        status(code) &#123;</div><div class="line">            ctx.status = code;</div><div class="line">        &#125;,</div><div class="line">        write(content) &#123;</div><div class="line">            ctx.res.write(content);</div><div class="line">        &#125;,</div><div class="line">        end(content) &#123;</div><div class="line">            ctx.res.end(content);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这样，重构后的istanbul-koa-middleware就可以帮我们实现最简单的覆盖数据可视化了。后续的新增功能，也都建立在对<code>createHandler</code>函数的改造上。</p>
-<h3 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h3><p>在上面工作完成后，第一阶段目标基本已经实现。</p>
-<p><img src="https://s1.ax1x.com/2020/04/16/JEZliq.png" alt="效果图1"><br><img src="https://s1.ax1x.com/2020/04/16/JEZ8zT.png" alt="效果图2"></p>
-<p>但是，还有很多可以优化的地方，这也是后续阶段需要解决的问题：</p>
-<ul>
-<li>服务端代码如果没有正确设置source-map，覆盖率展示的文件是tsc之后的js文件，可读性差</li>
-<li>需要区分环境，在特定环境下才对代码文件插桩</li>
-<li>本地环境下可以访问到原始的ts文件，上传测试环境后，由于不会打包上传源文件，覆盖率报告将看不了原始ts文件的覆盖详情</li>
-<li>覆盖率报告功能太简单，不能以分支、版本、仓库等空间维度或以历史信息、趋势等时间维度查看<br>，也没有diff内容覆盖率功能</li>
-<li>出现了一些意义不大的文件，需要剔除</li>
-</ul>
-<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><ul>
-<li><a href="https://tech.youzan.com/front-coverage/" target="_blank" rel="external">前端精准测试探索：覆盖率实时统计工具</a></li>
-<li><a href="https://tech.kujiale.com/qian-duan-fu-gai-lu/" target="_blank" rel="external">基于Istanbul 优雅地搭建前端JS覆盖率平台</a></li>
-<li><a href="https://www.freecodecamp.org/news/requiring-modules-in-node-js-everything-you-need-to-know-e7fbd119be8/" target="_blank" rel="external">Requiring modules in Node.js: Everything you need to know</a></li>
-<li><a href="https://juejin.im/post/5d84456851882556f33d5fb0" target="_blank" rel="external">node模块加载机制 - 掘金</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1737,7 +1917,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">121</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1759,7 +1939,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">342</span>
+                <span class="site-state-item-count">358</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
