@@ -296,6 +296,215 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/23/some-tips-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/05/23/some-tips-2/" itemprop="url">工作中的遇到的一些小知识 2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T23:12:30+08:00">
+                2018-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/05/23/some-tips-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/23/some-tips-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一个合法检测的Validator"><a href="#一个合法检测的Validator" class="headerlink" title="一个合法检测的Validator"></a>一个合法检测的Validator</h2><p>合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> TYPE_VALIDATE_MESSAGE = &#123;</div><div class="line">    <span class="attr">isNumber</span>: <span class="string">'不是一个数字'</span>,</div><div class="line">    <span class="attr">isObject</span>: <span class="string">'不是一个对象'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="string">'不是一个数组'</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="string">'数值过大'</span>,</div><div class="line">    <span class="attr">gt</span>: <span class="string">'数值过小'</span>,</div><div class="line">    <span class="attr">st</span>: <span class="string">'长度过短'</span>,</div><div class="line">    <span class="attr">ht</span>: <span class="string">'长度过长'</span></div><div class="line">    notEmpty: <span class="string">'需要非空'</span>,</div><div class="line">    <span class="attr">len</span>: <span class="string">'长度不合规范'</span>,</div><div class="line">    <span class="attr">in</span>: <span class="string">'不在可选范围内'</span>,</div><div class="line">    <span class="attr">reg</span>: <span class="string">'无法匹配指定模式'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 供validate使用</span></div><div class="line">util.test = &#123;</div><div class="line">    <span class="attr">isObject</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Object</span>(_) === _,</div><div class="line">    <span class="attr">isNumber</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="keyword">typeof</span> _ == <span class="string">'number'</span>,</div><div class="line">    <span class="attr">isArray</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="built_in">Array</span>.isArray(_),</div><div class="line">    <span class="attr">notEmpty</span>: <span class="function"><span class="params">_</span> =&gt;</span> _.length &gt; <span class="number">0</span>,</div><div class="line">    <span class="attr">lt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &lt; limit,</div><div class="line">    <span class="attr">gt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &gt; limit,</div><div class="line">    <span class="attr">st</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &lt; limit,</div><div class="line">    <span class="attr">ht</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.length &gt; limit,</div><div class="line">    <span class="attr">in</span>: <span class="function">(<span class="params">_, range</span>) =&gt;</span> ~range.indexOf(_),</div><div class="line">    <span class="attr">len</span>: <span class="function">(<span class="params">_, length</span>) =&gt;</span> _.length === length,</div><div class="line">    <span class="attr">reg</span>: <span class="function">(<span class="params">_, reg</span>) =&gt;</span> reg.test(_)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 数据校验</div><div class="line"> * @author: shenlvmeng</div><div class="line"> * @params value &#123;any&#125; 校验数值 输入单个数值使用verify校验 输入对象使用verifyMap校验</div><div class="line"> * @method verify 校验单个数值</div><div class="line"> * @method verifyMap 校验对象</div><div class="line"> * @return &#123;Object&#125; 包含success和message的对象</div><div class="line"> */</div><div class="line">util.validate = <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 方便传递到外界修改</span></div><div class="line">    <span class="keyword">let</span> message = &#123; <span class="attr">content</span>: <span class="string">''</span> &#125;;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">verify</span>(<span class="params">val, validators, key</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(validators)) validators = [validators];</div><div class="line">        <span class="keyword">return</span> validators.every(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</div><div class="line">            <span class="keyword">let</span> isRight;</div><div class="line">            <span class="keyword">if</span> (util.test.isObject(v)) &#123;</div><div class="line">                isRight = util.test[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]](val, <span class="built_in">Object</span>.values(v)[<span class="number">0</span>])</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]]&#125;</span>`</span>);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                isRight = util.test[v](val);</div><div class="line">                !isRight &amp;&amp; (message.content = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[v]&#125;</span>`</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> isRight;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 单个数值使用</div><div class="line">         * @params validators &#123; String|Array|Object &#125; 校验函数 必须是util中已定义的函数</div><div class="line">         * @params String 类型时为函数名; Object类型时为函数名和对应入参; Array时为以上的列表 </div><div class="line">         */</div><div class="line">        verify(validators) &#123;</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: verify(value, validators),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 校验整个对象时使用</div><div class="line">         * @params config &#123; Object &#125; 校验函数 针对Object中每个key的校验</div><div class="line">         * @params 每个key的value服从verify的格式，当key为function类型时交给调用方自己处理</div><div class="line">         */</div><div class="line">        verifyMap(config) &#123;</div><div class="line">            <span class="keyword">if</span> (!util.test.isObject(value)) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Invalid value type. It should be an Object.'</span>);</div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line">                <span class="attr">success</span>: <span class="built_in">Object</span>.keys(config).every(<span class="function"><span class="params">key</span> =&gt;</span> (</div><div class="line">                    <span class="keyword">typeof</span> config[key] === <span class="string">'function'</span> ? config[key](value[key], message)</div><div class="line">                    : verify(value[key], config[key], key))</div><div class="line">                ),</div><div class="line">                <span class="attr">message</span>: message.content,</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际应用中发现，<code>verifyMap</code>方法用的比较多。使用样例如下;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">examine() &#123;</div><div class="line">    <span class="keyword">return</span> util.validate(formData).verifyMap(&#123;</div><div class="line">        <span class="attr">userName</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">password</span>: [<span class="string">'notEmpty'</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</div><div class="line">        <span class="attr">age</span>: [<span class="string">'isNumber'</span>, &#123; <span class="attr">lt</span>: <span class="number">18</span> &#125;],</div><div class="line">        <span class="attr">gender</span>: &#123;<span class="attr">in</span>: [<span class="string">'male'</span>, <span class="string">'female'</span>]&#125;,</div><div class="line">        <span class="attr">email</span>: &#123;<span class="string">'reg'</span>: <span class="regexp">/email pattern/</span>&#125;,</div><div class="line">        <span class="attr">isAccepted</span>: <span class="function">(<span class="params">value, message</span>) =&gt;</span> value ? value : (message.content = <span class="string">'请接收用户协议'</span>, <span class="literal">false</span>)</div><div class="line">    &#125;);</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
+<h2 id="Linux清理大文件"><a href="#Linux清理大文件" class="headerlink" title="Linux清理大文件"></a>Linux清理大文件</h2><ul>
+<li><code>df -h</code>查看存储情况</li>
+<li><code>du -sh * | grep G</code>查找当前目录下大于1G的大文件，挨个确认删除即可</li>
+</ul>
+<h2 id="当前页面窗口活动状态检查"><a href="#当前页面窗口活动状态检查" class="headerlink" title="当前页面窗口活动状态检查"></a>当前页面窗口活动状态检查</h2><p>利用<code>visibilityChange</code>API，配合<code>visibilityState</code>检查窗口状态。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// subscribe to visibility change events</span></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'visibilitychange'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// fires when user switches tabs, apps, goes to homescreen, etc.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'hidden'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = <span class="string">'Baby, Come Back!'</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// fires when app transitions from prerender, user returns to the app / tab.</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.visibilityState === <span class="string">'visible'</span>) &#123;</div><div class="line">        <span class="built_in">document</span>.title = defaultTitle;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><p>监测页面元素和视口的交错关系的DOM API，目前浏览器支持度不高。可以用来方便地实现懒加载和页面无限滚动。</p>
+<p><a href="http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html" target="_blank" rel="external">参考</a></p>
+<h2 id="图种"><a href="#图种" class="headerlink" title="图种"></a>图种</h2><ul>
+<li>Windows，<code>copy /b image.jpg+zip.rar output.jpg</code>，更改输出图片后缀为rar得到压缩包</li>
+<li>Linux，<code>cat image.jpg zip.rar &gt; output.jpg</code>，同上</li>
+</ul>
+<h2 id="draggable-with-Vue"><a href="#draggable-with-Vue" class="headerlink" title="draggable with Vue"></a>draggable with Vue</h2><p>业务中有拖拽需求，在试用多个轮子后，最终选择了<a href="https://jexordexan.github.io/vue-slicksort/?selectedKind=Vertical%20sorting&amp;selectedStory=Simple%20list&amp;full=0&amp;addons=1&amp;stories=1&amp;panelRight=0&amp;addonPanel=storybook%2Factions%2Factions-panel" target="_blank" rel="external">vue-slicksort</a></p>
+<ul>
+<li>Vue Draggable</li>
+<li>Vue Dragula</li>
+<li>Vue slicksort</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>GitHub名</th>
+<th>流行度</th>
+<th>依赖/原理</th>
+<th>功能完善度</th>
+<th>文档完善度</th>
+<th>使用舒适度</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vuedraggable</td>
+<td>star数3859，很流行</td>
+<td>依赖sortable.js，后者依赖HTML5的draggable API</td>
+<td>功能丰富强大，有很多别人踩过的坑</td>
+<td>文档比较丰富</td>
+<td>通过组件包裹形式使用 侵入性小 优</td>
+<td>有兼容性问题，Chrome66.0.3359.181 Mac OSX 10.13.1下无法通过拖动换位</td>
+</tr>
+<tr>
+<td>vue-dragula</td>
+<td>star数100+，上次更新1年前</td>
+<td>依赖dragula.js</td>
+<td>功能一般</td>
+<td>不完善，几乎都是dragula的API</td>
+<td>通过<code>Vue.use</code>的形式 + directives的方式引入，侵入式一般</td>
+<td>使用效果不好，实现时没有拖动和移动的动效</td>
+</tr>
+<tr>
+<td>vue-slicksort</td>
+<td>star数100+，更新较活跃</td>
+<td>0依赖，不基于HTML5 drag API，支持触摸屏，兼容性好</td>
+<td>功能一般，支持平面拖动</td>
+<td>较完善，有样例、API解释和FAQ</td>
+<td>略糟糕，需要使用mixin的形式，通常意味着额外的组件定义</td>
+<td>展示效果优秀，能满足需求</td>
+</tr>
+</tbody>
+</table>
+<p>综上，考虑到只有vue-slicksort能满足需求，故选择之。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/05/14/canvas-introduction/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1289,273 +1498,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2018/04/17/quill-md/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/04/17/quill-md/" itemprop="url">使用quill搭建文本编辑器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T23:45:03+08:00">
-                2018-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/框架/" itemprop="url" rel="index">
-                    <span itemprop="name">框架</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2018/04/17/quill-md/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/17/quill-md/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>官网：<a href="https://quilljs.com" target="_blank" rel="external">https://quilljs.com</a></p>
-</blockquote>
-<p>quill可以是一个文本编辑器JS库或是文本编辑器构建库。它提供了结构化数据方式用脱离语言的方式描述编辑器内容，同时预置了内置插件，支持自定义插件，有助于在此基础上进行和业务相关编辑器开发。</p>
-<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>关于<code>contenteditable</code>属性，<code>selection</code>对象和<code>range</code>对象的介绍，可以参考<a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">这篇文章</a>。</p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">"#container"</span>);</div><div class="line"><span class="comment">// 或是直接传入DOM对象</span></div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="built_in">document</span>.body);</div></pre></td></tr></table></figure>
-<p>quill通常使用上面的方式初始化。在初始化时，支持用丰富的配置项定义生成的编辑器。下面是一个例子。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> options = &#123;</div><div class="line">    <span class="attr">debug</span>: <span class="string">'info'</span>,</div><div class="line">    <span class="attr">modules</span>: &#123;</div><div class="line">        <span class="attr">toolbar</span>: <span class="string">'#toolbar'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">placeholder</span>: <span class="string">'Tell a story...'</span>,</div><div class="line">    <span class="attr">readOnly</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">them</span>: <span class="string">'snow'</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> editor = <span class="keyword">new</span> Quill(<span class="string">'#container'</span>, options);</div></pre></td></tr></table></figure>
-<p>Quill支持的配置项有：</p>
-<ul>
-<li><code>bounds</code>，Quill UI元素的限制范围，默认<code>document.body</code></li>
-<li><code>debug</code>，是<code>Quill.debug</code>的快捷方式，用于打印调试信息，默认级别为<code>warn</code></li>
-<li><code>formats</code>，Quill中允许出现的格式，默认为<a href="https://quilljs.com/docs/formats/" target="_blank" rel="external">所有格式</a>，它和toolbar是解耦的</li>
-<li><code>modules</code>，注册在Quill中的功能模块和与之对应的配置信息，Quill会有默认配置</li>
-<li><code>placeholder</code>，提示信息</li>
-<li><code>readOnly</code>，是否可写</li>
-<li><code>scrollContainer</code>，编辑器滚动条的父级，默认为编辑器本身</li>
-<li><code>strict</code>，版本更新配置，默认为<code>true</code></li>
-<li><code>theme</code>，整体外观，默认为<code>snow</code>，<code>bubble</code>可选</li>
-</ul>
-<h3 id="支持的文本格式"><a href="#支持的文本格式" class="headerlink" title="支持的文本格式"></a>支持的文本格式</h3><p>分为<strong>行内</strong>，<strong>块级</strong>，<strong>嵌入式</strong>三大类。</p>
-<ul>
-<li>行内：加粗/背景色/字体颜色/字体/行内代码/斜体/下划线/删除线/链接/字体大小/上、下标</li>
-<li>块级：引用/标题/行首缩进/有序、无序列表/对齐/文本方向/代码块</li>
-<li>嵌入式：音频/视频/公式</li>
-</ul>
-<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p>按照由浅入深，分为<strong>修改内容</strong>，<strong>修改格式</strong>，<strong>选取</strong>，<strong>编辑器本身</strong>，<strong>事件</strong>，<strong>数据模型操作</strong>，<strong>拓展</strong>几大类。涉及到内容修改的都会返回代表更改的delta。</p>
-<h4 id="修改内容"><a href="#修改内容" class="headerlink" title="修改内容"></a>修改内容</h4><p>涉及到修改时，最后一个参数都可以选择<code>user</code>，<code>api</code>，<code>silent</code>。<code>user</code>类型下，disabled时会没有效果。</p>
-<ul>
-<li><code>deleteText</code>，输入起始点和长度，删除特定范围的内容，返回delta类型数据。如<code>quill.deleteText(6, 4)</code></li>
-<li><code>getContents</code>，获取delta格式的编辑器内容，如<code>quill.getContents()</code></li>
-<li><code>getLength</code>，获取文本长度，quill默认会有一个空行，所以默认返回1</li>
-<li><code>getText</code>，获取文本内容，跳过非文本如音视频元素，如<code>quill.getText(0, 10)</code></li>
-<li><code>insertEmbed</code>，输入位置，类型，值，插入嵌入式内容，如<code>quill.insertEmbed(10, &#39;image&#39;, &#39;https://quilljs.com/images/cloud.png&#39;)</code></li>
-<li><p><code>insertText</code>，插入文本，可带格式。如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Hello'</span>, <span class="string">'bold'</span>, <span class="literal">true</span>);</div><div class="line"></div><div class="line">quill.insertText(<span class="number">5</span>, <span class="string">'Quill'</span>, &#123;</div><div class="line">  <span class="string">'color'</span>: <span class="string">'#ffff00'</span>,</div><div class="line">  <span class="string">'italic'</span>: <span class="literal">true</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>setContent</code>，输入delta，重设编辑器内容，需以<code>\n</code>结尾。如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">quill.setContents([</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'Hello '</span> &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'World!'</span>, <span class="attr">attributes</span>: &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125; &#125;,</div><div class="line">  &#123; <span class="attr">insert</span>: <span class="string">'\n'</span> &#125;</div><div class="line">]);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>setText</code>，设置文本，返回代表改变的delta</p>
-</li>
-<li><code>updateContent</code>，输入delta，更新内容，返回代表更新的delta</li>
-</ul>
-<h4 id="修改格式"><a href="#修改格式" class="headerlink" title="修改格式"></a>修改格式</h4><ul>
-<li><code>format</code>，设置用户当前所选的文本格式，如<code>quill.format(&#39;color&#39;, &#39;red&#39;);</code></li>
-<li><code>formatLine</code>，设置给定选择当前整行样式，使用类似<code>format</code>的方法设置样式，也支持直接传入格式对象。类似<code>quill.formatLine(1, 2, { &#39;align&#39;: &#39;right&#39;})</code></li>
-<li><code>formatText</code>，设置给定范围内文本格式，类似<code>formatLine</code></li>
-<li><code>getFormat</code>，获取给定范围内的格式，没有输入时，返回当前选择的格式</li>
-<li><code>removeFormat</code>，移除范围内样式</li>
-</ul>
-<h4 id="选取"><a href="#选取" class="headerlink" title="选取"></a>选取</h4><ul>
-<li><code>getBounds(index, length = 0)</code>，返回的top、width、height、left相对于编辑器容器而言</li>
-<li><code>getSelection(focus = false)</code>，返回用户的选取范围，由index、length组成</li>
-<li><code>setSelection(index, length = 0)</code>，设置选区范围，会自动focus，输入null会自动blur</li>
-</ul>
-<h4 id="编辑器本身"><a href="#编辑器本身" class="headerlink" title="编辑器本身"></a>编辑器本身</h4><ul>
-<li><code>blur</code>，失焦</li>
-<li><code>disable</code>，禁用</li>
-<li><code>enable(enabled = false)</code>，启用</li>
-<li><code>focus</code>，聚焦</li>
-<li><code>hasFocus</code>，是否聚焦</li>
-<li><code>update</code>，同步用户改动，协同工作时常用</li>
-</ul>
-<h4 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h4><p>事件通过<code>on</code>方法绑定在quill对象上。</p>
-<ul>
-<li><code>text-change</code>，quill内的内容改变时触发，回调函数可以获取delta、oldContent，source。通常来自’user’，<code>source</code>为’silent’时，该事件不会触发。</li>
-<li><code>selection-change</code>，回调函数可以获取range，oldRange，source</li>
-<li><code>editor-change</code>，上述两个事件触发时触发，即使source为<code>silent</code></li>
-</ul>
-<p>除了<code>on</code>方法，还有<code>once</code>用于绑定一次和<code>off</code>方法解绑。</p>
-<h4 id="数据模型操作"><a href="#数据模型操作" class="headerlink" title="数据模型操作"></a>数据模型操作</h4><ul>
-<li><code>find</code>，寻找DOM节点对应的quill或Blot对象</li>
-<li><code>getIndex</code>，返回文档开头到给定Blot的偏移量</li>
-<li><code>getLeafBlot</code>，返回给定位置的Blot</li>
-<li><code>getLine</code>，返回给定位置整行的Blot</li>
-<li><code>getLines</code>，返回给定范围的Blot</li>
-</ul>
-<h4 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h4><ul>
-<li><code>debug</code>，设置调试信息级别，<code>info | log | warn | error</code></li>
-<li><p><code>import</code>，导出quill相关库，输入相对于quill的路径</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Parchment = Quill.import(<span class="string">'parchment'</span>);</div><div class="line"><span class="keyword">var</span> Delta = Quill.import(<span class="string">'delta'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> Toolbar = Quill.import(<span class="string">'modules/toolbar'</span>);</div><div class="line"><span class="keyword">var</span> Link = Quill.import(<span class="string">'formats/link'</span>);</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>register</code>，注册module到quill中，有下面几种用法</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Quill.register(format: Attributor | BlotDefinintion, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(path: <span class="built_in">String</span>, <span class="attr">def</span>: any, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div><div class="line">Quill.register(defs: &#123; [<span class="built_in">String</span>]: any &#125;, <span class="attr">supressWarning</span>: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>addContainer</code>，新增容器并返回</p>
-</li>
-<li><code>enable/disable</code>，启用、禁用编辑器</li>
-</ul>
-<h3 id="delta"><a href="#delta" class="headerlink" title="delta"></a>delta</h3><p><a href="https://github.com/quilljs/delta" target="_blank" rel="external">delta</a>是quill中最重要的概念。据<a href="https://quilljs.com/guides/designing-the-delta-format/" target="_blank" rel="external">介绍</a>所说，quill是“第一个”使用delta（结构化数据）这个概念的。不同于其他大多数文本编辑器需要反复执行修改编辑器中的HTML文档。quill维护一个delta数组，使用JSON数据的方式描述了文档的内容。</p>
-<p>使用delta一词，并没有问题，因为可以理解成文档本身是由空内容 + delta一点点得到的。delta主要有两个特性：</p>
-<ul>
-<li>权威性，delta和对应的生成结果是一一对应的，没有歧义</li>
-<li>压缩性，delta中描述的操作是经过压缩后的</li>
-</ul>
-<p>delta中的操作可以分为增、删、修改格式，分别对应<code>insert</code>，<code>delete</code>和<code>retain</code>操作。对文本编辑器的一次改动（真实世界中的改动行为）只可能涉及上述三种行为的一种（Quill并不允许Ctrl多处选中）。其中retain的意义类似于光标的移动，它使得这三种操作并不需要使用index描述，便于Quill做优化和压缩。</p>
-<p>delta的操作实际上是对parchment进行的，它类似于vdom，使用JS的数据结构对文本编辑器中可能出现的各元素进行了抽象，称作Blot。Blot有scroll，inline、block、text，break几种。父Blot下必须包含至少一个子Blot，而所有的Blot都包含在一个scroll Blot下。文本编辑器中特定格式的文本块都用特定的Blot表示，每个这样的Blot都必须继承自上面的一种Blot类型。就像通过下面的方式继承了Blot，就可以使对应的行内元素得到对应的编辑器样式元素对应起来，并使用在后面的编辑器里。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> Inline = Quill.import(<span class="string">'blots/inline'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BoldBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">BoldBlot.blotName = <span class="string">'bold'</span>;</div><div class="line">BoldBlot.tagName = <span class="string">'strong'</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ItalicBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123; &#125;</div><div class="line">ItalicBlot.blotName = <span class="string">'italic'</span>;</div><div class="line">ItalicBlot.tagName = <span class="string">'em'</span>;</div><div class="line"></div><div class="line">Quill.register(BoldBlot);</div><div class="line">Quill.register(ItalicBlot);</div><div class="line"></div><div class="line"><span class="comment">// in your editor</span></div><div class="line"></div><div class="line">quill.insertText(<span class="number">0</span>, <span class="string">'Test'</span>, &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;);</div><div class="line">quill.formatText(<span class="number">0</span>, <span class="number">4</span>, <span class="string">'italic'</span>, <span class="literal">true</span>);</div></pre></td></tr></table></figure>
-<p>类似地，我们定义一个Link Blot。它相比bold，italic不同的是，它需要一个string而不是boolean初始化。因此需要定义<code>create</code>和<code>format</code>两个函数。其中create在构造Blot时使用，value即输入的href，formats将用户的format字段和真实DOM的字段相关联。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LinkBlot</span> <span class="keyword">extends</span> <span class="title">Inline</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    <span class="comment">// Sanitize url value if desired</span></div><div class="line">    node.setAttribute(<span class="string">'href'</span>, value);</div><div class="line">    <span class="comment">// Okay to set other non-format related attributes</span></div><div class="line">    <span class="comment">// These are invisible to Parchment so must be static</span></div><div class="line">    node.setAttribute(<span class="string">'target'</span>, <span class="string">'_blank'</span>);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="comment">// We will only be called with a node already</span></div><div class="line">    <span class="comment">// determined to be a Link blot, so we do</span></div><div class="line">    <span class="comment">// not need to check ourselves</span></div><div class="line">    <span class="keyword">return</span> node.getAttribute(<span class="string">'href'</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">LinkBlot.blotName = <span class="string">'link'</span>;</div><div class="line">LinkBlot.tagName = <span class="string">'a'</span>;</div><div class="line"></div><div class="line">Quill.register(LinkBlot);</div></pre></td></tr></table></figure>
-<p>定义引用这样的块级元素时，对应地继承Block Blot即可。和inline Blot不同的是，Block Blot无法嵌套，在对已有的块级元素应用时会替换而不是嵌套绑定在元素上。以Header元素为例，可以指定tagName为一个数组，可以在format时使用1、2的方式指定具体哪种tag。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeaderBlot</span> <span class="keyword">extends</span> <span class="title">Block</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> formats(node) &#123;</div><div class="line">    <span class="keyword">return</span> HeaderBlot.tagName.indexOf(node.tagName) + <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">HeaderBlot.blotName = <span class="string">'header'</span>;</div><div class="line"><span class="comment">// Medium only supports two header sizes, so we will only demonstrate two,</span></div><div class="line"><span class="comment">// but we could easily just add more tags into this array</span></div><div class="line">HeaderBlot.tagName = [<span class="string">'H1'</span>, <span class="string">'H2'</span>];</div></pre></td></tr></table></figure>
-<p>类似的，可以在插入embed Blot，这种类型效果是插入在元素中间的新的tag。如Image。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> BlockEmbed = Quill.import(<span class="string">'blots/block/embed'</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImageBlot</span> <span class="keyword">extends</span> <span class="title">BlockEmbed</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> create(value) &#123;</div><div class="line">    <span class="keyword">let</span> node = <span class="keyword">super</span>.create();</div><div class="line">    node.setAttribute(<span class="string">'alt'</span>, value.alt);</div><div class="line">    node.setAttribute(<span class="string">'src'</span>, value.url);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> value(node) &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">alt</span>: node.getAttribute(<span class="string">'alt'</span>),</div><div class="line">      <span class="attr">url</span>: node.getAttribute(<span class="string">'src'</span>)</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">ImageBlot.blotName = <span class="string">'image'</span>;</div><div class="line">ImageBlot.tagName = <span class="string">'img'</span>;</div><div class="line"></div><div class="line"><span class="comment">// 使用时</span></div><div class="line"><span class="keyword">let</span> range = quill.getSelection(<span class="literal">true</span>);</div><div class="line">quill.insertText(range.index, <span class="string">'\n'</span>, Quill.sources.USER);</div><div class="line">quill.insertEmbed(range.index + <span class="number">1</span>, <span class="string">'image'</span>, &#123;</div><div class="line">    <span class="attr">alt</span>: <span class="string">'Quill Cloud'</span>,</div><div class="line">    <span class="attr">url</span>: <span class="string">'https://quilljs.com/0.20/assets/images/cloud.png'</span></div><div class="line">&#125;, Quill.sources.USER);</div><div class="line">quill.setSelection(range.index + <span class="number">2</span>, Quill.sources.SILENT);</div></pre></td></tr></table></figure>
-<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h3><p>quill中的module位于quill的应用层。可以通过定制modules，利用quill的功能；或是更改quill内置module，修改quill本身的行为和功能。clipboard、keyboard、history三个module是quill默认加载的。用户完全可以根据业务需求定义自己的module。官网给了<a href="https://quilljs.com/guides/building-a-custom-module/" target="_blank" rel="external">简单的例子</a>展示了module的大致骨架：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Quill.register(<span class="string">'modules/counter'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">quill, options</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> container = <span class="built_in">document</span>.querySelector(options.container);</div><div class="line">  quill.on(<span class="string">'text-change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text = quill.getText();</div><div class="line">    <span class="keyword">if</span> (options.unit === <span class="string">'word'</span>) &#123;</div><div class="line">      container.innerText = text.split(<span class="regexp">/\s+/</span>).length + <span class="string">' words'</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      container.innerText = text.length + <span class="string">' characters'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">counter</span>: &#123;</div><div class="line">      <span class="attr">container</span>: <span class="string">'#counter'</span>,</div><div class="line">      <span class="attr">unit</span>: <span class="string">'word'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>只需要定义一个可以接收quill对象的函数即可，在函数内部利用quill事件监听即可完成应用层的建设。</p>
-<h3 id="Toolbar和ClipBoard"><a href="#Toolbar和ClipBoard" class="headerlink" title="Toolbar和ClipBoard"></a>Toolbar和ClipBoard</h3><p><a href="https://quilljs.com/docs/modules/toolbar/" target="_blank" rel="external">Toolbar</a>和<a href="https://quilljs.com/docs/modules/clipboard/" target="_blank" rel="external">Clipboard</a>是Quill内置的两个module，对你构建自己的文本编辑器有很大的借鉴意义。</p>
-<p>Toolbar用来定制工具栏上的按钮，是自定义编辑器（尤其是业务相关的编辑器）逃不开的一部分。它有几个基本配置：</p>
-<ul>
-<li><code>container</code>，放置工具栏的DOM容器</li>
-<li><code>handler</code>，点击ToolBar图标时注册的函数，传入Blot的value，通过调用Quill的API完成功能。也可以通过下面方式注册。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Handlers can also be added post initialization</span></div><div class="line"><span class="keyword">var</span> toolbar = quill.getModule(<span class="string">'toolbar'</span>);</div><div class="line">toolbar.addHandler(<span class="string">'image'</span>, showImageUI);</div></pre></td></tr></table></figure>
-<p>在遇到从别的文本编辑器拷贝内容过来的情况时，需要修改ClipBoard Module中<code>addMatcher</code>的定义。这个方法向ClipBoard中注册了新的Matcher匹配拷贝过来的HTML文本，将之转换为对应的Blot。如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">quill.clipboard.addMatcher(Node.TEXT_NODE, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Delta().insert(node.data);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// Interpret a &lt;b&gt; tag as bold</span></div><div class="line">quill.clipboard.addMatcher(<span class="string">'.custom-class'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">node, delta</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> delta.compose(<span class="keyword">new</span> Delta().retain(delta.length(), &#123; <span class="attr">bold</span>: <span class="literal">true</span> &#125;));</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>或者在configuration中，注入新定义的matcher即可。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> quill = <span class="keyword">new</span> Quill(<span class="string">'#editor'</span>, &#123;</div><div class="line">  <span class="attr">modules</span>: &#123;</div><div class="line">    <span class="attr">clipboard</span>: &#123;</div><div class="line">      <span class="attr">matchers</span>: [</div><div class="line">        [<span class="string">'B'</span>, customMatcherA],</div><div class="line">        [Node.TEXT_NODE, customMatcherB]</div><div class="line">      ]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="https://quilljs.com/docs/" target="_blank" rel="external">Quill文档</a></li>
-<li><a href="https://caelumtian.github.io/2017/08/21/%E5%88%A9%E7%94%A8javascript%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" target="_blank" rel="external">利用javascript搭建富文本编辑器</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1606,7 +1548,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">128</span>
+                <span class="site-state-item-count">129</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1628,7 +1570,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">383</span>
+                <span class="site-state-item-count">384</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1697,7 +1639,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-"></i>
   </span>
