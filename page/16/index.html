@@ -296,6 +296,266 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/10/15/cycle-js-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/10/15/cycle-js-introduction/" itemprop="url">cycle.js介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-15T15:29:52+08:00">
+                2017-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/框架/" itemprop="url" rel="index">
+                    <span itemprop="name">框架</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/10/15/cycle-js-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/10/15/cycle-js-introduction/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>下面的内容主要来自<a href="https://egghead.io/courses/cycle-js-fundamentals" target="_blank" rel="external">作者André Staltz的egghead.io</a></p>
+</blockquote>
+<div style="width: 50%;margin: 0 auto;"><img src="http://ow5o14n5d.bkt.clouddn.com/blogcycle-flow.svg" alt="cycle-flow"></div>
+
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>cycle.js设计上有三个特点：</p>
+<ul>
+<li>万物都是Stream（collections + <strong>时间</strong>）</li>
+<li>Logic和Effect分离（借助<code>main</code>和<code>drivers</code>）</li>
+<li>app是纯数据流（data flow）</li>
+</ul>
+<p>第一部分正如<a href="https://shenlvmeng.github.io/blog/2017/08/14/rxjs-brief/" target="_blank" rel="external">RxJS中介绍</a>的一样，可以用Observable建模。</p>
+<p>第二部分中，logic是数学相关的东西，是抽象的。effects则是影响实际世界的效应（如DOM、HTTP等），是实际的。将两者更好地分离开来是Cycle.js的设计初衷。而logic纯函数的特点优势也是很明显的（无副作用）。</p>
+<p>上面的两部分在Cycle.js中，借助xstream, RxJS等Reactive Programming的库，以main和driver函数来实现。其中<code>main</code>实现逻辑、生产数据，<code>driver</code>订阅消费数据，交由cycle.js制造Effect。<a href="http://lmatteis.github.io/cyclejs-slides/keynote/assets/player/KeynoteDHTMLPlayer.html#60" target="_blank" rel="external">这里</a>有一个浅显易懂的例子。</p>
+<p>除了简单的DOM Effect外，还有HTTP请求等。交给不同的drivers完成就行了。这一点上和<a href="https://shenlvmeng.github.io/blog/2017/06/19/elm-introduction/#Effects" target="_blank" rel="external">Elm设计</a>很像。</p>
+<p>对比流行的React、Angular、Vue，组件化的设计模式当然也涉及到。文档的<a href="https://cycle.js.org/components.html" target="_blank" rel="external">Components</a>部分讲得很清楚：</p>
+<blockquote>
+<p>Any Cycle.js app can be reused as a component in a larger Cycle.js app.</p>
+</blockquote>
+<p>即任何一个Cycle.js的应用都可以直接重用成更大应用的一个组件，无需额外的操作。原因很简单，任何一个logic都是在<code>main</code>函数中完成的，这也是开发者唯一需要做的事。而这个函数接收的<code>sources</code>以及返回给Cycle.js的<code>sinks</code>都是一个包含DOM、HTTP等stream的对象，且键值对都一样，可以看下面这张图更好理解：</p>
+<div style="width: 50%;margin: 0 auto;"><img src="https://cycle.js.org/img/dataflow-component.svg" alt="cycle.js component"></div>
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>完全可以在main中生产多种数据，作为对象返回，交给不同driver的得到不一样的effects。将main中数据交给driver的过程抽象在run函数中，完成数据生产和订阅的过程。这个过程并不复杂。下面是一个简陋的实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">mainFn, drivers</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> sinks = mainFn();</div><div class="line">  <span class="built_in">Object</span>.keys(drivers).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</div><div class="line">  	<span class="keyword">if</span> (sinks[key]) &#123;</div><div class="line">  	  drivers[key](sinks[key]);</div><div class="line">  	&#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">run(main, &#123;</div><div class="line">  <span class="attr">DOM</span>: domDriver,</div><div class="line">  <span class="attr">other</span>: otherDriver</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>上面的实现手法只实现了单向的从逻辑到Effects的映射过程，要完成相反的从实际世界到逻辑的过程，需要读取外界的事件。要这么做，不仅main函数需要可以接受入参<code>sources</code>，生产Effects的drivers也要能够返回main需要的<code>sources</code>。类似地，sources的类型可以是DOM或者其他的合法input。同时，连接两者的<code>run</code>函数会遇到循环的问题，driver的入参和出参正好是main的出参和入参，这也是<strong>Cycle</strong>一词的来源。解决办法是先fake一个的初始数据流，得到Effects后，再用Effects初始化main，最后用main替换fake的数据流即可。</p>
+<p>继续改造<code>run</code>函数，考虑到driver有多种类型，需要事先为所有driver都使用fakeSinks。在构造好drivers后，使用drivers的返回，构造main。最后用<code>imitate</code>替代掉fakeSinks即可。这就是Cycle.js核心部分run的设计思路，实际上，run部分的代码也只有一百余行。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">mainFn, drivers</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> fakeSinks = &#123;&#125;;</div><div class="line">  <span class="built_in">Object</span>.keys(drivers).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</div><div class="line">    fakeSinks[key] = xs.create();</div><div class="line">  &#125;)</div><div class="line"></div><div class="line">  <span class="keyword">const</span> sources = &#123;&#125;;</div><div class="line">  <span class="built_in">Object</span>.keys(drivers).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</div><div class="line">    sources[key] = drivers[key](fakeSinks[key]);</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">const</span> sinks = mainFn(sources);</div><div class="line"></div><div class="line">  <span class="built_in">Object</span>.keys(sinks).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</div><div class="line">    fakeSinks[key].imitate(sinks[key];)</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了run，drivers也是Cycle.js设计的重要部分。它需要能够根据main逻辑的描述灵活地生成对应的Effects。如DOM，在main逻辑中声明所需的DOM结构，对应地，在domDriver中，根据结构生成实际的DOM元素（不论是使用createElement还是vDOM）。</p>
+<p>不过仅仅在main逻辑中描述DOM结构是不够的，逻辑上还应该包括如何响应Effects的输入。类似地，这部分应该从driver中的hardcode抽离出来，由main声明，driver实现。类似下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params">sources</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> events$ = sources.DOM.selectEvents(<span class="string">'span'</span>, <span class="string">'click'</span>);</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">DOM</span>: events$.startWith(<span class="literal">null</span>).map(</div><div class="line">      xs.periodic(<span class="number">1000</span>)</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    ).flatten()</div><div class="line">    .map(<span class="function"><span class="params">i</span> =&gt;</span> (&#123;</div><div class="line">      <span class="attr">tagName</span>: <span class="string">'H1'</span>,</div><div class="line">      <span class="attr">children</span>: [</div><div class="line">        &#123;</div><div class="line">          <span class="attr">tagName</span>: <span class="string">'SPAN'</span>,</div><div class="line">          <span class="attr">children</span>:[<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>]</div><div class="line">        &#125;</div><div class="line">      ]</div><div class="line">    &#125;))</div><div class="line">    <span class="comment">// ...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的DOM结构可以进一步抽象函数，便于代码书写。另外，Cycle.js中使用makeDOMDriver的方式是为了显示声明DOM容器名，避免hardcode在driver中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">h</span>(<span class="params">tagName, children</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    tagName,</div><div class="line">    children</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">h1</span>(<span class="params">children</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">tagName</span>: <span class="string">'H1'</span>,</div><div class="line">    children</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">span</span>(<span class="params">children</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">tagName</span>: <span class="string">'SPAN'</span>,</div><div class="line">    children</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// ...</span></div><div class="line">.map(</div><div class="line">  h1([</div><div class="line">    span([<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>])</div><div class="line">  ])</div><div class="line">)</div></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>习惯了上面的思考方式后，可以考虑如何使用Cycle.js的问题了。通常情况下，一个空白的Cycle.js的脚手架像下面这样（使用UMD方案时）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> &#123; makeDOMDriver &#125; = CycleDOM;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params">sources</span>) </span>&#123;</div><div class="line">  <span class="comment">// TODO</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> drivers = &#123;</div><div class="line">  <span class="attr">DOM</span>: makeDOMDriver(<span class="string">'#app'</span>),</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">Cycle.run(main, drivers);</div></pre></td></tr></table></figure>
+<p>结合HTML内容的声明和用户输入事件的读取，可以得到下面的结果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> &#123; div, label, input, hr, h1, makeDOMDriver &#125; = CycleDOM;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params">sources</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="comment">// ''---------------&gt;</span></div><div class="line">  <span class="comment">// div--------------&gt;</span></div><div class="line"></div><div class="line">  <span class="keyword">const</span> input$ = sources.DOM.select(<span class="string">'.name'</span>).events(<span class="string">'change'</span>)；</div><div class="line">  <span class="keyword">const</span> name$ = input$.map(<span class="function"><span class="params">ev</span> =&gt;</span> ev.target.value).startWidth(<span class="string">''</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">  	<span class="attr">DOM</span>: name$.map(<span class="function"><span class="params">name</span> =&gt;</span></div><div class="line">  	  div([</div><div class="line">  	  	label([<span class="string">'Name: '</span>]),</div><div class="line">  	  	input(<span class="string">'.name'</span>, &#123;<span class="attr">attrs</span>: &#123;<span class="attr">type</span>: <span class="string">'text'</span>&#125;&#125;),</div><div class="line">  	  	hr(),</div><div class="line">  	  	h1(<span class="string">`Hello <span class="subst">$&#123;name&#125;</span>!`</span>)</div><div class="line">  	  ])</div><div class="line">  	)</div><div class="line">  &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> drivers = &#123;</div><div class="line">  <span class="attr">DOM</span>: makeDOMDriver(<span class="string">'#app'</span>),</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">Cycle.run(main, drivers);</div></pre></td></tr></table></figure>
+<p>其中要格外注意的是，<code>name$</code>需要有<code>startWith</code>才能有流的起始数据，从而初始化真实DOM。</p>
+<p>结合灵活的流操作符，如<code>merge</code>, <code>fold</code>等，可以实现更加复杂点的应用，如官网给出的<a href="https://cycle.js.org/basic-examples.html#basic-examples-increment-a-counter" target="_blank" rel="external">计数器</a></p>
+<p>除了DOMDriver，HTTPDriver也是很常用的一种Driver，可以借助它实现HTTP的request和response的响应。如官网给的<a href="https://cycle.js.org/basic-examples.html#basic-examples-http-requests" target="_blank" rel="external">样例</a></p>
+<h3 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h3><div style="width:70%;margin: 0 auto;"><img src="http://ow5o14n5d.bkt.clouddn.com/cycle-mvi.svg" alt="MVI模型"></div>
+
+<p>MVI（Model-View-Intent）是Cycle.js提出的编程范式，可以将main的内容拆分成三部分，</p>
+<ul>
+<li>第一部分Intent将Effects传递过来的事件转换成Model逻辑可以接受的类型，</li>
+<li>第二部分Model实现具体逻辑，即state的改动</li>
+<li>最终由View部分将逻辑转换成DOMDriver可以接受的数据流传递到最后的vdom。</li>
+</ul>
+<p>使用这种方式拆分后的代码实际上类似<code>view(model(intent(sources.DOM)))</code>。如文档中<a href="https://cycle.js.org/model-view-intent.html" target="_blank" rel="external">介绍</a>的那样。</p>
+<p>关于组件拆分和<strong>isolate</strong>，可以参看文档的<a href="https://cycle.js.org/components.html#components-isolating-multiple-instances" target="_blank" rel="external">Components</a>部分。另外，在Cycle.js的状态管理工具<a href="https://github.com/staltz/cycle-onionify" target="_blank" rel="external">cycle-onionify</a>中也用到了<code>isolate</code>，使用<code>isolate</code>可以保证组件间的stream、状态相互独立。</p>
+<h2 id="xstream"><a href="#xstream" class="headerlink" title="xstream"></a>xstream</h2><p>万物皆Stream的概念是需要额外的库支持的。因此没有接触过RxJS的建议先学习一下这种思路。</p>
+<p>Cycle.js允许使用RxJS等多种Reactive Programming库构造响应式的流结构，不过推荐针对Cycle.js定制的<a href="https://staltz.com/xstream/" target="_blank" rel="external">xstream</a>。xstream学习成本简单，API仅有26个，此外文件体积小，速度适中。熟悉RxJS后，学习xstream就更简单了。</p>
+<p>xstream的API分为<strong>Factories</strong>和<strong>Operators</strong>。前者通过Producer或合并等方式生产新的Stream，后者是Stream的相关方法。</p>
+<p>学习xstream了解4个概念就足够了（如果你已经熟悉RxJS的思想后），<strong>Stream</strong>, <strong>Listener</strong>, <strong>Producer</strong>, <strong>MemoryStream</strong>。</p>
+<ul>
+<li><strong>Stream</strong>，类似EventEmitter和RxJS中的Subject，一个Stream可以注册多个Listener，Stream上有event出现时，所有Listener都会收到通知。除此之外，Stream可以通过<strong>operators</strong>生产新的Stream，如<code>fold</code>, <code>map</code>等。可以使用<code>shamefullySend*</code>手动触发event，但是应避免使用这种方式</li>
+<li><p><strong>Listener</strong>，和RxJS中的Observer类似，是有<code>next</code>, <code>error</code>, <code>complete</code>三种状态的对象，用来处理stream的三种event。通过<code>addListener</code>和<code>removeListener</code>和Stream建立联系。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> listener = &#123;</div><div class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'The Stream gave me a value: '</span>, value);</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">error</span>: <span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.error(<span class="string">'The Stream gave me an error: '</span>, err);</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">complete</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'The Stream told me it is done.'</span>);</div><div class="line">  &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Producer</strong>，生产Stream所需的event。xstream使用<code>create(producer)</code>等方法生产Stream。一个Producer只能绑定一个Stream。Producer本身拥有<code>start</code>和<code>stop</code>便于在没有Listener监听时停止工作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">var</span> producer = &#123;</div><div class="line">  <span class="attr">start</span>: <span class="function"><span class="keyword">function</span> (<span class="params">listener</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.id = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> listener.next(<span class="string">'yo'</span>), <span class="number">1000</span>)</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">stop</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    clearInterval(<span class="keyword">this</span>.id)</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">id</span>: <span class="number">0</span>,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>MemoryStream</strong>，和Stream不同的是会记录最后一次的event信息。类似RxJS里的BehaviorSubject。</p>
+</li>
+</ul>
+<p>生产Stream的函数有下面这些：</p>
+<ul>
+<li><code>create(producer)</code>和<code>createWithMemory(producer)</code></li>
+<li><code>never()</code> 生产不产生event的Stream</li>
+<li><code>empty()</code> 生产立即结束的Stream</li>
+<li><code>error(error)</code> 生产立即错误的Stream</li>
+<li><code>from(input)</code> 通过数组、Promise、Observable等生产Stream</li>
+<li><code>of(a1,a2,a3)</code> 生产根据输入产生的一系列event</li>
+<li><code>fromArray(array)</code>, <code>fromPromise(promise)</code>, <code>fromObservable(observable)</code></li>
+<li><code>periodic(period)</code> 周期性产生递增的数</li>
+<li><code>merge(s1, s2)</code> 合并两个流</li>
+<li><code>combine(s1, s2)</code> 合并两个流中的值</li>
+</ul>
+<p>Stream的相关方法有：</p>
+<ul>
+<li><code>addListener(listener)</code>和<code>removeListener(listener)</code></li>
+<li><code>subscribe(listener)</code>注册listener返回remove的函数</li>
+<li><code>map(project)</code>和<code>mapTo(projectedValue)</code> 映射event中的值</li>
+<li><code>filter(passes)</code> 过滤</li>
+<li><code>take(amount)</code> 限制Stream的event数目</li>
+<li><code>drop(amount)</code> 忽略前<code>amount</code>次的event数目</li>
+<li><code>last()</code> 只释放最后一次event</li>
+<li><code>startWith(initialValue)</code> 以给定值开始</li>
+<li><code>endWhen(other)</code> 使用其他Stream决定是否完成当前Stream</li>
+<li><code>fold(accumulate, seed)</code> 以给定值开始累加</li>
+<li><code>replaceError(replace)</code> 取代一个流中的所有error</li>
+<li><code>flatten()</code> 将streams的Stream压缩为一个Stream，输出流中的数据只来自于当前Stream</li>
+<li><code>compose(operator)</code></li>
+<li><code>remember()</code> 缓存最后一个值</li>
+<li><code>debug(labelOrSpy)</code> 不修改流，便于debug</li>
+<li><code>imitate(target)</code> 使用给定流替换原有Stream</li>
+<li><code>shamefullySendNext/Error/Complete</code></li>
+</ul>
+<p>另外一些实用的Stream相关方法，在extra部分中引入，包括如下</p>
+<ul>
+<li><code>buffer(separator)</code> 缓存部分内容一同输出，输出时机由输入的Stream决定</li>
+<li><code>concat(s1, s2, ..., sn)</code> 将Stream按照参数顺序从前到后连接起来</li>
+<li><code>debounce(period)</code>和<code>throttle(period)</code> 防抖和节流</li>
+<li><code>delay(period)</code> 时延</li>
+<li><code>dropRepeats(isEquals)</code> 丢掉邻接的重复数据</li>
+<li><code>dropUntil(other)</code> 根据其他Stream决定该Stream的开始时机</li>
+<li><code>flattenConcurrently()</code> 类似<code>flatten()</code>，不过流中的数据根据时间merge，<code>flattenSequentially()</code>类似，将Stream先后连接</li>
+<li><code>fromDiagram(diagram, options)</code> 通过图表创建Stream</li>
+<li><code>fromEvent(element, eventName, useCapture)</code> 通过DOM事件创建Stream</li>
+<li><code>pairwise()</code> 和上一个值成对组成event的值</li>
+<li><code>sampleCombine(streams)</code> source流和其他发生时间最近的流event相组合</li>
+<li><code>split(separator)</code> 类似<code>buffer</code>，将stream拆分为释放streams的Stream</li>
+<li><code>tween(config)</code> 根据配置创建缓动函数，用于制作动画</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/cyclejs-community/awesome-cyclejs" target="_blank" rel="external">cyclejs-community/awesome-cyclejs: A curated list of awesome Cycle.js resources</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/10/13/css-definitive-guide-content/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1368,254 +1628,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/08/08/redux-and-mobx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/08/08/redux-and-mobx/" itemprop="url">Redux和Mobx：AK47和匕首</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T20:43:13+08:00">
-                2017-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/08/08/redux-and-mobx/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/08/08/redux-and-mobx/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>此前一直未从0开始写过Redux的工程，近日想简单对比下<a href="http://redux.js.org/docs" target="_blank" rel="external">Redux</a>和<a href="https://github.com/mobxjs/mobx" target="_blank" rel="external">Mobx</a>的各自特点，于是动手撸了TodoList，感受了它们的不同。对比上看</p>
-<ul>
-<li>Redux可靠规整，有一整套最佳实践，写大型应用时能避免很多坑</li>
-<li>MobX轻便锋利，概念不多上手容易，在中小型应用中开发效率更高</li>
-</ul>
-<h3 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h3><p>Redux吸收了Flux和Elm的设计特点，正如它在<a href="http://redux.js.org/docs/introduction/ThreePrinciples.html" target="_blank" rel="external">Three Principles</a>中写到的那样，<strong>唯一可信数据源，状态数据只读，状态改变为纯函数</strong>，这三大特点最大可能提升了可预测性，减少了调试的难度。同时，在概念上也易于理解。不过，复杂的设定和较多的代码入侵使得个人项目使用时稍显笨重，团队项目使用在改动已有代码时又会有牵一发动全身的感觉。</p>
-<p>在数据流上，Redux规定<strong>action</strong>描述state的改变情况，<strong>reducer</strong>根据<code>action</code>定义state如何更新。</p>
-<ul>
-<li><strong>action</strong>，由type和payload部分组成，描述发生了什么变化，如<code>{ type: &#39;ADD_TODO&#39;, text: &#39;Eat pie.&#39; }</code></li>
-<li><strong>reducer</strong>，接受state和action作为入参，返回一个<strong>全新的state</strong>，正如文档里所说<strong>Redux assumes you never mutate your data</strong></li>
-</ul>
-<p>在这种设计理念下，我们借助redux创建state，之后所有的状态更新，都通过state.dispatch提交action完成，再借由connect等工具同步更新组件的props实现数据绑定的效果。除了设计理念外，Redux一些工程实践上的设计也值得一提</p>
-<h4 id="和React的互动"><a href="#和React的互动" class="headerlink" title="和React的互动"></a>和React的互动</h4><p>Redux并不是和React绑定了，但确实经常和React同时出现。react-redux是用来和react绑定的库。在结合了Redux后，React会有一些最佳工程实践</p>
-<ul>
-<li><strong>区分开绘制组件和容器组件</strong>，前者只负责将数据转化为标签，后者负责接入数据，完成逻辑，组织绘制组件，并向其传递用户交互触发dispatch的函数。这样的层级设计将会增加解耦，减少后期修改时的工作量</li>
-<li>在最外侧调用<code>createStore</code>生成store并传入<code>&lt;Provider&gt;</code>组件，内部的容器组件，通过<code>connect</code>，<code>mapStateToProps</code>，<code>mapDispatchToProps</code>就能便利地和store进行沟通，就像下面这样</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> mapStateToProps = <span class="function">(<span class="params">state, ownProps</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">active</span>: state.filter === ownProps.filter</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> mapDispatchToProps = <span class="function">(<span class="params">dispatch, ownProps</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">handleClick</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">      dispatch(setFilter(ownProps.filter))</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> FilterLink = connect(</div><div class="line">  mapStateToProps,</div><div class="line">  mapDispatchToProps</div><div class="line">)(Link)</div></pre></td></tr></table></figure>
-<h4 id="Action-Creator"><a href="#Action-Creator" class="headerlink" title="Action Creator"></a>Action Creator</h4><p>使用函数创建标准化的action，而不要把action直接写在dispatch内。就像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTodo</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">type</span>: ADD_TODO,</div><div class="line">    text</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">dispatch(addTodo(text))</div></pre></td></tr></table></figure>
-<p>这么做在action发生更改时，只需要修改定义函数的位置即可，简单方便。可以发现上面的action creator中，完成的工作只是简单的组装type和函数的入参在同一个action object里。当这样的函数很多时，还可以用action creator creator来帮我们一行生成这些类似的action creator。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createActionCreator = <span class="function">(<span class="params">type, ...argNames</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">let</span> action = &#123; type &#125;</div><div class="line">    argNames.forEach(<span class="function">(<span class="params">arg, index</span>) =&gt;</span> &#123;</div><div class="line">      action[arg] = args[index]</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">return</span> action</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> addTodo = createActionCreator(ADD_TODO, <span class="string">'text'</span>)</div><div class="line"><span class="keyword">const</span> setFilter = createActionCreator(SET_FILTER, <span class="string">'filter'</span>)</div><div class="line"><span class="keyword">const</span> toggleTodo = createActionCreator(TOGGLE_TODO, <span class="string">'id'</span>, <span class="string">'to'</span>)</div></pre></td></tr></table></figure>
-<h4 id="Split-Reducer"><a href="#Split-Reducer" class="headerlink" title="Split Reducer"></a>Split Reducer</h4><p>除了上面讲到的Action Creator外，split reducer页很常见，它的应用场景出现在当state比较复杂时，可以针对state的每个field单独写reducer，然后通过Redux的<code>combineReducers</code>组合起来。</p>
-<p>就像TodoList中，筛选条件<code>filter</code>和待办事项<code>todos</code>可以拆出两个reducer去更改。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> todos = <span class="function">(<span class="params">state = [], action</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">    <span class="keyword">case</span> ADD_TODO:</div><div class="line">      <span class="keyword">return</span>  [</div><div class="line">        ...state,</div><div class="line">        &#123;</div><div class="line">          <span class="attr">id</span>: action.id,</div><div class="line">          <span class="attr">text</span>: action.text,</div><div class="line">          <span class="attr">status</span>: <span class="number">0</span></div><div class="line">        &#125;</div><div class="line">      ]</div><div class="line">    <span class="keyword">case</span> TOGGLE_TODO:</div><div class="line">      <span class="keyword">return</span> state.map(<span class="function"><span class="params">todo</span> =&gt;</span></div><div class="line">        (todo.id === action.id) ? &#123;...todo, <span class="attr">status</span>: action.to || +!todo.status&#125; : todo</div><div class="line">      )</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">return</span> state</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> filter = <span class="function">(<span class="params">state = <span class="string">'SHOW_ALL'</span>, action</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">    <span class="keyword">case</span> SET_FILTER:</div><div class="line">      <span class="keyword">return</span> action.filter</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">return</span> state</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> todoApp = combineReducers(&#123;</div><div class="line">  todos,</div><div class="line">  filter</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<h4 id="Middleware和Async-Action"><a href="#Middleware和Async-Action" class="headerlink" title="Middleware和Async Action"></a>Middleware和Async Action</h4><p>首先，我们要明确一点，Redux中只有dispatch能改变store，然而默认情况下，dispatch只接受action。因此，当我们想异步修改store时，异步的逻辑只能写在组件里（Vuex里则可以通过action异步提交commit）。设想一下，假如一个<code>fetch</code>API的逻辑在多处都用到时，只能在这些地方重复书写这些代码。好在，Redux提供了middleware的概念，和<a href="https://shenlvmeng.github.io/blog/2017/04/23/express-js/#中间件" target="_blank" rel="external">Express中的中间件</a>类似，不同的是Redux中中间件处理的是用户提交的dispatch请求而已。</p>
-<p><a href="http://redux.js.org/docs/advanced/Middleware.html" target="_blank" rel="external">文档</a>里对中间件的介绍非常到位，鉴于我们对express以及<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">co</a>中类似概念的了解，我们直接从第4步看起：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">logger</span>(<span class="params">store</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> next = store.dispatch</div><div class="line"></div><div class="line">  <span class="comment">// Previously:</span></div><div class="line">  <span class="comment">// store.dispatch = function dispatchAndLog(action) &#123;</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">dispatchAndLog</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">    <span class="keyword">let</span> result = next(action)</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyMiddlewareByMonkeypatching</span>(<span class="params">store, middlewares</span>) </span>&#123;</div><div class="line">  middlewares = middlewares.slice()</div><div class="line">  middlewares.reverse()</div><div class="line"></div><div class="line">  <span class="comment">// Transform dispatch function with each middleware.</span></div><div class="line">  middlewares.forEach(<span class="function"><span class="params">middleware</span> =&gt;</span></div><div class="line">    store.dispatch = middleware(store)</div><div class="line">  )</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，原理其实是类似的，关键点在于使用store的<code>dispatch</code>方法依次暂存上一个节点，这么做的好处是保证最终能抛出最后真正的dispatch，且能实现链式的效果。然而，使用dispatch显得还不自然，于是就有了下面的版本，每次将next主动传入，当让applyMiddleware里需要额外传入next。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> logger = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span> &#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">  <span class="keyword">let</span> result = next(action)</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">  <span class="keyword">return</span> result</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> crashReporter = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span> &#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">return</span> next(action)</div><div class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="built_in">console</span>.error(<span class="string">'Caught an exception!'</span>, err)</div><div class="line">    Raven.captureException(err, &#123;</div><div class="line">      <span class="attr">extra</span>: &#123;</div><div class="line">        action,</div><div class="line">        <span class="attr">state</span>: store.getState()</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">throw</span> err</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Warning: Naïve implementation!</span></div><div class="line"><span class="comment">// That's *not* Redux API.</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyMiddleware</span>(<span class="params">store, middlewares</span>) </span>&#123;</div><div class="line">  middlewares = middlewares.slice()</div><div class="line">  middlewares.reverse()</div><div class="line">  <span class="keyword">let</span> dispatch = store.dispatch</div><div class="line">  middlewares.forEach(<span class="function"><span class="params">middleware</span> =&gt;</span></div><div class="line">    dispatch = middleware(store)(dispatch)</div><div class="line">  )</div><div class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, store, &#123; dispatch &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>借助中间件的帮助，我们可以在dispatch前完成我们想要的操作：打log，catch错误，甚至提前终止流程。而异步dispatch正是借助了thunk中间件的帮助。它的实现很简单。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> thunk = <span class="function"><span class="params">store</span> =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span></div><div class="line">  <span class="keyword">typeof</span> action === <span class="string">'function'</span></div><div class="line">    ? action(store.dispatch, store.getState)</div><div class="line">    : next(action)</div></pre></td></tr></table></figure>
-<p>在我们通过<code>applyMiddleware</code>注入到store中后，就可以在<code>dispatch</code>中写入函数了！就像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchPosts</span>(<span class="params">subreddit</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="params">dispatch</span> =&gt;</span> &#123;</div><div class="line">    dispatch(requestPosts(subreddit))</div><div class="line">    <span class="keyword">return</span> fetch(<span class="string">`https://www.reddit.com/r/<span class="subst">$&#123;subreddit&#125;</span>.json`</span>)</div><div class="line">      .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</div><div class="line">      .then(<span class="function"><span class="params">json</span> =&gt;</span> dispatch(receivePosts(subreddit, json)))</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchPostsIfNeeded</span>(<span class="params">subreddit</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch, getState</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">if</span> (shouldFetchPosts(getState(), subreddit)) &#123;</div><div class="line">      <span class="keyword">return</span> dispatch(fetchPosts(subreddit))</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在使用时正常dispatch即可。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch(fetchPostsIfNeeded(selectedSubreddit))</div></pre></td></tr></table></figure>
-<h4 id="其他常用的store-API"><a href="#其他常用的store-API" class="headerlink" title="其他常用的store API"></a>其他常用的store API</h4><ul>
-<li><code>getState()</code> 获取当前的state状态</li>
-<li><code>subscribe(listener)</code> 在每次更改state时触发</li>
-<li><code>createStore()</code> 根据输入的reducer，initState，middleware等生成store</li>
-</ul>
-<h4 id="脚手架"><a href="#脚手架" class="headerlink" title="脚手架"></a>脚手架</h4><p>官网在介绍时列举了许多依赖库，却并没有给出示例的脚手架。没有舒服的脚手架，效率和工作热情都会受影响。这里介绍一种使用<a href="https://github.com/facebookincubator/create-react-app" target="_blank" rel="external">create-react-app</a>快速搭建Redux脚手架的过程，下面的Mobx类似。</p>
-<p>项目依赖大概有下面这些</p>
-<ul>
-<li><a href="https://facebook.github.io/react/" target="_blank" rel="external">react</a></li>
-<li><a href="http://redux.js.org/" target="_blank" rel="external">redux</a></li>
-<li><a href="https://github.com/reactjs/react-redux" target="_blank" rel="external">react-redux</a></li>
-<li><a href="https://github.com/ReactTraining/react-router" target="_blank" rel="external">react-router</a>/<a href="https://github.com/ReactTraining/history" target="_blank" rel="external">history</a></li>
-<li><a href="https://webpack.github.io/" target="_blank" rel="external">webpack</a> 打包工具</li>
-<li><a href="http://babeljs.io/" target="_blank" rel="external">babel</a> polyfill方案</li>
-<li><a href="http://eslint.org/" target="_blank" rel="external">eslint</a> JS代码风格标准化</li>
-<li><a href="https://stylelint.io/" target="_blank" rel="external">stylelint</a> CSS代码风格标准化</li>
-<li><a href="http://postcss.org/" target="_blank" rel="external">postcss</a></li>
-</ul>
-<p>但其实<a href="https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html" target="_blank" rel="external">create-react-app</a>可以帮你搭好其中包括react、react-dom、eslint、babel、webpack、postcss等绝大多数依赖环境，且完成配置。剩下的react-redux和react-router手动安装即可。</p>
-<p>create-react-app类似于vue-cli，创建的默认配置不满意时，还可以<code>npm run eject</code>将默认配置撤销成用户配置，交给用户自己配置。</p>
-<h3 id="MobX"><a href="#MobX" class="headerlink" title="MobX"></a>MobX</h3><p>对比Redux，诞生于2015年3月的MobX在概念上吸收Vue，Knockout等MVVM框架要更多一些<a href="https://github.com/mobxjs/mobx#credits" target="_blank" rel="external">1</a>，号称是TFRP（Transparent Functional Reactive Programming）。Transparent在依赖项的更新是隐式完成的，Functional在Computed中的使用，Reactive就不说了。MobX原名Mobservable，而后改名为MobX，官方并未说明如何发音，姑且读作moʊ-bex。和Redux对比来看，巧合的是<a href="https://mobx.js.org/intro/overview.html" target="_blank" rel="external">MobX的设计理念</a>也可以分为三部分：</p>
-<ul>
-<li>将所有的状态抽出来，用observable修饰</li>
-<li>描述出状态到视图的映射关系，这个过程因框架而异，但是一般React多一些，使用observer修饰</li>
-<li>在要修改状态的位置使用action包裹（强烈建议你这么做）</li>
-</ul>
-<p>不过还有很核心的一点，文档里并没有提到</p>
-<ul>
-<li>把所有state修改的副作用放在<code>autorun/reaction/when</code>体内，在必要时在体内继续使用action</li>
-</ul>
-<p>哇，是不是简洁了很多。你对observable对象做的所有修改（不论有没有用action包裹）都会自动反映在视图中，在项目结构上，你完全可以根据自己需要组织。不过，没有Redux里transaction的概念，MobX中对状态的修改在时间上都是不可回溯的。同时，没有中间件的概念，意味着在状态比较复杂时，可维护性就会下降。</p>
-<p>整个MobX的关键API主要是由下面几部分组成的</p>
-<ul>
-<li>observable 创建被依赖项，在设计中即state</li>
-<li>computed 被依赖项的计算值，和Vue中的computed属性一致</li>
-<li>action 动作，用来修改state，显式的使用可以使逻辑更清楚，当然不在action里修改observable也是允许的</li>
-<li>observer和autorun/reaction/when，前者是derivation即根据state衍生出的结果，后者是reaction即state变化会触发的副作用（如IO等）</li>
-</ul>
-<h4 id="与React的结合"><a href="#与React的结合" class="headerlink" title="与React的结合"></a>与React的结合</h4><p>MobX和React相结合的方式就自由了很多。大体上使用<code>components</code>存储组件，<code>stores</code>描述状态。</p>
-<p>在<code>stores</code>描述状态时，</p>
-<ul>
-<li>通过<code>@observable</code>描述需要响应变化的状态变量，同时尽量将所有改变状态变量的操作封装成整个class的方法（并不强制），便于管理。</li>
-<li>通过<code>@computed</code>声明能够直接根据当前状态变量得到的衍生值。有意思的是，MobX只在observable变化时更新这个值，而不是在用户需要时去计算，从而节省了许多时间</li>
-<li>通过<code>autorun()</code>，<code>reaction()</code>，<code>when()</code>声明式地定义状态改变时的side effect，它们的执行结果都会返回一个dispose函数，在它们的生命周期结束后方便显式垃圾回收。它们三个都是除了用户操作外几乎唯一能进行副作用操作的地方，其中<ul>
-<li><code>autorun()</code>在定义时就会被执行一次</li>
-<li><code>reaction()</code>仅在变化时执行，且对函数内部改变状态不敏感</li>
-<li><code>when()</code>则是在变化时执行一次即失效</li>
-</ul>
-</li>
-<li>通过<code>@action</code>描述对状态做修改的行为，推荐使用，修饰在方法名前，开启strict模式后，则是强制要求使用</li>
-</ul>
-<p>上面这些关键字都有修饰词（如：<code>@action.bound</code>）还有对应的ES5语法。（如：<code>@observable key = value</code>等同于<code>extendObservable(this, { key: value })</code>）。MobX并不要求使用单一的状态树，可以用多个文字组织你的状态。其中的一个store文件可能像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TodoList</span> </span>&#123;</div><div class="line">  id = <span class="number">0</span></div><div class="line">  @observable todos = []</div><div class="line"></div><div class="line">  @computed get activeTodoCount() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.todos.filter(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status === <span class="number">0</span>).length</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  saveToStorage() &#123;</div><div class="line">    <span class="comment">// 第一次不会触发</span></div><div class="line">    reaction(</div><div class="line">      <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.toJS(),</div><div class="line">      todos =&gt; localStorage.setItem(<span class="string">'todo-mobx'</span>, <span class="built_in">JSON</span>.stringify(&#123; todos &#125;))</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  addTodo(title) &#123;</div><div class="line">    <span class="keyword">this</span>.id++;</div><div class="line">    <span class="keyword">this</span>.todos.push(<span class="keyword">new</span> TodoItem(&#123;<span class="attr">id</span>: <span class="keyword">this</span>.id, title, <span class="attr">status</span>: <span class="number">0</span>&#125;))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toggleAll(status) &#123;</div><div class="line">    <span class="keyword">this</span>.todos.forEach(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status = +status)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">delete</span>(id) &#123;</div><div class="line">    <span class="keyword">let</span> todoId = <span class="keyword">this</span>.todos.findIndex(<span class="function"><span class="params">todo</span> =&gt;</span> todo.id === id)</div><div class="line">    <span class="keyword">if</span> (todoId !== <span class="number">-1</span>) &#123;</div><div class="line">      <span class="keyword">this</span>.todos.splice(todoId, <span class="number">1</span>)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  clearCompleted() &#123;</div><div class="line">    <span class="keyword">this</span>.todos = <span class="keyword">this</span>.todos.filter(<span class="function"><span class="params">todo</span> =&gt;</span> todo.status === <span class="number">0</span>)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toJS() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.todos.map(<span class="function"><span class="params">todo</span> =&gt;</span> todo.toJS())</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> fromJS(arr) &#123;</div><div class="line">    <span class="keyword">const</span> todoStore = <span class="keyword">new</span> TodoList();</div><div class="line">    todoStore.todos = arr.map(<span class="function"><span class="params">todo</span> =&gt;</span> TodoItem.from(todo))</div><div class="line">    <span class="keyword">return</span> todoStore</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>components</code>文件夹下做的事和使用其他框架其实差别不大。区别主要在引入observer后，用<code>@observer</code>装饰组件类。需要修改状态时，可以直接对props中传入的store进行<br>修改（不过还是建议使用store中定义好的方法修改），视图就会同步更新，副作用也会同步完成。一个使用了mobx-react的组件大概像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">@observer</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TodoList</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">const</span> &#123; todoStore, filterStore &#125; = <span class="keyword">this</span>.props</div><div class="line">    <span class="keyword">if</span> (!todoStore.todos.length) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="literal">null</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      &lt;section&gt;</div><div class="line">        &lt;input</div><div class="line">          type="checkbox"</div><div class="line">          onChange=&#123;this.toggleAll&#125;</div><div class="line">          checked=&#123;todoStore.activeTodoCount === 0&#125;</div><div class="line">        /&gt;</div><div class="line">        &lt;ul&gt;</div><div class="line">          &#123;this.getVisibleTodos().map(todo =&gt; (</div><div class="line">            &lt;TodoItem</div><div class="line">              key=&#123;todo.id&#125;</div><div class="line">              todo=&#123;todo&#125;</div><div class="line">              filterStore=&#123;filterStore&#125;</div><div class="line">              handleDestroy=&#123;this.handleDestroy&#125;</div><div class="line">            /&gt;</div><div class="line">          ))&#125;</div><div class="line">        &lt;/ul&gt;</div><div class="line">      &lt;/section&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  getVisibleTodos() &#123;</div><div class="line">    const &#123; todoStore, filterStore &#125; = this.props</div><div class="line">    return todoStore.todos.filter(todo =&gt; &#123;</div><div class="line">      switch (filterStore.filter) &#123;</div><div class="line">        case ACTIVE:</div><div class="line">          return todo.status === 0</div><div class="line">        case COMPLETED:</div><div class="line">          return todo.status === 1</div><div class="line">        case REMOVED:</div><div class="line">          return todo.status === 2</div><div class="line">        default:</div><div class="line">          return true</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  toggleAll = (e) =&gt; &#123;</div><div class="line">    let checked = e.target.checked;</div><div class="line">    this.props.todoStore.toggleAll(checked !== 0)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  handleDestroy = (id) =&gt; &#123;</div><div class="line">    this.props.todoStore.delete(id)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>除了直接使用store外，<a href="https://github.com/mobxjs/mobx-react" target="_blank" rel="external">mobx-react</a>还提供了将observable对象通过<code>&lt;Provider&gt;</code>和<code>inject</code><a href="https://github.com/mobxjs/mobx-react#provider-and-inject" target="_blank" rel="external">2</a>传入组件的方式。其他的用法可以参看<a href="https://mobx.js.org/index.html" target="_blank" rel="external">文档</a>，还有<a href="http://cn.mobx.js.org" target="_blank" rel="external">中文版翻译</a>。</p>
-<h4 id="脚手架-1"><a href="#脚手架-1" class="headerlink" title="脚手架"></a>脚手架</h4><p>除了Redux里面提到的，因为MobX中用到了最新的decorator特性，<code>.babelrc</code>配置文件大概是下面这样</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"presets"</span>: [</div><div class="line">    <span class="string">"react"</span>,</div><div class="line">    <span class="string">"es2015"</span>,</div><div class="line">    <span class="string">"stage-1"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"plugins"</span>: [<span class="string">"transform-decorators-legacy"</span>, <span class="string">"react-hot-loader/babel"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>package.json</code>中需要额外引入”mobx”和”mobx-react”两个库（至少）。官方还提供了<a href="https://github.com/mobxjs/mobx-react-boilerplate" target="_blank" rel="external">mobx-react-boilerplate</a>，这些环境都已帮你配置好，按照<code>README.md</code>操作即可。另外，官方提供的<a href="https://github.com/mobxjs/awesome-mobx" target="_blank" rel="external">awesome list</a>是一个非常好学习mobx的地方</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
-<li><a href="https://github.com/mobxjs/mobx#credits" target="_blank" rel="external">https://github.com/mobxjs/mobx#credits</a></li>
-<li><a href="https://github.com/mobxjs/mobx-react#provider-and-inject" target="_blank" rel="external">https://github.com/mobxjs/mobx-react#provider-and-inject</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/blog/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/26/">26</a><a class="extend next" rel="next" href="/blog/page/17/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/blog/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/27/">27</a><a class="extend next" rel="next" href="/blog/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1661,7 +1678,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-count">131</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1683,7 +1700,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">385</span>
+                <span class="site-state-item-count">388</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

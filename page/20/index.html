@@ -296,6 +296,184 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/06/mobile-uiue-experience/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/04/06/mobile-uiue-experience/" itemprop="url">移动端页面切图自适应方案和体验优化经验</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T22:16:00+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/工程/" itemprop="url" rel="index">
+                    <span itemprop="name">工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/04/06/mobile-uiue-experience/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/06/mobile-uiue-experience/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。</p>
+<h3 id="像素完美"><a href="#像素完美" class="headerlink" title="像素完美"></a>像素完美</h3><p>像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似<code>background-image</code>这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应该出现的位置。在移动端设备宽度不一时，交互元素的位置如何保值像素完美的一致呢。</p>
+<p>最容易想到的方法是<strong>百分比布局</strong>，保证设计师设计的美美的UI界面可以自适应地等比扩充到整个页面。不过这样会让交互元素的位置摆放很难办，难以保证设备兼容性。<strong>flex布局</strong>也是种常见的解决方案，但距离像素完美还有距离。</p>
+<p>于是，我在上一次实践中，采用了<strong>固定宽度</strong>的处理方式（这并不是一种好的实践），CSS样式写起来大概是下面这样的。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.container</span> &#123;</div><div class="line">  <span class="attribute">display</span>: block;</div><div class="line">  <span class="attribute">width</span>: <span class="number">414px</span>;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.bkg</span> &#123;</div><div class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./bkg.png'</span>);</div><div class="line">  <span class="attribute">background-size</span>: <span class="number">100%</span>;</div><div class="line">  <span class="attribute">background-repeat</span>: repeat-y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>margin: 0 auto</code>是为了保证PC端居中的兼容性。这么写可以让交互元素定位时没有了设备宽度不同的后顾之忧。不过，在页面打开后，宽度较大使得页面出现横向滚动条，在绝大多数的移动端页面都不是种好的体验。的确，可以在<code>meta</code>标签中，设置<code>user-scalable=yes</code>来实现宽度上的自适应。但是，放开了页面缩放的限制也不是好的实践方式。</p>
+<p>这次活动页参考的使用<strong>rem</strong>的方式（淘宝最早实践的）是一种明显更好的方法。<code>rem</code>是CSS3中出现的新属性，它是root em的缩写。和<code>em</code>不同的是，<code>rem</code>使用整个html的<code>font-size</code>作为尺寸的参考。只需要改变html的<code>font-size</code>，所有使用了<code>rem</code>属性的元素大小都会等比例地变化。于是，下面的一段代码轻松地实现了<strong>移动端</strong>的自适应方案。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">win, doc</span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> docEl = doc.documentElement,</div><div class="line">    resizeEvt = <span class="string">'onorientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">    recalc = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> clientWidth = docEl.clientWidth;</div><div class="line">      <span class="keyword">if</span> (!clientWidth) <span class="keyword">return</span>;</div><div class="line">      <span class="keyword">if</span> (clientWidth &gt;= <span class="number">750</span>) &#123;</div><div class="line">       docEl.style.fontSize = <span class="string">'100px'</span>;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        docEl.style.fontSize = <span class="number">100</span> * (clientWidth / <span class="number">750</span>) + <span class="string">'px'</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  <span class="comment">//省去addEventListener兼容性处理</span></div><div class="line">  win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">  doc.addEventListener(<span class="string">'DOMContentLoaded'</span>, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="built_in">window</span>, <span class="built_in">document</span>);</div></pre></td></tr></table></figure>
+<p>代码里假设UI设计稿原始宽度为750px。大意是：</p>
+<ul>
+<li>页面宽度超过750px时，<code>document</code>的字体大小恒为100px，此时页面中涉及尺寸的CSS样式部分统统用<code>{像素值} / 100 rem</code>书写。之所以使用100px正是为了换算时方便</li>
+<li>页面宽度小于750px时，<code>document</code>等比缩小字体大小，页面中使用<code>rem</code>的元素都会等比缩小。从而保证交互元素不错位。</li>
+</ul>
+<p>效果类似<a href="https://m.taobao.com/#index" target="_blank" rel="external">淘宝手机站</a>。使用<code>rem</code>布局需要注意:</p>
+<ul>
+<li>在<code>&lt;head&gt;</code>中放置这段代码，保证在页面元素渲染前确定<code>font-size</code>大小，避免<em>闪屏</em>现象出现影响体验。</li>
+<li>PC端可以使用<a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries" target="_blank" rel="external">媒体查询</a>，<code>rem</code>在移动端使用较多</li>
+<li><code>rem</code>方案可以使用在页面的一部分，在宽度固定的元素中使用flex这样的方案</li>
+</ul>
+<h3 id="用户体验"><a href="#用户体验" class="headerlink" title="用户体验"></a>用户体验</h3><p>上个活动页中遇到了一些优化体验的小地方，列在下面。</p>
+<ul>
+<li><p>禁止用户选中页面元素。这么做可以避免长按屏幕的选中，很明显地提升体验。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line">  <span class="attribute">-moz-user-select</span>: none;</div><div class="line">  <span class="attribute">-webkit-user-select</span>: none;</div><div class="line">  <span class="attribute">-ms-user-select</span>: none;</div><div class="line">  <span class="attribute">-khtml-user-select</span>: none;</div><div class="line">  <span class="attribute">user-select</span>: none;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止一些手机上为手机号码和邮箱地址进行的特殊处理</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"email=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>禁止页面缩放，很常见的需求</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>为二维码单独切图，可以解决长按二维码无法识别的问题</p>
+</li>
+<li>输入框获得焦点时自动上移。可以通过<code>document.scrollTop</code>或设置输入框部分<code>position:fixed</code>实现</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/04/05/vue-reactive-sourcecode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -535,184 +713,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-1/" itemprop="url">JavaScript中的异步编程 上</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/29/javascript-async-programming-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>下篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">JavaScript中的异步编程 下</a></p>
-</blockquote>
-<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
-<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
-<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">Event Loop</a> 的体现。</p>
-<p>在<a href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html" target="_blank" rel="external">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
-<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
-<p>大概是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></div><div class="line">asy(), cal();</div><div class="line"><span class="comment">//它们的定义和使用像下面这样</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asy</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//异步工作代码</span></div><div class="line">        callback();</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cal</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello!'</span>); <span class="comment">//或其它什么</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">asy(cal);</div></pre></td></tr></table></figure>
-<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
-<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
-<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
-<p>大概是这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target.on(<span class="string">'someevent'</span>, handler); <span class="comment">// 注册事件</span></div><div class="line">target.emit(<span class="string">'someevent'</span>); <span class="comment">//触发事件</span></div></pre></td></tr></table></figure>
-<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="comment">// 全局事件管理</span></div><div class="line">    <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">    <span class="comment">// 注册事件</span></div><div class="line">        on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">                events[type].push(handler);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                events[type] = [handler];</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">        emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">                events[type][i];</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
-<p>也就是<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>和<a href="https://vuex.vuejs.org/" target="_blank" rel="external">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
-<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a href="http://callbackhell.com/" target="_blank" rel="external">回调地狱</a>”也为人诟病。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">async</span>(<span class="params">request, callback</span>) </span>&#123;</div><div class="line">    <span class="comment">// Do something.</span></div><div class="line">    asyncA(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="comment">// Do something</span></div><div class="line">        asyncB(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="comment">// Do something</span></div><div class="line">            asyncC(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">// Do something</span></div><div class="line">                callback(data);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
-<p>ES6中的<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
-<p>它的使用方法像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</div><div class="line">        resolve(val);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        reject(err)</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//failure handler</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 或是</span></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;).catch(err) &#123;</div><div class="line">    <span class="comment">//error handler</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 处理一批次的异步任务</span></div><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1, p2, p3]),</div><div class="line">    q = <span class="built_in">Promise</span>.race([p1, p2, p3]);</div></pre></td></tr></table></figure>
-<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//constructor</span></div><div class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.callbacks = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.prototype = &#123;</div><div class="line">    <span class="attr">construct</span>: <span class="built_in">Promise</span>,</div><div class="line">    <span class="attr">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"resolve"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">reject</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"reject"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">complete</span>: <span class="function"><span class="keyword">function</span>(<span class="params">type, result</span>) </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.callbacks[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">this</span>.callbacks.shift()[type](result);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">then</span>: <span class="function"><span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callbacks.push(&#123;</div><div class="line">            <span class="attr">resolve</span>: successHandler,</div><div class="line">            <span class="attr">reject</span>: failedHandler</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
-<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://segmentfault.com/a/1190000003028634" target="_blank" rel="external">异步编程 promise模式 的简单实现</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -878,6 +878,184 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">args</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> spawn(<span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">spawn</span> (<span class="params">genF, self</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> gen = genF.call(self);</div><div class="line">    step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(<span class="literal">undefined</span>));</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">step</span> (<span class="params">nextF</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> next;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        next = nextF();</div><div class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="comment">// finished with failure, reject the promise</span></div><div class="line">        reject(e);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (next.done) &#123;</div><div class="line">        <span class="comment">// finished with success, resolve the promise</span></div><div class="line">        resolve(next.value);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></div><div class="line">      <span class="built_in">Promise</span>.resolve(next.value).then(</div><div class="line">        <span class="function"><span class="params">v</span> =&gt;</span> step(<span class="function"><span class="params">()</span> =&gt;</span> gen.next(v)),</div><div class="line">        e =&gt; step(<span class="function"><span class="params">()</span> =&gt;</span> gen.throw(e))</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="external">This API is so Fetching!</a><br><a href="https://github.com/tj/co" target="_blank" rel="external">co</a><br><a href="https://nswbmw.github.io/N-club/1/1.3.html" target="_blank" rel="external">co和koa</a><br><a href="https://ponyfoo.com/articles/understanding-javascript-async-await" target="_blank" rel="external">Understanding JavaScript’s async await</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/29/javascript-async-programming-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shenlvmeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2017/03/29/javascript-async-programming-1/" itemprop="url">JavaScript中的异步编程 上</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/03/29/javascript-async-programming-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文启发于阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2015/04/generator.html" target="_blank" rel="external">深入掌握 ECMAScript 6 异步编程</a></p>
+</blockquote>
+<p><span></span></p>
+<blockquote>
+<p>下篇传送门<a href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/" target="_blank" rel="external">JavaScript中的异步编程 下</a></p>
+</blockquote>
+<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
+<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
+<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/" target="_blank" rel="external">Event Loop</a> 的体现。</p>
+<p>在<a href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html" target="_blank" rel="external">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
+<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
+<p>大概是这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></div><div class="line">asy(), cal();</div><div class="line"><span class="comment">//它们的定义和使用像下面这样</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asy</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//异步工作代码</span></div><div class="line">        callback();</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cal</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello!'</span>); <span class="comment">//或其它什么</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">asy(cal);</div></pre></td></tr></table></figure>
+<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
+<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
+<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
+<p>大概是这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target.on(<span class="string">'someevent'</span>, handler); <span class="comment">// 注册事件</span></div><div class="line">target.emit(<span class="string">'someevent'</span>); <span class="comment">//触发事件</span></div></pre></td></tr></table></figure>
+<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventUtil = &#123;</div><div class="line">    <span class="comment">// 全局事件管理</span></div><div class="line">    <span class="keyword">var</span> events = &#123;&#125;,</div><div class="line">    <span class="comment">// 注册事件</span></div><div class="line">        on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handler</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (events[type]) &#123;</div><div class="line">                events[type].push(handler);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                events[type] = [handler];</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">    <span class="comment">// 触发事件</span></div><div class="line">        emit = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].length; i &lt; len; i++) &#123;</div><div class="line">                events[type][i];</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
+<p>也就是<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>和<a href="https://vuex.vuejs.org/" target="_blank" rel="external">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
+<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a href="http://callbackhell.com/" target="_blank" rel="external">回调地狱</a>”也为人诟病。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">async</span>(<span class="params">request, callback</span>) </span>&#123;</div><div class="line">    <span class="comment">// Do something.</span></div><div class="line">    asyncA(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">        <span class="comment">// Do something</span></div><div class="line">        asyncB(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="comment">// Do something</span></div><div class="line">            asyncC(request, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">// Do something</span></div><div class="line">                callback(data);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
+<p>ES6中的<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
+<p>它的使用方法像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</div><div class="line">        resolve(val);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        reject(err)</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//failure handler</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 或是</span></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</div><div class="line">    <span class="comment">//success handler</span></div><div class="line">&#125;).catch(err) &#123;</div><div class="line">    <span class="comment">//error handler</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 处理一批次的异步任务</span></div><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1, p2, p3]),</div><div class="line">    q = <span class="built_in">Promise</span>.race([p1, p2, p3]);</div></pre></td></tr></table></figure>
+<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//constructor</span></div><div class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.callbacks = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.prototype = &#123;</div><div class="line">    <span class="attr">construct</span>: <span class="built_in">Promise</span>,</div><div class="line">    <span class="attr">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"resolve"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">reject</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.complete(<span class="string">"reject"</span>, result);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">complete</span>: <span class="function"><span class="keyword">function</span>(<span class="params">type, result</span>) </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.callbacks[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">this</span>.callbacks.shift()[type](result);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">then</span>: <span class="function"><span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callbacks.push(&#123;</div><div class="line">            <span class="attr">resolve</span>: successHandler,</div><div class="line">            <span class="attr">reject</span>: failedHandler</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
+<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://segmentfault.com/a/1190000003028634" target="_blank" rel="external">异步编程 promise模式 的简单实现</a></p>
 
           
         
@@ -1143,209 +1321,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/blog/2017/03/18/how-to-construct-css/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shenlvmeng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2017/03/18/how-to-construct-css/" itemprop="url">BEM和CSS方法论</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-18T16:49:06+08:00">
-                2017-03-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/18/how-to-construct-css/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/18/how-to-construct-css/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>CSS是一种“奇怪”的编程语言，用来描述网页的样式。使用起来很简单，却由于自身的缺陷（只有全局作用域、没有模块化）使得它很难像真正的编程语言那样，有软件工程的办法适用。</p>
-<h2 id="BEM"><a href="#BEM" class="headerlink" title="BEM"></a>BEM</h2><p><a href="https://en.bem.info/" target="_blank" rel="external">BEM</a>是一个方法论，是一套使用CSS的惯例和约定，用于写出更具有维护性和重用性的CSS代码。BEM由<a href="https://yandex.com/company/" target="_blank" rel="external">Yandex</a>公司提出，目前已被广泛采用。它和其他的CSS的规范如<a href="http://oocss.org/" target="_blank" rel="external">OOCSS</a>，<a href="http://smacss.com/" target="_blank" rel="external">SMACSS</a>并不冲突。它们都用来提高CSS文件的可维护性。</p>
-<h3 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h3><p><strong>BEM</strong>的三个字母分别代表块（<strong>block</strong>）、元素（<strong>element</strong>）、修饰符（<strong>modifier</strong>）。根据<a href="http://getbem.com/introduction/" target="_blank" rel="external">官网</a>的介绍：</p>
-<ul>
-<li><code>Block</code>代表一个独立的抽象的组件</li>
-<li><code>Element</code>代表依附于<code>Block</code>的后代，用来形成一个完整的<code>block</code></li>
-<li><code>Modifier</code>代表<code>Block</code>或是<code>Element</code>的不同状态或版本，用来改变默认样式</li>
-</ul>
-<p>另外：</p>
-<ul>
-<li><strong>不要使用文档的层级结构</strong></li>
-<li><strong>在标签嵌套时，只使用一层嵌套</strong>，通过class名标注标签</li>
-</ul>
-<p>其中<code>Element</code>命名时在<code>Block</code>后添加两个短横线<code>--</code>，<code>Modifier</code>在<code>Block</code>后添加两个下划线<code>__</code>。<strong>所有的CSS均绑定到标签的class上</strong>，确保样式的重用性。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.block</span>&#123;&#125;</div><div class="line"><span class="selector-class">.block__element</span>&#123;&#125;</div><div class="line"><span class="selector-class">.block--modifier</span>&#123;&#125;</div></pre></td></tr></table></figure>
-<p>之所以采用两个短划线和下划线，是为了让用户自定义的块命名中可以含有单个短划线和下划线。</p>
-<p>下面是官网的样例：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span>=<span class="string">"form form--theme-xmas form--simple"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"form__input"</span> <span class="attr">type</span>=<span class="string">"text"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span></span></div><div class="line">    <span class="attr">class</span>=<span class="string">"form__submit form__submit--disabled"</span></div><div class="line">    <span class="attr">type</span>=<span class="string">"submit"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.form</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form--theme-xmas</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form--simple</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__input</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__submit</span> &#123; &#125;</div><div class="line"><span class="selector-class">.form__submit--disabled</span> &#123; &#125;</div></pre></td></tr></table></figure>
-<h3 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h3><p>BEM正如上面介绍的那样，只是一套规范。在使用的时候会感觉类名有些冗长和奇怪。不过它带来的好处是很有价值的。</p>
-<p>另外，<strong>没有必要在每个地方都使用BEM规范</strong>。对于独立的一条CSS样式，写成BEM格式的写法并没有必要。对于考虑使用BEM的人来讲，可能最重要的是从哪里到哪里使用BEM。</p>
-<h2 id="OOCSS"><a href="#OOCSS" class="headerlink" title="OOCSS"></a>OOCSS</h2><p>写CSS代码很简单，但是写出可维护的CSS代码比其他语言就要更难了。因此，大牛们提出了OOCSS、SMACSS这样的<strong>设计模式</strong>来让事情更容易。OOCSS（Object Oriented CSS）即面向对象的CSS，它的关键在于创建在页面中创建模块化可重用的对象（HTML和CSS的结合体）。</p>
-<p>根据OOCSS之父Nicole Sullivan的说法，OOCSS重点在于：</p>
-<ol>
-<li>独立文档结构与样式</li>
-<li>独立文档容器和内容</li>
-</ol>
-<p>使用容易理解的话来说，就是从HTML结构上解脱出来，增加CSS class的重复利用。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">nav</span> <span class="attr">class</span>=<span class="string">"nav--main"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">nav</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>上面的例子里，业务代码经常会将CSS选择器写成<code>nav ul li a</code>这样的写法。这么做过渡依赖原有的HTML文档结构。原有的文档结构改变时，CSS就必须跟着重构。因此，建议直接给<code>a</code>标签绑定class，或写成<code>nav--main a</code>的写法。</p>
-<p>第二，减少使用id<strong>作为CSS的选择器</strong>。尽量使用class，类似<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>中的概念，抽出重复的部分，定义在一个class中。像下面这样，定义基本的类<code>button</code>，并通过<code>button-default</code>和<code>button-primary</code>来拓展基本类。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"button button-default"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"button button-primary"</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>总结一下，OOCSS的优势在于它可以减少CSS的代码减少加载时间（当然的），<strong>语义化的类名</strong>增强逻辑性和SEO，CSS样式可以轻松拓展，</p>
-<p>缺点在于它适合大型网站的开发，在小型项目中似乎用不到这种<em>40米的长刀</em>，同时没有巧妙地使用，创建的组件会适得其反增加，增加维护难度。</p>
-<h2 id="SMACSS"><a href="#SMACSS" class="headerlink" title="SMACSS"></a>SMACSS</h2><p><a href="https://smacss.com/" target="_blank" rel="external">SMACSS</a>(读作”smacks”)全称为Scalable and Modular Architecture for CSS。它也是CSS的框架规范之一，目标是让”<strong>keep CSS more organized and more structured, leading to code that is easier to build and easier to maintain（作者Jonathan Snook语）</strong>“</p>
-<p>SMACSS使用了一套5个类别来划分CSS，这种组织和结构规范了CSS写法，提高了CSS使用效率。</p>
-<ul>
-<li><strong>Base rules</strong> 类似与<code>reset.css</code>和<code>normalize.css</code>的效果，为文档的标签设置默认样式，<strong>应该只包含单独的标签选择器</strong></li>
-<li><strong>Layout rules</strong> 将文档分成诸如header，article，footer这样的各个部分，为布局中的每个部分设置样式</li>
-<li><strong>Module rules</strong> 页面中可重用部分的样式，在layout中出现多次，使用时避免出现标签选择器</li>
-<li><strong>State rules</strong> 用于描述element的不同状态，和基本规则组合使用。</li>
-<li><strong>Theme rules</strong> 类似与“皮肤”的概念，更改整个网站的主题。</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><a href="https://github.com/css-modules/css-modules" target="_blank" rel="external">CSS Modules</a>和上面的思路要来的不大一样。它着眼于解决作用域和模块依赖的问题，采取的做法是重写class名。在React，Vue中每个组件中的CSS样式就做了这样的处理，保证的模块间的CSS文件不相冲突。</p>
-<p>在通过JavaScript绑定到特定class的标签上时，也造成了CSS维护的不变。必要的时候可以为HTML标签赋予专为JavaScript使用的类名。如：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"nav--main__item js-nav--main__item"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>whatever<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CSS是一门看起来很简单的语言，但是它的简单性也提升了工程中的使用难度。为了增强它的可用性。许多名为”xxxCSS”的方法论和机制等被发明，类似Sass，SCSS，Compass，Less，stylus，BEM，SMACSS，OOCSS，ACSS，CCSS等。在使用CSS时，可以尝试使用上面的规范，遵守一些<a href="http://cssguidelin.es/" target="_blank" rel="external">法则</a>，以写出更pure的代码。</p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
-<li><a href="http://getbem.com/" target="_blank" rel="external">BEM</a></li>
-<li><a href="https://smacss.com/book" target="_blank" rel="external">SMACSS Book</a></li>
-<li><a href="http://www.w3cplus.com/css/oocss-concept" target="_blank" rel="external">OOCSS——概念篇</a></li>
-<li><a href="http://www.w3cplus.com/css/css-sass-scss-compass-less-bem-smacss-oocss-acss-ccss-wtfss.html" target="_blank" rel="external">CSS, Sass, SCSS, Compass, Less,BEM, SMACSS, OOCSS, ACSS, CCSS, WTFSS?</a></li>
-<li><a href="https://segmentfault.com/a/1190000000388784" target="_blank" rel="external">编写可维护的CSS</a>(翻译自<a href="http://cssguidelin.es/" target="_blank" rel="external">CSS Guildelines</a>)</li>
-<li><a href="https://github.com/css-modules/css-modules" target="_blank" rel="external">CSS Modules</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blog/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/blog/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/26/">26</a><a class="extend next" rel="next" href="/blog/page/21/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/blog/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/blog/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/27/">27</a><a class="extend next" rel="next" href="/blog/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1391,7 +1371,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-count">131</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1413,7 +1393,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">385</span>
+                <span class="site-state-item-count">388</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
