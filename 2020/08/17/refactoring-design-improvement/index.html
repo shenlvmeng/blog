@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="MF的《重构》一书算是程序设计书籍的经典了。其中对于重构的认识和剖析深入浅出，提纲挈领。对于有一定编程经验的人来说更是如虎添翼的帮助。下面我尽量在不贬损原意的基础上，用自己的思路和语言进行适当的总结。 序 &amp; 前言：重构的再认识开篇名义，还未进入正文，书从序和前言开始，便不自觉间流露着真知灼见：  重构是不改变软件可观察行为的前提下改善其内部结构。 重构需要你维护一份“坏味道”和重构手段的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重构 —— 代码的实用性与艺术性">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2020/08/17/refactoring-design-improvement/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="MF的《重构》一书算是程序设计书籍的经典了。其中对于重构的认识和剖析深入浅出，提纲挈领。对于有一定编程经验的人来说更是如虎添翼的帮助。下面我尽量在不贬损原意的基础上，用自己的思路和语言进行适当的总结。 序 &amp; 前言：重构的再认识开篇名义，还未进入正文，书从序和前言开始，便不自觉间流露着真知灼见：  重构是不改变软件可观察行为的前提下改善其内部结构。 重构需要你维护一份“坏味道”和重构手段的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-17T14:56:03.000Z">
+<meta property="article:modified_time" content="2020-09-10T15:47:27.004Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="重构">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="代码质量">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2020/08/17/refactoring-design-improvement/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2020/08/17/refactoring-design-improvement/","path":"2020/08/17/refactoring-design-improvement/","title":"重构 —— 代码的实用性与艺术性"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>重构 —— 代码的实用性与艺术性 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F-amp-%E5%89%8D%E8%A8%80%EF%BC%9A%E9%87%8D%E6%9E%84%E7%9A%84%E5%86%8D%E8%AE%A4%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">序 &amp; 前言：重构的再认识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%EF%BC%9A%E6%84%9F%E5%8F%97%E9%87%8D%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">样例：感受重构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%8F%E5%91%B3%E9%81%93"><span class="nav-number">4.</span> <span class="nav-text">坏味道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BD%93%E7%B3%BB%EF%BC%9A%E9%87%8D%E6%9E%84%E7%9A%84%E4%BF%9D%E8%AF%81"><span class="nav-number">5.</span> <span class="nav-text">测试体系：重构的保证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%9E%84%E5%88%97%E8%A1%A8"><span class="nav-number">6.</span> <span class="nav-text">重构列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E7%BB%87%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.</span> <span class="nav-text">组织函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%82%BC%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.1.</span> <span class="nav-text">提炼函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.2.</span> <span class="nav-text">内联函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E8%81%94%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.3.</span> <span class="nav-text">内联临时变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E6%9F%A5%E8%AF%A2%E6%9B%BF%E4%BB%A3%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.4.</span> <span class="nav-text">以查询替代临时变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E8%A7%A3%E9%87%8A%E6%80%A7%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.5.</span> <span class="nav-text">引入解释性变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%A7%A3%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.6.</span> <span class="nav-text">分解临时变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E5%AF%B9%E5%87%BD%E6%95%B0%E5%85%A5%E5%8F%82%E7%9A%84%E8%B5%8B%E5%80%BC"><span class="nav-number">6.1.7.</span> <span class="nav-text">移除对函数入参的赋值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E5%8F%96%E4%BB%A3%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.8.</span> <span class="nav-text">用函数对象取代函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">6.1.9.</span> <span class="nav-text">替换算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E9%97%B4%E7%9A%84%E7%89%B9%E6%80%A7%E6%90%AC%E7%A7%BB"><span class="nav-number">6.2.</span> <span class="nav-text">对象间的特性搬移</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AC%E7%A7%BB%E5%87%BD%E6%95%B0"><span class="nav-number">6.2.1.</span> <span class="nav-text">搬移函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AC%E7%A7%BB%E5%AD%97%E6%AE%B5"><span class="nav-number">6.2.2.</span> <span class="nav-text">搬移字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%82%BC%E7%B1%BB"><span class="nav-number">6.2.3.</span> <span class="nav-text">提炼类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E8%81%94%E5%8C%96%E7%B1%BB"><span class="nav-number">6.2.4.</span> <span class="nav-text">内联化类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E5%A7%94%E6%89%98%E5%85%B3%E7%B3%BB"><span class="nav-number">6.2.5.</span> <span class="nav-text">隐藏委托关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E4%B8%AD%E9%97%B4%E4%BA%BA"><span class="nav-number">6.2.6.</span> <span class="nav-text">移除中间人</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E5%A4%96%E5%8A%A0%E5%87%BD%E6%95%B0"><span class="nav-number">6.2.7.</span> <span class="nav-text">引入外加函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E6%9C%AC%E5%9C%B0%E6%89%A9%E5%B1%95"><span class="nav-number">6.2.8.</span> <span class="nav-text">引入本地扩展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E7%BB%84%E7%BB%87%E6%95%B0%E6%8D%AE"><span class="nav-number">6.3.</span> <span class="nav-text">重新组织数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%B0%81%E8%A3%85%E5%AD%97%E6%AE%B5"><span class="nav-number">6.3.1.</span> <span class="nav-text">自封装字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%AF%B9%E8%B1%A1%E5%8F%96%E4%BB%A3%E6%95%B0%E6%8D%AE%E5%80%BC"><span class="nav-number">6.3.2.</span> <span class="nav-text">用对象取代数据值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%80%BC%E5%AF%B9%E8%B1%A1%E6%94%B9%E4%B8%BA%E5%BC%95%E7%94%A8%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.3.3.</span> <span class="nav-text">将值对象改为引用对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%BC%95%E7%94%A8%E5%AF%B9%E8%B1%A1%E6%94%B9%E4%B8%BA%E5%80%BC%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.3.4.</span> <span class="nav-text">将引用对象改为值对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E5%AF%B9%E8%B1%A1%E5%8F%96%E4%BB%A3%E6%95%B0%E7%BB%84"><span class="nav-number">6.3.5.</span> <span class="nav-text">以对象取代数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E8%A2%AB%E7%9B%91%E8%A7%86%E6%95%B0%E6%8D%AE"><span class="nav-number">6.3.6.</span> <span class="nav-text">复制被监视数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%8D%95%E5%90%91%E5%85%B3%E8%81%94%E6%94%B9%E6%88%90%E5%8F%8C%E5%90%91%E5%85%B3%E8%81%94"><span class="nav-number">6.3.7.</span> <span class="nav-text">将单向关联改成双向关联</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%8F%8C%E5%90%91%E5%85%B3%E8%81%94%E6%94%B9%E4%B8%BA%E5%8D%95%E5%90%91%E5%85%B3%E8%81%94"><span class="nav-number">6.3.8.</span> <span class="nav-text">将双向关联改为单向关联</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%B8%B8%E9%87%8F%E5%8F%96%E4%BB%A3%E9%AD%94%E6%B3%95%E6%95%B0"><span class="nav-number">6.3.9.</span> <span class="nav-text">用常量取代魔法数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E5%AD%97%E6%AE%B5"><span class="nav-number">6.3.10.</span> <span class="nav-text">封装字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E9%9B%86%E5%90%88"><span class="nav-number">6.3.11.</span> <span class="nav-text">封装集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%8F%96%E4%BB%A3%E8%AE%B0%E5%BD%95"><span class="nav-number">6.3.12.</span> <span class="nav-text">用数据类取代记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E7%B1%BB%E5%8F%96%E4%BB%A3%E7%B1%BB%E5%9E%8B%E7%A0%81"><span class="nav-number">6.3.13.</span> <span class="nav-text">以类取代类型码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E5%AD%90%E7%B1%BB%E5%8F%96%E4%BB%A3%E7%B1%BB%E5%9E%8B%E7%A0%81"><span class="nav-number">6.3.14.</span> <span class="nav-text">以子类取代类型码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E7%8A%B6%E6%80%81-x2F-%E7%AD%96%E7%95%A5%E5%8F%96%E4%BB%A3%E7%B1%BB%E5%9E%8B%E7%A0%81"><span class="nav-number">6.3.15.</span> <span class="nav-text">以状态&#x2F;策略取代类型码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A5%E5%AD%97%E6%AE%B5%E5%8F%96%E4%BB%A3%E5%AD%97%E6%AE%B5"><span class="nav-number">6.3.16.</span> <span class="nav-text">以字段取代字段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.4.</span> <span class="nav-text">简化条件表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%A7%A3%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.4.1.</span> <span class="nav-text">分解条件表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.4.2.</span> <span class="nav-text">合并条件表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E7%9A%84%E6%9D%A1%E4%BB%B6%E7%89%87%E6%AE%B5"><span class="nav-number">6.4.3.</span> <span class="nav-text">合并重复的条件片段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E6%8E%A7%E5%88%B6%E6%A0%87%E8%AE%B0"><span class="nav-number">6.4.4.</span> <span class="nav-text">移除控制标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E2%80%9C%E5%8D%AB%E8%AF%AD%E5%8F%A5%E2%80%9D%E6%9B%BF%E4%BB%A3%E5%B5%8C%E5%A5%97%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.4.5.</span> <span class="nav-text">用“卫语句”替代嵌套条件表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%A4%9A%E6%80%81%E5%8F%96%E4%BB%A3%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.4.6.</span> <span class="nav-text">用多态取代条件表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5Null%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.4.7.</span> <span class="nav-text">引入Null对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E6%96%AD%E8%A8%80"><span class="nav-number">6.4.8.</span> <span class="nav-text">引入断言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">6.5.</span> <span class="nav-text">优化函数调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%94%B9%E5%90%8D"><span class="nav-number">6.5.1.</span> <span class="nav-text">函数改名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0"><span class="nav-number">6.5.2.</span> <span class="nav-text">添加参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E5%8F%82%E6%95%B0"><span class="nav-number">6.5.3.</span> <span class="nav-text">移除参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E6%9F%A5%E8%AF%A2%E5%92%8C%E4%BF%AE%E6%94%B9"><span class="nav-number">6.5.4.</span> <span class="nav-text">分离查询和修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A9%E5%87%BD%E6%95%B0%E6%90%BA%E5%B8%A6%E5%8F%82%E6%95%B0"><span class="nav-number">6.5.5.</span> <span class="nav-text">让函数携带参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%98%8E%E7%A1%AE%E5%87%BD%E6%95%B0%E5%8F%96%E4%BB%A3%E5%8F%82%E6%95%B0"><span class="nav-number">6.5.6.</span> <span class="nav-text">用明确函数取代参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E6%8C%81%E5%AF%B9%E8%B1%A1%E5%AE%8C%E6%95%B4"><span class="nav-number">6.5.7.</span> <span class="nav-text">保持对象完整</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%87%BD%E6%95%B0%E5%8F%96%E4%BB%A3%E5%8F%82%E6%95%B0"><span class="nav-number">6.5.8.</span> <span class="nav-text">用函数取代参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E5%8F%82%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.5.9.</span> <span class="nav-text">引入参数对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E8%AE%BE%E5%80%BC%E5%87%BD%E6%95%B0"><span class="nav-number">6.5.10.</span> <span class="nav-text">移除设值函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E5%87%BD%E6%95%B0"><span class="nav-number">6.5.11.</span> <span class="nav-text">隐藏函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%B7%A5%E5%8E%82%E5%87%BD%E6%95%B0%E6%9B%BF%E4%BB%A3%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">6.5.12.</span> <span class="nav-text">用工厂函数替代构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B"><span class="nav-number">6.5.13.</span> <span class="nav-text">封装向下转型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%BC%82%E5%B8%B8%E5%8F%96%E4%BB%A3%E9%94%99%E8%AF%AF%E7%A0%81"><span class="nav-number">6.5.14.</span> <span class="nav-text">用异常取代错误码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%B5%8B%E8%AF%95%E5%8F%96%E4%BB%A3%E5%BC%82%E5%B8%B8"><span class="nav-number">6.5.15.</span> <span class="nav-text">用测试取代异常</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB"><span class="nav-number">6.6.</span> <span class="nav-text">处理继承关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E4%B8%8A%E7%A7%BB"><span class="nav-number">6.6.1.</span> <span class="nav-text">字段上移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%B8%8A%E7%A7%BB"><span class="nav-number">6.6.2.</span> <span class="nav-text">函数上移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%B8%8A%E7%A7%BB"><span class="nav-number">6.6.3.</span> <span class="nav-text">构造函数上移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%B8%8B%E7%A7%BB"><span class="nav-number">6.6.4.</span> <span class="nav-text">函数下移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E4%B8%8B%E7%A7%BB"><span class="nav-number">6.6.5.</span> <span class="nav-text">字段下移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%82%BC%E5%AD%90%E7%B1%BB"><span class="nav-number">6.6.6.</span> <span class="nav-text">提炼子类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%82%BC%E8%B6%85%E7%B1%BB"><span class="nav-number">6.6.7.</span> <span class="nav-text">提炼超类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%82%BC%E6%8E%A5%E5%8F%A3"><span class="nav-number">6.6.8.</span> <span class="nav-text">提炼接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%98%E5%8F%A0%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB"><span class="nav-number">6.6.9.</span> <span class="nav-text">折叠继承关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%A8%A1%E6%9D%BF%E5%87%BD%E6%95%B0"><span class="nav-number">6.6.10.</span> <span class="nav-text">构造模板函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E5%A7%94%E6%89%98%E5%8F%96%E4%BB%A3%E7%BB%A7%E6%89%BF"><span class="nav-number">6.6.11.</span> <span class="nav-text">用委托取代继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E7%BB%A7%E6%89%BF%E5%8F%96%E4%BB%A3%E5%A7%94%E6%89%98"><span class="nav-number">6.6.12.</span> <span class="nav-text">用继承取代委托</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%9E%8B%E9%87%8D%E6%9E%84"><span class="nav-number">7.</span> <span class="nav-text">大型重构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%9E%84%E4%B8%8E%E7%8E%B0%E5%AE%9E"><span class="nav-number">8.</span> <span class="nav-text">重构与现实</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%BE%E5%A3%B0"><span class="nav-number">9.</span> <span class="nav-text">尾声</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/08/17/refactoring-design-improvement/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="重构 —— 代码的实用性与艺术性 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          重构 —— 代码的实用性与艺术性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-08-17 22:56:03" itemprop="dateCreated datePublished" datetime="2020-08-17T22:56:03+08:00">2020-08-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-09-10 23:47:27" itemprop="dateModified" datetime="2020-09-10T23:47:27+08:00">2020-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">思考</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/08/17/refactoring-design-improvement/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/17/refactoring-design-improvement/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>MF的《重构》一书算是程序设计书籍的经典了。其中对于重构的认识和剖析深入浅出，提纲挈领。对于有一定编程经验的人来说更是如虎添翼的帮助。下面我尽量在不贬损原意的基础上，用自己的思路和语言进行适当的总结。</p>
+<h2 id="序-amp-前言：重构的再认识"><a href="#序-amp-前言：重构的再认识" class="headerlink" title="序 &amp; 前言：重构的再认识"></a>序 &amp; 前言：重构的再认识</h2><p>开篇名义，还未进入正文，书从序和前言开始，便不自觉间流露着真知灼见：</p>
+<ul>
+<li>重构是<strong>不改变软件可观察行为的前提下改善其内部结构</strong>。</li>
+<li>重构需要你维护一份“坏味道”和重构手段的对应</li>
+<li>设计前期使用模式通常会导致过度工程</li>
+<li>代码总将随着设计者的经验成长而进化</li>
+</ul>
+<h2 id="样例：感受重构"><a href="#样例：感受重构" class="headerlink" title="样例：感受重构"></a>样例：感受重构</h2><blockquote>
+<p>任何一个傻瓜都能写出计算机理解的代码。但唯有优秀的程序员才能写出人类能理解的代码</p>
+</blockquote>
+<p>代码被阅读和修改的次数远多于被编写的次数。尽管代码在机器中运行时，机器并不会嫌弃代码丑陋。但是代码总是要修改的，当我们打算修改系统时，就涉及到了人。人在乎这些。差劲的系统很难维护，如果很难找到修改点，程序员就可能犯错，从而引入bug。如果你发现你需要为程序增加特性，但是当前的代码结构让你不能方便达成目标时，先重构那个程序，再方便地添加特性。</p>
+<p>当然，重构前一定要确认，自己有没有一套<strong>可靠的测试机制</strong>，因为你需要它来保证重构的基础要素：不修改已有功能。重构中，最好能以<strong>微小的步伐</strong>前进（这样能及时回滚）。在本章样例的重构中，体现了下面一些“好味道”：</p>
+<ul>
+<li>代码块越小，代码功能就越好管理</li>
+<li>好的代码应该能够清楚表达自己的功能，变量名也是代码清晰的关键</li>
+<li>用多态取代条件判断逻辑</li>
+<li>结构化风格相比过程化风格更易扩展也更好维护</li>
+</ul>
+<h2 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h2><p>本章介绍了重构的一些原则和基础性认识。</p>
+<ul>
+<li>何为重构：不改变软件可观察特性的前提下，通过修改内部结构，提高其可理解性。通常情况下和<strong>性能优化</strong>相对应<ul>
+<li>两顶帽子：添加新功能和重构应该属于两种截然不同的行为，它们应该分开交替进行</li>
+</ul>
+</li>
+<li>重构的好处<ul>
+<li>改进软件设计，整理代码让后续的修改更容易</li>
+<li>让软件更好理解，准确说出我想要的</li>
+<li>帮忙找到bug</li>
+<li>提高未来的编程速度</li>
+</ul>
+</li>
+<li>何时重构<ul>
+<li><strong>事不过三</strong>，第一次只管去做，第二次产生反感但还是去做，第三次做类似的事情就去重构</li>
+<li>修改bug时重构</li>
+<li>review代码时重构</li>
+</ul>
+</li>
+<li>间接层和重构：中间层能够允许逻辑共享和意图的分开解释，同时隔离变化和解耦。<ul>
+<li>提前设计好中间层不如先直接做再重构</li>
+<li>少数情况下，中间层只会带来冗余</li>
+</ul>
+</li>
+<li>重构的难题<ul>
+<li>修改已有API：建议维护新旧两个接口，让用户做出反应后，再迁移。这期间，旧接口应该要调用新接口实现</li>
+<li>代码已经无法正常运行时，重写比重构更省事</li>
+</ul>
+</li>
+<li>重构和性能优化：大多数的性能优化集中在小部分代码上。先写出风格良好的代码，再使用性能工具实测数据，对瓶颈处单独优化性能。好的重构也会让性能优化更容易进行</li>
+</ul>
+<h2 id="坏味道"><a href="#坏味道" class="headerlink" title="坏味道"></a>坏味道</h2><p>在遇到下面一些“味道”时，可能你就需要重构了。</p>
+<ul>
+<li>重复代码</li>
+<li>函数过长，每当你需要用注释说明点什么时，可以把需要说明的东西写到一个独立函数中</li>
+<li>太长的类</li>
+<li>函数入参过多</li>
+<li>发散式变化：一个类因为多个原因发生不同的变化</li>
+<li>霰弹式变化：一个原因引起一个类的多个变化</li>
+<li>特性依恋：函数对某个类的兴趣高于自己所在的类</li>
+<li>数据泥团：喜欢聚合在一起的零散数据字段</li>
+<li>基础类型偏执：对于基础类型如字符串、整型不愿意使用简单类来封装</li>
+<li>swtich语句</li>
+<li>冗余类</li>
+<li>夸夸其谈未来性：过度为未来设计</li>
+<li>令人迷惑的暂时字段</li>
+<li>过度耦合的链式调用，如<code>a.b.c().d()</code>，链上任意类做修改都会影响整个调用</li>
+<li>两个类的狎昵关系</li>
+<li>异曲同工的类</li>
+<li>幼稚的数据类：只有最简单的getter和setter</li>
+<li>子类拒绝继承超类的函数或数据</li>
+<li>过多的注释</li>
+</ul>
+<h2 id="测试体系：重构的保证"><a href="#测试体系：重构的保证" class="headerlink" title="测试体系：重构的保证"></a>测试体系：重构的保证</h2><p>前面已经提到数次，重构的前提是不对已经已有行为做改动，这需要测试的帮助。本章对建立测试给了一些简单的介绍。</p>
+<ul>
+<li>编写测试代码最有用时机是编程之前</li>
+<li>编写一个测试case时，可以先让测试失败，再通过成功验证程序功能</li>
+<li>遇到bug时，先添加一个单元测试复现这个bug</li>
+<li><strong>测试不能保证程序没有bug</strong>，编写测试样例也遵循82原则，当样例已经很多时，它带来的边际效果就没那么好了。应该更多考虑容易出错的<strong>边界条件</strong>，积极思考如何“破坏代码”。</li>
+</ul>
+<h2 id="重构列表"><a href="#重构列表" class="headerlink" title="重构列表"></a>重构列表</h2><p>下面分几大方向介绍具体的重构手段。每个手段会分场景、思路、动机、做法来展开。</p>
+<h3 id="组织函数"><a href="#组织函数" class="headerlink" title="组织函数"></a>组织函数</h3><p>日常工作中，非常容易坏味道中的过长函数，下面的一些重构方式可以帮我们优化这一点。</p>
+<h4 id="提炼函数"><a href="#提炼函数" class="headerlink" title="提炼函数"></a>提炼函数</h4><ul>
+<li>场景：有一段相对独立的代码可以被组织并独立出来</li>
+<li>思路：将这段代码放到一个独立函数中，用<strong>函数名解释该函数的用途</strong></li>
+<li>动机：有时会遇到过长函数中有一段需要注释才能看明白的代码。将这样相对独立的逻辑拆分成表意的短小函数后，可以让高层函数读起来就像一系列注释。如果提炼可以提高代码清晰度，就算函数名比函数体长都无所谓</li>
+<li>做法：用<strong>做什么</strong>而不是<strong>怎么做</strong>来为函数命名（如果你想不出一个更有意义的名称，就别动了）。检查是否有临时变量，如果有读取，可以作为入参传递给函数；如果对临时变量甚至有再赋值，那可能还要让函数返回临时变量修改后的值</li>
+</ul>
+<h4 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h4><ul>
+<li>场景：函数本体和名称一样清晰易懂</li>
+<li>思路：在函数调用点插入函数本体，然后移除函数</li>
+<li>动机：如果函数本体足够简单，且表意清晰，同时调用点有限，<strong>不具备多态性</strong>。那么出于减少无用中间层的考虑，可以直接使用函数体</li>
+<li>做法：注意检查是否有多态性</li>
+</ul>
+<h4 id="内联临时变量"><a href="#内联临时变量" class="headerlink" title="内联临时变量"></a>内联临时变量</h4><ul>
+<li>场景：一个临时变量只被<strong>简单表达式</strong>赋值一次，同时妨碍了其他重构手法</li>
+<li>思路：将对变量的引用动作，替换成给它赋值的表达式本身</li>
+<li>动机：过多的临时变量会妨碍你重构长函数</li>
+<li>做法：注意确保表达式<strong>没有副作用</strong></li>
+</ul>
+<h4 id="以查询替代临时变量"><a href="#以查询替代临时变量" class="headerlink" title="以查询替代临时变量"></a>以查询替代临时变量</h4><ul>
+<li>场景：程序中有个临时变量保存了某个表达式的运算结果，同时被多处引用</li>
+<li>思路：将表达式提炼成独立函数，在独立变量的所有引用点替换成对新函数的调用</li>
+<li>动机：替换成函数后，整个类都可以获得这份信息，同时会减少对该变量的频繁引用带来的重构困难</li>
+<li>做法：寻找<strong>只被赋值一次</strong>的临时变量，对于赋值多次的临时变量使用“分解临时变量”方法先重构，保证提炼出来的函数没有副作用。先不要担心性能问题，等到出现了优化也会比较简单</li>
+</ul>
+<h4 id="引入解释性变量"><a href="#引入解释性变量" class="headerlink" title="引入解释性变量"></a>引入解释性变量</h4><ul>
+<li>场景：有个复杂的表达式，表意不够清晰</li>
+<li>思路：将表达式的值放进一个临时变量，用变量名表意</li>
+<li>动机：表达式不如变量名更好阅读。如果临时变量在整个类都有意义，建议直接使用“提炼函数”方法</li>
+<li>做法：先判断是否使用“提炼函数”的做法</li>
+</ul>
+<h4 id="分解临时变量"><a href="#分解临时变量" class="headerlink" title="分解临时变量"></a>分解临时变量</h4><ul>
+<li>场景：某个临时变量被<strong>多次赋值</strong>，且每次赋值意义不一样</li>
+<li>思路：针对每次不同意义的赋值使用不一样的临时变量</li>
+<li>动机：临时变量的多义性会增大理解成本</li>
+<li>做法：寻找被多次赋值且有多义性的变量，不同的意义使用新的不同临时变量</li>
+</ul>
+<h4 id="移除对函数入参的赋值"><a href="#移除对函数入参的赋值" class="headerlink" title="移除对函数入参的赋值"></a>移除对函数入参的赋值</h4><ul>
+<li>场景：对函数入参赋值</li>
+<li>思路：用新的临时变量取代入参</li>
+<li>动机：对入参赋值会混淆按值传递和按引用传递的传参方式</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用函数对象取代函数"><a href="#用函数对象取代函数" class="headerlink" title="用函数对象取代函数"></a>用函数对象取代函数</h4><ul>
+<li>场景：大型函数中代码过于复杂，无法使用“提炼函数”</li>
+<li>思路：直接将函数放在<strong>单独对象</strong>中，将复杂的局部变量变成对象字段，从而可以轻松地在对象中分解这个大型函数到多个小型函数</li>
+<li>动机：略</li>
+<li>做法<ol>
+<li>建立一个新类，用函数用途给这类命名</li>
+<li>在新类中创建final字段保存大型函数所在的对象，即“源对象”</li>
+<li>新类的构造函数使用原函数入参作为入参</li>
+<li>新类中建立<code>computed()</code>函数</li>
+<li>赋值原代码到<code>computed()</code>中</li>
+<li>在原函数位置，创建这个新类的一个对象，并调用这个对象的<code>computed()</code>函数</li>
+<li>继续重构新类中的<code>computed()</code>函数</li>
+</ol>
+</li>
+</ul>
+<h4 id="替换算法"><a href="#替换算法" class="headerlink" title="替换算法"></a>替换算法</h4><ul>
+<li>场景：某个算法有更清晰的算法替代</li>
+<li>思路：直接更换函数本体</li>
+<li>动机：略</li>
+<li>做法：略</li>
+</ul>
+<h3 id="对象间的特性搬移"><a href="#对象间的特性搬移" class="headerlink" title="对象间的特性搬移"></a>对象间的特性搬移</h3><p>类应该承担清晰且明确的责任。不论是承担责任过多还是“不怎么负责任”，都需要进行重构。</p>
+<h4 id="搬移函数"><a href="#搬移函数" class="headerlink" title="搬移函数"></a>搬移函数</h4><ul>
+<li>场景：有函数和所在类以外的其他类反而有更多交流，如调用或被调用</li>
+<li>思路：在和函数交流更多的类中建立一个有类似行为的新函数，改造旧函数为新函数的委托函数，或者直接移除旧函数</li>
+<li>动机：略</li>
+<li>做法：<ul>
+<li>检查和搬移函数关联的字段或函数，判断是否要一起搬移</li>
+<li>检查子类和超类有无其他声明，检查有无多态性</li>
+<li>如果目标函数需要太多源类特性，就需要进一步分解后再搬移</li>
+</ul>
+</li>
+</ul>
+<h4 id="搬移字段"><a href="#搬移字段" class="headerlink" title="搬移字段"></a>搬移字段</h4><ul>
+<li>场景：某个字段和所在类以外的其他类有更多交流</li>
+<li>思路：在目标类新建字段，修改源字段的所有使用者，令它们使用新字段</li>
+<li>动机：略</li>
+<li>做法：如果字段的访问级别是<code>public</code>，需要先用“封装字段”手段制造一个委托中间层</li>
+</ul>
+<h4 id="提炼类"><a href="#提炼类" class="headerlink" title="提炼类"></a>提炼类</h4><ul>
+<li>场景：某个类做了两个类的事情</li>
+<li>思路：建立新类，搬移函数和字段</li>
+<li>动机：一个类应该是清楚的抽象，即可以使用清晰的命名</li>
+<li>做法：拆分类，建立两个类之间的单向或双向连接，搬移底层函数，搬移高层函数</li>
+</ul>
+<h4 id="内联化类"><a href="#内联化类" class="headerlink" title="内联化类"></a>内联化类</h4><ul>
+<li>场景：某个类没做什么事情</li>
+<li>思路：将这个类的特性搬移到其他类，然后移除原类</li>
+<li>动机：通常会由于此前的重构动作移走了这个类的责任</li>
+<li>做法：选择和这个类关系最近的类进行合并，可以先在目标类中使用委托，然后再通过搬移函数的方式完成重构</li>
+</ul>
+<h4 id="隐藏委托关系"><a href="#隐藏委托关系" class="headerlink" title="隐藏委托关系"></a>隐藏委托关系</h4><ul>
+<li>场景：使用者通过委托类来调用对象</li>
+<li>思路：在提供服务的类上直接建立使用者所需的所有函数，隐藏委托关系</li>
+<li>动机：隐藏调用关系可以减少实现细节暴露从而减少耦合</li>
+<li>做法：在发起请求的类中，直接实现功能的接口，移除使用者的委托代码</li>
+</ul>
+<h4 id="移除中间人"><a href="#移除中间人" class="headerlink" title="移除中间人"></a>移除中间人</h4><ul>
+<li>场景：类做了过多<strong>简单委托</strong>的动作</li>
+<li>思路：让使用者直接调用受托类</li>
+<li>动机：当“隐藏委托关系”使用过多时，封装会很痛苦，这个时候不如直接让使用者通过链式调用用中间受托类实现功能</li>
+<li>做法：刚好是“隐藏委托关系”的反向过程</li>
+</ul>
+<h4 id="引入外加函数"><a href="#引入外加函数" class="headerlink" title="引入外加函数"></a>引入外加函数</h4><ul>
+<li>场景：需要为提供服务的类新增函数，但是你无法修改这个类（通常是库代码）</li>
+<li>思路：在使用者类中建立一个函数，并用第一参数的方式传入服务类实例</li>
+<li>动机：尽管可以在不修改服务类代码的情况下，自行添加新函数，但还是建议当外加函数较多时，使用“引入本地扩展”的方式，或直接推动服务类升级</li>
+<li>做法：在客户类中建立函数，这个函数不调用客户类特性，只是转发请求到服务类</li>
+</ul>
+<h4 id="引入本地扩展"><a href="#引入本地扩展" class="headerlink" title="引入本地扩展"></a>引入本地扩展</h4><ul>
+<li>场景：需要为服务类添加一些额外函数，但你无法修改这个类</li>
+<li>思路：建立一个新类，使其包含这些额外函数，让这个扩展类成为源类的子类或包装类</li>
+<li>动机：子类工作量较少，但是必须在对象创建期接管创建过程；包装类只是单纯转发请求，没有这个限制，但是转发过程都需要自己实现</li>
+<li>做法：略</li>
+</ul>
+<h3 id="重新组织数据"><a href="#重新组织数据" class="headerlink" title="重新组织数据"></a>重新组织数据</h3><h4 id="自封装字段"><a href="#自封装字段" class="headerlink" title="自封装字段"></a>自封装字段</h4><ul>
+<li>场景：直接访问一个字段的方式给你的重构带来了麻烦，或是引入了麻烦的耦合关系</li>
+<li>思路：用取值&#x2F;设值函数替代直接访问字段</li>
+<li>动机：这种方式让字段更为灵活，但是根据奥卡姆剃刀法则，等需要的时候再用</li>
+<li>做法：有的字段可能需要一个初始化函数</li>
+</ul>
+<h4 id="用对象取代数据值"><a href="#用对象取代数据值" class="headerlink" title="用对象取代数据值"></a>用对象取代数据值</h4><ul>
+<li>场景：数据项需要和行为合在一起使用才有价值</li>
+<li>思路：把简单的数据项封装成对象</li>
+<li>动机：开发初期的简单数据，可能在迭代后会加上特殊行为，如果不及时处理，就会出现特性依恋或重复代码</li>
+<li>做法：略</li>
+</ul>
+<h4 id="将值对象改为引用对象"><a href="#将值对象改为引用对象" class="headerlink" title="将值对象改为引用对象"></a>将值对象改为引用对象</h4><ul>
+<li>场景：从一个类会衍生出多个实例，实例间只是一个实体的多种状态</li>
+<li>思路：将值对象改为引用对象</li>
+<li>动机：值对象通过<code>equals()</code>或<code>hashCode()</code>判断，如日期；引用对象则直接可以用相等操作符<code>==</code>判断，如顾客、账户等概念</li>
+<li>做法：你可能需要一个静态字段或提前创建好多个新对象作为访问点</li>
+</ul>
+<h4 id="将引用对象改为值对象"><a href="#将引用对象改为值对象" class="headerlink" title="将引用对象改为值对象"></a>将引用对象改为值对象</h4><ul>
+<li>场景：你的引用对象很小且<strong>不可变</strong>，同时不易管理</li>
+<li>思路：将引用对象改为值对象</li>
+<li>动机：引用对象不好控制，值对象的<strong>不可变特性</strong>在某些场景很好用。</li>
+<li>做法：<strong>只有不可变对象才能被重构</strong></li>
+</ul>
+<h4 id="以对象取代数组"><a href="#以对象取代数组" class="headerlink" title="以对象取代数组"></a>以对象取代数组</h4><ul>
+<li>场景：有个数组，其中的元素类型不一，代表不同的东西</li>
+<li>思路：用对象替代数组，用字段表示不同意义的元素</li>
+<li>动机：数组的作用是<strong>以某种顺序存储一组相似对象</strong>，不要让位置具有特殊意义</li>
+<li>做法：略</li>
+</ul>
+<h4 id="复制被监视数据"><a href="#复制被监视数据" class="headerlink" title="复制被监视数据"></a>复制被监视数据</h4><ul>
+<li>场景：有些领域数据被放在了GUI部分代码里</li>
+<li>思路：将数据复制到领域对象中，建立Observer模式，剥离UI和逻辑</li>
+<li>动机：分层良好的系统，用户界面和业务逻辑代码是分开的，这样也更好维护</li>
+<li>做法：略</li>
+</ul>
+<h4 id="将单向关联改成双向关联"><a href="#将单向关联改成双向关联" class="headerlink" title="将单向关联改成双向关联"></a>将单向关联改成双向关联</h4><ul>
+<li>场景：两个类都需要对方特性，但目前只有单向连接</li>
+<li>思路：增加一个反向指针，同时修改函数能够同时更新两条链接</li>
+<li>动机：略</li>
+<li>做法：注意删除过程移除指针的顺序</li>
+</ul>
+<h4 id="将双向关联改为单向关联"><a href="#将双向关联改为单向关联" class="headerlink" title="将双向关联改为单向关联"></a>将双向关联改为单向关联</h4><ul>
+<li>场景：两个类有双向关联，但是一个类已经不需要另一个类的特性</li>
+<li>思路：去除不必要连接</li>
+<li>动机：维护双向连接带来便利的同时，也会增加维护的复杂度</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用常量取代魔法数"><a href="#用常量取代魔法数" class="headerlink" title="用常量取代魔法数"></a>用常量取代魔法数</h4><ul>
+<li>场景：有个字面量数值，具有特殊含义，但是不能一眼看明白</li>
+<li>思路：创造一个常量，用命名说明字面数值的意义</li>
+<li>动机：魔法数是类型码时，要使用“以类取代类型码”</li>
+<li>做法：略</li>
+</ul>
+<h4 id="封装字段"><a href="#封装字段" class="headerlink" title="封装字段"></a>封装字段</h4><ul>
+<li>场景：类中有public字段</li>
+<li>思路：声明改为private，提供相应的访问函数</li>
+<li>动机：暴露public会降低函数的模块化程度，数据应该和行为集中在一起，不应被直接修改</li>
+<li>做法：略</li>
+</ul>
+<h4 id="封装集合"><a href="#封装集合" class="headerlink" title="封装集合"></a>封装集合</h4><ul>
+<li>场景：函数返回一个集合</li>
+<li>思路：返回集合的只读副本，并在类中提供添加&#x2F;移除集合元素的函数</li>
+<li>动机：类似“封装字段”，返回的集合一样可能被修改</li>
+<li>做法：使用Collection，或返回一个副本</li>
+</ul>
+<h4 id="用数据类取代记录"><a href="#用数据类取代记录" class="headerlink" title="用数据类取代记录"></a>用数据类取代记录</h4><ul>
+<li>场景：面对传统编程中的记录结构</li>
+<li>思路：创建“哑”数据对象</li>
+<li>动机：要将记录型结构转成面向对象的程序中</li>
+<li>做法：创建private字段，创建读写函数并提供</li>
+</ul>
+<h4 id="以类取代类型码"><a href="#以类取代类型码" class="headerlink" title="以类取代类型码"></a>以类取代类型码</h4><ul>
+<li>场景：类中有个数值类型码，但是<strong>不影响类行为</strong></li>
+<li>思路：用新的类替换数值类型码</li>
+<li>动机：略</li>
+<li>做法：略</li>
+</ul>
+<h4 id="以子类取代类型码"><a href="#以子类取代类型码" class="headerlink" title="以子类取代类型码"></a>以子类取代类型码</h4><ul>
+<li>场景：类中有个<strong>不可变</strong>数值类型码，同时<strong>影响类行为</strong></li>
+<li>思路：用宿主的子类替换类型码</li>
+<li>动机：可以用子类的多态性取代switch语句，不过，如果类型码会发生改变，或者宿主类已经有子类则不能用此方法</li>
+<li>做法：略</li>
+</ul>
+<h4 id="以状态-x2F-策略取代类型码"><a href="#以状态-x2F-策略取代类型码" class="headerlink" title="以状态&#x2F;策略取代类型码"></a>以状态&#x2F;策略取代类型码</h4><ul>
+<li>场景：类中有个数值类型码，会<strong>影响类行为</strong>，同时不能通过继承来消除</li>
+<li>思路：以状态对象取代替换数值类型码</li>
+<li>动机：略</li>
+<li>做法：创建一个新的类，用类型码的用途为它命名，这就是一个状态对象。所有的新类继承自超类，返回不同的状态码</li>
+</ul>
+<h4 id="以字段取代字段"><a href="#以字段取代字段" class="headerlink" title="以字段取代字段"></a>以字段取代字段</h4><ul>
+<li>场景：子类的查边只在<strong>返回常量数据</strong>的函数上</li>
+<li>思路：修改函数，让它们返回超类的新增字段，然后销毁子类</li>
+<li>动机：这样可以避免继承带来的额外复杂性</li>
+<li>做法：略</li>
+</ul>
+<h3 id="简化条件表达式"><a href="#简化条件表达式" class="headerlink" title="简化条件表达式"></a>简化条件表达式</h3><p>条件逻辑会增加理解的层级，处理不好时，很容易配合长代码造成理解困难。</p>
+<h4 id="分解条件表达式"><a href="#分解条件表达式" class="headerlink" title="分解条件表达式"></a>分解条件表达式</h4><ul>
+<li>场景：有一个复杂的条件语句</li>
+<li>思路：为if、then、else语句段落提炼独立函数</li>
+<li>动机：条件逻辑通常会使代码更难阅读</li>
+<li>做法：使用表意的函数名说明条件语句意思</li>
+</ul>
+<h4 id="合并条件表达式"><a href="#合并条件表达式" class="headerlink" title="合并条件表达式"></a>合并条件表达式</h4><ul>
+<li>场景：有一系列的条件逻辑，都得到相同结果</li>
+<li>思路：合并成一个条件表达式，并将之提炼成一个独立函数</li>
+<li>动机：有时候这么做能把“做什么”的语句转换成“为什么”的含义，前提是这些检查并非彼此独立</li>
+<li>做法：注意确认条件语句都没有副作用，有些条件表达式甚至可以简化成三元表达式</li>
+</ul>
+<h4 id="合并重复的条件片段"><a href="#合并重复的条件片段" class="headerlink" title="合并重复的条件片段"></a>合并重复的条件片段</h4><ul>
+<li>场景：条件表达式的每个分支都有相同的一段代码</li>
+<li>思路：将代码提取到条件表达式之外</li>
+<li>动机：减少重复语句</li>
+<li>做法：略</li>
+</ul>
+<h4 id="移除控制标记"><a href="#移除控制标记" class="headerlink" title="移除控制标记"></a>移除控制标记</h4><ul>
+<li>场景：在一系列布尔表达式中，某变量具有控制标记的作用</li>
+<li>思路：用<code>break</code>或<code>return</code>替代</li>
+<li>动机：有时候为了可读性和可维护性，可以牺牲单一出口的做法</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用“卫语句”替代嵌套条件表达式"><a href="#用“卫语句”替代嵌套条件表达式" class="headerlink" title="用“卫语句”替代嵌套条件表达式"></a>用“卫语句”替代嵌套条件表达式</h4><ul>
+<li>场景：嵌套的条件逻辑过多，难以看清正常执行路径</li>
+<li>思路：用“卫语句”枚举出所有特殊情况，减少嵌套层数</li>
+<li>动机：当特殊case多于正常case时，提前处理每种特殊情况，可以有效减少嵌套层数</li>
+<li>做法：注意“卫语句”要么就从函数返回，要么就抛出异常，反正要跳出当前执行流</li>
+</ul>
+<h4 id="用多态取代条件表达式"><a href="#用多态取代条件表达式" class="headerlink" title="用多态取代条件表达式"></a>用多态取代条件表达式</h4><ul>
+<li>场景：你手上有个条件表达式，根据对象类型不同选择不同行为</li>
+<li>思路：将条件表达式的每个分支放在子类的重载函数中，然后将父类的原始函数声明为抽象函数</li>
+<li>动机：面向对象程序中，更少出现switch语句也是得益于多态这个工具</li>
+<li>做法：略</li>
+</ul>
+<h4 id="引入Null对象"><a href="#引入Null对象" class="headerlink" title="引入Null对象"></a>引入Null对象</h4><ul>
+<li>场景：在很多地方检查对象是否为<code>null</code></li>
+<li>思路：用一个特殊的Null对象取代<code>null</code>值</li>
+<li>动机：空对象对外就像是特殊的空的对象（Go笑而不语），而不是什么都没有，有利于保证函数行为的一致性</li>
+<li>做法：空对象一定是单例的</li>
+</ul>
+<h4 id="引入断言"><a href="#引入断言" class="headerlink" title="引入断言"></a>引入断言</h4><ul>
+<li>场景：某段代码需要对程序状态做出假设</li>
+<li>思路：用断言表示这种假设</li>
+<li>动机：有些时候，只有某个条件为真，代码才能正常运行，这个时候用断言明确这些假设。</li>
+<li>做法：注意不要滥用断言，只用来检查“一定为真”的条件，而不要去检查“应该为真”的条件</li>
+</ul>
+<h3 id="优化函数调用"><a href="#优化函数调用" class="headerlink" title="优化函数调用"></a>优化函数调用</h3><p>我们在前面提到了函数体本身的优化，这一章我们主要介绍函数调用的优化</p>
+<h4 id="函数改名"><a href="#函数改名" class="headerlink" title="函数改名"></a>函数改名</h4><ul>
+<li>场景：函数名没能说明函数用途</li>
+<li>思路：修改函数名</li>
+<li>动机：优化函数名，让它达到注释的效果，重新安排参数顺序，提高代码清晰度</li>
+<li>做法：对于旧函数，可以标注<code>deprecated</code>，说明其不建议使用</li>
+</ul>
+<h4 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h4><ul>
+<li>场景：函数需要从调用端得到更多信息</li>
+<li>思路：为函数添加新的对象参数</li>
+<li>动机：如果有其他重构的方法，只要可能，基本都比添加参数要好</li>
+<li>做法：略</li>
+</ul>
+<h4 id="移除参数"><a href="#移除参数" class="headerlink" title="移除参数"></a>移除参数</h4><ul>
+<li>场景：函数本体不需要某个参数</li>
+<li>思路：去除该参数</li>
+<li>动机：暂时不要考虑未来是否能用到</li>
+<li>做法：略</li>
+</ul>
+<h4 id="分离查询和修改"><a href="#分离查询和修改" class="headerlink" title="分离查询和修改"></a>分离查询和修改</h4><ul>
+<li>场景：一个函数即返回对象状态，同时又有副作用</li>
+<li>思路：将查询和修改分离出两个参数</li>
+<li>动机：任何有返回值的函数，最好都不要有看得见的副作用</li>
+<li>做法：先分离查询，再分离修改</li>
+</ul>
+<h4 id="让函数携带参数"><a href="#让函数携带参数" class="headerlink" title="让函数携带参数"></a>让函数携带参数</h4><ul>
+<li>场景：若干函数做了类似的操作，仅仅因为某些值表现不同</li>
+<li>思路：用一个单一函数表示，用参数来表示那些不同的值</li>
+<li>动机：减少重复代码</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用明确函数取代参数"><a href="#用明确函数取代参数" class="headerlink" title="用明确函数取代参数"></a>用明确函数取代参数</h4><ul>
+<li>场景：有一个函数，其中<strong>完全取决于参数</strong>表现出不同行为</li>
+<li>思路：针对参数的不同值，建立一个独立函数</li>
+<li>动机：函数内大多以条件表达式检查这些参数值，并作出不同行为；有时也可以用多态实现</li>
+<li>做法：略</li>
+</ul>
+<h4 id="保持对象完整"><a href="#保持对象完整" class="headerlink" title="保持对象完整"></a>保持对象完整</h4><ul>
+<li>场景：你从对象中取了若干字段，将它们作为函数调用的一些参数</li>
+<li>思路：改为传递整个对象</li>
+<li>动机：如果传递整个对象会让你的依赖结构恶化，那么就不该用这个方法</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用函数取代参数"><a href="#用函数取代参数" class="headerlink" title="用函数取代参数"></a>用函数取代参数</h4><ul>
+<li>场景：对象调用某个函数，用其结果做参数传递给另一个函数，然而接受改参数的函数本身也能调用到前一个函数</li>
+<li>思路：让参数接受函数直接去调用前一个函数，然后去除该参数</li>
+<li>动机：<strong>如果函数有其他途径获得参数值，就不该通过参数获得</strong></li>
+<li>做法：略</li>
+</ul>
+<h4 id="引入参数对象"><a href="#引入参数对象" class="headerlink" title="引入参数对象"></a>引入参数对象</h4><ul>
+<li>场景：某些函数入参总是在一起出现</li>
+<li>思路：直接用一个对象取代这些参数</li>
+<li>动机：略</li>
+<li>做法：略</li>
+</ul>
+<h4 id="移除设值函数"><a href="#移除设值函数" class="headerlink" title="移除设值函数"></a>移除设值函数</h4><ul>
+<li>场景：类的某个字段在创建时设值，然后就不再改变</li>
+<li>思路：去掉字段的设值函数</li>
+<li>动机：提供设值字段就表示可能被改变</li>
+<li>做法：略</li>
+</ul>
+<h4 id="隐藏函数"><a href="#隐藏函数" class="headerlink" title="隐藏函数"></a>隐藏函数</h4><ul>
+<li>场景：有函数从未被其他类用到</li>
+<li>思路：将函数改为private</li>
+<li>动机：减少无谓的API暴露</li>
+<li>做法：可以利用lint工具帮忙检查</li>
+</ul>
+<h4 id="用工厂函数替代构造函数"><a href="#用工厂函数替代构造函数" class="headerlink" title="用工厂函数替代构造函数"></a>用工厂函数替代构造函数</h4><ul>
+<li>场景：希望创建对象时不仅做简单的构建动作</li>
+<li>思路：使用工厂函数</li>
+<li>动机：这个方法也可以用来通过类型码创建类对象</li>
+<li>做法：结合<code>Class.forName()</code>可以不用写switch语句</li>
+</ul>
+<h4 id="封装向下转型"><a href="#封装向下转型" class="headerlink" title="封装向下转型"></a>封装向下转型</h4><ul>
+<li>场景：函数返回的对象需要由调用者向下转型</li>
+<li>思路：将向下转型放在函数中进行</li>
+<li>动机：略</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用异常取代错误码"><a href="#用异常取代错误码" class="headerlink" title="用异常取代错误码"></a>用异常取代错误码</h4><ul>
+<li>场景：函数返回特性的代码表示错误情况</li>
+<li>思路：改用异常</li>
+<li>动机：异常能够区分出正常情况和异常处理</li>
+<li>做法：需要决定抛出受控异常或者非受控异常</li>
+</ul>
+<h4 id="用测试取代异常"><a href="#用测试取代异常" class="headerlink" title="用测试取代异常"></a>用测试取代异常</h4><ul>
+<li>场景：对于一个调用者可以预先检查的条件，抛出了异常</li>
+<li>思路：修改调用者，改在调用前进行检查</li>
+<li>动机：能够提前检查的情况，就不算是异常</li>
+<li>做法：略</li>
+</ul>
+<h3 id="处理继承关系"><a href="#处理继承关系" class="headerlink" title="处理继承关系"></a>处理继承关系</h3><h4 id="字段上移"><a href="#字段上移" class="headerlink" title="字段上移"></a>字段上移</h4><ul>
+<li>场景：两个子类有相同字段</li>
+<li>思路：将字段移至超类</li>
+<li>动机：归纳重复特性</li>
+<li>做法：略</li>
+</ul>
+<h4 id="函数上移"><a href="#函数上移" class="headerlink" title="函数上移"></a>函数上移</h4><ul>
+<li>场景：两个子类有相同作用的函数</li>
+<li>思路：将函数移至超类</li>
+<li>动机：归纳重复特性。子类的函数覆写超类函数，但是做相同工作时，也要使用函数上移</li>
+<li>做法：略</li>
+</ul>
+<h4 id="构造函数上移"><a href="#构造函数上移" class="headerlink" title="构造函数上移"></a>构造函数上移</h4><ul>
+<li>场景：子类的构造函数几乎完全一致</li>
+<li>思路：在超类中新建构造函数，再在子类构造函数中调用它</li>
+<li>动机：如果重构过程过于复杂，可以考虑使用“用工厂函数替代构造函数”</li>
+<li>做法：略</li>
+</ul>
+<h4 id="函数下移"><a href="#函数下移" class="headerlink" title="函数下移"></a>函数下移</h4><ul>
+<li>场景：超类的某函数只和部分子类有关</li>
+<li>思路：将函数移到相关的子类中去</li>
+<li>动机：和“函数上移”恰恰相反</li>
+<li>做法：略</li>
+</ul>
+<h4 id="字段下移"><a href="#字段下移" class="headerlink" title="字段下移"></a>字段下移</h4><ul>
+<li>场景：超类的字段只被部分子类用到</li>
+<li>思路：将字段移到真正需要的子类中去</li>
+<li>动机：和“字段上移”恰恰相反</li>
+<li>做法：略</li>
+</ul>
+<h4 id="提炼子类"><a href="#提炼子类" class="headerlink" title="提炼子类"></a>提炼子类</h4><ul>
+<li>场景：类的特性只被部分实例对象用到</li>
+<li>思路：新建一个子类，将未被用到的特性转移到子类中</li>
+<li>动机：上述的差异行为有时也可能通过类型码区分，这个时候可以由“以子类取代类型码”或“以状态&#x2F;策略取代类型码”方法来重构</li>
+<li>做法：略</li>
+</ul>
+<h4 id="提炼超类"><a href="#提炼超类" class="headerlink" title="提炼超类"></a>提炼超类</h4><ul>
+<li>场景：两个类有相似特性</li>
+<li>思路：为两个类建立超类，将相似特性移到超类中</li>
+<li>动机：两个类用相同方式做类似事情往往意味着重复代码</li>
+<li>做法：略</li>
+</ul>
+<h4 id="提炼接口"><a href="#提炼接口" class="headerlink" title="提炼接口"></a>提炼接口</h4><ul>
+<li>场景：若干客户端使用类中的同一子集，或者两个类有部分相同点</li>
+<li>思路：将相同的子集提炼到独立接口中</li>
+<li>动机：接口有助于系统的<strong>责任划分</strong>和<strong>能力声明</strong>（鸭子类型）。在单继承的语言中，接口扮演了组合功能代码的角色。尤其某个类在不同环境表现不同时，使用接口是个好主意</li>
+<li>做法：接口命名通常由<code>-able</code>结尾</li>
+</ul>
+<h4 id="折叠继承关系"><a href="#折叠继承关系" class="headerlink" title="折叠继承关系"></a>折叠继承关系</h4><ul>
+<li>场景：超类和子类几乎无法区分</li>
+<li>思路：将它们合为一体</li>
+<li>动机：往往在过度设计时出现</li>
+<li>做法：略</li>
+</ul>
+<h4 id="构造模板函数"><a href="#构造模板函数" class="headerlink" title="构造模板函数"></a>构造模板函数</h4><ul>
+<li>场景：有一些子类，细节上有所区别，但是整个流程上操作类似</li>
+<li>思路：提炼出操作流程，上移至超类，将具体细节操作放在独立函数中，让它们有相同的签名，然后实现超类的抽象函数</li>
+<li>动机：这样抽离出来的流程函数也叫模板函数，模板上<em>插槽</em>接口固定，然而提供插槽的模板函数是一致的</li>
+<li>做法：后续新增的类，只需实现超类抽象函数就可以完成扩展</li>
+</ul>
+<h4 id="用委托取代继承"><a href="#用委托取代继承" class="headerlink" title="用委托取代继承"></a>用委托取代继承</h4><ul>
+<li>场景：子类只使用超类接口的一部分，或者直接不需要继承来的数据</li>
+<li>思路：在子类中新建字段保存超类，然后调整子类函数，让它委托超类，然后去掉两者的继承关系</li>
+<li>动机：略</li>
+<li>做法：略</li>
+</ul>
+<h4 id="用继承取代委托"><a href="#用继承取代委托" class="headerlink" title="用继承取代委托"></a>用继承取代委托</h4><ul>
+<li>场景：两个类的委托关系过多，且委托函数都很简单</li>
+<li>思路：让委托类继承受托类</li>
+<li>动机：如果你没有使用<strong>所有</strong>受托类函数，那么就不要用这个重构方法，继续保持委托关系，使用其他重构方法；另外受托对象可变时，也要注意</li>
+<li>做法：略</li>
+</ul>
+<h2 id="大型重构"><a href="#大型重构" class="headerlink" title="大型重构"></a>大型重构</h2><blockquote>
+<p>Kent Beck和作者所写</p>
+</blockquote>
+<p>本章介绍了4个大型重构的思路，也是大型程序容易遇到的4个问题</p>
+<ul>
+<li>梳理和分析继承体系：往往因为某个继承体系承担的两个甚至更多责任，有一个特征是，某一层级的所有类，子类都以相同形容词开始。可以通过委托的形式，对继承体系做正交化</li>
+<li>过程化设计转化为对象设计：往往出现在过程化风格传统语言中。可以将数据记录变为对象，拆分大块行为为小块，然后将行为转移到相关对象中。</li>
+<li>分离领域和UI：出现在有GUI的场景中。传统的MVC设计模式就是将领域逻辑分离出来，用接口的方式和UI部分代码对接</li>
+<li>提炼继承体系：有的类做了太多工作，里面经常有较多的条件表达式。对于这种，可以借助面向对象中的子类和多态或者策略模式实现</li>
+</ul>
+<h2 id="重构与现实"><a href="#重构与现实" class="headerlink" title="重构与现实"></a>重构与现实</h2><p>重构在某些角度和技术演进很像。技术的接纳过程类似一条钟形曲线。前段包括先行者和早期接受者，中部大量人群包括早期消费者和晚期消费者，最后则是行动迟缓者。不同人有不同的消费动机。先行者和早期接受者感兴趣的是<strong>新技术，“范式转移和突破性思想”的愿景</strong>；早期和晚期消费者则关心<strong>成熟度、成本、支持程度，以及这种新思想&#x2F;新产品是否被和他们相似的其他人成功使用</strong>。</p>
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><ul>
+<li>重构工具能节省你的重构时间</li>
+<li>永远记住“两顶帽子”，重构时保持代码功能不变</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E9%87%8D%E6%9E%84/" rel="tag"># 重构</a>
+              <a href="/blog/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+              <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/" rel="tag"># 代码质量</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/08/12/soft-skills-for-software-developer/" rel="prev" title="《软技能 —— 代码外的生存指南》书摘">
+                  <i class="fa fa-chevron-left"></i> 《软技能 —— 代码外的生存指南》书摘
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/10/06/tour-to-qinghai-lake/" rel="next" title="记青海湖骑行">
+                  记青海湖骑行 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

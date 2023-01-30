@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="smooth scroll使用window.scroll API ，从MDN的文档来看，各浏览器的支持情况还不错。 或者自己通过setTimeout加上ease function实现难度也不大。 React在老版本浏览器或Webview下的支持问题 [JavaScript Environment Requirements   React](https:&#x2F;&#x2F;reactjs.org&#x2F;docs&#x2F;java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识 5">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/11/21/some-tips-5/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="smooth scroll使用window.scroll API ，从MDN的文档来看，各浏览器的支持情况还不错。 或者自己通过setTimeout加上ease function实现难度也不大。 React在老版本浏览器或Webview下的支持问题 [JavaScript Environment Requirements   React](https:&#x2F;&#x2F;reactjs.org&#x2F;docs&#x2F;java">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-11-21T15:06:54.000Z">
+<meta property="article:modified_time" content="2018-11-21T15:11:29.563Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="polyfill">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="ffmpeg">
+<meta property="article:tag" content="React Hooks">
+<meta property="article:tag" content="rollup">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/11/21/some-tips-5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/11/21/some-tips-5/","path":"2018/11/21/some-tips-5/","title":"工作中的遇到的一些小知识 5"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>工作中的遇到的一些小知识 5 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#smooth-scroll"><span class="nav-number">1.</span> <span class="nav-text">smooth scroll</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React%E5%9C%A8%E8%80%81%E7%89%88%E6%9C%AC%E6%B5%8F%E8%A7%88%E5%99%A8%E6%88%96Webview%E4%B8%8B%E7%9A%84%E6%94%AF%E6%8C%81%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">React在老版本浏览器或Webview下的支持问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E8%80%81%E7%89%88%E6%9C%ACAndroid%E7%9A%84%E5%9D%91"><span class="nav-number">3.</span> <span class="nav-text">一些老版本Android的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ffmpeg"><span class="nav-number">4.</span> <span class="nav-text">ffmpeg</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Router%E4%BD%BF%E7%94%A8History%E8%B7%AF%E7%94%B1%E6%97%B6%EF%BC%8C%E4%B8%8D%E8%AF%86%E5%88%AB%E5%B8%A6%E2%80%98-%E2%80%99%E7%9A%84%E8%B7%AF%E5%BE%84"><span class="nav-number">5.</span> <span class="nav-text">React Router使用History路由时，不识别带‘.’的路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Hooks%E5%92%8CReact-Hot-Loader%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%86%B2%E7%AA%81"><span class="nav-number">6.</span> <span class="nav-text">React Hooks和React Hot Loader默认配置相冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84rollup%E9%85%8D%E7%BD%AE%E6%A0%B7%E4%BE%8B"><span class="nav-number">7.</span> <span class="nav-text">一个简单的rollup配置样例</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/11/21/some-tips-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="工作中的遇到的一些小知识 5 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          工作中的遇到的一些小知识 5
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-11-21 23:06:54 / 修改时间：23:11:29" itemprop="dateCreated datePublished" datetime="2018-11-21T23:06:54+08:00">2018-11-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/11/21/some-tips-5/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/11/21/some-tips-5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="smooth-scroll"><a href="#smooth-scroll" class="headerlink" title="smooth scroll"></a>smooth scroll</h2><p>使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/scroll">window.scroll API </a>，从MDN的文档来看，各浏览器的支持情况还不错。</p>
+<p>或者自己通过<code>setTimeout</code>加上ease function实现难度也不大。</p>
+<h2 id="React在老版本浏览器或Webview下的支持问题"><a href="#React在老版本浏览器或Webview下的支持问题" class="headerlink" title="React在老版本浏览器或Webview下的支持问题"></a>React在老版本浏览器或Webview下的支持问题</h2><blockquote>
+<p>[JavaScript Environment Requirements</p>
+</blockquote>
+<ul>
+<li>React](<a target="_blank" rel="noopener" href="https://reactjs.org/docs/javascript-environment-requirements.html">https://reactjs.org/docs/javascript-environment-requirements.html</a>)</li>
+</ul>
+<p>React 16依赖于ES6中的Map和Set特性。如果需要React运行在老版本的不支持ES6的浏览器或Webview下，需要<a target="_blank" rel="noopener" href="https://babeljs.io/docs/en/babel-polyfill">babel-polyfill</a>或<a target="_blank" rel="noopener" href="https://github.com/zloirock/core-js">core-js</a>的支持。</p>
+<p>类似于下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;core-js/es6/map&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;core-js/es6/set&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// or</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;babel-polyfill&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">ReactDOM</span> <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title class_">ReactDOM</span>.<span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, world!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>,</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;root&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>需要格外注意的是，不论是import core-js还是import babel-polyfill，<strong>都一定要写在第一次<code>import React from &#39;react&#39;</code>的前面</strong>。否则是起不到polyfill React中ES6特性的效果的。</p>
+<h2 id="一些老版本Android的坑"><a href="#一些老版本Android的坑" class="headerlink" title="一些老版本Android的坑"></a>一些老版本Android的坑</h2><ul>
+<li>在伪元素如<code>:before</code>和<code>:after</code>使用动画会导致crash，<a target="_blank" rel="noopener" href="https://caniuse.com/#search=%3Abefore">caniuse</a>的known issues上只是说在safari v6版本和以下会有不支持的情况。</li>
+<li>不支持不带前缀的<code>transform</code>…</li>
+<li>不支持在<code>&lt;line&gt;</code>上的<code>stroke-width</code>属性上使用rem</li>
+<li>不支持Element.matches方法</li>
+</ul>
+<h2 id="ffmpeg"><a href="#ffmpeg" class="headerlink" title="ffmpeg"></a>ffmpeg</h2><blockquote>
+<p>wiki: <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/FFmpeg">https://en.wikipedia.org/wiki/FFmpeg</a><br>官网: <a target="_blank" rel="noopener" href="https://www.ffmpeg.org/">https://www.ffmpeg.org/</a></p>
+</blockquote>
+<p>主要包含三个命令行指令：</p>
+<ul>
+<li>ffmpeg，多媒体转码</li>
+<li>ffplay，基于SDL和ffmpeg的极简播放器</li>
+<li>ffprobe，多媒体分析</li>
+</ul>
+<p>ffmpeg部分支持参数：</p>
+<ul>
+<li><code>-i</code>指定输入文件</li>
+<li><code>-t</code>处理时间</li>
+<li><code>-ss</code>起始时间</li>
+<li><code>-b:a</code>或<code>-b:v</code>指定音频、视频的输出码率。</li>
+<li><code>-r</code>fps 帧率</li>
+<li><code>-s 1920x1080</code>设置帧大小</li>
+<li><code>-c:a</code>或<code>-c:v</code>设置音频、视频编码器</li>
+<li><code>-ac</code>声道数</li>
+<li><code>-ar</code>音频采样率</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.ffmpeg.org/ffmpeg.html#Options">更多</a></p>
+<h2 id="React-Router使用History路由时，不识别带‘-’的路径"><a href="#React-Router使用History路由时，不识别带‘-’的路径" class="headerlink" title="React Router使用History路由时，不识别带‘.’的路径"></a>React Router使用History路由时，不识别带‘.’的路径</h2><p>webpack-dev-server的配置里，增加<code>disableDotRule</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">historyApiFallback: &#123;</span><br><span class="line">    disableDotRule: true</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>注，这样做会使xxx.html的形式也重定向到默认的index.html，在多入口的项目下会有问题。</p>
+<h2 id="React-Hooks和React-Hot-Loader默认配置相冲突"><a href="#React-Hooks和React-Hot-Loader默认配置相冲突" class="headerlink" title="React Hooks和React Hot Loader默认配置相冲突"></a>React Hooks和React Hot Loader默认配置相冲突</h2><p>设置RHL的<code>pureSFC</code>配置为true，详见<a target="_blank" rel="noopener" href="https://github.com/gaearon/react-hot-loader/issues/1088#issuecomment-434862175">讨论</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setConfig(&#123; pureSFC: true &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="一个简单的rollup配置样例"><a href="#一个简单的rollup配置样例" class="headerlink" title="一个简单的rollup配置样例"></a>一个简单的rollup配置样例</h2><p>最近有一个开发前端录音库（严格来说是改进）的需求，目标是发布到npm管理平台上，在打包库上<a target="_blank" rel="noopener" href="https://rollupjs.org/guide/en">rollup</a>的发挥要优于webpack。刚好想用用试试，就用了rollup作为打包工具。因为场景比webpack更简单，配置上也比webpack好配很多，基本看看<a target="_blank" rel="noopener" href="https://rollupjs.org/guide/zh#tutorial">官方文档</a>就可以上手了。</p>
+<p>不过，文档里用的babel版本还是6.x，使用新版本babel后，配置文件<code>rollup.config.js</code>和<code>.babelrc</code>有些改动，这里列在下面。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">// rollup.config.js</span><br><span class="line">import resolve from &#x27;rollup-plugin-node-resolve&#x27;;</span><br><span class="line">import commonjs from &#x27;rollup-plugin-commonjs&#x27;;</span><br><span class="line">import babel from &#x27;rollup-plugin-babel&#x27;;</span><br><span class="line">import &#123; terser &#125; from &quot;rollup-plugin-terser&quot;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">    input: &#x27;src/index.js&#x27;,</span><br><span class="line">    output: &#123;</span><br><span class="line">        file: &#x27;index.js&#x27;,</span><br><span class="line">        format: &#x27;es&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        resolve(),</span><br><span class="line">        commonjs(),</span><br><span class="line">        babel(&#123;</span><br><span class="line">            exclude: &#x27;node_modules/**&#x27;</span><br><span class="line">        &#125;),</span><br><span class="line">        terser()</span><br><span class="line">    ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// .babelrc</span><br><span class="line">&#123;</span><br><span class="line">    presets: [</span><br><span class="line">        [</span><br><span class="line">            &#x27;@babel/env&#x27;,</span><br><span class="line">            &#123;</span><br><span class="line">                loose: true,</span><br><span class="line">                modules: false</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    ],</span><br><span class="line">    plugins: [</span><br><span class="line">        [&#x27;@babel/proposal-object-rest-spread&#x27;, &#123; loose: true &#125;]</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>–END–</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/polyfill/" rel="tag"># polyfill</a>
+              <a href="/blog/tags/Android/" rel="tag"># Android</a>
+              <a href="/blog/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+              <a href="/blog/tags/React-Hooks/" rel="tag"># React Hooks</a>
+              <a href="/blog/tags/rollup/" rel="tag"># rollup</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/11/21/audio-recorder-improvement/" rel="prev" title="前端录音方案优化实践">
+                  <i class="fa fa-chevron-left"></i> 前端录音方案优化实践
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/11/22/selfish-gene/" rel="next" title="《自私的基因》——生命的必然性和偶然性">
+                  《自私的基因》——生命的必然性和偶然性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

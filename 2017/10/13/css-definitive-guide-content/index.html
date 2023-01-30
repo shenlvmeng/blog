@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="CSS和文档 CSS的出现和特点  &lt;link&gt;、&lt;style&gt;和@import  CSS注释  内联样式  @import必须写在CSS文档的开头   选择器 基本结构  元素选择器（分组选择器、通配选择器）  类选择器&#x2F;ID选择器  属性选择器（具体属性、部分属性）  后代选择器、兄弟选择器（&gt;, +）  伪类&#x2F;伪元素选择器  ^&#x3D;, $&#x3D;,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《CSS权威指南》脉络">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/10/13/css-definitive-guide-content/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="CSS和文档 CSS的出现和特点  &lt;link&gt;、&lt;style&gt;和@import  CSS注释  内联样式  @import必须写在CSS文档的开头   选择器 基本结构  元素选择器（分组选择器、通配选择器）  类选择器&#x2F;ID选择器  属性选择器（具体属性、部分属性）  后代选择器、兄弟选择器（&gt;, +）  伪类&#x2F;伪元素选择器  ^&#x3D;, $&#x3D;,">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-10-13T05:56:33.000Z">
+<meta property="article:modified_time" content="2018-04-02T14:35:56.775Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="盒模型">
+<meta property="article:tag" content="浮动">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/10/13/css-definitive-guide-content/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/10/13/css-definitive-guide-content/","path":"2017/10/13/css-definitive-guide-content/","title":"《CSS权威指南》脉络"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《CSS权威指南》脉络 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS%E5%92%8C%E6%96%87%E6%A1%A3"><span class="nav-number">1.</span> <span class="nav-text">CSS和文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">选择器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%82%E5%8F%A0%E5%85%B3%E7%B3%BB"><span class="nav-number">3.</span> <span class="nav-text">层叠关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%BC%E5%92%8C%E5%8D%95%E4%BD%8D"><span class="nav-number">4.</span> <span class="nav-text">值和单位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E4%BD%93"><span class="nav-number">5.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%B1%9E%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">文本属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%92%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">盒模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E8%B7%9D%E5%92%8C%E8%BE%B9%E6%A1%86"><span class="nav-number">8.</span> <span class="nav-text">边距和边框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%B8%8E%E9%A2%9C%E8%89%B2"><span class="nav-number">9.</span> <span class="nav-text">背景与颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E5%8A%A8%E5%92%8C%E5%AE%9A%E4%BD%8D"><span class="nav-number">10.</span> <span class="nav-text">浮动和定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%B8%83%E5%B1%80"><span class="nav-number">11.</span> <span class="nav-text">表布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E5%92%8C%E7%94%9F%E6%88%90%E5%86%85%E5%AE%B9"><span class="nav-number">12.</span> <span class="nav-text">列表和生成内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2%E6%A0%B7%E5%BC%8F"><span class="nav-number">13.</span> <span class="nav-text">用户界面样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%B1%8F%E5%B9%95%E5%AA%92%E4%BD%93"><span class="nav-number">14.</span> <span class="nav-text">非屏幕媒体</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/10/13/css-definitive-guide-content/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《CSS权威指南》脉络 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《CSS权威指南》脉络
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-10-13 13:56:33" itemprop="dateCreated datePublished" datetime="2017-10-13T13:56:33+08:00">2017-10-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-04-02 22:35:56" itemprop="dateModified" datetime="2018-04-02T22:35:56+08:00">2018-04-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/10/13/css-definitive-guide-content/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/10/13/css-definitive-guide-content/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="CSS和文档"><a href="#CSS和文档" class="headerlink" title="CSS和文档"></a>CSS和文档</h3><ul>
+<li><p>CSS的出现和特点</p>
+</li>
+<li><p><code>&lt;link&gt;</code>、<code>&lt;style&gt;</code>和<code>@import</code></p>
+</li>
+<li><p>CSS注释</p>
+</li>
+<li><p>内联样式</p>
+</li>
+<li><p><code>@import</code>必须写在CSS文档的开头</p>
+</li>
+</ul>
+<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><ul>
+<li><p>基本结构</p>
+</li>
+<li><p>元素选择器（分组选择器、通配选择器）</p>
+</li>
+<li><p>类选择器&#x2F;ID选择器</p>
+</li>
+<li><p>属性选择器（具体属性、部分属性）</p>
+</li>
+<li><p>后代选择器、兄弟选择器（<code>&gt;</code>, <code>+</code>）</p>
+</li>
+<li><p>伪类&#x2F;伪元素选择器</p>
+</li>
+<li><p><code>^=</code>, <code>$=</code>, <code>~=</code>, <code>*=</code>, <code>|=</code>用在属性选择中的部分匹配里，eg：<code>span[class~=&quot;bar&quot;]</code>，<br>其中<code>~=</code>匹配空格隔开的字符，<code>*=</code>匹配部分字符串，<code>|=</code>匹配完整字符串或以字符串开头</p>
+</li>
+<li><p>常用的伪类选择器有</p>
+<ul>
+<li><code>:link</code> 拥有<code>href</code>属性的<strong>未访问</strong>地址</li>
+<li><code>:visited</code></li>
+<li><code>:focus</code> 当前获得输入焦点的元素</li>
+<li><code>:hover</code></li>
+<li><code>:active</code> 被用户激活的元素</li>
+<li><code>:first-child</code> 第一个子元素，类似地还有<code>:last-child</code>和<code>nth-child()</code></li>
+<li><code>:lang()</code> 根据语言选择</li>
+<li><code>:first-letter</code>和<code>first-line</code>针对元素第一个字母和第一行文本</li>
+<li><code>:before</code>和<code>:after</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="层叠关系"><a href="#层叠关系" class="headerlink" title="层叠关系"></a>层叠关系</h3><ul>
+<li><p>优先级顺序（ID &gt; 类、属性、伪类 &gt; 元素、伪元素 &gt; 通配或结合符<code>,</code> &gt; 继承的属性）</p>
+</li>
+<li><p>内联样式和<code>!important</code>的特殊性</p>
+</li>
+<li><p>继承</p>
+</li>
+<li><p>层叠规则</p>
+</li>
+<li><p>来源权重关系（读者重要声明 &gt; 创作者的重要声明 &gt; 创作者正常声明 &gt; 读者正常声明 &gt; 用户代理声明）</p>
+</li>
+<li><p>LVHA（<code>:link</code> - <code>:visited</code> - <code>:hover</code> - <code>:active</code>的声明顺序）</p>
+</li>
+<li><p>一个声明出现的越后，它的权重越大</p>
+</li>
+</ul>
+<h3 id="值和单位"><a href="#值和单位" class="headerlink" title="值和单位"></a>值和单位</h3><ul>
+<li><p>数字</p>
+</li>
+<li><p>百分数</p>
+</li>
+<li><p>颜色（具名、rgb&#x2F;rgba、十六进制）、Web安全颜色</p>
+</li>
+<li><p>长度单位（in&#x2F;cm&#x2F;mm&#x2F;pt&#x2F;pc&#x2F;px，em&#x2F;ex&#x2F;rem&#x2F;vw&#x2F;vh&#x2F;vmin&#x2F;vmax）</p>
+</li>
+<li><p>URL（<code>url(protocol://server/pathname)</code>或<code>url(pathname)</code>）</p>
+</li>
+<li><p>关键字</p>
+</li>
+<li><p>角度&#x2F;时间&#x2F;频率</p>
+</li>
+<li><p>CSS2.1中有一个所有属性共有的关键字：<code>inherit</code></p>
+</li>
+</ul>
+<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><ul>
+<li><p>通用字体（serif&#x2F;sans-serif&#x2F;monospace&#x2F;cursive&#x2F;fantasy）</p>
+</li>
+<li><p>指定字体</p>
+</li>
+<li><p>字体加粗（100~900，lighter&#x2F;bolder）</p>
+</li>
+<li><p>字体大小（xx-small ~ xx-large；绝对大小；百分数）</p>
+</li>
+<li><p>字体风格和变形（font-style，font-variant）</p>
+</li>
+<li><p><code>font</code>属性（<code>[&lt;font-style&gt; || &lt;font-variant&gt; || &lt;font-weight&gt;]?&lt;font-size&gt;[/&lt;line-height&gt;]?&lt;font-family&gt;</code>）</p>
+</li>
+<li><p><code>font-face</code>规则（<code>font-family</code>，<code>font-style</code>，<code>src</code>等）</p>
+</li>
+<li><p>衬线字体包括Times，Georgia；非衬线字体包括Helvetiva，Geneva，Verdana，Arial；Monospace字体包括Courier，Courier New</p>
+</li>
+<li><p>字体名称中包含空格或特殊字符时，建议用引号包裹</p>
+</li>
+<li><p>一般地，400对应normal，700对应bold</p>
+</li>
+<li><p>字体大小是可以继承的，不过继承的是计算值而不是百分数</p>
+</li>
+<li><p><code>italic</code>是单独的字体风格，<code>oblique</code>则是正常文本的倾斜版本</p>
+</li>
+<li><p><code>small-caps</code>表示小型大写字母</p>
+</li>
+</ul>
+<h3 id="文本属性"><a href="#文本属性" class="headerlink" title="文本属性"></a>文本属性</h3><ul>
+<li><p>缩进（<code>text-indent</code>）</p>
+</li>
+<li><p>水平对齐（<code>text-align</code>）</p>
+</li>
+<li><p>垂直对齐（<code>line-height</code>和<code>vertical-align</code>）</p>
+</li>
+<li><p>字间隔和字母间隔（<code>word-spacing</code>和<code>letter-spacing</code>）</p>
+</li>
+<li><p>文本转换（<code>text-transfrom</code>）</p>
+</li>
+<li><p>文本装饰（<code>text-decoration</code>）</p>
+</li>
+<li><p>文本阴影（<code>text-shadow</code>）</p>
+</li>
+<li><p>空白符处理（<code>white-space</code>）</p>
+</li>
+<li><p>文本方向（<code>direction</code>和<code>unicode-bidi</code>）</p>
+</li>
+<li><p><code>text-indent</code>为负值时表示悬挂缩进效果</p>
+</li>
+<li><p><code>line-height</code>有继承性，表示文本基线（baseline）间的距离，继承的仍然是计算值</p>
+</li>
+<li><p>行内元素的行框由行间距和内容区组成</p>
+</li>
+<li><p><code>vertical-align</code>只应用于行内元素、替换元素和单元格，且不能继承。它可以取百分数和长度值，相对于自身line-height计算。</p>
+<ul>
+<li>在基线对齐时，将元素的<strong>底部</strong>和行框的基线对齐</li>
+<li>取值为<code>sub</code>或<code>super</code>时，元素的基线（或底端）将升高或降低</li>
+<li>取值<code>bottom</code>或<code>top</code>时，相对行框的顶端和底端</li>
+<li>取值为<code>middle</code>时，会把行内元素的中点与行框基线上方0.5ex（约为0.25em，因x-height而异）处对齐</li>
+<li>取值为数值时，会相对于父元素行框基线升高<br>最后，父元素的行框的行高会因此做调整</li>
+</ul>
+</li>
+<li><p><code>text-transform</code>有<code>uppercase</code>, <code>lowercase</code>, <code>capitalize</code>等几种选择，有继承性</p>
+</li>
+<li><p><code>text-decoration</code>有<code>underline</code>, <code>overline</code>, <code>line-through</code>, <code>blink</code>等几种选择，没有继承性</p>
+</li>
+<li><p><code>text-shadow</code>先确定阴影颜色，前两个长度值确定偏移距离，第三个值确定模糊半径，可以同时设置多个阴影效果</p>
+</li>
+<li><p><code>white-space</code>行为如下表</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>空白符</th>
+<th>换行符</th>
+<th>自动换行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pre-line</td>
+<td>合并</td>
+<td>保留</td>
+<td>允许</td>
+</tr>
+<tr>
+<td>normal</td>
+<td>合并</td>
+<td>忽略</td>
+<td>允许</td>
+</tr>
+<tr>
+<td>nowrap</td>
+<td>合并</td>
+<td>忽略</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>pre</td>
+<td>保留</td>
+<td>保留</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>pre-wrap</td>
+<td>保留</td>
+<td>保留</td>
+<td>允许</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h3><ul>
+<li><p>基本框与包含块</p>
+</li>
+<li><p>正常流&#x2F;非替换元素&#x2F;替换元素&#x2F;块级元素&#x2F;行内元素</p>
+</li>
+<li><p>水平属性（<code>width</code>，<code>margin/border/padding-left/right</code>）</p>
+</li>
+<li><p>垂直属性（<code>height</code>，<code>margin/border/padding-top/bottom</code>）</p>
+</li>
+<li><p>行内元素（em框、内容区、行间距、行内框、行框）</p>
+</li>
+<li><p>元素的显示方式（<code>display</code>，<code>inline-block</code>和<code>run-in</code>）</p>
+</li>
+<li><p>在水平属性中只有<code>width</code>和外边距可以设置为<code>auto</code>，其余属性必须设置为特定的值或默认为0。使用<code>auto</code>将会弥补实际值和所需总和的差距，当格式化属性过度受限时，会强制把<code>margin-right</code>设置为<code>auto</code>。相反，不止一个<code>auto</code>出现时，若<code>width</code>不为<code>auto</code>，则会将元素居中，出现三个<code>auto</code>时，外边距都会设置为0。</p>
+</li>
+<li><p>垂直属性类似上面，不一样的是，元素间的外边距会合并，留下较大的外边距。</p>
+</li>
+<li><p>对于非替换元素，元素行内框高度等于<code>line-height</code>的值；对于替换元素，则由内容区高度决定</p>
+</li>
+<li><p>行内元素的边框边界由<code>font-size</code>决定，与<code>line-height</code>无关。类似，内外边距不会影响行框的形成和布局。</p>
+</li>
+<li><p>行内替换元素并没有自己的基线，所以说相对较好的方案是将其行内框底部和基线对齐。</p>
+</li>
+<li><p><code>inline-block</code>元素的<code>width</code>未定义或声明为<code>auto</code>时，元素会收缩来适应到框宽度刚好足够包含该内容</p>
+</li>
+</ul>
+<h3 id="边距和边框"><a href="#边距和边框" class="headerlink" title="边距和边框"></a>边距和边框</h3><ul>
+<li><p>基本元素框</p>
+</li>
+<li><p>外边距（负外边距和垂直外边距合并）</p>
+</li>
+<li><p>行内元素的外边距</p>
+</li>
+<li><p>边框</p>
+</li>
+<li><p>内边距</p>
+</li>
+<li><p>行内元素的内边距</p>
+</li>
+<li><p>外边距的空白不能放置其他元素</p>
+</li>
+<li><p>内外边距设置为百分数时，相对于父元素的<strong>宽度</strong>计算，这样做是为了避免高度上导致无限循环</p>
+</li>
+<li><p>对于行内元素，只有<code>line-height</code>，<code>font-size</code>和<code>vertical-align</code>可以改变元素行高，为替换元素设置的外边距会影响行高</p>
+</li>
+<li><p>边框的默认属性为<code>none medium &lt;color&gt;</code></p>
+</li>
+<li><p>元素的背景会延伸到内边距</p>
+</li>
+<li><p>左内&#x2F;外边距应用到行内元素开始处，右内&#x2F;外边距应用到行内元素结束处</p>
+</li>
+</ul>
+<h3 id="背景与颜色"><a href="#背景与颜色" class="headerlink" title="背景与颜色"></a>背景与颜色</h3><ul>
+<li><p>前景色（<code>color</code>）</p>
+</li>
+<li><p>背景色</p>
+</li>
+<li><p>背景图片</p>
+</li>
+<li><p>背景重复、背景定位（<code>background-position</code>）</p>
+</li>
+<li><p>背景大小（<code>background-size</code>，CSS3新增）</p>
+</li>
+<li><p>一般来说，前景包括元素的<strong>文本和边框</strong></p>
+</li>
+<li><p>前景色属性可以继承</p>
+</li>
+<li><p><strong>所有背景属性都不可继承</strong></p>
+</li>
+<li><p>背景图像放在指定的背景色之上</p>
+</li>
+<li><p><code>background</code>简写属性为<code>background-color || background-image || background-repeat || background-attachment || background-position</code></p>
+</li>
+</ul>
+<h3 id="浮动和定位"><a href="#浮动和定位" class="headerlink" title="浮动和定位"></a>浮动和定位</h3><ul>
+<li><p>浮动元素</p>
+</li>
+<li><p>浮动定位规则</p>
+</li>
+<li><p>浮动行为和浮动内容的的重叠</p>
+</li>
+<li><p>清除（<code>clear</code>）</p>
+</li>
+<li><p>定位类型（<code>position</code>）</p>
+</li>
+<li><p>宽高限制（<code>max/min-width</code>和<code>max/min-height</code>）</p>
+</li>
+<li><p>内容溢出（<code>overflow</code>和<code>clip</code>）</p>
+</li>
+<li><p>元素可见性（<code>visibility</code>）</p>
+</li>
+<li><p>绝对定位、固定定位、相对定位</p>
+</li>
+<li><p><code>z-index</code></p>
+</li>
+<li><p>浮动元素的外边距不会合并</p>
+</li>
+<li><p>浮动的非替换元素需要指定<code>width</code>，否则宽度将趋于0</p>
+</li>
+<li><p>浮动元素的包含块为距离最近的块级祖先元素</p>
+</li>
+<li><p>行内框和浮动元素重叠时，边框和内容都在浮动内容之上；块级元素重叠时，内容在之上，边框和背景在之下显示</p>
+</li>
+<li><p><code>clear</code>只应用于块级元素，清除区域不允许浮动元素进入</p>
+</li>
+<li><p><code>absolute</code>元素会形成一个块级框</p>
+</li>
+<li><p><code>top</code>等属性应用在<code>absolute</code>元素时，描述其距离<strong>外边距边界</strong>的距离</p>
+</li>
+<li><p>可以通过<code>top</code>, <code>left</code>, <code>right</code>, <code>bottom</code>这样的定位信息确定绝对定位元素的内容区大小</p>
+</li>
+<li><p><code>clip</code>通过<code>rect(top,right,bottom,left)</code>确定绝对定位元素的剪裁区域</p>
+</li>
+<li><p>绝对定位元素的静态位置为其<code>position</code>为<code>static</code>时的位置</p>
+</li>
+<li><p>对于绝对定位元素，垂直方向或水平方向设置<code>auto</code>可以垂直或水平居中</p>
+</li>
+<li><p>对于相对定位，如遇到过度受限的情况，一个值会设置为另一个的相反数，保证自洽。</p>
+</li>
+</ul>
+<h3 id="表布局"><a href="#表布局" class="headerlink" title="表布局"></a>表布局</h3><ul>
+<li><p>表显示值（即相关<code>display</code>）</p>
+</li>
+<li><p>以行为主</p>
+</li>
+<li><p>匿名表对象插入法则</p>
+</li>
+<li><p>表标题</p>
+</li>
+<li><p>表单元格（<code>border-collapse</code>, <code>border-spacing</code>, <code>empty-cells</code>）</p>
+</li>
+<li><p>单元格边框合并</p>
+</li>
+<li><p>表大小（<code>table-layout</code>, 高度, 对齐）</p>
+</li>
+<li><p>CSS的列和列组只能接受<code>border</code>，<code>background</code>，<code>width</code>，<code>visibility</code>四种属性</p>
+</li>
+<li><p>单元格垂直对齐有4种可选值，<code>top</code>, <code>bottom</code>, <code>middle</code>, <code>baseline</code></p>
+</li>
+</ul>
+<h3 id="列表和生成内容"><a href="#列表和生成内容" class="headerlink" title="列表和生成内容"></a>列表和生成内容</h3><ul>
+<li><p>列表类型、列表项图像、列表标志位置</p>
+</li>
+<li><p>插入生成内容（<code>content</code>，<code>attr(xxx)</code>, <code>quote</code>）</p>
+</li>
+<li><p>计数器（<code>counter-reset</code>, <code>counter-increment</code>）</p>
+</li>
+<li><p>列表样式可以简写为<code>&lt;list-style-type&gt; | &lt;list-style-image&gt; | &lt;list-style-position&gt;</code></p>
+</li>
+<li><p>在<code>quote</code>属性里指定开闭字符串后，可以通过content，结合<code>:before</code>，<code>:after</code>伪类插入开闭quote的标记</p>
+</li>
+</ul>
+<h3 id="用户界面样式"><a href="#用户界面样式" class="headerlink" title="用户界面样式"></a>用户界面样式</h3><ul>
+<li><p>系统字体（如<code>caption</code>等）</p>
+</li>
+<li><p>系统颜色（已废弃）</p>
+</li>
+<li><p>光标（<code>cursor</code>）</p>
+</li>
+<li><p>轮廓（<code>outline</code>）</p>
+</li>
+<li><p><code>cursor</code>有下面一些常见的值</p>
+<ul>
+<li><code>pointer</code> 用在超链接上</li>
+<li><code>text</code> 用来纯文本上</li>
+<li><code>move</code> 用来指示目标可以被拖动，相关的还有<code>e-resize</code>, <code>ne-resize</code>, <code>se-resize</code>等边缘的拖动标记</li>
+<li><code>crosshair</code> 用来指示可以选取范围，类似截屏的光标效果</li>
+<li><code>wait</code> 显示等待标记</li>
+<li><code>progress</code> 指示等待的状态，同时表示可以进行其他操作</li>
+<li><code>help</code> 显示帮助光标</li>
+<li><code>url()</code> 自定义光标图像，建议设置缺省值</li>
+</ul>
+</li>
+<li><p><code>outline</code>的设置类似<code>border</code>，由<code>outline-color</code>, <code>outline-style</code>, <code>outline-width</code>组成</p>
+</li>
+</ul>
+<h3 id="非屏幕媒体"><a href="#非屏幕媒体" class="headerlink" title="非屏幕媒体"></a>非屏幕媒体</h3><ul>
+<li><p>分页媒体（<code>size</code>和<code>page</code>等）</p>
+</li>
+<li><p>投影样式</p>
+</li>
+<li><p>声音样式（<code>speak</code>，<code>stress</code>，<code>richness</code>等）</p>
+</li>
+<li><p>可以在<code>&lt;link&gt;</code>标签的<code>media</code>属性里指定媒体类型，或是在CSS文件中通过<code>@media xxx &#123;&#125;</code>的形式指定</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/blog/tags/CSS/" rel="tag"># CSS</a>
+              <a href="/blog/tags/%E7%9B%92%E6%A8%A1%E5%9E%8B/" rel="tag"># 盒模型</a>
+              <a href="/blog/tags/%E6%B5%AE%E5%8A%A8/" rel="tag"># 浮动</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/09/08/photogallery-improvement/" rel="prev" title="PhotoGallery技术改造">
+                  <i class="fa fa-chevron-left"></i> PhotoGallery技术改造
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/10/15/cycle-js-introduction/" rel="next" title="cycle.js介绍">
+                  cycle.js介绍 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="背景近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由于仓库本身的模板性质和git历史存在，并不合适使用npm分发或git clone快速搭建项目骨架。 碰巧此前学习svelte的时候接触到了degit，degit做的事很简单，复制git仓库代码。这也正是一个称职的boilerplate发挥光和热的方式。 d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="degit认识和改造">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="背景近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由于仓库本身的模板性质和git历史存在，并不合适使用npm分发或git clone快速搭建项目骨架。 碰巧此前学习svelte的时候接触到了degit，degit做的事很简单，复制git仓库代码。这也正是一个称职的boilerplate发挥光和热的方式。 d">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/15/Mdbl6S.png">
+<meta property="article:published_time" content="2019-11-15T13:51:58.000Z">
+<meta property="article:modified_time" content="2019-11-15T14:17:53.563Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="脚手架">
+<meta property="article:tag" content="degit">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/11/15/Mdbl6S.png">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/","path":"2019/11/15/degit-improvement/","title":"degit认识和改造"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>degit认识和改造 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#degit%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">degit使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#degit%E4%BC%98%E5%8A%BF"><span class="nav-number">3.</span> <span class="nav-text">degit优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#degit%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">degit原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3"><span class="nav-number">4.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Degit%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">Degit初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E4%B8%8B%E8%BD%BD"><span class="nav-number">4.3.</span> <span class="nav-text">仓库下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%BC%93%E5%AD%98%E4%BF%A1%E6%81%AF"><span class="nav-number">4.3.1.</span> <span class="nav-text">获取缓存信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96commit-hash"><span class="nav-number">4.3.2.</span> <span class="nav-text">获取commit hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80"><span class="nav-number">4.3.3.</span> <span class="nav-text">构造下载地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95%E5%B9%B6%E4%B8%8B%E8%BD%BD"><span class="nav-number">4.3.4.</span> <span class="nav-text">创建目录并下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E7%BC%93%E5%AD%98"><span class="nav-number">4.3.5.</span> <span class="nav-text">更新缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8Btar-gz%E5%8C%85"><span class="nav-number">4.3.6.</span> <span class="nav-text">解压tar.gz包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#actions%E5%A4%84%E7%90%86"><span class="nav-number">4.3.7.</span> <span class="nav-text">actions处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#degit%E6%94%B9%E9%80%A0"><span class="nav-number">5.</span> <span class="nav-text">degit改造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.</span> <span class="nav-text">可能存在的问题</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="degit认识和改造 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          degit认识和改造
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-11-15 21:51:58 / 修改时间：22:17:53" itemprop="dateCreated datePublished" datetime="2019-11-15T21:51:58+08:00">2019-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/11/15/degit-improvement/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/15/degit-improvement/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由于仓库本身的模板性质和git历史存在，并不合适使用npm分发或<code>git clone</code>快速搭建项目骨架。</p>
+<p>碰巧此前学习svelte的时候接触到了<a target="_blank" rel="noopener" href="https://github.com/Rich-Harris/degit">degit</a>，degit做的事很简单，<strong>复制git仓库代码</strong>。这也正是一个称职的boilerplate发挥光和热的方式。</p>
+<h2 id="degit使用"><a href="#degit使用" class="headerlink" title="degit使用"></a>degit使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">degit user/repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># these commands are equivalent</span></span><br><span class="line">degit github:user/repo</span><br><span class="line">degit git@github.com:user/repo</span><br><span class="line">degit https://github.com/user/repo</span><br><span class="line"></span><br><span class="line">degit user/repo my-new-project</span><br></pre></td></tr></table></figure>
+
+<p>上面是一个degit的基本用法，类似<code>git clone</code>指定仓库地址和本地目录名，默认将项目当前<code>master</code>分支的代码拷贝到本地。还可以在仓库后使用<code>#</code>分隔，指定分支名、tag名或commit hash。目前（2019&#x2F;11&#x2F;12）degit支持github、gitlab、BitBucket以及Sourcehut，暂不支持私有仓库。</p>
+<p>在一些情况下，我们可能希望在拷贝完代码后进行一些后置操作，如拷贝关联仓库或删除不必要文件等。对此，degit设计了<strong>actions</strong>来支持，可以在当前目录的<code>degit.json</code>中声明。目前actions只有<code>clone</code>和<code>remove</code>两种。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// degit.json</span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;action&quot;</span>: <span class="string">&quot;clone&quot;</span>,</span><br><span class="line">        <span class="string">&quot;src&quot;</span>: <span class="string">&quot;user/another-repo&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;action&quot;</span>: <span class="string">&quot;remove&quot;</span>,</span><br><span class="line">        <span class="string">&quot;files&quot;</span>: [<span class="string">&quot;LICENSE&quot;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="degit优势"><a href="#degit优势" class="headerlink" title="degit优势"></a>degit优势</h2><p>如README中提到的，degit和<code>git clone --depth 1</code>还是有所区别的：</p>
+<ul>
+<li><code>git clone</code>后，终归还是会有个<code>.git</code>目录，需要手动重置</li>
+<li>degit在实现时增加了缓存策略，在有些情况下不需要重复下载代码，速度更快</li>
+<li>“更少的字数”（<code>degit user/repo</code>而不是<code>git clone --depth 1 git@github.com:user/repo</code>）</li>
+<li>灵活度更高，如前后置操作如actions的支持</li>
+<li>更好的可扩展性，未来可以在degit基础上实现交互等更复杂的设计</li>
+</ul>
+<h2 id="degit原理"><a href="#degit原理" class="headerlink" title="degit原理"></a>degit原理</h2><p>那么degit快在哪里？它的思路借鉴于<a target="_blank" rel="noopener" href="https://github.com/vutran/zel">zel</a>和<a target="_blank" rel="noopener" href="https://github.com/lukeed/gittar">gittar</a>，即方便快捷地从git仓库中下载需要的源代码。原理上，<strong>利用某些git平台url的特定规则，从平台下载tar.gz包，再本地解压</strong>。</p>
+<p>degit实现集中在<code>src/index.js</code>中。<code>src/bin.js</code>只用来实现cli部分的入口代码，<code>src/utils.js</code>则包含了一些工具函数。</p>
+<h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><p>在<code>src/bin.js</code>中，流程分下面几步：</p>
+<ol>
+<li>利用<a target="_blank" rel="noopener" href="https://github.com/lukeed/mri">mri</a>做了基本的参数处理</li>
+<li>实例化Degit对象，注册logger的监听方法</li>
+<li>调用<code>clone</code>方法</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> d = <span class="title function_">degit</span>(src, args);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">on</span>(<span class="string">&#x27;info&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(chalk.<span class="title function_">cyan</span>(<span class="string">`&gt; <span class="subst">$&#123;event.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">on</span>(<span class="string">&#x27;warn&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(</span><br><span class="line">            chalk.<span class="title function_">magenta</span>(<span class="string">`! <span class="subst">$&#123;event.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>)</span><br><span class="line">        );</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">clone</span>(dest)</span><br><span class="line">        <span class="comment">// .then(() =&gt; &#123;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// &#125;)</span></span><br><span class="line">        .<span class="title function_">catch</span>(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">error</span>(chalk.<span class="title function_">red</span>(<span class="string">`! <span class="subst">$&#123;err.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>));</span><br><span class="line">            process.<span class="title function_">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Degit初始化"><a href="#Degit初始化" class="headerlink" title="Degit初始化"></a>Degit初始化</h3><p>对象实例包含下面几个成员，其中repo信息需要处理后才能拿到。</p>
+<ul>
+<li><code>src</code>，string，用户输入的仓库地址</li>
+<li><code>cache</code>，boolean，是否使用缓存，来自命令行<code>-c</code>或<code>--cache</code>参数</li>
+<li><code>force</code>，boolean，目标文件夹有内容时，是否覆盖，来自<code>-f</code>或<code>--force</code>参数</li>
+<li><code>verbose</code>，boolean，是否打印详细日志，来自<code>-v</code>或<code>--verbose</code>参数</li>
+<li><code>repo</code>，处理<code>src</code>拿到仓库的详情，包括<ul>
+<li><code>site</code>，网页域名</li>
+<li><code>user</code>，用户&#x2F;组织名</li>
+<li><code>name</code>，仓库名</li>
+<li><code>ref</code>，分支、tag、commit hash</li>
+<li><code>url</code>，完整的HTTP url</li>
+</ul>
+</li>
+<li><code>directiveActions</code>，actions配置对应的处理函数，包含<ul>
+<li><code>clone</code>，递归处理src的仓库</li>
+<li><code>remove</code>，调用<code>remove</code>方法移除指定文件</li>
+</ul>
+</li>
+</ul>
+<p>repo信息来自src经过正则匹配出的详细信息。由于要利用一些git平台的url拼接规则，需要排除已知平台以外的url。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 支持的范围</span></span><br><span class="line"><span class="keyword">const</span> supported = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="string">&#x27;github&#x27;</span>, <span class="string">&#x27;gitlab&#x27;</span>, <span class="string">&#x27;bitbucket&#x27;</span>, <span class="string">&#x27;git.sr.ht&#x27;</span>]);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">parse</span>(<span class="params">src</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> match = <span class="regexp">/^(?:https:\/\/([^/]+)\/|git@([^/]+)[:/]|([^/]+)[:/])?([^/\s]+)\/([^/\s#]+)(?:#(.+))?/</span>.<span class="title function_">exec</span>(</span><br><span class="line">        src</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(<span class="string">`could not parse <span class="subst">$&#123;src&#125;</span>`</span>, &#123;</span><br><span class="line">            <span class="attr">code</span>: <span class="string">&#x27;BAD_SRC&#x27;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> site = (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;github&#x27;</span>).<span class="title function_">replace</span>(</span><br><span class="line">        <span class="regexp">/\.(com|org)$/</span>,</span><br><span class="line">        <span class="string">&#x27;&#x27;</span></span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 排除范围外的url</span></span><br><span class="line">    <span class="keyword">if</span> (!supported.<span class="title function_">has</span>(site)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(</span><br><span class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket`</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_HOST&#x27;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 匹配出用户名、仓库名、分支/tag/commit hash名</span></span><br><span class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].<span class="title function_">replace</span>(<span class="regexp">/\.git$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">&#x27;master&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 完整的仓库地址，需要http开头的</span></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>.<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="subst"><span class="string">        site === <span class="string">&#x27;bitbucket&#x27;</span> ? <span class="string">&#x27;org&#x27;</span> : site === <span class="string">&#x27;git.sr.ht&#x27;</span> ? <span class="string">&#x27;&#x27;</span> : <span class="string">&#x27;com&#x27;</span></span></span></span><br><span class="line"><span class="subst"><span class="string">    &#125;</span>/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="仓库下载"><a href="#仓库下载" class="headerlink" title="仓库下载"></a>仓库下载</h3><p>下载仓库流程如下：</p>
+<p><img src="https://s2.ax1x.com/2019/11/15/Mdbl6S.png" alt="degit流程"></p>
+<h4 id="获取缓存信息"><a href="#获取缓存信息" class="headerlink" title="获取缓存信息"></a>获取缓存信息</h4><p>degit的缓存放在<code>/home</code>或<code>/tmp</code>下的<code>.degit</code>目录下，按照<code>site/user/name</code>的目录组织。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 缓存目录</span></span><br><span class="line"><span class="keyword">const</span> base = path.<span class="title function_">join</span>(homeOrTmp, <span class="string">&#x27;.degit&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> dir = path.<span class="title function_">join</span>(base, repo.<span class="property">site</span>, repo.<span class="property">user</span>, repo.<span class="property">name</span>);</span><br><span class="line"><span class="keyword">const</span> cached = <span class="title function_">tryRequire</span>(path.<span class="title function_">join</span>(dir, <span class="string">&#x27;map.json&#x27;</span>)) || &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>目录下有一个<code>map.json</code>和缓存的代码tar.gz包，包名格式为<code>&lt;commit-hash&gt;.tar.gz</code>。在map.json保存着此前使用过的分支名&#x2F;tag名&#x2F;简写commit名到commit hash的最新映射关系。形如下方：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;master&quot;</span><span class="punctuation">:</span> <span class="string">&quot;4e3a4089b4f0275964eb10a432dc1c15526a0b4d&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这一步会尝试使用parse好的<code>site</code>、<code>user</code>、<code>name</code>属性找已有的缓存的<code>map.json</code>。没有找到时返回<code>&#123;&#125;</code>。</p>
+<h4 id="获取commit-hash"><a href="#获取commit-hash" class="headerlink" title="获取commit hash"></a>获取commit hash</h4><p>这一步分两种情况;</p>
+<ul>
+<li>使用缓存时，直接从上一步拿到的<code>map.json</code>里面找<code>ref</code>对应的commit hash</li>
+<li>不使用缓存时，需要从远端仓库拿分支名&#x2F;tag名到commit hash的对应关系（使用<code>git ls-remote</code>完成）。之后格式化为结构化数据并从中寻找<code>ref</code>对应的commit hash。如果中途失败，则fallback到使用缓存的方式。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">fetchRefs</span>(<span class="params">repo</span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; stdout &#125; = <span class="keyword">await</span> <span class="title function_">exec</span>(<span class="string">`git ls-remote <span class="subst">$&#123;repo.url&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> stdout</span><br><span class="line">            .<span class="title function_">split</span>(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">            .<span class="title function_">filter</span>(<span class="title class_">Boolean</span>)</span><br><span class="line">            .<span class="title function_">map</span>(<span class="function"><span class="params">row</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">const</span> [hash, ref] = row.<span class="title function_">split</span>(<span class="string">&#x27;\t&#x27;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 格式化过程</span></span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="comment">// 错误处理</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一步若未找到hash，则无法构造下载的url，从而需要抛出错误。</p>
+<h4 id="构造下载地址"><a href="#构造下载地址" class="headerlink" title="构造下载地址"></a>构造下载地址</h4><p>根据不同的git平台固定的源码tar.gz归档url规则，构造下载的url，这也是degit思路的基础。目前支持gitlab、bucket、github风格的url。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 即将下载的tar.gz文件路径</span></span><br><span class="line"><span class="keyword">const</span> file = <span class="string">`<span class="subst">$&#123;dir&#125;</span>/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br><span class="line"><span class="comment">// 下载的url</span></span><br><span class="line"><span class="keyword">const</span> url =</span><br><span class="line">    repo.<span class="property">site</span> === <span class="string">&#x27;gitlab&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></span><br><span class="line">        : repo.<span class="property">site</span> === <span class="string">&#x27;bitbucket&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></span><br><span class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建目录并下载"><a href="#创建目录并下载" class="headerlink" title="创建目录并下载"></a>创建目录并下载</h4><p>不使用缓存时，会在创建缓存目录并下载。另外，指定<code>-f</code>或<code>--force</code>参数，会覆盖已有文件路径。最后使用https模块下载文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">cache</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            fs.<span class="title function_">statSync</span>(file);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">            <span class="title function_">mkdirp</span>(path.<span class="title function_">dirname</span>(file));</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">await</span> <span class="title function_">fetch</span>(url, file);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="comment">// 错误处理</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="更新缓存"><a href="#更新缓存" class="headerlink" title="更新缓存"></a>更新缓存</h4><p>下载成功会更新本地缓存，保证以后使用缓存时能使用尽量新的包。</p>
+<ol>
+<li>当前使用包的commit hash如果和指定分支&#x2F;tag&#x2F;commit hash对应的hash一致，则不需要更新</li>
+<li>在需要更新时，检查老的hash是否还有使用，如果没有使用，则清除hash对应的tar.gz包</li>
+<li>更新map.json里的对应关系</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">updateCache</span>(<span class="params">dir, repo, hash, cached</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (cached[repo.<span class="property">ref</span>] === hash) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> oldHash = cached[repo.<span class="property">ref</span>];</span><br><span class="line">    <span class="keyword">if</span> (oldHash) &#123;</span><br><span class="line">        <span class="keyword">let</span> used = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> cached) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cached[key] === hash) &#123;</span><br><span class="line">                used = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!used) &#123;</span><br><span class="line">            <span class="comment">// we no longer need this tar file</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fs.<span class="title function_">unlinkSync</span>(path.<span class="title function_">join</span>(dir, <span class="string">`<span class="subst">$&#123;oldHash&#125;</span>.tar.gz`</span>));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">                <span class="comment">// ignore</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cached[repo.<span class="property">ref</span>] = hash;</span><br><span class="line">    fs.<span class="title function_">writeFileSync</span>(</span><br><span class="line">        path.<span class="title function_">join</span>(dir, <span class="string">&#x27;map.json&#x27;</span>),</span><br><span class="line">        <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(cached, <span class="literal">null</span>, <span class="string">&#x27;  &#x27;</span>)</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解压tar-gz包"><a href="#解压tar-gz包" class="headerlink" title="解压tar.gz包"></a>解压tar.gz包</h4><p>创建cli中输入的目标目录，并将已下载到缓存中tar.gz包解压到目标路径下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">mkdirp</span>(dest);</span><br><span class="line"><span class="keyword">await</span> <span class="title function_">untar</span>(file, dest);</span><br></pre></td></tr></table></figure>
+
+<h4 id="actions处理"><a href="#actions处理" class="headerlink" title="actions处理"></a><code>actions</code>处理</h4><p>如果在当前目录下获取到了<code>degit.json</code>，则执行后续的<code>clone</code>或<code>remove</code>操作。</p>
+<ul>
+<li>clone，在目标目录下继续一遍clone流程</li>
+<li>remove，删除指定文件或文件夹</li>
+</ul>
+<h2 id="degit改造"><a href="#degit改造" class="headerlink" title="degit改造"></a>degit改造</h2><p>degit虽好，但从上面也可以看到，支持仓库比较有限，且不支持私有仓库。在公司内部，无法从url推断git仓库类型时，degit就无法工作了。不过，借助degit本身的设计，稍微改造上面提到的“degit初始化”，“构造下载地址”部分，就可以让degit通过传参url风格的形式支持私有仓库。</p>
+<ul>
+<li>新增<code>-s</code>或<code>--style</code>命令行入参，表示git仓库url的风格，目前设计有github、gitlab、bitbucket这几个degit原始就支持的形式。</li>
+<li>解析仓库地址信息时，若有style入参，则先判断是否在上述允许范围内；保留原有从域名解析style的部分，新增若未解析出style，则从入参里取；最后再抛出不支持的仓库地址错误</li>
+<li>解析返回数据结构中，新增<code>style</code>字段表示url风格，原有的<code>site</code>为避免歧义，直接使用域名代替原有的域名前缀</li>
+<li>在构造下载地址时，直接根据style字段拼接url</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">parse</span>(<span class="params">src, style</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (style &amp;&amp; !supportedGitStyle.<span class="title function_">has</span>(style)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(<span class="string">`degit supports styles of github, gitlab, bitbucket`</span>, &#123;</span><br><span class="line">            <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_STYLE&#x27;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> site = match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;github.com&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> gitStyle =</span><br><span class="line">        style ||</span><br><span class="line">        (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;gitlab&#x27;</span>).<span class="title function_">replace</span>(<span class="regexp">/\.(com|org)$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!supportedGitRepo.<span class="title function_">has</span>(gitStyle)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(</span><br><span class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket without -s/--style parameters`</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_HOST&#x27;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].<span class="title function_">replace</span>(<span class="regexp">/\.git$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">&#x27;master&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url, <span class="attr">style</span>: gitStyle &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拼接url处</span></span><br><span class="line"><span class="keyword">const</span> url =</span><br><span class="line">    repo.<span class="property">style</span> === <span class="string">&#x27;gitlab&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></span><br><span class="line">        : repo.<span class="property">style</span> === <span class="string">&#x27;bitbucket&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></span><br><span class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="可能存在的问题"><a href="#可能存在的问题" class="headerlink" title="可能存在的问题"></a>可能存在的问题</h3><p>绝大多数私有仓库，都会对用户身份做校验，直接访问tar.gz链接会报401错误。这需要根据不同的内部平台自己做处理了。</p>
+<p>因为特殊原因，改造后的包和代码不提供。</p>
+<p><em>–END–</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/" rel="tag"># 脚手架</a>
+              <a href="/blog/tags/degit/" rel="tag"># degit</a>
+              <a href="/blog/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/11/02/social-psychology-part-4/" rel="prev" title="社会心理学 Part 4 - 应用">
+                  <i class="fa fa-chevron-left"></i> 社会心理学 Part 4 - 应用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/02/clean-code/" rel="next" title="《代码整洁之道》——有一个好的代码品味">
+                  《代码整洁之道》——有一个好的代码品味 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

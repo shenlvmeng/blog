@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="注：本文主要记录了创建一个PWA应用的过程，方便日后再次开发类似应用时参考。github链接：shenlvmeng&#x2F;Distance: 一次PWA的尝试  准备安装http-server方便本地测试。 本地开辟文件夹，加入.editorconfig和.gitignore（根据样例适当修改） 1234567891011# http:&#x2F;&#x2F;editorconfig.orgroot &#x3D; tru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的第一个PWA开发记录">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/01/27/my-first-pwa-app/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="注：本文主要记录了创建一个PWA应用的过程，方便日后再次开发类似应用时参考。github链接：shenlvmeng&#x2F;Distance: 一次PWA的尝试  准备安装http-server方便本地测试。 本地开辟文件夹，加入.editorconfig和.gitignore（根据样例适当修改） 1234567891011# http:&#x2F;&#x2F;editorconfig.orgroot &#x3D; tru">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/04/07/Ahb0hR.png">
+<meta property="article:published_time" content="2018-01-27T08:14:11.000Z">
+<meta property="article:modified_time" content="2019-04-07T12:02:26.061Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="PWA">
+<meta property="article:tag" content="方法论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/04/07/Ahb0hR.png">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/01/27/my-first-pwa-app/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/01/27/my-first-pwa-app/","path":"2018/01/27/my-first-pwa-app/","title":"我的第一个PWA开发记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>我的第一个PWA开发记录 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">清单文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0Service-Worker"><span class="nav-number">3.</span> <span class="nav-text">添加Service Worker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE%E6%94%AF%E6%8C%81"><span class="nav-number">4.</span> <span class="nav-text">加入百度地图支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-Worker%E6%94%AF%E6%8C%81%E8%B7%A8%E5%9F%9F"><span class="nav-number">5.</span> <span class="nav-text">Service Worker支持跨域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E7%82%B9%E7%AE%A1%E7%90%86"><span class="nav-number">6.</span> <span class="nav-text">目标点管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E8%B7%9D%E7%A6%BB"><span class="nav-number">7.</span> <span class="nav-text">计算距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/01/27/my-first-pwa-app/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="我的第一个PWA开发记录 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          我的第一个PWA开发记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-01-27 16:14:11" itemprop="dateCreated datePublished" datetime="2018-01-27T16:14:11+08:00">2018-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-04-07 20:02:26" itemprop="dateModified" datetime="2019-04-07T20:02:26+08:00">2019-04-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/01/27/my-first-pwa-app/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/27/my-first-pwa-app/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>注：本文主要记录了创建一个PWA应用的过程，方便日后再次开发类似应用时参考。<br>github链接：<a target="_blank" rel="noopener" href="https://github.com/shenlvmeng/Distance">shenlvmeng&#x2F;Distance: 一次PWA的尝试</a></p>
+</blockquote>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>安装<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/http-server">http-server</a>方便本地测试。</p>
+<p>本地开辟文件夹，加入<code>.editorconfig</code>和<code>.gitignore</code>（根据<a target="_blank" rel="noopener" href="https://raw.github.com/github/gitignore/abad92dac5a4306f72242dae3bca6e277bce3615/Node.gitignore">样例</a>适当修改）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># http://editorconfig.org</span><br><span class="line"></span><br><span class="line">root = true</span><br><span class="line"></span><br><span class="line">[*]</span><br><span class="line">charset = utf-8</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 2</span><br><span class="line">end_of_line = lf</span><br><span class="line">insert_final_newline = true</span><br><span class="line">trim_trailing_whitespace = true</span><br></pre></td></tr></table></figure>
+
+<p>创建<code>index.html</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Away from home<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span> <span class="attr">href</span>=<span class="string">&quot;./main.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>My first PWA Application<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>See console for more!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在目标文件夹路径下执行<code>http-server</code>，bingo！第一步完成</p>
+<h2 id="清单文件"><a href="#清单文件" class="headerlink" title="清单文件"></a>清单文件</h2><p>创建清单文件<code>manifest.json</code>，描述应用添加到主屏幕需要的信息。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Distance from Home&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;short_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Distance&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;display&quot;</span><span class="punctuation">:</span> <span class="string">&quot;standalone&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;start_url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;theme_color&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#8888ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;background_color&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#aaaaff&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;icons&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;src&quot;</span><span class="punctuation">:</span> <span class="string">&quot;compass.png&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;sizes&quot;</span><span class="punctuation">:</span> <span class="string">&quot;144x144&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;image/png&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>并在<code>index.html</code>中引入：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;manifest&quot;</span> <span class="attr">href</span>=<span class="string">&quot;manifest.json&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="添加Service-Worker"><a href="#添加Service-Worker" class="headerlink" title="添加Service Worker"></a>添加Service Worker</h2><p><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/09/04/pwa-and-hybrid-brief/">Service Worker</a>这个东西可以实现页面的缓存和离线访问，让应用逼近app的体验。</p>
+<p>可以在HTML里插入<code>&lt;script&gt;</code>标签引入，这里单独定义一个app.js。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Registering ServiceWorker</span></span><br><span class="line"><span class="keyword">if</span> ( <span class="string">&#x27;serviceWorker&#x27;</span> <span class="keyword">in</span> navigator ) &#123;</span><br><span class="line">  navigator.<span class="property">serviceWorker</span>.<span class="title function_">register</span>( <span class="string">&#x27;sw.js&#x27;</span> ).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">registration</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Registration was successful</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;ServiceWorker registration successful. Scope: &#x27;</span> + registration.<span class="property">scope</span> )</span><br><span class="line">  &#125;).<span class="title function_">catch</span>(<span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Registration failed with error</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;ServiceWorker registration failed&#x27;</span> + err);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>index.html</code>中引用。</p>
+<p>下面实现service worker。主要是三个时机：</p>
+<ul>
+<li>脚本<strong>安装</strong>时，写入缓存</li>
+<li>脚本<strong>获取数据</strong>时，先查找缓存</li>
+<li>缓存<strong>更新版本</strong>时，删除原先版本的缓存</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 脚本安装时</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;install&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">waitUntil</span>(</span><br><span class="line">    caches.<span class="title function_">open</span>(cacheStorageKey)</span><br><span class="line">      .<span class="title function_">then</span>(<span class="function"><span class="params">cache</span> =&gt;</span> cache.<span class="title function_">addAll</span>(cacheList))</span><br><span class="line">      <span class="comment">// 保证在页面更新过程中，新的Service Worker脚本能立即激活生效</span></span><br><span class="line">      .<span class="title function_">then</span>(<span class="function">() =&gt;</span> self.<span class="title function_">skipWaiting</span>())</span><br><span class="line">  )</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过脚本fetch数据</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;fetch&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">respondWith</span>(</span><br><span class="line">    <span class="comment">// 先在cache中找</span></span><br><span class="line">    caches.<span class="title function_">match</span>(event.<span class="property">request</span>).<span class="title function_">then</span>(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// cache中没有再使用fetch</span></span><br><span class="line">      <span class="keyword">return</span> res || <span class="title function_">fetch</span>(event.<span class="property">request</span>.<span class="property">url</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  )</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更新静态资源</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;activate&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">waitUntil</span>(</span><br><span class="line">    caches.<span class="title function_">keys</span>().<span class="title function_">then</span>(<span class="function"><span class="params">cacheNames</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">all</span>(cacheNames.<span class="title function_">map</span>(<span class="function"><span class="params">name</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (name !== cacheStorageKey) &#123;</span><br><span class="line">          <span class="keyword">return</span> caches.<span class="title function_">delete</span>(name);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;));</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>其中，有下面一些名词：</p>
+<ul>
+<li><code>self</code>: Service Worker作用域, 也是全局变量</li>
+<li><code>caches</code>: 缓存接口</li>
+<li><code>waitUntil</code>，<code>ExtendableEvent.waitUntil()</code>方法——这会确保Service Worker 不会在<code>waitUntil()</code>里面的代码执行完毕之前安装完成。</li>
+<li><code>skipWait</code>，表示强制当前处在waiting状态的脚本进入activate状态</li>
+</ul>
+<p>在浏览器中打开<code>localhost:8080/</code>即可，注意PWA<strong>必须运行在HTTPS的环境下</strong>。</p>
+<h2 id="加入百度地图支持"><a href="#加入百度地图支持" class="headerlink" title="加入百度地图支持"></a>加入百度地图支持</h2><p>参考<a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/index.php?title=jspopular">官方API接入支持</a>。</p>
+<p>添加文件<code>index.js</code>，写入如下内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> url4PC = <span class="string">&#x27;https://api.map.baidu.com/api?v=2.0&amp;ak=你的秘钥&amp;callback=init&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> init = <span class="variable language_">window</span>.<span class="property">init</span>;</span><br><span class="line"><span class="keyword">let</span> map = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为了能成功调用到callback</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="property">init</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  map = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Map</span>(<span class="string">&#x27;map&#x27;</span>);</span><br><span class="line">  map.<span class="title function_">centerAndZoom</span>(<span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Point</span>(<span class="number">121.491</span>, <span class="number">31.233</span>), <span class="number">11</span>);</span><br><span class="line">  map.<span class="title function_">enableScrollWheelZoom</span>(<span class="literal">true</span>);</span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">init</span> = init;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loadMap</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>);</span><br><span class="line">  script.<span class="property">src</span> = url4PC;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(script);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">window</span>.<span class="property">onload</span> = loadMap;</span><br></pre></td></tr></table></figure>
+
+<p>当然需要添加一点CSS，这里从略。</p>
+<h2 id="Service-Worker支持跨域"><a href="#Service-Worker支持跨域" class="headerlink" title="Service Worker支持跨域"></a>Service Worker支持跨域</h2><p>接下来问题来了，打开网页测试，页面刷新时Service Worker会抛出跨域相关的错误。</p>
+<p><img src="https://s2.ax1x.com/2019/04/07/Ahb0hR.png" alt="Ahb0hR.png"></p>
+<p>再正常不过了，未经配置的情况下，fetch是不允许跨域的。注意<code>sw.js</code>中的一段：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">caches.<span class="title function_">match</span>(event.<span class="property">request</span>).<span class="title function_">then</span>(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// cache中没有再使用fetch</span></span><br><span class="line">  <span class="keyword">return</span> res || <span class="title function_">fetch</span>(event.<span class="property">request</span>.<span class="property">url</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们不仅有跨域请求，还使用着JSONP的方式。后续地图数据和地图图片的展示请求也比较复杂。再经过多次加入<code>respondWith()</code>响应块失败后，干脆跳过这部分跨域的处理。不过还是留下了一个函数，方便后面拓展。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">isCORSRequest</span>(<span class="params">url</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> url.<span class="title function_">search</span>(host) === -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 并存该函数为日后拓展所用</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">handleFetchRequest</span>(<span class="params">req</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> request = <span class="title function_">isCORSRequest</span>(req.<span class="property">url</span>) ?</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Request</span>(req.<span class="property">url</span>, &#123; <span class="attr">mode</span>: <span class="string">&#x27;cors&#x27;</span> &#125;)</span><br><span class="line">    : req;</span><br><span class="line">  <span class="title function_">fetch</span>(req);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过脚本fetch数据</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;fetch&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">isCORSRequest</span>(event.<span class="property">request</span>.<span class="property">url</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  event.<span class="title function_">respondWith</span>(</span><br><span class="line">    <span class="comment">// 先在cache中找</span></span><br><span class="line">    caches.<span class="title function_">match</span>(event.<span class="property">request</span>).<span class="title function_">then</span>(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// cache中没有再使用fetch</span></span><br><span class="line">      <span class="keyword">return</span> res || <span class="title function_">handleFetchRequest</span>(event.<span class="property">request</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="目标点管理"><a href="#目标点管理" class="headerlink" title="目标点管理"></a>目标点管理</h2><p>核心功能之一是，可以新增计算距离的目标点。在我的设计里，有两种用户友好的添加方式：</p>
+<ul>
+<li>找不到地点时，可以搜索出地点，通过搜索结果设置</li>
+<li>明确地图上位置时，直接通过鼠标操作设置</li>
+</ul>
+<p>前面的利用AutoComplete类，完成自动补全和搜索功能。值得注意的一个坑是，在初次设置好map对象后，每次的搜索结果都会以第一次初始化地点为中心搜索结果。解决方案是，每次<code>&lt;input&gt;</code>框聚焦时，重新构造一个AutoComplete类。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;search&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;searchbox&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;position&quot;</span> <span class="attr">size</span>=<span class="string">&quot;20&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;输入地点或在地图上双击点选&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;searchBtn&quot;</span> <span class="attr">class</span>=<span class="string">&quot;searchBtn&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">initSearchLocation</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 工厂方法，每次聚焦时新创建一个AutoComplete对象</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setAutoComplete</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> lastVal = doc.<span class="title function_">getElementById</span>(<span class="string">&#x27;position&#x27;</span>).<span class="property">value</span>.<span class="title function_">trim</span>();</span><br><span class="line">      <span class="comment">// 建立一个自动完成的对象</span></span><br><span class="line">      <span class="keyword">const</span> searchBox = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Autocomplete</span>(&#123;</span><br><span class="line">        <span class="attr">input</span>: <span class="string">&quot;position&quot;</span>,</span><br><span class="line">        <span class="attr">location</span>: map</span><br><span class="line">      &#125;);</span><br><span class="line">      doc.<span class="title function_">getElementById</span>(<span class="string">&#x27;position&#x27;</span>).<span class="property">value</span> = lastVal;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 鼠标点击下拉列表后的事件</span></span><br><span class="line">      searchBox.<span class="title function_">addEventListener</span>(<span class="string">&quot;onconfirm&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> value = event.<span class="property">item</span>.<span class="property">value</span>;</span><br><span class="line">        <span class="keyword">const</span> searchWord = <span class="string">`<span class="subst">$&#123;value.province&#125;</span><span class="subst">$&#123;value.city&#125;</span><span class="subst">$&#123;value.district&#125;</span><span class="subst">$&#123;value.street&#125;</span><span class="subst">$&#123;value.business&#125;</span>`</span>;</span><br><span class="line">        <span class="title function_">setPlace</span>(searchWord);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setPlace</span>(<span class="params">searchWord</span>)&#123;</span><br><span class="line">      map.<span class="title function_">clearOverlays</span>();</span><br><span class="line">      <span class="comment">// 搜索</span></span><br><span class="line">      <span class="keyword">const</span> cleverSearch = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">LocalSearch</span>(map, &#123;</span><br><span class="line">        <span class="attr">onSearchComplete</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="title function_">pauseUpdate</span>();</span><br><span class="line">          <span class="keyword">if</span> (!cleverSearch.<span class="title function_">getResults</span>().<span class="title function_">getPoi</span>(<span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="title function_">alert</span>(<span class="string">&#x27;未找到指定地点，换个关键词试试？&#x27;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// 获取第一个智能搜索的结果</span></span><br><span class="line">          <span class="keyword">const</span> res = cleverSearch.<span class="title function_">getResults</span>().<span class="title function_">getPoi</span>(<span class="number">0</span>).<span class="property">point</span>;</span><br><span class="line">          <span class="keyword">const</span> marker = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Marker</span>(res);</span><br><span class="line">          map.<span class="title function_">centerAndZoom</span>(res, <span class="number">18</span>);</span><br><span class="line">          map.<span class="title function_">addOverlay</span>(marker);</span><br><span class="line">          <span class="title function_">addToBeacons</span>(marker);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      cleverSearch.<span class="title function_">search</span>(searchWord);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 不使用自动补全，直接回车或点击图标</span></span><br><span class="line">    doc.<span class="title function_">getElementById</span>(<span class="string">&quot;position&quot;</span>).<span class="title function_">addEventListener</span>(<span class="string">&quot;focus&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">setAutoComplete</span>();</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 省略了其他的绑定事件</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>下一步是支持标记点（BeaconNodes）的管理，离线持久化采用<code>localStorage</code>，技术上倒没有什么难度。用户交互上，考虑用右键点击（for PC）和长按操作（PC Mobile）添加，点击标记删除。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从页面新增目标点</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addToBeacons</span>(<span class="params">point</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> tag = win.<span class="title function_">prompt</span>(<span class="string">&quot;给Beacon点起个名字吧&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (tag === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  tag = tag.<span class="title function_">trim</span>().<span class="title function_">substr</span>(<span class="number">0</span>, <span class="number">20</span>) || <span class="string">`未知地点#<span class="subst">$&#123;seq&#125;</span>`</span>;</span><br><span class="line">  <span class="comment">// 第一个点默认活跃</span></span><br><span class="line">  beaconNodes.<span class="title function_">push</span>(&#123;</span><br><span class="line">    <span class="attr">id</span>: seq,</span><br><span class="line">    point,</span><br><span class="line">    tag,</span><br><span class="line">    <span class="attr">isActive</span>: !beaconNodes.<span class="property">length</span></span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="title function_">addBeacon</span>(seq, point, tag, beaconNodes.<span class="property">length</span> === <span class="number">1</span>);</span><br><span class="line">  <span class="title function_">paintDropdown</span>();</span><br><span class="line">  <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="variable constant_">STORAGE_KEY</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(beaconNodes));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeFromBeacon</span>(<span class="params">id</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!beaconNodes.<span class="property">length</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  beaconNodes.<span class="title function_">splice</span>(beaconNodes.<span class="title function_">findIndex</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">id</span> == id), <span class="number">1</span>);</span><br><span class="line">  <span class="title function_">paintDropdown</span>();</span><br><span class="line">  <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="variable constant_">STORAGE_KEY</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(beaconNodes));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在地图上新增目标点，方便复用</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addBeacon</span>(<span class="params">id, point, tag, isActive</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> icon = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Icon</span>(<span class="string">`imgs/location-<span class="subst">$&#123;<span class="number">2</span>-isActive&#125;</span>.png`</span>, <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Size</span>(<span class="number">50</span>, <span class="number">50</span>));</span><br><span class="line">  <span class="keyword">const</span> mark = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Marker</span>(point, &#123; icon, <span class="attr">enableMassClear</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">  <span class="keyword">const</span> label = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Label</span>(tag,&#123; <span class="attr">offset</span>: <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Size</span>(<span class="number">32</span>, <span class="number">2</span>) &#125;);</span><br><span class="line">  label.<span class="title function_">setStyle</span>(&#123;</span><br><span class="line">    <span class="attr">border</span>: <span class="string">&quot;#dedede&quot;</span>,</span><br><span class="line">    <span class="attr">padding</span>: <span class="string">&quot;3px 5px&quot;</span>,</span><br><span class="line">    <span class="string">&quot;font-size&quot;</span>: <span class="string">&quot;14px&quot;</span>,</span><br><span class="line">    <span class="string">&quot;font-weight&quot;</span>: <span class="string">&quot;bold&quot;</span></span><br><span class="line">  &#125;);</span><br><span class="line">  mark.<span class="title function_">setLabel</span>(label); </span><br><span class="line">  mark.<span class="title function_">getLabel</span>().<span class="title function_">setTitle</span>(tag);</span><br><span class="line">  mark.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (win.<span class="title function_">confirm</span>(<span class="string">`确认要删除Beacon:<span class="subst">$&#123;mark.getLabel().getTitle()&#125;</span>`</span>)) &#123;</span><br><span class="line">      map.<span class="title function_">removeOverlay</span>(mark);</span><br><span class="line">      <span class="title function_">removeFromBeacon</span>(id);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  map.<span class="title function_">addOverlay</span>(mark);</span><br><span class="line">  seq = id + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">initMap</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 根据storage填充地图</span></span><br><span class="line">  <span class="comment">// 注意这里必须使用Point类</span></span><br><span class="line">  beaconNodes.<span class="title function_">forEach</span>(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">addBeacon</span>(node.<span class="property">id</span>, <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Point</span>(node.<span class="property">point</span>.<span class="property">lng</span>, node.<span class="property">point</span>.<span class="property">lat</span>), node.<span class="property">tag</span>, node.<span class="property">isActive</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 避免和其他事件冲突，使用暂无占用的右键点击</span></span><br><span class="line">  map.<span class="title function_">addEventListener</span>(<span class="string">&quot;rightclick&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">addToBeacons</span>(event.<span class="property">point</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// 支持移动设备，长按</span></span><br><span class="line">  map.<span class="title function_">addEventListener</span>(<span class="string">&quot;longpress&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">addToBeacons</span>(event.<span class="property">point</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在管理上，新增了下拉菜单管理当前所有节点，这里需要将离线的BeaconNodes映射成DOM结构，考虑到文件已略大，且这一部分比较繁琐，和业务关系不大，故单独抽出一个文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dom.js</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 无状态，与业务弱相关</span></span><br><span class="line"><span class="comment"> * 只渲染下拉菜单</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderDropdown</span>(<span class="params">obj, dom, isInit</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!obj) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  dom.<span class="property">innerText</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="comment">// render过程</span></span><br><span class="line">  <span class="keyword">const</span> fragment = <span class="variable language_">document</span>.<span class="title function_">createDocumentFragment</span>();</span><br><span class="line">  obj.<span class="title function_">map</span>(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;DIV&#x27;</span>);</span><br><span class="line">    div.<span class="property">className</span> = <span class="string">`node_wrapper<span class="subst">$&#123;node.isActive ? <span class="string">&quot; active&quot;</span> : <span class="string">&quot;&quot;</span>&#125;</span>`</span>;</span><br><span class="line">    <span class="keyword">const</span> innerHTML = <span class="string">`&lt;span&gt;#<span class="subst">$&#123;node.id&#125;</span>&lt;/span&gt;&lt;span class=&quot;node-tag&quot;&gt;<span class="subst">$&#123;node.tag&#125;</span>&lt;/span&gt;`</span>;</span><br><span class="line">    div.<span class="property">innerHTML</span> = innerHTML;</span><br><span class="line">    <span class="keyword">const</span> operateBtn = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;DIV&#x27;</span>);</span><br><span class="line">    operateBtn.<span class="property">className</span> = <span class="string">&quot;operateBtn&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> (node.<span class="property">isActive</span>) &#123;</span><br><span class="line">      operateBtn.<span class="property">className</span> += <span class="string">&quot; active&quot;</span></span><br><span class="line">      operateBtn.<span class="property">innerText</span> = <span class="string">&quot;Deactive!&quot;</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      operateBtn.<span class="property">innerText</span> = <span class="string">&quot;Active!&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    div.<span class="title function_">appendChild</span>(operateBtn);</span><br><span class="line">    <span class="comment">// 方便统一事件绑定</span></span><br><span class="line">    div.<span class="property">dataset</span>.<span class="property">nid</span> = node.<span class="property">id</span>;</span><br><span class="line">    <span class="keyword">return</span> div;</span><br><span class="line">  &#125;).<span class="title function_">forEach</span>(<span class="function"><span class="params">div</span> =&gt;</span> &#123;</span><br><span class="line">    fragment.<span class="title function_">appendChild</span>(div);</span><br><span class="line">  &#125;);</span><br><span class="line">  dom.<span class="title function_">appendChild</span>(fragment);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 多次调用只监听一次</span></span><br><span class="line">  <span class="keyword">if</span> (isInit) &#123;</span><br><span class="line">    <span class="comment">// 下拉事件</span></span><br><span class="line">    dom.<span class="property">parentNode</span>.<span class="property">children</span>[<span class="number">0</span>].<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (dom.<span class="property">parentNode</span>.<span class="property">className</span>.<span class="title function_">search</span>(<span class="string">&quot;hide&quot;</span>) !== -<span class="number">1</span>) &#123;</span><br><span class="line">        dom.<span class="property">parentNode</span>.<span class="property">className</span> = <span class="string">&quot;dropdown dropdown_container&quot;</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dom.<span class="property">parentNode</span>.<span class="property">className</span> += <span class="string">&quot; hide&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HTML和CSS部分就不再赘述了。</p>
+<p>在下拉菜单下，可以点击条目跳转到相应位置，以及点击按钮切换当前活动的BeaconNode。这部分实现如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">initDropdown</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">paintDropdown</span>(<span class="literal">true</span>);</span><br><span class="line">  <span class="comment">// 事件监听</span></span><br><span class="line">  <span class="keyword">const</span> dropdown = doc.<span class="title function_">getElementById</span>(<span class="string">&quot;dropdown&quot;</span>);</span><br><span class="line">  dropdown.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> nid = event.<span class="property">target</span>.<span class="property">parentNode</span>.<span class="property">dataset</span>.<span class="property">nid</span> || event.<span class="property">target</span>.<span class="property">dataset</span>.<span class="property">nid</span>;</span><br><span class="line">    <span class="keyword">const</span> node = beaconNodes.<span class="title function_">find</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">id</span> == nid);</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">target</span>.<span class="property">tagName</span>.<span class="title function_">toLowerCase</span>() === <span class="string">&quot;div&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (node) &#123;</span><br><span class="line">        <span class="keyword">const</span> prev = beaconNodes.<span class="title function_">find</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">isActive</span>);</span><br><span class="line">        <span class="keyword">if</span> (prev) &#123;</span><br><span class="line">          prev.<span class="property">isActive</span> = <span class="literal">false</span>;</span><br><span class="line">          beaconMarkers[prev.<span class="property">id</span>].<span class="title function_">setIcon</span>(<span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Icon</span>(<span class="string">&quot;imgs/location-2.png&quot;</span>, <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Size</span>(<span class="number">40</span>, <span class="number">40</span>)));</span><br><span class="line">        &#125;</span><br><span class="line">        node.<span class="property">isActive</span> = <span class="literal">true</span>;</span><br><span class="line">        <span class="title function_">paintDropdown</span>();</span><br><span class="line">        beaconMarkers[nid].<span class="title function_">setIcon</span>(<span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Icon</span>(<span class="string">&quot;imgs/location-1.png&quot;</span>, <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Size</span>(<span class="number">40</span>, <span class="number">40</span>)));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      node &amp;&amp; map.<span class="title function_">panTo</span>(<span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Point</span>(node.<span class="property">point</span>.<span class="property">lng</span>, node.<span class="property">point</span>.<span class="property">lat</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然了，标记点的增删改查还剩下改没有实现，目前来看，和“改”相关的业务是能拖动标记点，方便用户随时更改标记点位置。在<code>addBeacon()</code>函数中新增相关代码。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mark.<span class="title function_">enableDragging</span>();</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">mark.<span class="title function_">addEventListener</span>(<span class="string">&#x27;dragend&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">editToBeacons</span>(id, &#123; <span class="attr">point</span>: event.<span class="property">point</span> &#125;);</span><br><span class="line">  <span class="title function_">paintDistance</span>(lastPoint);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>而<code>editToBeacons()</code>函数设计如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">editToBeacons</span>(<span class="params">id, newProps</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> index = beaconNodes.<span class="title function_">findIndex</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">id</span> == id);</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">assign</span>(beaconNodes[index], newProps);</span><br><span class="line">  <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="variable constant_">STORAGE_KEY</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(beaconNodes));</span><br><span class="line">  <span class="comment">// 不是所有的属性更改都有重绘，交给调用者处理重绘</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="计算距离"><a href="#计算距离" class="headerlink" title="计算距离"></a>计算距离</h2><p>计算距离包括距离和方向两部分，既然能拿到两点的经纬度信息，这两个值肯定可以计算出来。计算距离上利用百度地图的API，计算角度上，通过<code>Math.atan2</code>换算得到。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">paintDistance</span>(<span class="params">currentPoint</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> info;</span><br><span class="line">  <span class="keyword">let</span> target = beaconNodes.<span class="title function_">find</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">isActive</span>);</span><br><span class="line">  <span class="keyword">if</span> (!target || !currentPoint) &#123;</span><br><span class="line">    info = <span class="string">&quot;N/A , 未知方向&quot;</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> distance = map.<span class="title function_">getDistance</span>(currentPoint, target.<span class="property">point</span>) || <span class="string">&quot;N/A&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> (distance &gt; <span class="number">10000</span>) &#123;</span><br><span class="line">      distance = <span class="string">`<span class="subst">$&#123;(distance / <span class="number">1000</span>).toFixed(<span class="number">2</span>)&#125;</span>km`</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (distance &gt; <span class="number">100</span>) &#123;</span><br><span class="line">      distance = <span class="string">`<span class="subst">$&#123;distance.toFixed(<span class="number">0</span>)&#125;</span>m`</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      distance = <span class="string">`就在附近...`</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 工具函数位于utils.js</span></span><br><span class="line">    <span class="keyword">const</span> deg = <span class="title function_">getDirection</span>(target.<span class="property">point</span>, currentPoint);</span><br><span class="line">    info = <span class="string">`<span class="subst">$&#123;distance&#125;</span> , <span class="subst">$&#123;deg&#125;</span>点钟方向`</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getDirection</span>(<span class="params">p1, p2</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> pi = <span class="title class_">Math</span>.<span class="property">PI</span>;</span><br><span class="line">  <span class="keyword">const</span> [x2, y2, x1, y1] = [p1.<span class="property">lng</span>, p1.<span class="property">lat</span>, p2.<span class="property">lng</span>, p2.<span class="property">lat</span>];</span><br><span class="line">  <span class="keyword">let</span> rad = <span class="title class_">Math</span>.<span class="title function_">atan2</span>(y2 - y1, x2 - x1);</span><br><span class="line">  <span class="keyword">let</span> absRad = <span class="title class_">Math</span>.<span class="title function_">abs</span>(rad);</span><br><span class="line">  <span class="keyword">let</span> clockPointer;</span><br><span class="line">  <span class="keyword">if</span> (absRad &lt; pi / <span class="number">12</span>) &#123;</span><br><span class="line">    clockPointer = <span class="number">3</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (absRad &lt; pi / <span class="number">4</span>) &#123;</span><br><span class="line">    clockPointer = rad &gt; <span class="number">0</span> ? <span class="number">2</span> : <span class="number">4</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (absRad &lt; pi * <span class="number">5</span> / <span class="number">12</span>) &#123;</span><br><span class="line">    clockPointer = rad &gt; <span class="number">0</span> ? <span class="number">1</span> : <span class="number">5</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (absRad &lt; pi * <span class="number">7</span> / <span class="number">12</span>) &#123;</span><br><span class="line">    clockPointer = rad &gt; <span class="number">0</span> ? <span class="number">12</span> : <span class="number">6</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (absRad &lt; pi * <span class="number">3</span> / <span class="number">4</span>) &#123;</span><br><span class="line">    clockPointer = rad &gt; <span class="number">0</span> ? <span class="number">11</span> : <span class="number">7</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (absRad &lt; pi * <span class="number">11</span> / <span class="number">12</span>) &#123;</span><br><span class="line">    clockPointer = rad &gt; <span class="number">0</span> ? <span class="number">10</span> : <span class="number">8</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    clockPointer = <span class="number">9</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> clockPointer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25459319">PWA 入门: 写个非常简单的 PWA 页面</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29570875">轻松把你的项目升级到PWA</a></li>
+<li><a target="_blank" rel="noopener" href="https://sii.im/playground/notes/">Notes</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Manifest">Web App Manifest</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers">使用 Service Workers</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008491458">Service Workers 与离线缓存</a></li>
+<li><a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/jsdemo.htm">地图API示例</a></li>
+<li><a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html">百度地图JSAPIv2.0类参考</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/blog/tags/PWA/" rel="tag"># PWA</a>
+              <a href="/blog/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" rel="tag"># 方法论</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/01/22/design-pattern-note/" rel="prev" title="设计模式学习">
+                  <i class="fa fa-chevron-left"></i> 设计模式学习
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/02/06/my-first-electron-demo/" rel="next" title="我的第一个Electron应用">
+                  我的第一个Electron应用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

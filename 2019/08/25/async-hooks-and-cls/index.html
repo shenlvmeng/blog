@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="async_hooksasync_hooks是nodejs在8.2.1后引入的特性，目前仍然是Experimental状态。它被用来追踪NodeJS中异步资源的生命周期。 在async_hooks特性加入之前，想要了解异步调用上下文或追踪异步调用逻辑是件比较困难的事情:  最早在v0.11中有实现AsyncListener，但在v0.12时被移除 在Node6和7时，有非官方的AsyncWrap实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NodeJS async_hooks API与CLS（Continuation-local-storage）">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/08/25/async-hooks-and-cls/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="async_hooksasync_hooks是nodejs在8.2.1后引入的特性，目前仍然是Experimental状态。它被用来追踪NodeJS中异步资源的生命周期。 在async_hooks特性加入之前，想要了解异步调用上下文或追踪异步调用逻辑是件比较困难的事情:  最早在v0.11中有实现AsyncListener，但在v0.12时被移除 在Node6和7时，有非官方的AsyncWrap实">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://miro.medium.com/max/924/1*PPk_uEmQFVKO16byHpwnXA.jpeg">
+<meta property="article:published_time" content="2019-08-25T14:55:52.000Z">
+<meta property="article:modified_time" content="2019-09-16T08:47:59.300Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="async_hooks">
+<meta property="article:tag" content="cls-hooked">
+<meta property="article:tag" content="logId">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://miro.medium.com/max/924/1*PPk_uEmQFVKO16byHpwnXA.jpeg">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/08/25/async-hooks-and-cls/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2019/08/25/async-hooks-and-cls/","path":"2019/08/25/async-hooks-and-cls/","title":"NodeJS async_hooks API与CLS（Continuation-local-storage）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NodeJS async_hooks API与CLS（Continuation-local-storage） | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#async-hooks"><span class="nav-number">1.</span> <span class="nav-text">async_hooks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#executionAsyncId%E5%92%8CtriggerAsyncId"><span class="nav-number">1.1.</span> <span class="nav-text">executionAsyncId和triggerAsyncId</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createHook"><span class="nav-number">1.2.</span> <span class="nav-text">createHook</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#init-asyncId-type-triggerAsyncId-resource"><span class="nav-number">1.2.1.</span> <span class="nav-text">init(asyncId, type, triggerAsyncId, resource)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#before-asyncId"><span class="nav-number">1.2.2.</span> <span class="nav-text">before(asyncId)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#after-asyncId"><span class="nav-number">1.2.3.</span> <span class="nav-text">after(asyncId)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#destroy-asyncId"><span class="nav-number">1.2.4.</span> <span class="nav-text">destroy(asyncId)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#promiseResolve-asyncId"><span class="nav-number">1.2.5.</span> <span class="nav-text">promiseResolve(asyncId)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%98%9B"><span class="nav-number">1.4.</span> <span class="nav-text">可以用来干嘛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.5.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLS"><span class="nav-number">2.</span> <span class="nav-text">CLS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%BD%E8%B8%AAlogId"><span class="nav-number">2.3.</span> <span class="nav-text">追踪logId</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83-1"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/08/25/async-hooks-and-cls/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NodeJS async_hooks API与CLS（Continuation-local-storage） | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NodeJS async_hooks API与CLS（Continuation-local-storage）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-08-25 22:55:52" itemprop="dateCreated datePublished" datetime="2019-08-25T22:55:52+08:00">2019-08-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-09-16 16:47:59" itemprop="dateModified" datetime="2019-09-16T16:47:59+08:00">2019-09-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/08/25/async-hooks-and-cls/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/08/25/async-hooks-and-cls/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="async-hooks"><a href="#async-hooks" class="headerlink" title="async_hooks"></a>async_hooks</h2><p><a target="_blank" rel="noopener" href="https://nodejs.org/api/async_hooks.html#async_hooks_async_hooks">async_hooks</a>是nodejs在8.2.1后引入的特性，目前仍然是Experimental状态。它被用来追踪NodeJS中异步资源的生命周期。</p>
+<p>在async_hooks特性加入之前，想要了解异步调用上下文或追踪异步调用逻辑是件比较困难的事情:</p>
+<ul>
+<li>最早在v0.11中有实现<a target="_blank" rel="noopener" href="https://github.com/nodejs/node-v0.x-archive/pull/6011">AsyncListener</a>，但在v0.12时<a target="_blank" rel="noopener" href="https://github.com/nodejs/node-v0.x-archive/pull/8110">被移除</a></li>
+<li>在Node6和7时，有非官方的<a target="_blank" rel="noopener" href="http://blog.trevnorris.com/2015/02/asyncwrap-tutorial-introduction.html">AsyncWrap</a>实现，指定回调函数监听异步资源的创建、调用前、调用后时机</li>
+</ul>
+<p>async_hooks友好地解决了异步资源创建、调用的追踪问题：</p>
+<ul>
+<li>异步资源代表一个关联了回调的对象，回调可能被调用1次或多次，比如<code>net.createServer()</code>里的<code>connect</code>事件或<code>fs.open()</code>。<code>AsyncHook</code>不区分这些场景，统一视作异步资源</li>
+<li>每一个异步上下文都有一个关联的id，即asyncId。asyncId是从1开始递增的，同一个async上下文中的id相同（在未enable async hook时，promise执行不会被分配asyncId）。<code>executionAsyncId()</code>可以获取当前异步上下文的asyncId，<code>triggerAsyncId()</code>获取触发当前异步上下文的异步上下文。借助asynId和triggerAsyncId可以追踪异步的调用关系和链路。</li>
+<li><code>async_hooks.createHook()</code>函数可以注册异步资源生命周期中init&#x2F;before&#x2F;after&#x2F;destroy&#x2F;promiseResolve事件的监听函数</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> async_hooks = <span class="built_in">require</span>(<span class="string">&#x27;async_hooks&#x27;</span>)</span><br><span class="line"><span class="comment">// ID of the current execution context</span></span><br><span class="line"><span class="keyword">const</span> eid = async_hooks.<span class="title function_">executionAsyncId</span>()</span><br><span class="line"><span class="comment">// ID of the handle responsible for triggering the callback of the</span></span><br><span class="line"><span class="comment">// current execution scope to call</span></span><br><span class="line"><span class="keyword">const</span> tid = async_hooks.<span class="title function_">triggerAsyncId</span>()</span><br><span class="line"><span class="keyword">const</span> asyncHook = async_hooks.<span class="title function_">createHook</span>(&#123;</span><br><span class="line">    <span class="comment">// called during object construction</span></span><br><span class="line">    <span class="attr">init</span>: <span class="keyword">function</span> (<span class="params">asyncId, type, triggerAsyncId, resource</span>) &#123; &#125;,</span><br><span class="line">    <span class="comment">// called just before the resource&#x27;s callback is called</span></span><br><span class="line">    <span class="attr">before</span>: <span class="keyword">function</span> (<span class="params">asyncId</span>) &#123; &#125;,</span><br><span class="line">    <span class="comment">// called just after the resource&#x27;s callback has finished</span></span><br><span class="line">    <span class="attr">after</span>: <span class="keyword">function</span> (<span class="params">asyncId</span>) &#123; &#125;,</span><br><span class="line">    <span class="comment">// called when an AsyncWrap instance is destroyed</span></span><br><span class="line">    <span class="attr">destroy</span>: <span class="keyword">function</span> (<span class="params">asyncId</span>) &#123; &#125;,</span><br><span class="line">    <span class="comment">// called only for promise resources, when the `resolve`</span></span><br><span class="line">    <span class="comment">// function passed to the `Promise` constructor is invoked</span></span><br><span class="line">    <span class="attr">promiseResolve</span>: <span class="keyword">function</span> (<span class="params">asyncId</span>) &#123; &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// starts listening for async events</span></span><br><span class="line">asyncHook.<span class="title function_">enable</span>()</span><br><span class="line"><span class="comment">// stops listening for new async events</span></span><br><span class="line">asyncHook.<span class="title function_">disable</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="executionAsyncId和triggerAsyncId"><a href="#executionAsyncId和triggerAsyncId" class="headerlink" title="executionAsyncId和triggerAsyncId"></a>executionAsyncId和triggerAsyncId</h3><p>调用<code>executionAsyncId</code>和<code>triggerAsyncId</code>函数获取当前异步上下文的asyncId和triggerAsyncId。</p>
+<p><code>executionAsyncId</code>的返回值由运行时决定，<code>triggerAsyncId</code>可以返回当前上下文的触发原因上下文id。见下面的示例代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> server = net.<span class="title function_">createServer</span>(<span class="function">(<span class="params">conn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// Returns the ID of the server, not of the new connection, because the</span></span><br><span class="line">    <span class="comment">// callback runs in the execution scope of the server&#x27;s MakeCallback().</span></span><br><span class="line">    async_hooks.<span class="title function_">executionAsyncId</span>();</span><br><span class="line">    <span class="comment">// The resource that caused (or triggered) this callback to be called</span></span><br><span class="line">    <span class="comment">// was that of the new connection. Thus the return value of triggerAsyncId()</span></span><br><span class="line">    <span class="comment">// is the asyncId of &quot;conn&quot;.</span></span><br><span class="line">    async_hooks.<span class="title function_">triggerAsyncId</span>();</span><br><span class="line">&#125;).<span class="title function_">listen</span>(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// Returns the ID of a TickObject (i.e. process.nextTick()) because all</span></span><br><span class="line">    <span class="comment">// callbacks passed to .listen() are wrapped in a nextTick().</span></span><br><span class="line">    async_hooks.<span class="title function_">executionAsyncId</span>();</span><br><span class="line">    <span class="comment">// Even though all callbacks passed to .listen() are wrapped in a nextTick()</span></span><br><span class="line">    <span class="comment">// the callback itself exists because the call to the server&#x27;s .listen()</span></span><br><span class="line">    <span class="comment">// was made. So the return value would be the ID of the server.</span></span><br><span class="line">    async_hooks.<span class="title function_">triggerAsyncId</span>();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="createHook"><a href="#createHook" class="headerlink" title="createHook"></a><code>createHook</code></h3><p>更常用地，我们使用<code>async_hooks.createHook</code>创建异步资源的钩子，注册异步资源生命周期各阶段的回调函数，目前支持init&#x2F;before&#x2F;after&#x2F;destroy&#x2F;promiseResolve这几种。</p>
+<p><strong>注意</strong>：打印信息到控制台也是一个异步操作，<code>console.log()</code>会触发AsyncHooks的各个回调。因此AsyncHook回调内使用<code>console.log()</code>或类似异步日志打印，会造成无限递归。一种解决办法是使用<code>fs.writeFileSync</code>或<code>process._rawDebug</code>这种同步日志操作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">&#x27;util&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">debug</span>(<span class="params">...args</span>) &#123;</span><br><span class="line">    <span class="comment">// Use a function like this one when debugging inside an AsyncHooks callback</span></span><br><span class="line">    fs.<span class="title function_">writeFileSync</span>(<span class="string">&#x27;log.out&#x27;</span>, <span class="string">`<span class="subst">$&#123;util.format(...args)&#125;</span>\n`</span>, &#123; <span class="attr">flag</span>: <span class="string">&#x27;a&#x27;</span> &#125;);</span><br><span class="line">    <span class="comment">// OR</span></span><br><span class="line">    process.<span class="title function_">_rawDebug</span>(<span class="string">`<span class="subst">$&#123;util.format(...args)&#125;</span>\n`</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="init-asyncId-type-triggerAsyncId-resource"><a href="#init-asyncId-type-triggerAsyncId-resource" class="headerlink" title="init(asyncId, type, triggerAsyncId, resource)"></a>init(asyncId, type, triggerAsyncId, resource)</h4><p>在<em>可能</em>会触发异步事件的资源构造时调用。这不代表后面的<code>before/after</code>事件回调会在<code>destroy</code>回调触发，只是说有这个可能。举个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;net&#x27;</span>).<span class="title function_">createServer</span>().<span class="title function_">listen</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123; <span class="variable language_">this</span>.<span class="title function_">close</span>(); &#125;);</span><br><span class="line"><span class="comment">// OR</span></span><br><span class="line"><span class="built_in">clearTimeout</span>(<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;&#125;, <span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+
+<p>参数解释如下：</p>
+<ul>
+<li><code>asyncId</code> 异步资源id</li>
+<li><code>type</code> 异步资源类型，字符串枚举值，具体参见<a target="_blank" rel="noopener" href="https://nodejs.org/api/async_hooks.html#async_hooks_type">官方文档</a></li>
+<li><code>triggerAsyncId</code> 触发当前异步资源创建的异步上下文的asyncId</li>
+<li><code>resource</code> 被初始化的异步资源对象</li>
+</ul>
+<p><code>triggerAsyncId</code>表示的是资源创建的原因，<code>async_hooks.executionAsyncId()</code>表示的是资源创建的时机。如下面例子里体现的一样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">async_hooks.<span class="title function_">createHook</span>(&#123;</span><br><span class="line">  <span class="title function_">init</span>(<span class="params">asyncId, type, triggerAsyncId</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> eid = async_hooks.<span class="title function_">executionAsyncId</span>();</span><br><span class="line">    fs.<span class="title function_">writeSync</span>(</span><br><span class="line">      <span class="number">1</span>, <span class="string">`<span class="subst">$&#123;type&#125;</span>(<span class="subst">$&#123;asyncId&#125;</span>): trigger: <span class="subst">$&#123;triggerAsyncId&#125;</span> execution: <span class="subst">$&#123;eid&#125;</span>\n`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).<span class="title function_">enable</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;net&#x27;</span>).<span class="title function_">createServer</span>(<span class="function">(<span class="params">conn</span>) =&gt;</span> &#123;&#125;).<span class="title function_">listen</span>(<span class="number">8080</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在<code>nc localhost 8080</code>后，打印信息如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TCPSERVERWRAP(5): trigger: 1 execution: 1</span><br><span class="line">TCPWRAP(7): trigger: 5 execution: 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="before-asyncId"><a href="#before-asyncId" class="headerlink" title="before(asyncId)"></a>before(asyncId)</h4><p>在异步操作初始化完成（如TCP服务器接收新连接）或资源准备完成（写数据到磁盘），准备执行回调时触发。入参<code>asyncId</code>即这个异步资源的ID。<code>before</code>事件可能会触发0~N次。</p>
+<ul>
+<li>0次，异步操作被撤销</li>
+<li>&gt; 1次，持久化的异步资源，如TCP服务器</li>
+</ul>
+<h4 id="after-asyncId"><a href="#after-asyncId" class="headerlink" title="after(asyncId)"></a>after(asyncId)</h4><p>回调执行完成后立即触发。当执行回调过程中有未捕获异常，会在触发“uncaughtException”事件后触发。</p>
+<h4 id="destroy-asyncId"><a href="#destroy-asyncId" class="headerlink" title="destroy(asyncId)"></a>destroy(asyncId)</h4><p>当asyncId对应的异步资源被销毁时调用。有些异步资源的销毁要依赖垃圾回收机制，所以当引用了传递到<code>init</code>函数的resource时，destory事件可能永远不会被触发，从而造成内存泄漏。</p>
+<h4 id="promiseResolve-asyncId"><a href="#promiseResolve-asyncId" class="headerlink" title="promiseResolve(asyncId)"></a>promiseResolve(asyncId)</h4><p>当Promise构造器中的resolve函数被执行时，promiseResolve事件被触发。有些情况下，有些resolve函数是被隐式执行的，比如<code>.then</code>函数会返回一个新的Promise，这个时候也会被调用。</p>
+<p>当<code>new Promise((resolve) =&gt; resolve(true)).then((a) =&gt; &#123;&#125;);</code>语句执行时，会顺序触发下列函数：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">init for PROMISE with id 5, trigger id: 1</span><br><span class="line">  promise resolve 5      # corresponds to resolve(true)</span><br><span class="line">init for PROMISE with id 6, trigger id: 5  # the Promise returned by then()</span><br><span class="line">  before 6               # the then() callback is entered</span><br><span class="line">  promise resolve 6      # the then() callback resolves the promise by returning</span><br><span class="line">  after 6</span><br></pre></td></tr></table></figure>
+
+<p>AsyncHook实例定义好后，需要通过<code>enable</code>开启。可以使用<code>disable</code>关闭AsyncHook的回调执行。</p>
+<p>下面是一个AsyncHook的实例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> indent = <span class="number">0</span>;</span><br><span class="line">async_hooks.<span class="title function_">createHook</span>(&#123;</span><br><span class="line">    <span class="title function_">init</span>(<span class="params">asyncId, type, triggerAsyncId</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> eid = async_hooks.<span class="title function_">executionAsyncId</span>();</span><br><span class="line">        <span class="keyword">const</span> indentStr = <span class="string">&#x27; &#x27;</span>.<span class="title function_">repeat</span>(indent);</span><br><span class="line">        fs.<span class="title function_">writeSync</span>(</span><br><span class="line">            <span class="number">1</span>,</span><br><span class="line">            <span class="string">`<span class="subst">$&#123;indentStr&#125;</span><span class="subst">$&#123;type&#125;</span>(<span class="subst">$&#123;asyncId&#125;</span>):`</span> +</span><br><span class="line">            <span class="string">` trigger: <span class="subst">$&#123;triggerAsyncId&#125;</span> execution: <span class="subst">$&#123;eid&#125;</span>\n`</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">before</span>(<span class="params">asyncId</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> indentStr = <span class="string">&#x27; &#x27;</span>.<span class="title function_">repeat</span>(indent);</span><br><span class="line">        fs.<span class="title function_">writeFileSync</span>(<span class="string">&#x27;log.out&#x27;</span>, <span class="string">`<span class="subst">$&#123;indentStr&#125;</span>before:  <span class="subst">$&#123;asyncId&#125;</span>\n`</span>, &#123; <span class="attr">flag</span>: <span class="string">&#x27;a&#x27;</span> &#125;);</span><br><span class="line">        indent += <span class="number">2</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">after</span>(<span class="params">asyncId</span>) &#123;</span><br><span class="line">        indent -= <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">const</span> indentStr = <span class="string">&#x27; &#x27;</span>.<span class="title function_">repeat</span>(indent);</span><br><span class="line">        fs.<span class="title function_">writeFileSync</span>(<span class="string">&#x27;log.out&#x27;</span>, <span class="string">`<span class="subst">$&#123;indentStr&#125;</span>after:  <span class="subst">$&#123;asyncId&#125;</span>\n`</span>, &#123; <span class="attr">flag</span>: <span class="string">&#x27;a&#x27;</span> &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">destroy</span>(<span class="params">asyncId</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> indentStr = <span class="string">&#x27; &#x27;</span>.<span class="title function_">repeat</span>(indent);</span><br><span class="line">        fs.<span class="title function_">writeFileSync</span>(<span class="string">&#x27;log.out&#x27;</span>, <span class="string">`<span class="subst">$&#123;indentStr&#125;</span>destroy:  <span class="subst">$&#123;asyncId&#125;</span>\n`</span>, &#123; <span class="attr">flag</span>: <span class="string">&#x27;a&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).<span class="title function_">enable</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;net&#x27;</span>).<span class="title function_">createServer</span>(<span class="function">() =&gt;</span> &#123;&#125;).<span class="title function_">listen</span>(<span class="number">8080</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// Let&#x27;s wait 10ms before logging the server started.</span></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;&gt;&gt;&gt;&#x27;</span>, async_hooks.<span class="title function_">executionAsyncId</span>());</span><br><span class="line">    &#125;, <span class="number">10</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>在启动服务器后，打印信息如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">TCPSERVERWRAP(5): trigger: 1 execution: 1</span><br><span class="line">TickObject(6): trigger: 5 execution: 1</span><br><span class="line">before:  6</span><br><span class="line">  Timeout(7): trigger: 6 execution: 6</span><br><span class="line">after:   6</span><br><span class="line">destroy: 6</span><br><span class="line">before:  7</span><br><span class="line">&gt;&gt;&gt; 7</span><br><span class="line">  TickObject(8): trigger: 7 execution: 7</span><br><span class="line">after:   7</span><br><span class="line">before:  8</span><br><span class="line">after:   8</span><br></pre></td></tr></table></figure>
+
+<h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><p>可以直接参考<a target="_blank" rel="noopener" href="https://nodejs.org/api/async_hooks.html#async_hooks_error_handling">官方文档描述</a></p>
+<h3 id="可以用来干嘛"><a href="#可以用来干嘛" class="headerlink" title="可以用来干嘛"></a>可以用来干嘛</h3><p>一个最为人知的使用场景是我们下面会提到的CLS（Continuation-local-storage）。cls-hooked库通过async_hooks建立了context对象和当前async执行上下文的关系，从而在整个执行链（execution chain）上维护一个统一的数据存储。</p>
+<p>还有一个是结合<a target="_blank" rel="noopener" href="https://nodejs.org/api/perf_hooks.html">Performance Timing API</a>这样的性能监测工具诊断整个异步操作流程的性能。比如<a target="_blank" rel="noopener" href="https://clinicjs.org/blog/introducing-bubbleprof/">这篇文章</a>所介绍的。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://nodejs.org/api/async_hooks.html">Async Hooks | Node.js Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://itnext.io/a-pragmatic-overview-of-async-hooks-api-in-node-js-e514b31460e9">A Pragmatic Overview of Async Hooks API in Node.js</a></li>
+</ul>
+<h2 id="CLS"><a href="#CLS" class="headerlink" title="CLS"></a>CLS</h2><p><a target="_blank" rel="noopener" href="https://github.com/othiym23/node-continuation-local-storage">Continuation-local storage(CLS)</a>类似线程编程里的线程存储，不过基于nodeJS风格的链式回调函数调用。它得名于函数式编程中的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Continuation-passing_style">Continuation-passing style</a>，旨在链式函数调用过程中维护一个持久的数据。</p>
+<p>在node V8之前，分别基于AsyncListener和AsyncWrap实现。在V8后，基于async_hook实现的库名为<a target="_blank" rel="noopener" href="https://github.com/jeff-lewis/cls-hooked#readme">cls-hooked</a>。但使用方法一致。</p>
+<p>这里借用cls README里的一个例子。假设你写了一个获取用户信息的模块，将获取到的用户信息放在session中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// setup.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> createNamespace = <span class="built_in">require</span>(<span class="string">&#x27;cls-hooked&#x27;</span>).<span class="property">createNamespace</span>;</span><br><span class="line"><span class="keyword">var</span> session = <span class="title function_">createNamespace</span>(<span class="string">&#x27;my session&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> db = <span class="built_in">require</span>(<span class="string">&#x27;./lib/db.js&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">start</span>(<span class="params">options, next</span>) &#123;</span><br><span class="line">  db.<span class="title function_">fetchUserById</span>(options.<span class="property">id</span>, <span class="keyword">function</span> (<span class="params">error, user</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (error) <span class="keyword">return</span> <span class="title function_">next</span>(error);</span><br><span class="line"></span><br><span class="line">    session.<span class="title function_">set</span>(<span class="string">&#x27;user&#x27;</span>, user);</span><br><span class="line"></span><br><span class="line">    <span class="title function_">next</span>();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后，需要将用户信息转化为一个HTML文档，你在另外一个文件中定义了转换函数，并从session中取出你想要的用户信息。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// send_response.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> getNamespace = <span class="built_in">require</span>(<span class="string">&#x27;cls-hooked&#x27;</span>).<span class="property">getNamespace</span>;</span><br><span class="line"><span class="keyword">var</span> session = <span class="title function_">getNamespace</span>(<span class="string">&#x27;my session&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> render = <span class="built_in">require</span>(<span class="string">&#x27;./lib/render.js&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">finish</span>(<span class="params">response</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> user = session.<span class="title function_">get</span>(<span class="string">&#x27;user&#x27;</span>);</span><br><span class="line">  <span class="title function_">render</span>(&#123;<span class="attr">user</span>: user&#125;).<span class="title function_">pipe</span>(response);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>cls的使用围绕namespace展开，你可以根据需要自由组织namespace，需要持久化的信息读写在namespace的context上进行。</p>
+<ul>
+<li><code>cls.createNamespace</code>、<code>cls.getNamespace</code> 创建和获取一个namespace</li>
+<li><code>cls.destroyNamespace</code>、<code>cls.reset</code> 删除一个namespace和重置所有namespace</li>
+<li><code>ns.get</code>、<code>ns.set</code> 在namespace的context上读取和设置持久化数据</li>
+<li><code>ns.run</code>、<code>ns.runAndReturn</code>、<code>ns.runPromise</code> 在给定context下执行函数</li>
+<li><code>ns.bind</code>、<code>ns.bindEmitter</code> 绑定context到给定函数或eventEmitter</li>
+<li><code>context</code> 维护持久化数据的plain object</li>
+</ul>
+<p>更多API参考<a target="_blank" rel="noopener" href="https://github.com/jeff-lewis/cls-hooked#clscreatenamespacename">文档</a>。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>正如上面所说，“cls-hooked库通过async_hooks建立了context对象和当前async执行上下文的关系”。下面有张图通过例子描述了cls的工作过程：</p>
+<p><img src="https://miro.medium.com/max/924/1*PPk_uEmQFVKO16byHpwnXA.jpeg" alt="CLS workflow"></p>
+<p>简单拆解一下：</p>
+<ul>
+<li>首先，我们有一个典型的web server和应用上的中间件，我们在整个应用的生命周期里创建一个cls的namespace。</li>
+<li>新请求到达中间件时，cls通过<code>ns.run</code>（别的方式也行）创建一个空的cls context，并入栈该context，设置为active context。</li>
+<li>由于cls内部注册了AsyncHook，在<code>init</code>阶段，在Map中关联对应active context到当前asyncId。从而有异步操作（如查数据库）时，此前入栈的context就和操作的asyncId对应上。此后get<br>、set操作都会针对同一active context进行。</li>
+<li>异步操作完成后，<code>after</code>回调触发，active context变成undefined，同时出栈当前context。当<code>destroy</code>回调触发时，会将关联到asyncId的context从Map中移除。</li>
+</ul>
+<p>在cls-hooked实现中，</p>
+<ul>
+<li><code>ns.get</code>和<code>ns.set</code>和<code>ns.active</code>相关联</li>
+<li><code>ns.active</code>通过<code>ns.enter</code>、<code>ns.exit</code>变更或者在<code>init</code>回调中从contextMap中改变。</li>
+<li><code>ns.enter</code>、<code>ns.exit</code>、<code>init</code>回调最终都经由<code>ns.runxxx</code>或<code>ns.bindxxx</code>得到初始的context</li>
+<li>cls-hooked借助async_hook和<code>ns.enter</code>、<code>ns.exit</code>保证异步流程中context和异步上下文的正确对应关系</li>
+</ul>
+<p>考虑到cls-hooked的js代码可读性，可维护性和工程角度上还有改善空间，基于上面的原理，做了ts的重构，源码见这里(待补充)，供大家参考和学习cls-hooked。</p>
+<h3 id="追踪logId"><a href="#追踪logId" class="headerlink" title="追踪logId"></a>追踪logId</h3><blockquote>
+<p>醉翁之意不在酒</p>
+</blockquote>
+<p>有了cls的帮助，我们就可以利用它帮我们持久化logId，避免“continuation-passing-context”。可以写一个中间件，为req、res包装context，同时为每次请求持久化logId。在后面的controller、services这些位置就可以拿到之前持久化的logId。</p>
+<p>一个express风格的中间件类似下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> cls = <span class="built_in">require</span>(<span class="string">&#x27;cls-hooked&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> uuidv4 = <span class="built_in">require</span>(<span class="string">&#x27;uuid/v4&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> clsNamespace = cls.<span class="title function_">createNamespace</span>(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">clsMiddleware</span> = (<span class="params">req, res, next</span>) =&gt; &#123;</span><br><span class="line">  <span class="comment">// req and res are event emitters. We want to access CLS context inside of their event callbacks</span></span><br><span class="line">  clsNamespace.<span class="title function_">bind</span>(req);</span><br><span class="line">  clsNamespace.<span class="title function_">bind</span>(res);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> logId = <span class="title function_">uuidv4</span>();</span><br><span class="line"></span><br><span class="line">  clsNamespace.<span class="title function_">run</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    clsNamespace.<span class="title function_">set</span>(<span class="string">&#x27;logId&#x27;</span>, logId);</span><br><span class="line"></span><br><span class="line">    <span class="title function_">next</span>();</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// controller.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">controller</span> = (<span class="params">req, res, next</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> traceID = clsNamespace.<span class="title function_">get</span>(<span class="string">&#x27;logId&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个思路的基础上，有类似<a target="_blank" rel="noopener" href="https://github.com/puzpuzpuz/cls-rtracer">cls-rtracer</a>或<a target="_blank" rel="noopener" href="https://github.com/keenondrums/cls-proxify">cls-proxify</a>这样的库，提供针对express、koa、fastify等常见后端框架的中间件，只需简单指定配置，便可以在请求的生命周期里透传logId，免去“continuation-passing-context”的尴尬，对已有代码侵入性也很小。有需要透传logId，但并不想（或暂时不能）使用后端框架的场景下可以考虑使用这种方案。</p>
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/nodejs/node-v0.x-archive/issues/5243">context: core module to manage generic contexts for async call chains · Issue #5423</a></li>
+<li><a target="_blank" rel="noopener" href="https://datahero.com/blog/2014/05/22/node-js-preserving-data-across-async-callbacks/">Node.js – Preserving Data Across Async Callbacks</a></li>
+<li><a target="_blank" rel="noopener" href="https://itnext.io/nodejs-logging-made-right-117a19e8b4ce">NodeJS logging made right</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/async-hooks/" rel="tag"># async_hooks</a>
+              <a href="/blog/tags/cls-hooked/" rel="tag"># cls-hooked</a>
+              <a href="/blog/tags/logId/" rel="tag"># logId</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/08/07/social-psychology-part-2/" rel="prev" title="社会心理学 Part 2 - 社会影响">
+                  <i class="fa fa-chevron-left"></i> 社会心理学 Part 2 - 社会影响
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/09/01/roadmap-refactor-log/" rel="next" title="roadmap工程化改造">
+                  roadmap工程化改造 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

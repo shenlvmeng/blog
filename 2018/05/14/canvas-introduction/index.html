@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和&lt;img&gt;标签很像，但是只有width和height两个属性，在未设置时，为300px和150px。canvas类似&lt;video&gt;和&lt;audio&gt;可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于&lt;img&gt;，它必须要有一个&lt;&#x2F;canvas&gt;作为闭合标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="canvas相关介绍">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和&lt;img&gt;标签很像，但是只有width和height两个属性，在未设置时，为300px和150px。canvas类似&lt;video&gt;和&lt;audio&gt;可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于&lt;img&gt;，它必须要有一个&lt;&#x2F;canvas&gt;作为闭合标">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-14T13:28:01.000Z">
+<meta property="article:modified_time" content="2018-05-14T13:32:07.917Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="canvas">
+<meta property="article:tag" content="绘图">
+<meta property="article:tag" content="动画">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/","path":"2018/05/14/canvas-introduction/","title":"canvas相关介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>canvas相关介绍 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A2%E7%8A%B6"><span class="nav-number">1.</span> <span class="nav-text">形状</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E5%AD%97"><span class="nav-number">3.</span> <span class="nav-text">文字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9B%BE%E7%89%87"><span class="nav-number">4.</span> <span class="nav-text">使用图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E5%BD%A2%E5%92%8C%E8%A3%81%E5%89%AA"><span class="nav-number">5.</span> <span class="nav-text">变形和裁剪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB"><span class="nav-number">6.</span> <span class="nav-text">动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%83%8F%E7%B4%A0%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="nav-number">7.</span> <span class="nav-text">像素级操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA"><span class="nav-number">8.</span> <span class="nav-text">导出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E4%BA%92"><span class="nav-number">9.</span> <span class="nav-text">交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">10.</span> <span class="nav-text">性能问题</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="canvas相关介绍 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          canvas相关介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-05-14 21:28:01 / 修改时间：21:32:07" itemprop="dateCreated datePublished" datetime="2018-05-14T21:28:01+08:00">2018-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/05/14/canvas-introduction/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/14/canvas-introduction/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和<code>&lt;img&gt;</code>标签很像，但是只有<code>width</code>和<code>height</code>两个属性，在未设置时，为300px和150px。canvas类似<code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code>可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于<code>&lt;img&gt;</code>，它必须要有一个<code>&lt;/canvas&gt;</code>作为闭合标志。</p>
+<p>canvas是一个2D渲染上下文环境（就像webGL是3D渲染上下文环境），在获取到<code>&lt;canvas&gt;</code>元素后，可以通过其<code>getContext</code>方法得到渲染上下文和相关功能，通常传入<code>2d</code>，用来绘制2D图案。</p>
+<h2 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h2><p><code>canvas.getContext(&#39;2d&#39;)</code>得到一个CanvasRenderingContext2D对象。剩下的绘制操作都通过调用对象上的API实现。</p>
+<p>canvas的坐标系系统和svg一样，从左上角开始，向右和向下为正，坐标轴单位为像素。下面列出最常见的绘制图形API。</p>
+<ul>
+<li><code>fillRect(x, y, width, height)</code> 绘制矩形</li>
+<li><code>strokeRect(x, y, width, height)</code> 绘制矩形边框</li>
+<li><code>clearRect(x, y, width, height)</code> 擦除矩形范围</li>
+</ul>
+<p>path被用来绘制通用曲线，注意<strong>path都是封闭的</strong>。绘制路径有4步：</p>
+<ul>
+<li><code>beginPath()</code> 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。</li>
+<li>使用画图命令去画出路径</li>
+<li><code>closePath()</code> 闭合路径</li>
+<li><em>可选</em> <code>fill()</code> 通过填充路径的内容区域生成实心的图形，使用<code>fill()</code>时可以不手动闭合路径</li>
+<li><code>stroke()</code>，为路径添加描边</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 样例</span></span><br><span class="line">ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">ctx.<span class="title function_">moveTo</span>(<span class="number">75</span>,<span class="number">50</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">75</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">25</span>);</span><br><span class="line">ctx.<span class="title function_">fill</span>();</span><br></pre></td></tr></table></figure>
+
+<div class="tip">所有的路径通过`stroke()`和`fill()`才能体现效果。</div>
+
+<p>里面包含了常见的<code>moveTo</code>和<code>lineTo</code>，表示移动画笔&#x2F;画直线到(x,y)处。画曲线时可以选择：</p>
+<ul>
+<li><code>arc(x, y, radius, startAngle, endAngle, anticlockwise)</code><br>画一个以（x,y）为圆心的以radius为半径的圆弧（圆），从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。</li>
+<li><code>arcTo(x1, y1, x2, y2, radius)</code> 根据给定的控制点和半径画一段圆弧，再以直线连接两个控制点。</li>
+<li><code>quadraticCurveTo(cp1x, cp1y, x, y)</code> 绘制二次贝塞尔曲线，cp1x,cp1y为一个控制点，x,y为结束点。</li>
+<li><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</code> 绘制三次贝塞尔曲线，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二，x,y为结束点。</li>
+</ul>
+<p><strong>path2D</strong></p>
+<p>通过<code>new path2D()</code>用path2D声明子路径，允许你保留和重用路径对象。除了CanvasRenderingContext2D对象的API外，还可以用<code>addPath</code>新增路径到path2D对象中，它还支持通过SVG格式的字符串导入为路径。</p>
+<h2 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h2><p>通过修改<code>fillStyle</code>和<code>strokeStyle</code>改变当前填充和描边的默认颜色。支持的颜色格式有</p>
+<ul>
+<li>颜色名</li>
+<li>hex</li>
+<li>rgb</li>
+<li>rgba</li>
+</ul>
+<p>通过<code>globalAlpha</code>修改画布里的所有图形的透明度，取值在0到1之间。</p>
+<p>线型样式选择有：</p>
+<ul>
+<li>lineWidth &#x3D; value 设置线条宽度。</li>
+<li>lineCap &#x3D; type 设置线条末端样式。默认为butt，还有round、square可选。</li>
+<li>lineJoin &#x3D; type 设定线条与线条间接合处的样式。round, bevel 和 miter三种可选，miter时，miterLimit可以限制尖角的高度。</li>
+<li>miterLimit &#x3D; value 限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度</li>
+</ul>
+<p>设置虚线时，<code>setLineDash(segments)</code>设置当前虚线样式。<code>lineDashOffset = value</code>设置虚线样式的起始偏移量。<code>getLineDash()</code>返回一个包含当前虚线样式，长度为非负偶数的数组。</p>
+<p><strong>渐变</strong></p>
+<p>渐变需要先指定类型和覆盖范围：</p>
+<ul>
+<li><code>createLinearGradient(x1, y1, x2, y2)</code> 方法接受4个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。</li>
+<li><code>createRadialGradient(x1, y1, r1, x2, y2, r2)</code> 方法接受6个参数，前三个定义一个以 (x1,y1) 为原点，半径为r1的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为r2的圆。</li>
+</ul>
+<p>创建的渐变通过<code>addColorStop(position, color)</code>添加多个color stop。position参数是一个0.0与1.0之间的数值，表示渐变中颜色所在的相对位置。<strong>渐变是一种样式，通过指定给fillStyle或是strokeStyle发挥作用</strong>。</p>
+<p><strong>模式</strong></p>
+<p>通过<code>createPattern(image, type)</code>创建pattern，Image可以是一个Image对象的引用，或者另一个canvas对象。Type描述重复的格式，是下面的字符串值之一：repeat，repeat-x，repeat-y 和 no-repeat。</p>
+<p>同样，通过指定给<code>fillStyle</code>和<code>strokeStyle</code>使用。</p>
+<p><strong>阴影</strong></p>
+<ul>
+<li>shadowOffsetX &#x3D; float</li>
+<li>shadowOffsetY &#x3D; float<br>shadowOffsetX和shadowOffsetY用来设定阴影在X和Y轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为0。</li>
+<li>shadowBlur &#x3D; float shadowBlur 用于设定阴影的模糊程度，默认为 0。</li>
+<li>shadowColor &#x3D; color，默认为黑色</li>
+</ul>
+<p>canvas有两种填充规则<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Nonzero-rule"><code>non-zero</code></a>和<code>even-odd</code>，默认为前者。</p>
+<h2 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h2><ul>
+<li><code>fillText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置填充指定的文本，绘制的最大宽度是可选的</li>
+<li><code>strokeText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置绘制文本边框，绘制的最大宽度是可选的</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ctx.<span class="property">font</span> = <span class="string">&quot;48px PingFangSC&quot;</span>;</span><br><span class="line">ctx.<span class="title function_">strokeText</span>(<span class="string">&quot;Hello world&quot;</span>, <span class="number">10</span>, <span class="number">50</span>);</span><br></pre></td></tr></table></figure>
+
+<p>除了<code>font</code>（语法和CSS的font相同）外，还有下面的选择：</p>
+<ul>
+<li>textAlign &#x3D; value 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。</li>
+<li>textBaseline &#x3D; value 基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。</li>
+<li>direction &#x3D; value 文本方向</li>
+</ul>
+<p>另外，可以通过<code>measureText()</code>，得到文本绘制的宽度。</p>
+<h2 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h2><p>canvas里可以引入Image对象或其他canvas元素，或者通过URL方式使用图片。</p>
+<ul>
+<li>使用相同页面内的图片，使用正常地获取元素的方式获取即可</li>
+<li>使用其它域名下的图片，在HTMLImageElement上使用<code>crossOrigin</code>属性，可以请求加载其它域名上的图片。若服务器不允许跨域加载，则会污染canvas，即不能导出数据</li>
+<li>使用canvas，按获取元素的方式获取即可</li>
+</ul>
+<p>image可以指定<code>src</code>属性为URL或<code>data:url</code>的形式。甚至引入<code>&lt;video&gt;</code>使用视频帧作为image。绘制图片时，使用：</p>
+<ul>
+<li><code>drawImage(image, x, y)</code> 其中image是image或者canvas对象，x和y是其在目标canvas里的起始坐标。</li>
+<li><code>drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)</code>是包含了缩放和切片后完整的<code>drawImage</code>用法</li>
+</ul>
+<h2 id="变形和裁剪"><a href="#变形和裁剪" class="headerlink" title="变形和裁剪"></a>变形和裁剪</h2><p><strong>save</strong>和<strong>restore</strong>用来保存和恢复canvas状态。每当<code>save()</code>方法被调用后，当前的状态就被推送到栈中保存。状态包括所有变形、样式信息。每次<code>restore</code>时会弹出栈顶的状态。<strong>建议在做变形和裁剪前保存状态</strong>。</p>
+<p>变形用到的属性和CSS很像：</p>
+<ul>
+<li><code>translate(x,y)</code>改变当前原点位置，</li>
+<li><code>rotate(angle)</code>以当前原点为圆心旋转画布，angle为弧度值。</li>
+<li><code>scale(x, y)</code>缩放当前canvas中的图形大小，x和y分别表示两轴上的缩放因子</li>
+<li><code>transform(m11, m12, m21, m22, dx, dy)</code>通过变形矩阵进行变换</li>
+<li><code>setTransform(m11, m12, m21, m22, dx, dy)</code>先还原为单位矩阵，再按入参的矩阵变换</li>
+<li><code>resetTransform</code>重置变形为单位矩阵</li>
+</ul>
+<p><code>globalCompositeOperation</code>定义了图形相互重叠时的处理策略，类似PS中图层的混合模式，默认为<code>darker</code>，还有很多<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">别的选项</a>。</p>
+<p><code>clip()</code>即裁剪方法，和<code>fill</code>以及<code>stroke</code>类似，不过<code>clip</code>将路径对应的部分裁剪出指定区域。</p>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>canvas只是一个画布，画出的东西都会保持原样。制作动画只能采取重绘，逐帧绘制，而每一帧包括下面几步：</p>
+<ul>
+<li>清空canvas，可以使用<code>clearRect</code>方法</li>
+<li><em>可选</em>，保存当前状态</li>
+<li>使用上面提过的种种方法绘制下一帧</li>
+<li><em>可选</em>，恢复状态</li>
+</ul>
+<p>绘制动画通常要结合用户交互以及<code>setTimeout</code>，<code>setInterval</code>，<code>requestAnimationFrame</code>。</p>
+<p>MDN给个一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Advanced_animations">小球的组合动画</a>可以参考。</p>
+<h2 id="像素级操作"><a href="#像素级操作" class="headerlink" title="像素级操作"></a>像素级操作</h2><p><code>ImageData</code>接口描述<code>&lt;canvas&gt;</code>元素的一个包含像素数据的区域。它包含<code>width</code>, <code>height</code>, <code>data</code>单个只读属性。<code>ImageData</code>可以通过<code>ctx.createImageData(width, height)</code>或者从已有对象中创建，除此创建的所有像素都是透明黑。</p>
+<p>可以用<code>getImageData(left, top, width, height)</code>方法获取指定范围的<code>ImageData</code>信息，当<code>width</code>和<code>height</code>都为1时，取得当前像素信息。</p>
+<p>使用<code>putImageData(imageData, dx, dy)</code>可以在当前画布(dx, dy)处绘制imageData像素数据。<code>imageSmoothingEnabled</code>默认开启，关闭后可以在图片缩放时看到清楚颗粒化的细节。</p>
+<h2 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h2><p>主要有三种用法：</p>
+<ul>
+<li><code>canvas.toDataURL(&#39;image/png&#39;)</code>，默认将canvas导出成png文件</li>
+<li><code>canvas.toDataURL(&#39;image/jpeg&#39;, quality)</code>，quality指定在0到1之间，默认为0.92。</li>
+<li><code>canvas.toBlob(callback, type, encoderOptions)</code>，这个创建了一个在画布中的代表图片的Blob对像</li>
+</ul>
+<p><code>toDataURL</code>除了上面两种导出格式还有别的选择。</p>
+<h2 id="交互"><a href="#交互" class="headerlink" title="交互"></a>交互</h2><p><code>&lt;canvas&gt;</code>标签只是一个位图，它并不提供任何已经绘制在上面的对象的信息。canvas的内容不能像语义化的HTML一样暴露给一些协助工具。一般来说，你应该避免在交互型的网站或者App上使用canvas。</p>
+<p><code>addHitRegion(options)</code>可以将添加一个点击区域，options可以参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/addHitRegion">MDN文档</a>，鼠标事件如果触发在点击区域中，会带上region用于定位点击区域。</p>
+<p>另外<code>drawFocusIfNeeded()</code>和<code>scrollPathIntoView()</code>方法还可以绘制焦点圈。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><ul>
+<li>预渲染相似或重复对象</li>
+<li>为了避免抗锯齿带来的额外运算，减少使用浮点数</li>
+<li>在离屏canvas中缓存图片的不同尺寸，不要用<code>drawImage()</code>去缩放它们</li>
+<li>使用多层画布去画一个复杂的场景，比如使用多层画布，描绘不同层级的内容。  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">&quot;stage&quot;</span>&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;ui-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;game-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;background-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
+<li>用CSS画大的背景图</li>
+<li>用CSS transforms特性缩放画布，建议不要将小画布放大，而是去将大画布缩小</li>
+<li>尽可能避免text rendering</li>
+<li>尽可能避免 shadowBlur</li>
+<li><code>window.requestAnimationFrame()</code>性能优于<code>window.setInterval()</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/canvas/" rel="tag"># canvas</a>
+              <a href="/blog/tags/%E7%BB%98%E5%9B%BE/" rel="tag"># 绘图</a>
+              <a href="/blog/tags/%E5%8A%A8%E7%94%BB/" rel="tag"># 动画</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/05/01/sicp-note/" rel="prev" title="SICP大纲">
+                  <i class="fa fa-chevron-left"></i> SICP大纲
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/05/23/some-tips-2/" rel="next" title="工作中的遇到的一些小知识 2">
+                  工作中的遇到的一些小知识 2 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

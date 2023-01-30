@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="一个合法检测的Validator合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。 12345678910111213141516171819202122232425262728293031323334353637383940">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识 2">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/05/23/some-tips-2/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="一个合法检测的Validator合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。 12345678910111213141516171819202122232425262728293031323334353637383940">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-23T15:12:30.000Z">
+<meta property="article:modified_time" content="2018-08-25T09:15:59.899Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="validator">
+<meta property="article:tag" content="大文件">
+<meta property="article:tag" content="visibilityChange">
+<meta property="article:tag" content="IntersectionObserver">
+<meta property="article:tag" content="图种">
+<meta property="article:tag" content="draggable">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/05/23/some-tips-2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/05/23/some-tips-2/","path":"2018/05/23/some-tips-2/","title":"工作中的遇到的一些小知识 2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>工作中的遇到的一些小知识 2 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%90%88%E6%B3%95%E6%A3%80%E6%B5%8B%E7%9A%84Validator"><span class="nav-number">1.</span> <span class="nav-text">一个合法检测的Validator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E6%B8%85%E7%90%86%E5%A4%A7%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">Linux清理大文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E9%A1%B5%E9%9D%A2%E7%AA%97%E5%8F%A3%E6%B4%BB%E5%8A%A8%E7%8A%B6%E6%80%81%E6%A3%80%E6%9F%A5"><span class="nav-number">3.</span> <span class="nav-text">当前页面窗口活动状态检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntersectionObserver"><span class="nav-number">4.</span> <span class="nav-text">IntersectionObserver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%A7%8D"><span class="nav-number">5.</span> <span class="nav-text">图种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#draggable-with-Vue"><span class="nav-number">6.</span> <span class="nav-text">draggable with Vue</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/05/23/some-tips-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="工作中的遇到的一些小知识 2 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          工作中的遇到的一些小知识 2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-23 23:12:30" itemprop="dateCreated datePublished" datetime="2018-05-23T23:12:30+08:00">2018-05-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-08-25 17:15:59" itemprop="dateModified" datetime="2018-08-25T17:15:59+08:00">2018-08-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/05/23/some-tips-2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/23/some-tips-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一个合法检测的Validator"><a href="#一个合法检测的Validator" class="headerlink" title="一个合法检测的Validator"></a>一个合法检测的Validator</h2><p>合法检测是在有表单或数据提交时常见的需求，随手撸了一个。由于考虑的业务场景比较复杂，代码也有点臃肿。拓展时，只需要修改上面的提示信息常量和新的test方法即可。也支持自己传入判断函数和message，针对比较复杂的校验情况。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="variable constant_">TYPE_VALIDATE_MESSAGE</span> = &#123;</span><br><span class="line">    <span class="attr">isNumber</span>: <span class="string">&#x27;不是一个数字&#x27;</span>,</span><br><span class="line">    <span class="attr">isObject</span>: <span class="string">&#x27;不是一个对象&#x27;</span>,</span><br><span class="line">    <span class="attr">isArray</span>: <span class="string">&#x27;不是一个数组&#x27;</span>,</span><br><span class="line">    <span class="attr">lt</span>: <span class="string">&#x27;数值过大&#x27;</span>,</span><br><span class="line">    <span class="attr">gt</span>: <span class="string">&#x27;数值过小&#x27;</span>,</span><br><span class="line">    <span class="attr">st</span>: <span class="string">&#x27;长度过短&#x27;</span>,</span><br><span class="line">    <span class="attr">ht</span>: <span class="string">&#x27;长度过长&#x27;</span></span><br><span class="line">    <span class="attr">notEmpty</span>: <span class="string">&#x27;需要非空&#x27;</span>,</span><br><span class="line">    <span class="attr">len</span>: <span class="string">&#x27;长度不合规范&#x27;</span>,</span><br><span class="line">    <span class="attr">in</span>: <span class="string">&#x27;不在可选范围内&#x27;</span>,</span><br><span class="line">    <span class="attr">reg</span>: <span class="string">&#x27;无法匹配指定模式&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 供validate使用</span></span><br><span class="line">util.<span class="property">test</span> = &#123;</span><br><span class="line">    <span class="attr">isObject</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="title class_">Object</span>(_) === _,</span><br><span class="line">    <span class="attr">isNumber</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="keyword">typeof</span> _ == <span class="string">&#x27;number&#x27;</span>,</span><br><span class="line">    <span class="attr">isArray</span>: <span class="function"><span class="params">_</span> =&gt;</span> <span class="title class_">Array</span>.<span class="title function_">isArray</span>(_),</span><br><span class="line">    <span class="attr">notEmpty</span>: <span class="function"><span class="params">_</span> =&gt;</span> _.<span class="property">length</span> &gt; <span class="number">0</span>,</span><br><span class="line">    <span class="attr">lt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &lt; limit,</span><br><span class="line">    <span class="attr">gt</span>: <span class="function">(<span class="params">num, limit</span>) =&gt;</span> num &gt; limit,</span><br><span class="line">    <span class="attr">st</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.<span class="property">length</span> &lt; limit,</span><br><span class="line">    <span class="attr">ht</span>: <span class="function">(<span class="params">_, limit</span>) =&gt;</span> _.<span class="property">length</span> &gt; limit,</span><br><span class="line">    <span class="attr">in</span>: <span class="function">(<span class="params">_, range</span>) =&gt;</span> ~range.<span class="title function_">indexOf</span>(_),</span><br><span class="line">    <span class="attr">len</span>: <span class="function">(<span class="params">_, length</span>) =&gt;</span> _.<span class="property">length</span> === length,</span><br><span class="line">    <span class="attr">reg</span>: <span class="function">(<span class="params">_, reg</span>) =&gt;</span> reg.<span class="title function_">test</span>(_)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数据校验</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: shenlvmeng</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@params</span> value &#123;any&#125; 校验数值 输入单个数值使用verify校验 输入对象使用verifyMap校验</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> verify 校验单个数值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> verifyMap 校验对象</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="type">Object</span>&#125; 包含success和message的对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">util.<span class="property">validate</span> = <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 方便传递到外界修改</span></span><br><span class="line">    <span class="keyword">let</span> message = &#123; <span class="attr">content</span>: <span class="string">&#x27;&#x27;</span> &#125;;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">verify</span>(<span class="params">val, validators, key</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(validators)) validators = [validators];</span><br><span class="line">        <span class="keyword">return</span> validators.<span class="title function_">every</span>(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> isRight;</span><br><span class="line">            <span class="keyword">if</span> (util.<span class="property">test</span>.<span class="title function_">isObject</span>(v)) &#123;</span><br><span class="line">                isRight = util.<span class="property">test</span>[<span class="title class_">Object</span>.<span class="title function_">keys</span>(v)[<span class="number">0</span>]](val, <span class="title class_">Object</span>.<span class="title function_">values</span>(v)[<span class="number">0</span>])</span><br><span class="line">                !isRight &amp;&amp; (message.<span class="property">content</span> = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[<span class="built_in">Object</span>.keys(v)[<span class="number">0</span>]]&#125;</span>`</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                isRight = util.<span class="property">test</span>[v](val);</span><br><span class="line">                !isRight &amp;&amp; (message.<span class="property">content</span> = <span class="string">`<span class="subst">$&#123;key || val&#125;</span><span class="subst">$&#123;TYPE_VALIDATE_MESSAGE[v]&#125;</span>`</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> isRight;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 单个数值使用</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@params</span> validators &#123; String|Array|Object &#125; 校验函数 必须是util中已定义的函数</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@params</span> String 类型时为函数名; Object类型时为函数名和对应入参; Array时为以上的列表 </span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="title function_">verify</span>(<span class="params">validators</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                <span class="attr">success</span>: <span class="title function_">verify</span>(value, validators),</span><br><span class="line">                <span class="attr">message</span>: message.<span class="property">content</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 校验整个对象时使用</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@params</span> config &#123; Object &#125; 校验函数 针对Object中每个key的校验</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@params</span> 每个key的value服从verify的格式，当key为function类型时交给调用方自己处理</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="title function_">verifyMap</span>(<span class="params">config</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!util.<span class="property">test</span>.<span class="title function_">isObject</span>(value)) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Invalid value type. It should be an Object.&#x27;</span>);</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                <span class="attr">success</span>: <span class="title class_">Object</span>.<span class="title function_">keys</span>(config).<span class="title function_">every</span>(<span class="function"><span class="params">key</span> =&gt;</span> (</span><br><span class="line">                    <span class="keyword">typeof</span> config[key] === <span class="string">&#x27;function&#x27;</span> ? config[key](value[key], message)</span><br><span class="line">                    : <span class="title function_">verify</span>(value[key], config[key], key))</span><br><span class="line">                ),</span><br><span class="line">                <span class="attr">message</span>: message.<span class="property">content</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际应用中发现，<code>verifyMap</code>方法用的比较多。使用样例如下;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">examine</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> util.<span class="title function_">validate</span>(formData).<span class="title function_">verifyMap</span>(&#123;</span><br><span class="line">        <span class="attr">userName</span>: [<span class="string">&#x27;notEmpty&#x27;</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</span><br><span class="line">        <span class="attr">password</span>: [<span class="string">&#x27;notEmpty&#x27;</span>, &#123; <span class="attr">st</span>: <span class="number">6</span> &#125;, &#123; <span class="attr">ht</span>: <span class="number">15</span> &#125;],</span><br><span class="line">        <span class="attr">age</span>: [<span class="string">&#x27;isNumber&#x27;</span>, &#123; <span class="attr">lt</span>: <span class="number">18</span> &#125;],</span><br><span class="line">        <span class="attr">gender</span>: &#123;<span class="attr">in</span>: [<span class="string">&#x27;male&#x27;</span>, <span class="string">&#x27;female&#x27;</span>]&#125;,</span><br><span class="line">        <span class="attr">email</span>: &#123;<span class="string">&#x27;reg&#x27;</span>: <span class="regexp">/email pattern/</span>&#125;,</span><br><span class="line">        <span class="attr">isAccepted</span>: <span class="function">(<span class="params">value, message</span>) =&gt;</span> value ? value : (message.<span class="property">content</span> = <span class="string">&#x27;请接收用户协议&#x27;</span>, <span class="literal">false</span>)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux清理大文件"><a href="#Linux清理大文件" class="headerlink" title="Linux清理大文件"></a>Linux清理大文件</h2><ul>
+<li><code>df -h</code>查看存储情况</li>
+<li><code>du -sh * | grep G</code>查找当前目录下大于1G的大文件，挨个确认删除即可</li>
+</ul>
+<h2 id="当前页面窗口活动状态检查"><a href="#当前页面窗口活动状态检查" class="headerlink" title="当前页面窗口活动状态检查"></a>当前页面窗口活动状态检查</h2><p>利用<code>visibilityChange</code>API，配合<code>visibilityState</code>检查窗口状态。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// subscribe to visibility change events</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;visibilitychange&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// fires when user switches tabs, apps, goes to homescreen, etc.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">document</span>.<span class="property">visibilityState</span> === <span class="string">&#x27;hidden&#x27;</span>) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="property">title</span> = <span class="string">&#x27;Baby, Come Back!&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// fires when app transitions from prerender, user returns to the app / tab.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">document</span>.<span class="property">visibilityState</span> === <span class="string">&#x27;visible&#x27;</span>) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="property">title</span> = defaultTitle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><p>监测页面元素和视口的交错关系的DOM API，目前浏览器支持度不高。可以用来方便地实现懒加载和页面无限滚动。</p>
+<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html">参考</a></p>
+<h2 id="图种"><a href="#图种" class="headerlink" title="图种"></a>图种</h2><ul>
+<li>Windows，<code>copy /b image.jpg+zip.rar output.jpg</code>，更改输出图片后缀为rar得到压缩包</li>
+<li>Linux，<code>cat image.jpg zip.rar &gt; output.jpg</code>，同上</li>
+</ul>
+<h2 id="draggable-with-Vue"><a href="#draggable-with-Vue" class="headerlink" title="draggable with Vue"></a>draggable with Vue</h2><p>业务中有拖拽需求，在试用多个轮子后，最终选择了<a target="_blank" rel="noopener" href="https://jexordexan.github.io/vue-slicksort/?selectedKind=Vertical%20sorting&selectedStory=Simple%20list&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook/actions/actions-panel">vue-slicksort</a></p>
+<ul>
+<li>Vue Draggable</li>
+<li>Vue Dragula</li>
+<li>Vue slicksort</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>GitHub名</th>
+<th>流行度</th>
+<th>依赖&#x2F;原理</th>
+<th>功能完善度</th>
+<th>文档完善度</th>
+<th>使用舒适度</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vuedraggable</td>
+<td>star数3859，很流行</td>
+<td>依赖sortable.js，后者依赖HTML5的draggable API</td>
+<td>功能丰富强大，有很多别人踩过的坑</td>
+<td>文档比较丰富</td>
+<td>通过组件包裹形式使用 侵入性小 优</td>
+<td>有兼容性问题，Chrome66.0.3359.181 Mac OSX 10.13.1下无法通过拖动换位</td>
+</tr>
+<tr>
+<td>vue-dragula</td>
+<td>star数100+，上次更新1年前</td>
+<td>依赖dragula.js</td>
+<td>功能一般</td>
+<td>不完善，几乎都是dragula的API</td>
+<td>通过<code>Vue.use</code>的形式 + directives的方式引入，侵入式一般</td>
+<td>使用效果不好，实现时没有拖动和移动的动效</td>
+</tr>
+<tr>
+<td>vue-slicksort</td>
+<td>star数100+，更新较活跃</td>
+<td>0依赖，不基于HTML5 drag API，支持触摸屏，兼容性好</td>
+<td>功能一般，支持平面拖动</td>
+<td>较完善，有样例、API解释和FAQ</td>
+<td>略糟糕，需要使用mixin的形式，通常意味着额外的组件定义</td>
+<td>展示效果优秀，能满足需求</td>
+</tr>
+</tbody></table>
+<p>综上，考虑到只有vue-slicksort能满足需求，故选择之。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/validator/" rel="tag"># validator</a>
+              <a href="/blog/tags/%E5%A4%A7%E6%96%87%E4%BB%B6/" rel="tag"># 大文件</a>
+              <a href="/blog/tags/visibilityChange/" rel="tag"># visibilityChange</a>
+              <a href="/blog/tags/IntersectionObserver/" rel="tag"># IntersectionObserver</a>
+              <a href="/blog/tags/%E5%9B%BE%E7%A7%8D/" rel="tag"># 图种</a>
+              <a href="/blog/tags/draggable/" rel="tag"># draggable</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/05/14/canvas-introduction/" rel="prev" title="canvas相关介绍">
+                  <i class="fa fa-chevron-left"></i> canvas相关介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/06/26/canvas-flowchart-compare/" rel="next" title="流程图JS实现方案对比">
+                  流程图JS实现方案对比 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

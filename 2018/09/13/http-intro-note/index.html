@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="读完了《图解HTTP》，就算是对计算机网络和HTTP部分内容做了个温习吧。同步做了整理，以便加强记忆和后面回顾。  概述请求报文构成：  方法 URI（绝对或是相对） HTTP版本 请求首部 内容实体  响应报文构成：  HTTP版本号 状态码 状态码原语 响应头部 响应主体  请求URI是服务器本身时，可以用*代替URI。 可用的方法列表：  GET 获取资源 POST 传输信息 PUT 传输">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《图解HTTP》整理">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/09/13/http-intro-note/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="读完了《图解HTTP》，就算是对计算机网络和HTTP部分内容做了个温习吧。同步做了整理，以便加强记忆和后面回顾。  概述请求报文构成：  方法 URI（绝对或是相对） HTTP版本 请求首部 内容实体  响应报文构成：  HTTP版本号 状态码 状态码原语 响应头部 响应主体  请求URI是服务器本身时，可以用*代替URI。 可用的方法列表：  GET 获取资源 POST 传输信息 PUT 传输">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-13T15:35:11.000Z">
+<meta property="article:modified_time" content="2018-09-24T16:35:18.066Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="HTTP">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="状态码">
+<meta property="article:tag" content="网络攻击">
+<meta property="article:tag" content="介绍">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/09/13/http-intro-note/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/09/13/http-intro-note/","path":"2018/09/13/http-intro-note/","title":"《图解HTTP》整理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《图解HTTP》整理 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">HTTP报文结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">HTTP状态码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">协作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E5%A4%B4%E9%83%A8"><span class="nav-number">5.</span> <span class="nav-text">报文头部</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E9%A6%96%E9%83%A8"><span class="nav-number">5.1.</span> <span class="nav-text">通用首部</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cache-Control"><span class="nav-number">5.1.1.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Connection"><span class="nav-number">5.1.2.</span> <span class="nav-text">Connection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Date"><span class="nav-number">5.1.3.</span> <span class="nav-text">Date</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pragma"><span class="nav-number">5.1.4.</span> <span class="nav-text">Pragma</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E9%A6%96%E9%83%A8"><span class="nav-number">5.2.</span> <span class="nav-text">请求首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E9%A6%96%E9%83%A8"><span class="nav-number">5.3.</span> <span class="nav-text">响应首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E9%A6%96%E9%83%A8"><span class="nav-number">5.4.</span> <span class="nav-text">实体首部</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS%E7%AE%80%E4%BB%8B"><span class="nav-number">6.</span> <span class="nav-text">HTTPS简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">7.</span> <span class="nav-text">身份验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%BF%BD%E5%8A%A0%E5%8D%8F%E8%AE%AE"><span class="nav-number">8.</span> <span class="nav-text">功能追加协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web%E5%BA%94%E7%94%A8"><span class="nav-number">9.</span> <span class="nav-text">Web应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81Web%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F"><span class="nav-number">10.</span> <span class="nav-text">常见Web攻击方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%80%BC%E8%BD%AC%E4%B9%89%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F"><span class="nav-number">10.1.</span> <span class="nav-text">输出值转义相关攻击方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%BC%BA%E9%99%B7%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F"><span class="nav-number">10.2.</span> <span class="nav-text">设计缺陷相关攻击方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session%E7%9B%B8%E5%85%B3"><span class="nav-number">10.3.</span> <span class="nav-text">session相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">10.4.</span> <span class="nav-text">其他</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/09/13/http-intro-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《图解HTTP》整理 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《图解HTTP》整理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-13 23:35:11" itemprop="dateCreated datePublished" datetime="2018-09-13T23:35:11+08:00">2018-09-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-09-25 00:35:18" itemprop="dateModified" datetime="2018-09-25T00:35:18+08:00">2018-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/09/13/http-intro-note/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/13/http-intro-note/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>读完了《图解HTTP》，就算是对计算机网络和HTTP部分内容做了个温习吧。同步做了整理，以便加强记忆和后面回顾。</p>
+</blockquote>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>请求报文构成：</p>
+<ul>
+<li>方法</li>
+<li>URI（绝对或是相对）</li>
+<li>HTTP版本</li>
+<li>请求首部</li>
+<li>内容实体</li>
+</ul>
+<p>响应报文构成：</p>
+<ul>
+<li>HTTP版本号</li>
+<li>状态码</li>
+<li>状态码原语</li>
+<li>响应头部</li>
+<li>响应主体</li>
+</ul>
+<p>请求URI是服务器本身时，可以用<code>*</code>代替URI。</p>
+<p>可用的方法列表：</p>
+<ul>
+<li>GET 获取资源</li>
+<li>POST 传输信息</li>
+<li>PUT 传输文件，<strong>没有用户验证机制</strong>，很少用到</li>
+<li>DELETE 删除文件，同上，很少用到</li>
+<li>HEAD 获得响应头部，不返回主体</li>
+<li>OPTIONS 询问支持方法</li>
+<li>CONNECT 用来建立HTTPS连接的隧道</li>
+<li>TRACE 追踪路径上的所有服务器节点，很少用到</li>
+</ul>
+<p>其中后面三个是HTTP1.1才开始支持的。</p>
+<p><strong>持久化</strong></p>
+<p>在HTTP1.1后，HTTP建立的TCP连接默认是长连接（<code>keep-alive</code>），避免不必要的多次TCP握手和挥手。在此基础上，客户端可以同时向服务端发起多个资源请求。</p>
+<p><strong>状态化</strong></p>
+<p>HTTP本身是无状态的。通过cookie实现状态化，cookie通过服务端在响应头部的<code>set-cookie</code>字段下发，设置信息、使用范围、过期时间等内容。客户端在使用范围内的请求默认会携带上cookie信息。</p>
+<h2 id="HTTP报文结构"><a href="#HTTP报文结构" class="headerlink" title="HTTP报文结构"></a>HTTP报文结构</h2><ul>
+<li>请求首部和主体通过CR+LF分割开来</li>
+<li>报文编码<ul>
+<li>编码压缩<ul>
+<li>gzip （GNU zip）</li>
+<li>compress（UNIX compress）</li>
+<li>deflate（zlib）</li>
+<li>indentity（不压缩）</li>
+</ul>
+</li>
+<li>分块发送</li>
+<li>多部分发送（multipart）<ul>
+<li>multipart&#x2F;form-data 表单文件上传，用boundary字符<code>--</code>表示新的part的开始</li>
+<li>multipart&#x2F;byterange 配合206响应只包含了部分数据时使用</li>
+</ul>
+</li>
+<li>部分发送<ul>
+<li>Range指定字节范围</li>
+<li>206响应状态码</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>内容协商<ul>
+<li>双方就合适的语言、字符集、编码方式、过期时间进行协商</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h2><ul>
+<li>1xx 这一类型的状态码，代表请求已被接受，需要继续处理<ul>
+<li>100 Continue：客户端应当继续发送请求。</li>
+<li>101 Switching Protocals：将通过Upgrade消息头通知客户端采用不同的协议来完成这个请求。</li>
+</ul>
+</li>
+<li>2xx 成功：这一类型的状态码，代表请求已成功被服务器接收、理解、并接受。<ul>
+<li>200 OK：请求已成功，在方法时HEAD时不返回响应主体</li>
+<li>204 No Content：服务器成功处理了请求，但不需要返回任何实体内容，<strong>用户浏览器应保留发送了该请求的页面</strong></li>
+<li>205 Reset Content：和204的唯一不同是返回此状态码的响应要求请求者重置文档视图</li>
+<li>206 Partial Content：服务器已经成功处理了部分GET请求。请求必须包含Range头信息来指示客户端希望得到的内容范围，返回使用<code>Content-Range</code>多用于下载工具</li>
+</ul>
+</li>
+<li>3xx 重定向：这类状态码代表需要客户端采取进一步的操作才能完成请求。通常，这些状态码用来重定向，后续的请求地址在本次响应的Location域中指明。<ul>
+<li>300 Multiple Choices：被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。用户或浏览器能够自行选择一个首选的地址进行重定向。</li>
+<li>301 Moved Permanently：被请求的资源已永久移动到新位置，建议使用Location中的新地址</li>
+<li>302 Found：请求的资源现在临时从不同的URI响应请求</li>
+<li>303 See Other：和302的区别是，客户端<strong>应当采用GET的方式</strong>访问新的资源</li>
+<li>304 Not Modified：如果客户端发送了一个带条件（包括缓存相关的请求头部）的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变</li>
+<li>305 Use Proxy：被请求的资源必须通过指定的代理才能被访问</li>
+</ul>
+</li>
+<li>4xx 客户端错误：客户端发生了错误<ul>
+<li>400 Bad Request：由于包含语法错误，当前请求无法被服务器理解</li>
+<li>401 Unauthorized：当前请求需要用户验证，或用户未通过验证。</li>
+<li>403 Forbidden：服务器已经理解请求，但是拒绝执行它</li>
+<li>404 Not Found：资源未被在服务器上发现</li>
+<li>405 Method Not Allowed：请求行中指定的请求方法不能被用于请求相应的资源，响应中必须返回一个Allow头信息用以表示出当前资源能够接受的请求方法的列表</li>
+<li>406 Not Acceptable：请求的资源的内容特性无法满足请求头中的条件</li>
+<li>413 Request Entity Too Large</li>
+<li>414 Request-URI Too Long</li>
+</ul>
+</li>
+<li>5xx 服务器错误：服务器在处理请求的过程中有错误发生<ul>
+<li>500 Internal Server Error：这个问题会在服务器的代码出错时出现</li>
+<li>501 Not Implemented：服务器不支持当前请求所需要的某个功能</li>
+<li>502 Bad GateWay：作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应</li>
+<li>503 Service Unavailable：临时的服务器维护或者过载。这个状况是临时的，并且将在一段时间以后恢复。</li>
+<li>504 Gateway Timeout：作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器或者辅助服务器收到响应</li>
+</ul>
+</li>
+</ul>
+<h2 id="协作机制"><a href="#协作机制" class="headerlink" title="协作机制"></a>协作机制</h2><ul>
+<li>代理（Proxy），单纯转发HTTP请求，会在响应头部的<code>Via</code>字段留下痕迹</li>
+<li>网关（Gateway），隔绝服务器和客户端，有安全、计费等逻辑</li>
+<li>隧道（tunnel），基于协议搭建，保证传输安全，对用户侧透明</li>
+<li>缓存（Cache），本地、服务端二级缓存，加快响应时间，有过期时间</li>
+</ul>
+<h2 id="报文头部"><a href="#报文头部" class="headerlink" title="报文头部"></a>报文头部</h2><ul>
+<li>首部用来进行连接的各种信息描述。每个首部的字段用字段名和值组成，两者用<code>:</code>隔开。</li>
+<li>首部分为端到端和逐跳两类，前者在报文转发的整个过程都保留，后者在转发后就会丢弃。典型的逐条首部有<code>Connection</code>, <code>Keep-Alive</code>, <code>Transfer-Encoding</code>, <code>Upgrade</code>等</li>
+</ul>
+<h3 id="通用首部"><a href="#通用首部" class="headerlink" title="通用首部"></a>通用首部</h3><h4 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h4><p>客户端和服务端协商缓存机制。配合下面一些首部字段使用：</p>
+<ul>
+<li><code>Etag</code></li>
+<li><code>Last-Modified</code></li>
+<li><code>Expires</code>（HTTP1.0）</li>
+<li><code>Pragma</code>（HTTP1.0）</li>
+<li><code>Age</code>（HTTP1.0）</li>
+<li><code>If-None-Match</code></li>
+<li><code>If-Not-Modified-Since</code></li>
+</ul>
+<p><code>Cache-Control</code>有下面一些可配置项。</p>
+<p>缓冲能力上，</p>
+<ul>
+<li>private，缓存只针对当前用户而言</li>
+<li>public，缓存对所有用户生效</li>
+<li>no-cache，始终对缓存进行过期验证</li>
+<li>no-store，不允许缓存</li>
+</ul>
+<p>过期时间上，</p>
+<ul>
+<li>min-fresh，返回指定时间范围内的非过期资源</li>
+<li>max-stale，返回指定时间范围内过期、非过期资源</li>
+<li>max-age，单位：秒，最大缓存时间</li>
+<li>s-max-age，同上，只用于CDN缓存</li>
+</ul>
+<p>二次验证上，</p>
+<ul>
+<li>only-if-cached，强制从缓存服务器中获取内容</li>
+<li>immutable，一旦缓存不可更改</li>
+<li>must-revalidate，即使本地已缓存，仍要求检查CDN缓存</li>
+<li>proxy-revalidate，缓存服务器必须检查源内容是否改变</li>
+</ul>
+<h4 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h4><p>管理连接，主要有两个用途。</p>
+<ul>
+<li>指定不希望转发给代理的字段</li>
+<li>管理持久连接。使用<code>Connection: Keep-Alive</code>建立连接（HTTP1.1默认行为），使用<code>Connection: Close</code>终止连接</li>
+</ul>
+<h4 id="Date"><a href="#Date" class="headerlink" title="Date"></a>Date</h4><p>报文创建时间。行如“Date: Tue, 03 Jul 2012 04:31:12 GMT”</p>
+<h4 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a>Pragma</h4><p>历史遗留字段。<code>Pragma: no-cache</code>等同于<code>Cache-Control: no-cache</code>。</p>
+<p>除此外还有：</p>
+<ul>
+<li>Trailer，说明报文主体中记录的首部字段</li>
+<li>Transfer-Encoding，分段传输的主体编码</li>
+<li>Upgrade，切换协议，<strong>配合<code>Connection: Upgrade</code>使用</strong></li>
+<li>Via，标明沿途的整条路径</li>
+<li>Warning，缓存相关警告</li>
+</ul>
+<h3 id="请求首部"><a href="#请求首部" class="headerlink" title="请求首部"></a>请求首部</h3><ul>
+<li>Accept 接受文件的类型，类型间可以指定<code>q=x</code>表示权重值，x的取值在0到1之间。下同</li>
+<li>Accept-Charset 可以接受的文件字符集</li>
+<li>Accept-Encoding 可以接受的文件编码，有gzip，compress，deflate，indentity几种</li>
+<li>Accept-Language 可接受的语言</li>
+<li>Authorization 服务端需要的用户验证信息</li>
+<li>Age 从缓存实体产生到现在经历的时间</li>
+<li>Expect 期望的服务端返回状态码，服务端无法满足时返回417状态码，客户端等待服务端100响应时发送的请求都要带上该字段</li>
+<li>Host 服务器的主机名，通常是请求资源的URL</li>
+<li>If-Match 需要匹配的Etag，不满足时返回412，表示不满足条件</li>
+<li>If-Modified-Since 返回指定日期后的新内容，否则返回304</li>
+<li>If-Unmodified-Since 类似上</li>
+<li>If-Range 类似If-Match不过是范围匹配</li>
+<li>Max-Forwards 报文最多转发次数，通常配合TRACE方法使用</li>
+<li>Proxy-Authorization 代理服务端需要的用户验证信息</li>
+<li>Range 请求资源的部分内容，一般用在多线程下载（客户端发起）</li>
+<li>Referer 当前请求从哪个地址发起</li>
+<li>User-Agent 请求发起终端信息</li>
+</ul>
+<h3 id="响应首部"><a href="#响应首部" class="headerlink" title="响应首部"></a>响应首部</h3><ul>
+<li>Accept-Ranges，表示服务器是否支持Range请求，支持时值为bytes，否则是none</li>
+<li>Age，表示缓存到目前为止过了多久（HTTP1.0）</li>
+<li>Etag，资源的唯一标识，分为强Etag和弱Etag</li>
+<li>Location，用在3xx的请求中，表示客户端需要重定向到的新地址</li>
+<li>WWW-Authentication&#x2F;Proxy-Authentication，服务器、代理使用的认证类型</li>
+<li>Server，服务器信息</li>
+<li>Vary，与Vary指定首部字段同名的请求才会命中缓存</li>
+</ul>
+<h3 id="实体首部"><a href="#实体首部" class="headerlink" title="实体首部"></a>实体首部</h3><ul>
+<li>Allow 允许的访问方法</li>
+<li>Content-Encoding&#x2F;Content-Language&#x2F;Content-Length&#x2F; 内容的编码、语言、长度、类型</li>
+<li>Content-Location 内容的位置，通常在和访问URI时会用到</li>
+<li>Content-MD5 内容MD5编码，便于和客户端编码后进行对比，防止内容篡改</li>
+<li>Content-Range 用于部分请求</li>
+<li>Content-Type 文件类型，包括MIME type和字符集</li>
+<li>Expires&#x2F;Last-Modified 文件的过期时间和上次修改时间，用户判断缓存是否过期</li>
+</ul>
+<p>除此之外，还有和Cookie相关的两个头部，它们来自网景公司对于Cookie的设计。</p>
+<ul>
+<li>Set-Cookie，服务端下发设置Cookie信息。包含下列信息<ul>
+<li>expires，过期时间</li>
+<li>path，适用路径</li>
+<li>domain，适用域名</li>
+<li>secure，限制https才会携带Cookie</li>
+<li>HttpOnly，限制JS脚本访问Cookie</li>
+<li>下发的cookie内容</li>
+</ul>
+</li>
+<li>Cookie，客户端期望的cookie内容</li>
+</ul>
+<p>另外还有一些常用的首部字段：</p>
+<ul>
+<li>X-Frame-Options，规定页面在iframe中的呈现方式<ul>
+<li>DENY 禁止访问</li>
+<li>SAMEORIGIN 仅允许同源访问</li>
+</ul>
+</li>
+<li>X-XSS-Protection，为1时开启XSS防御</li>
+</ul>
+<p><strong>不建议使用”X-“开头的方式拓展非标准首部</strong>。 </p>
+<h2 id="HTTPS简介"><a href="#HTTPS简介" class="headerlink" title="HTTPS简介"></a>HTTPS简介</h2><p>HTTP缺点：</p>
+<ul>
+<li>使用明文 -&gt; 通信内容可以被窃听 –HTTPS–&gt; 加密通信内容</li>
+<li>不能验证身份 -&gt; DDoS攻击和伪装服务器、客户端身份 –HTTPS–&gt; 证书证明身份</li>
+<li>不能验证内容完整性 -&gt; 中间人攻击 –HTTPS–&gt; HTTPS保证完整性</li>
+</ul>
+<p>HTTPS特征：</p>
+<ul>
+<li>加密内容</li>
+<li>证书</li>
+<li>完整性保护</li>
+</ul>
+<p>HTTPS建立在SSL连接之上，SSL建立在TCP连接上。SSL使用共享秘钥和公开秘钥加密两种方式混合加密。在秘钥确保安全的情况下，使用共享秘钥对称加密，优化速度；否则使用公开秘钥确保安全性。</p>
+<ul>
+<li>共享秘钥，双方使用同一秘钥加密和解密，秘钥被监听后加密就失去了意义</li>
+<li>公开秘钥，使用公开秘钥加密，使用私有秘钥解密</li>
+</ul>
+<p>然而公开密钥本身并不能确保完整性，需要证书机构（CA）颁发证书认证，确保秘钥和端的有效以及合法性。服务端也可以使用OpenSSL为自己颁发自认证证书，但是一般会在浏览器上弹出警告。</p>
+<p>HTTPS建立连接的过程包括：</p>
+<ol>
+<li>协商决定秘钥组件</li>
+<li>服务端发送公开密钥、证书</li>
+<li>客户端检查证书合法性，以确认服务端身份，并拿到公钥</li>
+<li>客户端发送pre-master secret随机字符串</li>
+<li>服务端使用私钥加密pre-master secret hash值，返回加密的hash值（避免黑客尝试破解私钥）</li>
+<li>客户端使用公钥解密hash，对比自己之前生成的pre-master secret字符串hash，若一致，及证明服务端身份的合法性</li>
+<li>客户端生成一个对称加密算法和秘钥master-secret，使用公钥加密，发送给服务端</li>
+<li>双方使用master-secret进行通信</li>
+</ol>
+<p>通信的完整性可以通过将报文内容生成hash交由客户端验证来实现。</p>
+<p>SSL最初由网景开发，1.0和2.0版本被发现存在问题已被废弃。3.0后由IETF接手。目前可用的协议版本有SSL3.0和TLS1.0、TLS1.1、TLS1.2，其中最常用的是SSL3.0和TLS1.0。</p>
+<p><strong>证书</strong></p>
+<p>证书包含：</p>
+<ul>
+<li>发布机构（CA）</li>
+<li>有效期</li>
+<li>持有者（由CA担保证明持有者身份）</li>
+<li>公钥</li>
+<li>数字签名算法</li>
+<li>指纹算法</li>
+</ul>
+<p>为了保证安全，在证书的发布机构发布证书时，证书的指纹和指纹算法，都会用自己的私钥加密后再和证书放到一起发布。使用者在打开证书时，根据加密算法，系统使用自带的公钥解密指纹和指纹算法，使用指纹算法计算证书的hash值和指纹对比，如果对的上就代表证书没问题。系统使用的公钥和证书一般由证书发布机构自己生成，内嵌在操作系统中。</p>
+<p>证书颁发机构（CA）通常会去做很多工作确保持有者的合法性，信任CA代表着信任CA颁发证书中的所有信息。所以一般系统只选择信誉较好的CA机构。公司内部使用或自生成的证书就只能被在指定范围内被信任。</p>
+<h2 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h2><ul>
+<li>BASIC 使用用户名密码验证，明文传输</li>
+<li>DIGEST 质询响应，防止密码被拦截，安全度和便利性都较差</li>
+<li>SSL 客户端证书 + HTTPS传输，成本高</li>
+<li>HTTP表单 + Cookie&#x2F;Session验证</li>
+</ul>
+<h2 id="功能追加协议"><a href="#功能追加协议" class="headerlink" title="功能追加协议"></a>功能追加协议</h2><p><strong>WebSocket</strong></p>
+<p>全双工，解决Ajax，长短轮询的局限。握手过程很简单：</p>
+<ul>
+<li>请求方添加<code>Upgrade</code>首部字段，声明升级到websocket。包含Sec-WebSocket-Key，Sec-WebSocket-Protocol，Sec-WebSocket-Verison等必要字段</li>
+<li>响应方回复101状态码，包含Sec-WebSocket-Accept（是根据Sec-WebSocket-Key生成的），Sec-WebSocket-Protocol</li>
+</ul>
+<p>连接建立后，双方使用WebSocket的方式进行通信</p>
+<p><strong>WebDAV</strong></p>
+<p>基于Web的文件属性管理。新增了一些方法和状态码，允许客户端远程修改服务器上的文件。</p>
+<h2 id="Web应用"><a href="#Web应用" class="headerlink" title="Web应用"></a>Web应用</h2><p><strong>RSS</strong></p>
+<p>RDF Site Summary，简易内容聚合。和Atom一样，使用XML的形式发布信息，通过特定的RSS阅读器阅读。</p>
+<h2 id="常见Web攻击方式"><a href="#常见Web攻击方式" class="headerlink" title="常见Web攻击方式"></a>常见Web攻击方式</h2><p>根本原因：HTTP本身没有必要的安全机制。</p>
+<h3 id="输出值转义相关攻击方式"><a href="#输出值转义相关攻击方式" class="headerlink" title="输出值转义相关攻击方式"></a>输出值转义相关攻击方式</h3><ul>
+<li>XSS，跨站脚本攻击，主要出现在<strong>动态拼接HTML</strong>的场景中，用户恶意注入的script代码段埋下陷阱，诱导用户误操作触发。盗取用户密码或Cookie信息</li>
+<li>SQL注入，通过URL注入的方式，制造恶意SQL语句，出现在<strong>动态拼接SQL语句</strong>的场景下。可以绕过认证、甚至破坏整个数据库</li>
+<li>OS命令注入，类似SQL注入，出现在<strong>动态拼接OS语句</strong>的场景下。</li>
+<li>HTTP首部攻击，出现在服务端响应头部使用了用户侧输入场景下，比如302响应中的Location头部可能存在的query部分。攻击者可以通过添加换行符，恶意添加新的首部字段，甚至篡改原有的响应主体</li>
+<li>邮箱首部注入攻击，类似HTTP首部攻击</li>
+</ul>
+<p>类似地还有目录遍历漏洞、远程文件引用漏洞。</p>
+<p>通过上面几种攻击方式，可以看到，<strong>永远不要信任用户侧输入</strong>，<strong>使用白名单机制，禁止动态拼接用户输入的语句</strong>。</p>
+<h3 id="设计缺陷相关攻击方式"><a href="#设计缺陷相关攻击方式" class="headerlink" title="设计缺陷相关攻击方式"></a>设计缺陷相关攻击方式</h3><ul>
+<li>强制浏览，在服务器公开目录下，浏览开发者本非自愿公开的文件。</li>
+<li>不正确的系统错误处理方式，数据库等内部系统抛出的错误，对用户毫无帮助，反倒能让攻击者看到服务背后的一些细节。包括，数据库错误、PHP等脚本错误、Web服务器的错误</li>
+<li>开放重定向，网站有诸如<code>?redirect=xxx</code>的path可以重定向时，一定要对redirect后的网址进行白名单控制，防止成为钓鱼攻击的跳板</li>
+</ul>
+<h3 id="session相关"><a href="#session相关" class="headerlink" title="session相关"></a>session相关</h3><ul>
+<li>XSS盗取cookie，伪装用户登录</li>
+<li>发送恶意链接，强制用户使用攻击者指定的session ID</li>
+<li>CSRF，跨站信息伪造，在带有用户信息的domain里留下恶意的网络请求，伪造用户发起请求，伪造请求可以通过<code>&lt;img src=&quot;xx&quot; /&gt;</code>, <code>&lt;video src=&quot;xxx&gt;&lt;/video&gt;</code>等多种形式</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>穷举法破解密码，暴力破解。使用图片验证码、手机验证码、机器检测等方式限制同IP的访问频率。<ul>
+<li>彩虹表。使用salt，增加破解难度</li>
+</ul>
+</li>
+<li>撞库。建议用户在不同域内使用不一样的密码</li>
+<li>点击劫持，使用透明元素覆盖在目标网页上。在18+网页中最常出现（😂）。</li>
+<li>DoS（Denial of Service）拒绝服务攻击，构造大量合法的网络请求，导致服务器超负荷。通常都是DDoS（Distributed Denial of Service）的形式。需要在IP层去过滤攻击的IP。</li>
+<li>后门程序</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/blog/tags/HTTP/" rel="tag"># HTTP</a>
+              <a href="/blog/tags/HTTPS/" rel="tag"># HTTPS</a>
+              <a href="/blog/tags/%E7%8A%B6%E6%80%81%E7%A0%81/" rel="tag"># 状态码</a>
+              <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/" rel="tag"># 网络攻击</a>
+              <a href="/blog/tags/%E4%BB%8B%E7%BB%8D/" rel="tag"># 介绍</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/09/02/dont-make-me-think-note/" rel="prev" title="《Don't make me think》 笔记">
+                  <i class="fa fa-chevron-left"></i> 《Don't make me think》 笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/10/01/some-tips-4/" rel="next" title="工作中的遇到的一些小知识 4">
+                  工作中的遇到的一些小知识 4 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

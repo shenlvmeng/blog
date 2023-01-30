@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="师兄给了一个虚网映射的仿真（cpp），和之前的embed-detail的C语言仿真工具很像，经过一周左右的学习，挖掘出了其中虚网映射部分的内容，在此整理，以作日后学习。鉴于之前embed-detail的学习总结很繁琐，这里的总结只做精要的介绍。 数据结构这一部分在Utility.h中完成，是对映射种种数据容器的整理。 节点：编号，CPU，带宽和，优先度 最短路：跳数，带宽，路径列表，下一跳 映射结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vnm test学习">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2016/02/27/vnm-test-learning/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="师兄给了一个虚网映射的仿真（cpp），和之前的embed-detail的C语言仿真工具很像，经过一周左右的学习，挖掘出了其中虚网映射部分的内容，在此整理，以作日后学习。鉴于之前embed-detail的学习总结很繁琐，这里的总结只做精要的介绍。 数据结构这一部分在Utility.h中完成，是对映射种种数据容器的整理。 节点：编号，CPU，带宽和，优先度 最短路：跳数，带宽，路径列表，下一跳 映射结">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-02-27T13:51:39.000Z">
+<meta property="article:modified_time" content="2017-03-01T07:38:24.000Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="虚网映射">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2016/02/27/vnm-test-learning/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2016/02/27/vnm-test-learning/","path":"2016/02/27/vnm-test-learning/","title":"vnm test学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>vnm test学习 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">节点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">最短路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E7%BB%93%E6%9E%9C%EF%BC%88%E5%8D%95%E8%8A%82%E7%82%B9%EF%BC%89%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">映射结果（单节点）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E7%B1%BB%EF%BC%89%E7%89%A9%E7%90%86%E6%8B%93%E6%89%91%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">（类）物理拓扑：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.4.1.</span> <span class="nav-text">方法：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E7%B1%BB%EF%BC%89%E8%99%9A%E6%8B%9F%E6%8B%93%E6%89%91%EF%BC%88%E7%BB%A7%E6%89%BF%E7%89%A9%E7%90%86%E6%8B%93%E6%89%91%EF%BC%89%EF%BC%9A"><span class="nav-number">1.5.</span> <span class="nav-text">（类）虚拟拓扑（继承物理拓扑）：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9A-1"><span class="nav-number">1.5.1.</span> <span class="nav-text">方法：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">核心方法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E7%89%A9%E7%90%86%E7%BD%91%E7%BB%9C%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">（物理网络）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">（虚拟网络）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">主程序</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2016/02/27/vnm-test-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="vnm test学习 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vnm test学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-02-27 21:51:39" itemprop="dateCreated datePublished" datetime="2016-02-27T21:51:39+08:00">2016-02-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-03-01 15:38:24" itemprop="dateModified" datetime="2017-03-01T15:38:24+08:00">2017-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2016/02/27/vnm-test-learning/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/27/vnm-test-learning/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>师兄给了一个虚网映射的仿真（cpp），和之前的embed-detail的C语言仿真工具很像，经过一周左右的学习，挖掘出了其中虚网映射部分的内容，在此整理，以作日后学习。鉴于之前embed-detail的学习总结很繁琐，这里的总结只做精要的介绍。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>这一部分在Utility.h中完成，是对映射种种数据容器的整理。</p>
+<h3 id="节点："><a href="#节点：" class="headerlink" title="节点："></a>节点：</h3><p>编号，CPU，带宽和，优先度</p>
+<h3 id="最短路："><a href="#最短路：" class="headerlink" title="最短路："></a>最短路：</h3><p>跳数，带宽，路径列表，下一跳</p>
+<h3 id="映射结果（单节点）："><a href="#映射结果（单节点）：" class="headerlink" title="映射结果（单节点）："></a>映射结果（单节点）：</h3><p>物理节点对象，虚拟节点编号，所属根节点，到根节点跳数，Node_list中序号，Node_list总数</p>
+<h3 id="（类）物理拓扑："><a href="#（类）物理拓扑：" class="headerlink" title="（类）物理拓扑："></a>（类）物理拓扑：</h3><p>节点总数，边总数，资源，节点资源，边资源；</p>
+<p>节点群（一维向量），边群（二维向量），最短路群（二维结构向量）；</p>
+<h4 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h4><ul>
+<li>初始化，</li>
+<li>节点排序算法，</li>
+<li>Floyd算法,</li>
+<li>找到节点序号对应的下标，</li>
+<li>计算网络资源</li>
+</ul>
+<h3 id="（类）虚拟拓扑（继承物理拓扑）："><a href="#（类）虚拟拓扑（继承物理拓扑）：" class="headerlink" title="（类）虚拟拓扑（继承物理拓扑）："></a>（类）虚拟拓扑（继承物理拓扑）：</h3><p>&#x2F;&#x2F;同物理拓扑</p>
+<p>允许最大跳数，分割率，拓扑类型，起始时间，映射时间，存活时间，消耗，节点消耗，链路消耗，收入，收入支出比，是否匹配成功，是否起请求截止，是否delay过，是否失败</p>
+<p>满足约束条件的节点群（二维向量），结果群（结果向量），最短路群（二维链表向量）</p>
+<h4 id="方法：-1"><a href="#方法：-1" class="headerlink" title="方法："></a>方法：</h4><ul>
+<li>读入拓扑，</li>
+<li>初始化，</li>
+<li>计算最短路径和，</li>
+<li>查找结点是否已经映射，</li>
+<li>匹配节点（包含匹配边），</li>
+<li>匹配边，</li>
+<li>匹配过程（包含匹配节点），</li>
+<li>分配或释放资源（匹配过程中完成），</li>
+<li>打印结果，</li>
+<li>计算收入支出，</li>
+<li>计算收入，</li>
+<li>释放虚网的所有资源</li>
+</ul>
+<h2 id="核心方法分析"><a href="#核心方法分析" class="headerlink" title="核心方法分析"></a>核心方法分析</h2><p>这一部分在Utility.cpp中完成，是对映射种种方法的实现。</p>
+<h3 id="（物理网络）"><a href="#（物理网络）" class="headerlink" title="（物理网络）"></a>（物理网络）</h3><p>1. 初始化：开辟最短路群空间，计算链路CPU&#x2F;带宽和&#x2F;PR值</p>
+<p>2. 计算资源：节点，链路资源相加。</p>
+<h3 id="（虚拟网络）"><a href="#（虚拟网络）" class="headerlink" title="（虚拟网络）"></a>（虚拟网络）</h3><p>1. 读入文件：读入节点数，链路数，开始时间，存活时间等。</p>
+<p>2. 初始化：填充Node_list</p>
+<p>3. 查找结点是否已被映射：for 循环遍历暴力查找</p>
+<p>4. 匹配节点：读入物理网络和参照物理网络，当前结点所属根节点，已映射节点数。</p>
+<p>（1）打印</p>
+<p>（2）从可行最短跳（虚拟网络中的跳数）到最大允许跳开始循环</p>
+<p>（2.1）从可行节点（Node_list）中查找满足CPU要求的节点</p>
+<p>（2.2）查找匹配边（Match_Edge），若有打印信息并返回</p>
+<p>（3）打印失败信息返回</p>
+<p>5. 匹配链路：读入物理网络预期参照，当前结点编号和下标，已映射节点数。</p>
+<p>（1）循环寻找所有与该节点关联的节点</p>
+<p>（1.1）若有关联，清空并循环更新最短路向量</p>
+<p>（1.2）循环检测带宽是否满足要求</p>
+<p>（2）循环还原减少的带宽资源</p>
+<p>（3）返回成功标记</p>
+<p>6. 匹配：读入物理拓扑，完成一个虚网的匹配</p>
+<p>（1）建立物理拓扑最短路矩阵</p>
+<p>（2）初始化最短路群，root, chosen_num（已选中节点数）</p>
+<p>（3）初始化根节点result类实例，若无备选节点，返回 0</p>
+<p>（4）循环寻找可行的根节点直到遍历完成</p>
+<p>（4.1）以当前父节点为基础开始匹配子节点，循环</p>
+<p>（4.1.1）循环寻找父节点的关联的子节点</p>
+<p>（4.1.1.1）若某节点无匹配物理节点，循环释放资源，返回 0</p>
+<p>（4.1.1.2）若找到，更新result群向量，调用匹配节点，找到对应物理节点序号</p>
+<p>（4.1.1.2.1）若成功返回，继续更新result，最短路矩阵，更新底层资源</p>
+<p>（4.1.1.2.2）若不成功，回退chosen_num，释放资源，更新root，最短路</p>
+<p>（4.1.2）若未回退到根节点，不用调整根节点，继续从下个父节点开始匹配，直到匹配完成</p>
+<p>（4.2）若匹配未完成，释放根节点和其余资源</p>
+<p>（5）若匹配成功计算收入支出返回回退次数，否则释放资源，返回 0；</p>
+<p>7. 资源管理：通过标记值区分占用或是释放，循环更新节点和链路资源</p>
+<p>8. 打印，计算收入支出</p>
+<p>9. 释放虚网资源：循环释放，返回释放资源值</p>
+<h2 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h2><p>这一部分在VNM.cpp中完成，是时间窗模型下虚网映射的实现。步骤如下：</p>
+<p>1. 初始化临时变量，</p>
+<p>2. 从文件中读入底层物理网络，虚网请求</p>
+<p>3.  打印初始信息，计算物理资源</p>
+<p>4. 循环到所有请求都被处理完成或是有finish标记</p>
+<p>4.1 循环计算该窗口内待映射请求数</p>
+<p>4.2 循环这些请求</p>
+<p>4.2.1 挑出未延迟且未成功的</p>
+<p>4.2.1.1 初始化虚网，打印信息</p>
+<p>4.2.1.2 开始匹配，计算时间</p>
+<p>4.2.1.3 计算收入，更改标记为映射完成或延迟</p>
+<p>4.2.1.4 计算当前物理资源，写入到文件</p>
+<p>4.2.2 挑出匹配成功且到期的请求</p>
+<p>4.2.2.1 更新它们的R&#x2F;S和完成数目</p>
+<p>4.2.2.2 释放它们的资源</p>
+<p>4.2.3 挑出delay过久的请求，置为失败，更新资源和计数器</p>
+<p>4.3 计算该时间窗内的支出，收入等数据，更新finish和计数器</p>
+<p>4.4 打印该时间窗测试数据到文件</p>
+<p>4.5 更新时间窗时间</p>
+<p>5. 关闭文件，打印当前时间</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/blog/tags/C/" rel="tag"># C</a>
+              <a href="/blog/tags/%E8%99%9A%E7%BD%91%E6%98%A0%E5%B0%84/" rel="tag"># 虚网映射</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2015/11/24/ducktype-reflection/" rel="prev" title="鸭子类型和反射——关于编程范式的一点学习">
+                  <i class="fa fa-chevron-left"></i> 鸭子类型和反射——关于编程范式的一点学习
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2016/03/21/front-end-note-1/" rel="next" title="前端学习小计-H5标签">
+                  前端学习小计-H5标签 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

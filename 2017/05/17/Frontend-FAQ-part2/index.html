@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="下面的大部分问题来自Github的这个仓库，排名不分先后  18. Vue和React框架的对比先说相同之处，Vue和React都是优秀的MVVM框架。具有响应式设计的种种特点，因此数据驱动是使用这两种框架不能忘的出发点。正如上一个问题提到的那样，开发者只需处理好数据，让框架去处理易错的UI。同时，组件化前端开发流程也是它们强调的一点，用组件化之名行代码重用之实，通过组件积木去构建整个页面。最后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端常见面试问题 part 2">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/05/17/Frontend-FAQ-part2/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="下面的大部分问题来自Github的这个仓库，排名不分先后  18. Vue和React框架的对比先说相同之处，Vue和React都是优秀的MVVM框架。具有响应式设计的种种特点，因此数据驱动是使用这两种框架不能忘的出发点。正如上一个问题提到的那样，开发者只需处理好数据，让框架去处理易错的UI。同时，组件化前端开发流程也是它们强调的一点，用组件化之名行代码重用之实，通过组件积木去构建整个页面。最后">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/tcp.png">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/tcp2.png">
+<meta property="article:published_time" content="2017-05-17T07:16:27.000Z">
+<meta property="article:modified_time" content="2017-09-05T10:54:18.000Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="面试">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shenlvmeng.github.com/blog/blog/images/tcp.png">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/05/17/Frontend-FAQ-part2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/05/17/Frontend-FAQ-part2/","path":"2017/05/17/Frontend-FAQ-part2/","title":"前端常见面试问题 part 2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>前端常见面试问题 part 2 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#18-Vue%E5%92%8CReact%E6%A1%86%E6%9E%B6%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">18. Vue和React框架的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">19. TCP三次握手，四次挥手过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-CSS%E9%A2%84%E5%A4%84%E7%90%86%E8%AF%AD%E8%A8%80"><span class="nav-number">3.</span> <span class="nav-text">20. CSS预处理语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-JS%E9%87%8C%E7%9A%84%E9%94%99%E8%AF%AF%E5%92%8C%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">21. JS里的错误和异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-%E9%97%AD%E5%8C%85"><span class="nav-number">5.</span> <span class="nav-text">22. 闭包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-%E5%88%97%E4%B8%BE%E4%B8%80%E4%BA%9BRESTful%E6%93%8D%E4%BD%9C%E5%90%8D"><span class="nav-number">6.</span> <span class="nav-text">23. 列举一些RESTful操作名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#24-%E5%88%97%E4%B8%BE%E4%B8%80%E4%BA%9BCSS%E4%B8%AD%E7%9A%84%E9%95%BF%E5%BA%A6%E5%8D%95%E4%BD%8D"><span class="nav-number">7.</span> <span class="nav-text">24. 列举一些CSS中的长度单位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#25-%E5%89%8D%E7%AB%AF%E8%81%8C%E8%B4%A3"><span class="nav-number">8.</span> <span class="nav-text">25. 前端职责</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#26-%E8%81%8C%E4%B8%9A%E8%A7%84%E5%88%92"><span class="nav-number">9.</span> <span class="nav-text">26. 职业规划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#27-%E8%8E%B7%E5%8F%96%E6%96%B0%E9%B2%9C%E8%B5%84%E8%AE%AF%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">10.</span> <span class="nav-text">27. 获取新鲜资讯的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#28-%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">28. 前端模块化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#29-position%E7%B1%BB%E5%9E%8B"><span class="nav-number">12.</span> <span class="nav-text">29. position类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#30-%E7%9B%92%E6%A8%A1%E5%9E%8B"><span class="nav-number">13.</span> <span class="nav-text">30. 盒模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#31-%E4%BD%BF%E7%94%A8%E5%8E%9F%E7%94%9FJS%E5%8F%91%E9%80%81AJAX"><span class="nav-number">14.</span> <span class="nav-text">31. 使用原生JS发送AJAX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#31-%E5%A6%82%E4%BD%95%E5%8A%A0%E5%BF%AB%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6"><span class="nav-number">15.</span> <span class="nav-text">31. 如何加快访问速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#32-%E5%89%8D%E7%AB%AF%E7%9A%84%E6%9C%AA%E6%9D%A5%E5%8F%91%E5%B1%95"><span class="nav-number">16.</span> <span class="nav-text">32. 前端的未来发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-CSS-selector%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7%E9%A1%BA%E5%BA%8F"><span class="nav-number">17.</span> <span class="nav-text">33. CSS selector的优先级顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-%E8%BF%9E%E7%AD%89%E7%9A%84%E8%B5%8B%E5%80%BC%E9%A1%BA%E5%BA%8F"><span class="nav-number">18.</span> <span class="nav-text">34. 连等的赋值顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#35-JavaScript%E7%9A%84hoist%E8%A1%8C%E4%B8%BA"><span class="nav-number">19.</span> <span class="nav-text">35. JavaScript的hoist行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#36-%E4%BC%98%E9%9B%85%E9%99%8D%E7%BA%A7%E5%92%8C%E6%B8%90%E8%BF%9B%E5%A2%9E%E5%BC%BA"><span class="nav-number">20.</span> <span class="nav-text">36. 优雅降级和渐进增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#37-%E4%BC%98%E5%8C%96%E7%BD%91%E9%A1%B5%E8%B5%84%E6%BA%90"><span class="nav-number">21.</span> <span class="nav-text">37. 优化网页资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#38-%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%80%E6%AC%A1%E5%8F%AF%E4%BB%A5%E4%BB%8E%E5%90%8C%E4%B8%80domain%E5%8A%A0%E8%BD%BD%E5%A4%9A%E5%B0%91%E8%B5%84%E6%BA%90"><span class="nav-number">22.</span> <span class="nav-text">38. 浏览器一次可以从同一domain加载多少资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#39-%E8%BD%AE%E6%92%AD%E5%9B%BE%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-number">23.</span> <span class="nav-text">39. 轮播图设计思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#40-CSS3%E7%9A%84%E9%83%A8%E5%88%86%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">24.</span> <span class="nav-text">40. CSS3的部分新特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#41-ARIA"><span class="nav-number">25.</span> <span class="nav-text">41. ARIA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#42-CSS-animation%E5%92%8CJavaScript-animation"><span class="nav-number">26.</span> <span class="nav-text">42. CSS animation和JavaScript animation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#43-doctype%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">27.</span> <span class="nav-text">43. doctype是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#44-standard-mode%E5%92%8Cquirks-mode"><span class="nav-number">28.</span> <span class="nav-text">44. standard mode和quirks mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#45-XHTML%E5%92%8CHTML"><span class="nav-number">29.</span> <span class="nav-text">45. XHTML和HTML</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/05/17/Frontend-FAQ-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="前端常见面试问题 part 2 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端常见面试问题 part 2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-05-17 15:16:27" itemprop="dateCreated datePublished" datetime="2017-05-17T15:16:27+08:00">2017-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-09-05 18:54:18" itemprop="dateModified" datetime="2017-09-05T18:54:18+08:00">2017-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/05/17/Frontend-FAQ-part2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/17/Frontend-FAQ-part2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>下面的大部分问题来自Github的这个<a target="_blank" rel="noopener" href="https://github.com/h5bp/Front-end-Developer-Interview-Questions">仓库</a>，排名不分先后</p>
+</blockquote>
+<h3 id="18-Vue和React框架的对比"><a href="#18-Vue和React框架的对比" class="headerlink" title="18. Vue和React框架的对比"></a>18. Vue和React框架的对比</h3><p>先说相同之处，Vue和React都是优秀的MVVM框架。具有<strong>响应式设计</strong>的种种特点，因此<strong>数据驱动</strong>是使用这两种框架不能忘的出发点。正如上一个问题提到的那样，开发者只需处理好数据，让框架去处理易错的UI。同时，<strong>组件化</strong>前端开发流程也是它们强调的一点，用组件化之名行代码重用之实，通过组件积木去构建整个页面。最后，它们不约而同地使用<strong>虚拟DOM树</strong>（vDOM）（Vue是在2.0引入的）抽象页面的节点，通过优化的diff算法减少频繁的DOM操作，减少交互的响应时间。另外，在最新的版本中，Vue和React的源码分别通过<a target="_blank" rel="noopener" href="https://flow.org/">Flow</a>和<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">TypeScript</a>加入类型约束，增强可读性和健壮性。</p>
+<p>两者同时也有MVVM框架共同的短板，把过多的渲染放在客户端，在页面元素复杂时，会加大交互的延迟。同时会影响首屏时间。</p>
+<p>再说它们的不同之处，不同之处基本都在使用细节上。</p>
+<ul>
+<li>Vue通常把网页模板写在<code>template</code>属性中，默认不支持JSX语法（可以通过插件支持）。React中则是写在render里</li>
+<li>Vue糅合了Angular 1.x的特点，通过一些内置的自定义标签属性减少开发者的代码量。React则更加纯粹，少了这些预设的框架</li>
+<li>Vue使用<code>Object.defineProperty</code>实现数据绑定，React通过<code>setState</code>显式更新依赖。前者更加酷和自然，但是在编程风格不好时，容易出现难以debug的错误。React推荐immutable Object，每次更新时使用新对象更新自身<code>state</code>，出错的概率更低。</li>
+<li>Vue和React在组件生命周期上有些细微的差别。Vue的生命周期更加简明，在create，mount，update，destroy前后设置钩子函数，React在state改变前后也会有钩子函数</li>
+<li>Vue的脚手架使用起来较React更加顺手（个人感觉），单文件.vue的组织方式，内部支持模板语言jade、ejs，预处理语言coffeescript，sass等。React的构建方式则更加自由。</li>
+<li>React的社区较之Vue更为活跃些，流行的库要更多，脚手架中的库更多是爱好者自己开发的。Vue和React生态圈中都有路由和状态管理器的工具，其中Vue的都是官方开发的。</li>
+</ul>
+<h3 id="19-TCP三次握手，四次挥手过程"><a href="#19-TCP三次握手，四次挥手过程" class="headerlink" title="19. TCP三次握手，四次挥手过程"></a>19. TCP三次握手，四次挥手过程</h3><p>过程参考下图。</p>
+<p><img src="/blog/blog/images/tcp.png"></p>
+<p><img src="/blog/blog/images/tcp2.png"></p>
+<p>因为断开连接时数据可能并未传输完成，所以挥手时要多一步。</p>
+<h3 id="20-CSS预处理语言"><a href="#20-CSS预处理语言" class="headerlink" title="20. CSS预处理语言"></a>20. CSS预处理语言</h3><p>Sass和Less。Sass支持变量的定义和使用，有语法控制结构，同时支持<code>@mixin</code>定义mixin和<code>@function</code>定义函数。更多介绍可以看我之前的<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/book.html#sass">一段笔记</a>。</p>
+<p>less语法使用上和Sass相近，采用JavaScript实现。支持本地和在线解析。本人没有用过，更多特性参考<a target="_blank" rel="noopener" href="http://lesscss.org/features/">官网</a>。</p>
+<h3 id="21-JS里的错误和异常处理"><a href="#21-JS里的错误和异常处理" class="headerlink" title="21. JS里的错误和异常处理"></a>21. JS里的错误和异常处理</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/try...catch">try catch</a>语句块捕获错误，catch块接受一个参数作为错误对象。对象的message属性会给出错误的详细信息。catch后还可以接上<code>finally</code>关键字，finally语句块在错误处理后必定执行。throw语句可以抛出错误。</p>
+<h3 id="22-闭包"><a href="#22-闭包" class="headerlink" title="22. 闭包"></a>22. 闭包</h3><p>闭包是JavaScript中比较有特色的概念。它和JS中的作用域链（见问题4）概念密切相关。闭包发生在函数中定义的函数，在外层函数退出后，其作用域环境通过作用域链仍然保存在存活的内部环境中。利用这种特点，可以实现诸如状态保存，封装等特殊性质。</p>
+<p>值得注意的是，内层函数的不合理操作会导致内存泄漏。且大量使用闭包会导致性能问题。不要过度依赖闭包。</p>
+<h3 id="23-列举一些RESTful操作名"><a href="#23-列举一些RESTful操作名" class="headerlink" title="23. 列举一些RESTful操作名"></a>23. 列举一些RESTful操作名</h3><p>GET&#x2F;POST&#x2F;DELETE&#x2F;UPDATE&#x2F;PUT等</p>
+<h3 id="24-列举一些CSS中的长度单位"><a href="#24-列举一些CSS中的长度单位" class="headerlink" title="24. 列举一些CSS中的长度单位"></a>24. 列举一些CSS中的长度单位</h3><p><span id="question24"></span></p>
+<p>固定长度：</p>
+<ul>
+<li>px 像素点</li>
+<li>mm 毫米</li>
+<li>cm 厘米</li>
+<li>in 英寸</li>
+<li>pt 磅（1&#x2F;72英寸）</li>
+<li>pc 活字（1&#x2F;6英寸）</li>
+</ul>
+<p>相对长度：</p>
+<ul>
+<li>em 以字体大小(<code>font-size</code>)为单位</li>
+<li>ex 以小写字母大小为单位</li>
+<li>rem 以根元素（默认为<code>&lt;html&gt;</code>）的字体大小为单位，用于自适应布局</li>
+<li>vh 视口高度的1&#x2F;100</li>
+<li>vw 视口宽度的1&#x2F;100</li>
+<li>vmin 视口宽高较小值的1&#x2F;100</li>
+<li>vmax 视口宽高较大值的1&#x2F;100</li>
+</ul>
+<h3 id="25-前端职责"><a href="#25-前端职责" class="headerlink" title="25. 前端职责"></a>25. 前端职责</h3><p>狭义地来说是实现UI设计师的设计稿和UE、UX的交互细节。宏观来说，是借助浏览器在技术上处理和用户交互的所有环节。近些年来，借助native的帮助，前端还可以实现后台的业务部分。</p>
+<h3 id="26-职业规划"><a href="#26-职业规划" class="headerlink" title="26. 职业规划"></a>26. 职业规划</h3><p>略</p>
+<h3 id="27-获取新鲜资讯的方式"><a href="#27-获取新鲜资讯的方式" class="headerlink" title="27. 获取新鲜资讯的方式"></a>27. 获取新鲜资讯的方式</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://uptodate.frontendrescue.org/zh/">这个</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.echojs.com/">Echo JS</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/welcome/frontend">掘金</a></li>
+<li>一些awesome的集锦，诸如<a target="_blank" rel="noopener" href="https://github.com/syaning/awesome-frontend">这个</a></li>
+<li>知乎，github等</li>
+</ul>
+<h3 id="28-前端模块化"><a href="#28-前端模块化" class="headerlink" title="28. 前端模块化"></a>28. 前端模块化</h3><p>模块化规范包括CommonJS，CMD（SeaJS），AMD（RequireJS）等。我此前做过一个小型的<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/book.html#commonjs">笔记</a>。</p>
+<h3 id="29-position类型"><a href="#29-position类型" class="headerlink" title="29. position类型"></a>29. position类型</h3><p>static, relative, absolute, fix四种。</p>
+<ul>
+<li>static 正常文档流</li>
+<li>relative 正常文档流，指定<code>top</code>, <code>left</code>等CSS属性相对原位置移动</li>
+<li>absolute 脱离文档流，相对上一个非static元素定位</li>
+<li>fix 脱离文档流，相对html定位</li>
+</ul>
+<p>通常建议使用正常文档流减少潜在bug。绘制复杂动画时，建议使用脱离文档流的布局。</p>
+<h3 id="30-盒模型"><a href="#30-盒模型" class="headerlink" title="30. 盒模型"></a>30. 盒模型</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Introduction_to_the_CSS_box_model">盒模型</a>意为所有渲染的元素都是一个个的矩形。矩形区域内包含<code>margin</code>, <code>border</code>, <code>padding</code>和<code>content</code>4层。CSS属性中只有<strong>两种</strong>盒模型：<code>border-box</code>和<code>content-box</code>。后者是默认值。可以通过<code>box-sizing</code>属性设置。</p>
+<h3 id="31-使用原生JS发送AJAX"><a href="#31-使用原生JS发送AJAX" class="headerlink" title="31. 使用原生JS发送AJAX"></a>31. 使用原生JS发送AJAX</h3><p>现代浏览器中都通过XMLHttpRquest对象实现Ajax请求。古老的IE浏览器会有不同的实现方法（目前已经很少见了），如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Msxml2.XMLHTTP.6.0&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>通常使用XMLHttpRequest发送GET的方法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">xhr.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;demo.php?id=1&quot;</span>);</span><br><span class="line">xhr.<span class="title function_">send</span>()</span><br></pre></td></tr></table></figure>
+
+<p>发送POST和其他复杂请求时，需要设置request header，在需要接受AJAX返回时，还可以监听readyState的change事件<br>，大致像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">xhr.<span class="title function_">open</span>(<span class="string">&quot;POST&quot;</span>, <span class="string">&quot;ajax_post.php&quot;</span>);</span><br><span class="line">xhr.<span class="title function_">setRequestHeader</span>(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">xhr.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (xhr.<span class="property">readyState</span> === <span class="number">4</span> &amp;&amp; xhr.<span class="property">status</span> === <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;ok&quot;</span> + xhr.<span class="property">responseText</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>XMLHttpRequest2中又引入了进度，跨域，中止等新特性。</p>
+<p>另外，使用新的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch">Fetch API</a>也可以完成Ajax请求。Fetch提出的目标是提供访问和操纵HTTP的接口，异步的获取网络资源。它和XMLHttpRequst的区别是：</p>
+<ul>
+<li>即使响应是404或500，返回的Promise也会正常解决</li>
+<li>默认情况下，fetch在服务端不会发送或接受任何cookies</li>
+</ul>
+<p>在Ajax需要跨域时，最常用的方法是使用jsonp的形式实现。不过目前通过XMLHttpRequest2或fetch也都能完成跨域请求。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">jsonp</span>(<span class="params">url, success</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> ud = <span class="string">&#x27;_&#x27;</span> + +<span class="keyword">new</span> <span class="title class_">Date</span>,</span><br><span class="line">      script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>),</span><br><span class="line">      head = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;head&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">          || <span class="variable language_">document</span>.<span class="property">documentElement</span>;</span><br><span class="line">  <span class="variable language_">window</span>[ud] = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    head.<span class="title function_">removeChild</span>(script);</span><br><span class="line">    success &amp;&amp; <span class="title function_">success</span>(data);</span><br><span class="line">  &#125;;</span><br><span class="line">  script.<span class="property">src</span> = url.<span class="title function_">replace</span>(<span class="string">&#x27;callback=?&#x27;</span>, <span class="string">&#x27;callback=&#x27;</span> + ud);</span><br><span class="line">  head.<span class="title function_">appendChild</span>(script);</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">jsonp</span>(<span class="string">&#x27;http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?&#x27;</span>, <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="31-如何加快访问速度"><a href="#31-如何加快访问速度" class="headerlink" title="31. 如何加快访问速度"></a>31. 如何加快访问速度</h3><p>这个问题实际上很大，可以从各个方面去优化</p>
+<ul>
+<li>压缩并打包资源文件</li>
+<li>使用CDN存储资源文件</li>
+<li>设置缓存</li>
+<li>CSS sprites</li>
+<li>图片压缩</li>
+<li>图片懒加载</li>
+<li>合理的DOM层级设置</li>
+<li>为<code>&lt;script&gt;</code>标签设置<code>defer</code>或<code>async</code>或动态异步加载</li>
+<li>一般情况下，CSS在前，JS在后</li>
+<li>使用MVVM框架时，使用服务端渲染或预渲染</li>
+</ul>
+<h3 id="32-前端的未来发展"><a href="#32-前端的未来发展" class="headerlink" title="32. 前端的未来发展"></a>32. 前端的未来发展</h3><p>随着大前端的风吹来，前端工作在横向和纵向都获得了更多的机会。横向上，由PC端到移动端甚至有界面展示的智能终端。不过后两者需要记住native库的帮助。纵向上，在NodeJS的帮助下，后台的部分业务功能抽离出来交由前端完成，前端对界面有完整的控制，数据通过接口的形式向后台索取。现在看来，身为一个前端工程师，不仅要对HTML，CSS，JavaScript老三样了如指掌，对Android或iOS也渐渐有了些要求。</p>
+<h3 id="33-CSS-selector的优先级顺序"><a href="#33-CSS-selector的优先级顺序" class="headerlink" title="33. CSS selector的优先级顺序"></a>33. CSS selector的优先级顺序</h3><p>在<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Style_sheets">how browsers work</a>中有介绍。根据<a target="_blank" rel="noopener" href="https://www.w3.org/TR/selectors/#specificity">CSS3 selectors specificity</a>中的定义，一个选择器的优先级计算如下</p>
+<ol>
+<li>如果声明来自于style属性，而不是带有选择器的规则，则记为1，否则记为0 (&#x3D; a)</li>
+<li>记为选择器中ID属性的个数 (&#x3D; b)<br>3.记为选择器中其他属性和伪类的个数 (&#x3D; c)</li>
+<li>记为选择器中元素名称和伪元素的个数 (&#x3D; d)</li>
+</ol>
+<p>将四个数字按a-b-c-d这样连接起来（位于大数进制的数字系统中），构成特异性。所使用的进制取决于上述类别中的最高计数。最终决定优先级顺序。简而言之就是，style &gt; id &gt; class &gt; tag &gt; pseudo class，统计情况下看个数，有<code>!important</code>时，以<code>!important</code>为准。</p>
+<h3 id="34-连等的赋值顺序"><a href="#34-连等的赋值顺序" class="headerlink" title="34. 连等的赋值顺序"></a>34. 连等的赋值顺序</h3><p>问题是，有这样一段代码，问原理是什么：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> bar = foo;</span><br><span class="line">foo.<span class="property">x</span> = foo = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(foo.<span class="property">x</span>); <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>我们来细化一下过程，首先我们要明确JavaScript中对象是引用类型：</p>
+<ul>
+<li>第一句里，首先创建了一个字面量对象，并将foo指向之</li>
+<li>第二句里，将foo赋值给bar，即bar也指向<code>&#123; n: 1 &#125;</code>这个对象</li>
+<li>第三句里，又创建了一个<code>&#123; n: 2 &#125;</code>的对象，首先寻找foo指向对象中是否有x属性，没有时则新建一个x属性指向这个字面量对象，接着改变foo存储的地址，指向这个新的对象。</li>
+<li>第四句里，由于新的对象没有x属性，<code>foo.x</code>将返回<code>undefined</code></li>
+</ul>
+<p>这时，如果我们<code>console.log(bar)</code>结果将是{x: {n: 2}, n: 1}&#96;。</p>
+<h3 id="35-JavaScript的hoist行为"><a href="#35-JavaScript的hoist行为" class="headerlink" title="35. JavaScript的hoist行为"></a>35. JavaScript的hoist行为</h3><p><code>hoist</code>特性又叫<strong>变量声明提升</strong>。是JavaScript中比较有特点的特性。意为将作用域中所有变量（包括函数）声明提升到语句的开头。如下面的语句</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fun</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>等同于</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fun</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line">a = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是当通过函数表达式声明函数时，会提示<code>fun</code>未定义。因为，此时的语句等同于</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a;</span><br><span class="line"><span class="keyword">var</span> fun;</span><br><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line">a = <span class="number">0</span>;</span><br><span class="line">fun = <span class="keyword">function</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，最佳的风格是所有的变量先声明再使用。这也是JSLint和JSHint等linter工具推荐的。</p>
+<h3 id="36-优雅降级和渐进增强"><a href="#36-优雅降级和渐进增强" class="headerlink" title="36. 优雅降级和渐进增强"></a>36. 优雅降级和渐进增强</h3><p>又名graceful degration和progressive enhancement。是两种开发的思路。前者意为针对最高级的浏览器设计开发，再保证向下兼容；后者意为针对低版本浏览器设计，保证基础性能，再追对现代浏览器追加效果，提高用户体验。</p>
+<h3 id="37-优化网页资源"><a href="#37-优化网页资源" class="headerlink" title="37. 优化网页资源"></a>37. 优化网页资源</h3><ol>
+<li>使用CDN</li>
+<li>分布存放</li>
+<li>CSS sprites</li>
+<li>disable etag</li>
+</ol>
+<h3 id="38-浏览器一次可以从同一domain加载多少资源"><a href="#38-浏览器一次可以从同一domain加载多少资源" class="headerlink" title="38. 浏览器一次可以从同一domain加载多少资源"></a>38. 浏览器一次可以从同一domain加载多少资源</h3><p>2~8，因浏览器而异。<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser/14768266#14768266">这里</a>有个非常全的表。</p>
+<h3 id="39-轮播图设计思路"><a href="#39-轮播图设计思路" class="headerlink" title="39. 轮播图设计思路"></a>39. 轮播图设计思路</h3><p>可以用display实现，配合渐变效果。需要看到幻灯片移动时，可以结合transform和scale实现，配合<code>overflow: hidden</code>。</p>
+<h3 id="40-CSS3的部分新特性"><a href="#40-CSS3的部分新特性" class="headerlink" title="40. CSS3的部分新特性"></a>40. CSS3的部分新特性</h3><ul>
+<li>border: <code>border-radius</code>，<code>border-image</code></li>
+<li>background: <code>background-size</code>，<code>background-origin</code></li>
+<li>text: <code>font-face</code>，<code>text-overflow</code>，<code>text-shadow</code>，<code>word-break</code>，<code>word-wrap</code></li>
+<li>transform: <code>translate</code>，<code>rotate</code>，<code>skew</code>，<code>scale</code></li>
+<li>transition: <code>transition</code>，<code>animation</code></li>
+<li>other: <code>box-shadow</code></li>
+</ul>
+<h3 id="41-ARIA"><a href="#41-ARIA" class="headerlink" title="41. ARIA"></a>41. ARIA</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">ARIA</a>全称Accessible Rich Internet Application。主旨是提升网页易用性，方便有阅读障碍的人使用。比较常用的属性有</p>
+<ul>
+<li><code>role</code> 当前元素的作用，</li>
+<li><code>&lt;label&gt;</code>, <code>aria-label</code> 元素名</li>
+<li><code>aria-hidden</code> 是否隐藏</li>
+</ul>
+<h3 id="42-CSS-animation和JavaScript-animation"><a href="#42-CSS-animation和JavaScript-animation" class="headerlink" title="42. CSS animation和JavaScript animation"></a>42. CSS animation和JavaScript animation</h3><p>前者方便简单，通过keyframe就可以画出动画，且浏览器会做一些优化，因此性能也比较好。后者更加灵活，可以暂停和反转，且支持交互性。更详细的分析参考<a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/design-and-ui/animations/css-vs-javascript?hl=zh-cn">这里</a></p>
+<h3 id="43-doctype是什么"><a href="#43-doctype是什么" class="headerlink" title="43. doctype是什么"></a>43. doctype是什么</h3><p>doctype出现在HTML4.1。用于规范HTML和XML文档格式，在推出时，HTML有3种标准可以选择：strict, transitional, frameset。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/strict.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01 Frameset//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/frameset.dtd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在HTML5中，只有一种doctype可以选择，那就是html：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="44-standard-mode和quirks-mode"><a href="#44-standard-mode和quirks-mode" class="headerlink" title="44. standard mode和quirks mode"></a>44. standard mode和quirks mode</h3><p>分别是标准模式和怪异模式。由于历史原因，为了兼容标准建立前就已存在的古老网站，浏览器存在着两种解析网页的模式。在怪异模式下，排版会模拟Navigator 4与Internet Explorer 5的非标准行为。为了支持在网络标准被广泛采用前，就已经建好的网站，这么做是必要的。在标准模式下，行为即（但愿如此）由HTML与CSS的规范描述的行为。在<code>&lt;!DOCTYPE&gt;</code>中指定<code>html</code>将自动启用标准模式。<a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/web/1310_shatao_quirks/">这里</a>有更多介绍。</p>
+<h3 id="45-XHTML和HTML"><a href="#45-XHTML和HTML" class="headerlink" title="45. XHTML和HTML"></a>45. XHTML和HTML</h3><p>XHTML伴随HTML4.01一同提出，使用更加严谨的语法。MIMEtype为<code>application/xhtml+xml</code>，比如：html元素需要有xml相关属性，元素名必须是小写字母，元素属性用<code>&quot;</code>包围不能为空值，在内容里不能有<code>&amp;</code>, 需要转义，包括其他特殊字符<code>&lt;&gt;</code>，空元素以<code>/&gt;</code>结尾。由于语法过于严苛，使用的人不多。未推出的XHTML1.1便被html5取代。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+              <a href="/blog/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/blog/tags/FAQ/" rel="tag"># FAQ</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/05/12/Frontend-FAQ-part1/" rel="prev" title="前端常见面试问题 part 1">
+                  <i class="fa fa-chevron-left"></i> 前端常见面试问题 part 1
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/05/19/Frontend-FAQ-part3/" rel="next" title="前端常见面试问题 part 3">
+                  前端常见面试问题 part 3 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

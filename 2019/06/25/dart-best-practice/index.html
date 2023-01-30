@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="参考自Effective Dart，截至2019&#x2F;06&#x2F;12  通用原则类似其他编程语言，有下面两点注意事项：  Be consistent, 统一风格 Be brief, 保持精简，DRY  最佳实践指南以下面的关键词开头：  要，一定遵守，下面没有前缀的就是以此开头 不要，这么做不是个好主意 推荐，应该遵守，当不遵守时确保有合理理由 避免，和上面相反，除非有足够好的理由，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dart快速入门 效率篇">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/06/25/dart-best-practice/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="参考自Effective Dart，截至2019&#x2F;06&#x2F;12  通用原则类似其他编程语言，有下面两点注意事项：  Be consistent, 统一风格 Be brief, 保持精简，DRY  最佳实践指南以下面的关键词开头：  要，一定遵守，下面没有前缀的就是以此开头 不要，这么做不是个好主意 推荐，应该遵守，当不遵守时确保有合理理由 避免，和上面相反，除非有足够好的理由，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-24T16:51:28.000Z">
+<meta property="article:modified_time" content="2019-06-24T16:54:59.914Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="Dart">
+<meta property="article:tag" content="最佳实践">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/06/25/dart-best-practice/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2019/06/25/dart-best-practice/","path":"2019/06/25/dart-best-practice/","title":"Dart快速入门 效率篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Dart快速入门 效率篇 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%8E%9F%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">通用原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">样式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">2.1.1.</span> <span class="nav-text">标识符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F"><span class="nav-number">2.1.2.</span> <span class="nav-text">顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-number">2.1.3.</span> <span class="nav-text">格式化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">2.2.</span> <span class="nav-text">文档</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">2.2.1.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E6%B3%A8%E9%87%8A"><span class="nav-number">2.2.2.</span> <span class="nav-text">文档注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Markdown"><span class="nav-number">2.2.3.</span> <span class="nav-text">Markdown</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%8C%E6%96%87"><span class="nav-number">2.2.4.</span> <span class="nav-text">行文</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.3.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%93"><span class="nav-number">2.3.1.</span> <span class="nav-text">库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.3.2.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88"><span class="nav-number">2.3.3.</span> <span class="nav-text">集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.4.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">2.3.5.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">2.3.6.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E5%91%98"><span class="nav-number">2.3.7.</span> <span class="nav-text">成员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.8.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-number">2.3.9.</span> <span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5"><span class="nav-number">2.3.10.</span> <span class="nav-text">异步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.</span> <span class="nav-text">API设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E5%90%8D"><span class="nav-number">2.4.1.</span> <span class="nav-text">命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%93-1"><span class="nav-number">2.4.2.</span> <span class="nav-text">库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">2.4.3.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-1"><span class="nav-number">2.4.4.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E5%91%98-1"><span class="nav-number">2.4.5.</span> <span class="nav-text">成员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.6.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0-1"><span class="nav-number">2.4.7.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%90%8C%E5%88%A4%E6%96%AD"><span class="nav-number">2.4.8.</span> <span class="nav-text">相同判断</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/06/25/dart-best-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Dart快速入门 效率篇 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dart快速入门 效率篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-06-25 00:51:28 / 修改时间：00:54:59" itemprop="dateCreated datePublished" datetime="2019-06-25T00:51:28+08:00">2019-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/06/25/dart-best-practice/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/25/dart-best-practice/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>参考自<a target="_blank" rel="noopener" href="https://dart.dev/guides/language/effective-dart">Effective Dart</a>，截至2019&#x2F;06&#x2F;12</p>
+</blockquote>
+<h2 id="通用原则"><a href="#通用原则" class="headerlink" title="通用原则"></a>通用原则</h2><p>类似其他编程语言，有下面两点注意事项：</p>
+<ul>
+<li>Be consistent, 统一风格</li>
+<li>Be brief, 保持精简，DRY</li>
+</ul>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>指南以下面的关键词开头：</p>
+<ul>
+<li><strong>要</strong>，一定遵守，下面没有前缀的就是以此开头</li>
+<li><strong>不要</strong>，这么做不是个好主意</li>
+<li><strong>推荐</strong>，应该遵守，当不遵守时确保有合理理由</li>
+<li><strong>避免</strong>，和上面相反，除非有足够好的理由，否则不应该这么做</li>
+<li><strong>考虑</strong>，根据实际情况而定</li>
+</ul>
+<p>同时会提到下面这些客体：</p>
+<ul>
+<li><strong>库成员</strong>，顶级变量、getter、setter、函数</li>
+<li><strong>类成员</strong>，类变量、getter、setter、函数</li>
+<li><strong>成员</strong>，库成员或类成员</li>
+<li><strong>变量</strong></li>
+<li><strong>属性</strong>，类中的成员变量、getter、setter，顶级变量、getter、setter</li>
+</ul>
+<h3 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h3><h4 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h4><ul>
+<li>类名用UpperCamelCase风格</li>
+<li>库和文件名用lowercase_with_underscores风格</li>
+<li>导入前缀用lowercase_with_underscores风格<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:javascript_utils/javascript_utils.dart&#x27;</span> <span class="keyword">as</span> js_utils;</span><br></pre></td></tr></table></figure></li>
+<li>其他标识符使用lowerCamelCase风格</li>
+<li><strong>推荐</strong>使用lowerCamelCase风格命名常量<ul>
+<li>原因：CAPS_STYLE可读性差&#x2F;可能会用于final变量&#x2F;和枚举不搭</li>
+</ul>
+</li>
+<li>把超过2个字母的缩略词当做一般单词来做首字母大写<ul>
+<li>原因：提高可读性</li>
+</ul>
+</li>
+<li><strong>不要</strong>在标识符前加前缀<ul>
+<li>举例：<code>kTimes</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="顺序"><a href="#顺序" class="headerlink" title="顺序"></a>顺序</h4><ul>
+<li>把”dart:”导入语句放在最前</li>
+<li>把”package:”放在相对导入前</li>
+<li><strong>推荐</strong>把第三方”package:”导入放在其他语句前</li>
+<li>export语句放在最后</li>
+<li>按字母序排序</li>
+</ul>
+<h4 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h4><ul>
+<li>使用dartfmt帮你美化</li>
+<li><strong>考虑</strong>让你的代码更容易美化</li>
+<li><strong>避免</strong>每行超过80字符</li>
+<li>所有控制结构都使用大括号<ul>
+<li>只有if语句写成1行时可以省略</li>
+</ul>
+</li>
+</ul>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><ul>
+<li>使用句子的形式表达注释</li>
+<li>用单行注释符表达注释</li>
+</ul>
+<h4 id="文档注释"><a href="#文档注释" class="headerlink" title="文档注释"></a>文档注释</h4><ul>
+<li>用<code>///</code>表达文档注释</li>
+<li><strong>推荐</strong>为公开API书写注释</li>
+<li><strong>考虑</strong>为私有API书写注释</li>
+<li>用一句话为文档注释开头</li>
+<li>类似git commit message，第一行后空出一行独立成段</li>
+<li>去掉能从上下文直接读出的冗余信息</li>
+<li><strong>推荐</strong>使用第三人称动词开头表示函数、方法注释</li>
+<li><strong>推荐</strong>使用名词短语开头表示变量、成员、getter、setter注释</li>
+<li><strong>推荐</strong>使用名词短语开头表示库、类型注释</li>
+<li><strong>考虑</strong>在注释中添加示例代码</li>
+<li>在注释中用<code>[]</code>方括号引用作用域里的标识符</li>
+<li>使用简短平实的语言描述参数、返回值和异常</li>
+<li>在注解（annotation）前添加注释</li>
+</ul>
+<h4 id="Markdown"><a href="#Markdown" class="headerlink" title="Markdown"></a>Markdown</h4><p>Dart允许在comment中使用Markdown格式。</p>
+<ul>
+<li><strong>避免</strong>滥用markdown</li>
+<li><strong>避免</strong>使用html格式化文本</li>
+<li><strong>推荐</strong>使用反引号（```）格式化代码</li>
+</ul>
+<h4 id="行文"><a href="#行文" class="headerlink" title="行文"></a>行文</h4><ul>
+<li><strong>推荐</strong>简洁清晰</li>
+<li><strong>避免</strong>使用缩写和首字母缩略词</li>
+<li><strong>推荐</strong>使用“this”而不是“the”来引用实例成员</li>
+</ul>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>下面的规则是书写Dart代码时需要知道的指导原则，尤其是维护你类库的人。</p>
+<h4 id="库"><a href="#库" class="headerlink" title="库"></a>库</h4><ul>
+<li><p>出于历史原因，Dart允许通过<code>part of</code>的方式使用库的一部分文件，使用时通过路径而不是变量名引用</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span> my_library;</span><br><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">part</span> of <span class="string">&quot;../../my_library.dart&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bad case</span></span><br><span class="line"><span class="keyword">part</span> of my_library</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不要从库的<code>src</code>文件夹下引用代码</p>
+</li>
+<li><p><strong>推荐</strong>使用相对路径应用库，但是不要跨<code>src</code>文件夹引用</p>
+</li>
+</ul>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><ul>
+<li>在长字符串场景下，使用邻接字符串而不是“+”链接<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line">raiseAlarm(</span><br><span class="line">    <span class="string">&#x27;ERROR: Parts of the spaceship are on fire. Other &#x27;</span></span><br><span class="line">    <span class="string">&#x27;parts are overrun by martians. Unclear which are which.&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><strong>推荐</strong>使用插值构造字符串</li>
+<li><strong>避免</strong>在插值中使用多余的大括号（对于简单的变量）</li>
+</ul>
+<h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><ul>
+<li>尽可能使用字面量形式定义集合，必要时提供泛型类型即可<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">var</span> points = [];</span><br><span class="line"><span class="keyword">var</span> userMap = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bad case</span></span><br><span class="line"><span class="keyword">var</span> points = <span class="keyword">new</span> <span class="built_in">List</span>();</span><br><span class="line"><span class="keyword">var</span> userMap = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br></pre></td></tr></table></figure></li>
+<li>不使用length属性判断集合是否为空，Dart提供了<code>isEmpty</code>和<code>isNotEmpty</code></li>
+<li><strong>考虑</strong>使用高阶函数来明确表达你的意图<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> aquaticNames = animals</span><br><span class="line">    .where((animal) =&gt; animal.isAquatic)</span><br><span class="line">    .map((animal) =&gt; animal.name);</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>在<code>Iterable.forEach()</code>中使用函数声明，Dart里的<code>for-in</code>循环可以很好完成该工作，当然函数本身已经定义好除外。<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> person <span class="keyword">in</span> people) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line">people.forEach(<span class="built_in">print</span>);</span><br></pre></td></tr></table></figure></li>
+<li>使用<code>iterable.toList</code>替代<code>List.from</code>，只在改变list类型时使用<code>List.from</code><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creates a List&lt;int&gt;:</span></span><br><span class="line"><span class="keyword">var</span> iterable = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints &quot;List&lt;int&gt;&quot;:</span></span><br><span class="line"><span class="built_in">print</span>(iterable.toList().runtimeType);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints &quot;List&lt;dynamic&gt;&quot;:</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">List</span>.from(iterable).runtimeType);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Use it with a type</span></span><br><span class="line"><span class="keyword">var</span> numbers = [<span class="number">1</span>, <span class="number">2.3</span>, <span class="number">4</span>]; <span class="comment">// List&lt;num&gt;.</span></span><br><span class="line">numbers.removeAt(<span class="number">1</span>); <span class="comment">// Now it only contains integers.</span></span><br><span class="line"><span class="keyword">var</span> ints = <span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt;.from(numbers);</span><br></pre></td></tr></table></figure></li>
+<li>使用高级的<code>whereType</code>方法从collection中过滤出特定类型元素<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objects = [<span class="number">1</span>, <span class="string">&quot;a&quot;</span>, <span class="number">2</span>, <span class="string">&quot;b&quot;</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> ints = objects.whereType&lt;<span class="built_in">int</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li>有类似用法时，不使用<code>cast()</code>方法<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> stuff = &lt;<span class="built_in">dynamic</span>&gt;[<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="keyword">var</span> ints = <span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt;.from(stuff);</span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">var</span> ints = stuff.toList().cast&lt;<span class="built_in">int</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>使用<code>cast()</code>方法，用该方法可能更慢且更有风险，通常情况下有下面一些备选方案<ul>
+<li>创建有正确类型的list</li>
+<li>使用每个集合元素时进行casting操作<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="keyword">void</span> printEvens(<span class="built_in">List</span>&lt;<span class="built_in">Object</span>&gt; objects) &#123;</span><br><span class="line">  <span class="comment">// We happen to know the list only contains ints.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> n <span class="keyword">in</span> objects) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((n <span class="keyword">as</span> <span class="built_in">int</span>).isEven) <span class="built_in">print</span>(n);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">void</span> printEvens(<span class="built_in">List</span>&lt;<span class="built_in">Object</span>&gt; objects) &#123;</span><br><span class="line">  <span class="comment">// We happen to know the list only contains ints.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> n <span class="keyword">in</span> objects.cast&lt;<span class="built_in">int</span>&gt;()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n.isEven) <span class="built_in">print</span>(n);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>真正想要强制类型转换时，使用附加类型的<code>List.from</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><ul>
+<li>使用函数声明形式命名有名函数（不要使用lambda表达式）</li>
+<li>当有有名函数可以完成任务时，不要创建lambda表达式<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line">names.forEach(<span class="built_in">print</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line">names.forEach((name) &#123;</span><br><span class="line">  <span class="built_in">print</span>(name);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>使用<code>=</code>分隔入参和它的默认值</li>
+<li>不要显式地使用<code>null</code>作为默认值（直接不指定即可）<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> error([<span class="built_in">String</span> message]) &#123;</span><br><span class="line">  stderr.write(message ?? <span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
+<li>不要显式地使用null初始化变量（语言保证了行为可靠性，不需要再显式设置成null）</li>
+<li>不要存储computed value（即可以推算出的值） ，减少冗余信息，保证数据唯一可信源，使用getter和setter去动态推导出它们</li>
+<li><strong>考虑</strong>忽略局部变量的类型，Dart有强大的静态分析工具帮你推断类型。</li>
+</ul>
+<h4 id="成员"><a href="#成员" class="headerlink" title="成员"></a>成员</h4><ul>
+<li>不要创建没必要的getter和setter</li>
+<li><strong>推荐</strong>使用final限定只读属性</li>
+<li><strong>考虑</strong>使用<code>=&gt;</code>实现只有单一返回语句的函数，对于多行语句建议还是老老实实使用花括号<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">get</span> width =&gt; right - left;</span><br><span class="line"><span class="built_in">bool</span> ready(<span class="built_in">num</span> time) =&gt; minTime == <span class="keyword">null</span> || minTime &lt;= time;</span><br><span class="line">containsValue(<span class="built_in">String</span> value) =&gt; getValues().contains(value);</span><br></pre></td></tr></table></figure></li>
+<li>不要使用<code>this.</code>访问成员，除非遇到变量冲突<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> value;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> clear() &#123;</span><br><span class="line">    update(<span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> update(value) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> value;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> clear() &#123;</span><br><span class="line">    <span class="keyword">this</span>.update(<span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> update(value) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>尽可能地在定义变量时初始化该值</li>
+</ul>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><ul>
+<li>尽可能使用更简洁的初始化形式<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x, y;</span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要在初始化形式中定义类型</li>
+<li>使用<code>;</code>代替<code>&#123;&#125;</code>表示空方法<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> x, y;</span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要使用可选的<code>new</code>来返回一个对象<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="keyword">return</span> Row(</span><br><span class="line">    children: [</span><br><span class="line">      RaisedButton(</span><br><span class="line">        child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">      ),</span><br><span class="line">      Text(<span class="string">&#x27;Click!&#x27;</span>),</span><br><span class="line">    ],</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要无谓地使用<code>const</code>（基本上const可能出现在所有你能使用<code>new</code>的地方），因为有些语境已经隐式包含了const语义<ul>
+<li>字面量集合</li>
+<li>const构造函数调用</li>
+<li>metadata注解</li>
+<li>switch的每一个case</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<h4 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h4><ul>
+<li>不要在<code>on</code>以外的语句中丢弃错误，因为在没有<code>on</code>限定时，catch会捕获<em>所有</em>异常</li>
+<li>要只在编程错误时抛出Error的异常</li>
+<li>不要显式地捕获Error及其子类</li>
+<li>使用<code>rethrow</code>重新抛出异常</li>
+</ul>
+<h4 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h4><ul>
+<li><strong>推荐</strong>使用<code>async</code>和<code>await</code>提升你的异步代码可读性</li>
+<li>只在必要的时候使用<code>async</code><ul>
+<li>代码块中使用了<code>await</code></li>
+<li>希望返回一个Future</li>
+<li>希望更方便地处理异步中出现的Error</li>
+<li>异步事件发生具有先后顺序</li>
+</ul>
+</li>
+<li><strong>考虑</strong>使用高阶函数处理stream</li>
+<li><strong>避免</strong>直接使用<code>Completer</code></li>
+<li>用<code>Future&lt;T&gt;</code>而不是<code>T</code>判断<code>FutureOr&lt;T&gt;</code>的具体类型</li>
+</ul>
+<h3 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h3><h4 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h4><ul>
+<li>使用一致的术语</li>
+<li><strong>避免</strong>缩写，只使用广为人知的缩写</li>
+<li><strong>推荐</strong>把描述中心词放在最后</li>
+<li><strong>考虑</strong>尽量让代码看起来像普通的句子</li>
+<li><strong>推荐</strong>使用名词短语命名非布尔类型的成员或变量</li>
+<li><strong>推荐</strong>使用非命令式短语命名布尔类型成员或变量<ul>
+<li>比如配合be动词的不同时态，<code>isEnabled</code>, <code>hasShown</code>等</li>
+<li>配合助动词，比如<code>hasChildren</code>, <code>canSave</code></li>
+</ul>
+</li>
+<li>有可能的情况下，<strong>考虑</strong>省去上一种情况里的动词</li>
+<li><strong>推荐</strong>使用正向含义的布尔类型变量&#x2F;方法名</li>
+<li><strong>推荐</strong>使用命令式动词命名带有副作用的函数和方法</li>
+<li><strong>考虑</strong>使用名词短语或非命令式动词命名返回数据为主要功能的方法或函数<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list.elementAt(<span class="number">3</span>)</span><br><span class="line">string.codeUnitAt(<span class="number">4</span>)</span><br></pre></td></tr></table></figure></li>
+<li><strong>考虑</strong>使用命令式动词表示你需要对方法所做工作有所关心</li>
+<li><strong>避免</strong>使用<em>get</em>开头的命名，它通常能用getter代替</li>
+<li><strong>推荐</strong>使用<code>to___()</code>来命名类型转换</li>
+<li><strong>推荐</strong>使用<code>as___()</code>来命名类型快照</li>
+<li><strong>避免</strong>在命名中使用方法、函数的入参</li>
+<li>使用助记符命名类型参数<ul>
+<li><code>E</code>代表集合元素</li>
+<li><code>K</code>和<code>V</code>代表key和value</li>
+<li><code>R</code>代表return type</li>
+<li><code>T</code>, <code>S</code>和<code>U</code>命名单一通用且上下文表意清晰的泛型</li>
+<li>除上面情况外，可以使用完整词汇作为泛型类型名</li>
+</ul>
+</li>
+</ul>
+<h4 id="库-1"><a href="#库-1" class="headerlink" title="库"></a>库</h4><p>下划线开头的成员表示成员是私有的，这个特性是内置在Dart语言中的。</p>
+<ul>
+<li><strong>推荐</strong>使用私有声明，未用<code>_</code>开头的库中的公开声明、顶级定义表示其他库可以访问这些成员，同时也会受到库实现契约的约束。</li>
+<li><strong>考虑</strong>在同一个库内定义多个类，这样便于在类之间共享私有变量</li>
+</ul>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><p>Dart是纯OOP的语言，它的所有对象都是类实例。当然不像Java，Dart也允许你定义顶级的变量、函数…</p>
+<ul>
+<li><strong>避免</strong>定义一个函数就可以实现的只有一个实现方法的抽象类<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> Predicate&lt;E&gt; = <span class="built_in">bool</span> <span class="built_in">Function</span>(E element);</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Predicate</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">bool</span> test(E element);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>定义只有静态成员的类，可以使用顶级变量、函数更方便地实现等价效果。当然，如果变量属于一个组，可以这么实现</li>
+<li><strong>避免</strong>不必要地定义子类</li>
+<li><strong>避免</strong>实现一个不作为接口的类</li>
+<li><strong>避免</strong>mixin不设计用作mixin的类</li>
+<li>在你的类支持拓展时，定义好文档</li>
+<li>在你的类作为接口存在时，定义好文档</li>
+<li>在你的类作为mixin存在时，定义好文档</li>
+</ul>
+<h4 id="构造函数-1"><a href="#构造函数-1" class="headerlink" title="构造函数"></a>构造函数</h4><ul>
+<li><strong>考虑</strong>在类支持的情况下，让构造函数成为const</li>
+</ul>
+<h4 id="成员-1"><a href="#成员-1" class="headerlink" title="成员"></a>成员</h4><ul>
+<li><strong>考虑</strong>尽可能地把成员变量和顶级变量定义为final类型</li>
+<li>使用setter和getter定义computed value</li>
+<li>不要使用没有getter的setter</li>
+<li><strong>避免</strong>在返回bool，double，int，num的方法里返回null</li>
+<li><strong>避免</strong>在方法中返回this，只为了串联调用函数</li>
+</ul>
+<h4 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h4><p>Dart中的类型可以帮助使用者理解你API中的静态类型设计，它分两种：类型注解和类型参数。前一种放在变量名前注解变量类型，后一种作为泛型参数传入。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span> isEmpty(<span class="built_in">String</span> parameter) &#123;</span><br><span class="line">  <span class="built_in">bool</span> result = parameter.length == <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt; ints = [<span class="number">1</span>, <span class="number">2</span>];</span><br></pre></td></tr></table></figure>
+
+<p>在未指定类型时，Dart会从上下文自动推断或者使用缺省的<code>dynamic</code>类型。</p>
+<p>简言之，Dart提供了强大的类型推导简化了你声明类型的负担，但同时不声明类型会降低API的可读性，下面一些guideline帮你在两点间找到一个平衡。</p>
+<ul>
+<li><strong>推荐</strong>对于类型表意不清晰的public属性和顶级变量使用类型注解<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Future&lt;<span class="built_in">bool</span>&gt; install(PackageId id, <span class="built_in">String</span> destination) =&gt; ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> screenWidth = <span class="number">640</span>; <span class="comment">// Inferred as int.</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>考虑</strong>对于类型表意不清晰的private属性添加类型注解</li>
+<li><strong>避免</strong>为局部变量添加类型注解，如果你需要静态类型提供的便利，可以借助<code>is</code>限制变量类型</li>
+<li><strong>避免</strong>在方法表达式上使用类型，考虑到方法表达式通常作为方法入参，类型可以自动推断，不需要类型注解</li>
+<li><strong>避免</strong>冗余的泛型和类型注解<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt; things = <span class="built_in">Set</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt; things = <span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li>在不希望使用Dart推断的类型时，使用类型注解</li>
+<li><strong>推荐</strong>使用显示的dynamic代替Dart推断失败回退的dynamic</li>
+<li><strong>推荐</strong>在Function类型注解中添加函数类型签名</li>
+<li>不要为setter指定返回值</li>
+<li>使用新式的typeof判断类型<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> Comparison&lt;T&gt; = <span class="built_in">int</span> <span class="built_in">Function</span>(T, T);</span><br></pre></td></tr></table></figure></li>
+<li>使用<code>Object</code>代替<code>dynamic</code>表示可以接受任何对象</li>
+<li>使用<code>Future&lt;void&gt;</code>作为无返回值的异步函数返回类型</li>
+<li>不使用<code>FutureOr&lt;T&gt;</code>作为返回值</li>
+</ul>
+<h4 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h4><ul>
+<li><strong>避免</strong>位置参数作为可选布尔参数，这样可读性比较差<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">new</span> Task(<span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">new</span> Task(<span class="keyword">false</span>);</span><br><span class="line"><span class="keyword">new</span> ListBox(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">new</span> Button(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Good case</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>将用户想忽略的参数放在位置可选参数的前列</li>
+<li><strong>避免</strong>使用强制的无意义的参数<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bad case</span></span><br><span class="line">string.substring(start, <span class="keyword">null</span>)</span><br></pre></td></tr></table></figure></li>
+<li>使用<strong>左闭右开</strong>区间表示两个参数代表的范围</li>
+</ul>
+<h4 id="相同判断"><a href="#相同判断" class="headerlink" title="相同判断"></a>相同判断</h4><ul>
+<li>覆写<code>==</code>的同时覆写<code>hashCode</code>，默认的哈希函数实现了恒等式哈希。<strong>任何两个相等的两个对象必须具有相同的哈希值</strong>。</li>
+<li><code>==</code>需要遵循数学的相等规则<ul>
+<li>自反，a &#x3D;&#x3D; a</li>
+<li>对称，a &#x3D;&#x3D; b &#x3D;&gt; b &#x3D;&#x3D; a</li>
+<li>传递，a &#x3D;&#x3D; b &amp;&amp; b &#x3D;&#x3D; c &#x3D;&gt; a &#x3D;&#x3D; c</li>
+</ul>
+</li>
+<li><strong>避免</strong>为可变对象自定义相等函数，<code>hashCode</code>函数会增加你的工作量</li>
+<li>不要在自定义<code>==</code>中判断null，Dart也已经替你做了这部分工作</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/Dart/" rel="tag"># Dart</a>
+              <a href="/blog/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" rel="tag"># 最佳实践</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/06/16/dart-lang-intro/" rel="prev" title="Dart快速入门 语法篇">
+                  <i class="fa fa-chevron-left"></i> Dart快速入门 语法篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/06/29/quantum-physics-history/" rel="next" title="量子物理简史">
+                  量子物理简史 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

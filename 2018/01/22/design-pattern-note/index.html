@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="全文参考《设计模式之禅》，Head First Design Pattern这本也不错。  准备JavaScript学久了，在看设计原则时，顺带温习了下OOP中的一些传统概念。 类图  一&gt;: 关联，类定义中的相互引用，通常使用类的属性表达。 比如客户类和订单类 --&gt;: 依赖，最弱的关系，对象间的临时关联，用函数参数、局部变量、返回值等表达 一▷: 继承 --▷: 实现 一◇: h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式学习">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/01/22/design-pattern-note/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="全文参考《设计模式之禅》，Head First Design Pattern这本也不错。  准备JavaScript学久了，在看设计原则时，顺带温习了下OOP中的一些传统概念。 类图  一&gt;: 关联，类定义中的相互引用，通常使用类的属性表达。 比如客户类和订单类 --&gt;: 依赖，最弱的关系，对象间的临时关联，用函数参数、局部变量、返回值等表达 一▷: 继承 --▷: 实现 一◇: h">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-01-22T09:28:45.000Z">
+<meta property="article:modified_time" content="2018-01-26T08:31:15.701Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="类">
+<meta property="article:tag" content="接口">
+<meta property="article:tag" content="抽象类">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/01/22/design-pattern-note/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/01/22/design-pattern-note/","path":"2018/01/22/design-pattern-note/","title":"设计模式学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>设计模式学习 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A16%E5%8E%9F%E5%88%99"><span class="nav-number">2.</span> <span class="nav-text">设计6原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">常见设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%93%E5%B1%95"><span class="nav-number">3.1.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">抽象工厂模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.4.</span> <span class="nav-text">模板方法模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.5.</span> <span class="nav-text">建造者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.6.</span> <span class="nav-text">代理模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.7.</span> <span class="nav-text">原型模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.8.</span> <span class="nav-text">中介者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.9.</span> <span class="nav-text">命令模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.10.</span> <span class="nav-text">责任链模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.11.</span> <span class="nav-text">装饰模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.12.</span> <span class="nav-text">策略模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.13.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%93%E5%B1%95-1"><span class="nav-number">3.13.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.14.</span> <span class="nav-text">迭代器模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.15.</span> <span class="nav-text">组合模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.16.</span> <span class="nav-text">观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.17.</span> <span class="nav-text">门面模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.18.</span> <span class="nav-text">备忘录模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%93%E5%B1%95-2"><span class="nav-number">3.18.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.19.</span> <span class="nav-text">访问者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%93%E5%B1%95-3"><span class="nav-number">3.19.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.20.</span> <span class="nav-text">状态模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.21.</span> <span class="nav-text">解释器模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.22.</span> <span class="nav-text">享元模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%A5%E6%A2%81%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.23.</span> <span class="nav-text">桥梁模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">4.</span> <span class="nav-text">设计模式的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text">创建类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E7%B1%BB"><span class="nav-number">4.2.</span> <span class="nav-text">结构类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E4%B8%BA%E7%B1%BB"><span class="nav-number">4.3.</span> <span class="nav-text">行为类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.4.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%BB%84%E5%90%88"><span class="nav-number">5.</span> <span class="nav-text">设计模式的组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell%E5%91%BD%E4%BB%A4%E8%A7%A3%E9%87%8Ademo"><span class="nav-number">5.1.</span> <span class="nav-text">shell命令解释demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%B6%E8%A1%8C%E6%89%A3%E6%AC%BEdemo"><span class="nav-number">5.2.</span> <span class="nav-text">银行扣款demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E6%B6%88%E8%B4%B9%E4%BA%8B%E4%BB%B6demo"><span class="nav-number">5.3.</span> <span class="nav-text">产品消费事件demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">新模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC"><span class="nav-number">6.1.</span> <span class="nav-text">MVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E6%A0%BC%E4%B9%A6%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.2.</span> <span class="nav-text">规格书模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%B1%A0%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.3.</span> <span class="nav-text">对象池模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%87%E5%B7%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.4.</span> <span class="nav-text">雇工模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%91%E6%9D%BF%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.5.</span> <span class="nav-text">黑板模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">6.6.</span> <span class="nav-text">空对象模式</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/01/22/design-pattern-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="设计模式学习 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-01-22 17:28:45" itemprop="dateCreated datePublished" datetime="2018-01-22T17:28:45+08:00">2018-01-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-01-26 16:31:15" itemprop="dateModified" datetime="2018-01-26T16:31:15+08:00">2018-01-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/01/22/design-pattern-note/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/22/design-pattern-note/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>全文参考<a target="_blank" rel="noopener" href="https://book.douban.com/subject/4260618/">《设计模式之禅》</a>，<a target="_blank" rel="noopener" href="https://book.douban.com/subject/1400656/">Head First Design Pattern</a>这本也不错。</p>
+</blockquote>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>JavaScript学久了，在看设计原则时，顺带温习了下OOP中的一些传统概念。</p>
+<p><strong>类图</strong></p>
+<ul>
+<li><code>一&gt;</code>: 关联，类定义中的相互引用，通常使用类的属性表达。 比如客户类和订单类</li>
+<li><code>--&gt;</code>: 依赖，最弱的关系，对象间的临时关联，用函数参数、局部变量、返回值等表达</li>
+<li><code>一▷</code>: 继承</li>
+<li><code>--▷</code>: 实现</li>
+<li><code>一◇</code>: has-a关系，表示整体与局部，但不稳定。比如公司类和雇员类</li>
+<li><code>一◆</code>: contains-a关系，表示整体与局部，部分不能脱离整体而存在。</li>
+</ul>
+<p><strong>override和overload</strong></p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>覆写</th>
+<th>重载</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单词</td>
+<td>OverLoading</td>
+<td>Override</td>
+</tr>
+<tr>
+<td>概念</td>
+<td>方法名称相同，参数的类型或个数不同</td>
+<td>方法名称相同，参数的类型或个数相同，返回值类型相同</td>
+</tr>
+<tr>
+<td>范围</td>
+<td>发生在一个类之中</td>
+<td>发生在类的继承关系中</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>一个类中所重载多个方法可以不同的权限</td>
+<td>被子类所覆写的方法不能拥有比父类更严格的访问控制权限</td>
+</tr>
+</tbody></table>
+<p><strong>接口和抽象类的不同</strong></p>
+<p>两者都为“面向契约编程”而存在。总体来说，接口是对能力的抽象，抽象类是对事物的抽象。从而有着下面的不同：</p>
+<ul>
+<li>接口被类实现，抽象类被子类继承。</li>
+<li>接口只做方法声明，抽象类中可以做方法声明，也可以做方法实现。</li>
+<li>接口里定义的变量只能是公共静态常量，抽象类中的变量可以是普通变量。</li>
+<li>抽象类里可以没有抽象方法，接口是设计的结果，抽象类是重构的结果。</li>
+<li>Java中接口可继承接口，并可多继承接口，但类只能单继承。</li>
+</ul>
+<p>它们还有以下特点：</p>
+<ul>
+<li>在实现时必须全部实现，否则仍是接口&#x2F;抽象类</li>
+<li>抽象类中可以没有抽象方法</li>
+</ul>
+<h2 id="设计6原则"><a href="#设计6原则" class="headerlink" title="设计6原则"></a>设计6原则</h2><p>SOLID原则：</p>
+<ul>
+<li>单一职责（接口细分到单一业务）</li>
+<li>里氏替换（实现都按接口来）</li>
+<li>依赖倒置（多使用抽象概念）</li>
+<li>接口隔离原则（接口尽量细分）</li>
+<li>迪米特法则（低耦合）</li>
+<li>开闭原则（高内聚，低耦合）</li>
+</ul>
+<p>总结来说，就是<strong>好好设计、合理拆分接口，一旦确定，避免更改；减少接口耦合；面向接口编程；使用中间层应对需求变更</strong>。</p>
+<h2 id="常见设计模式"><a href="#常见设计模式" class="headerlink" title="常见设计模式"></a>常见设计模式</h2><h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>单例模式是最简单的设计模式。即一个类只有一个实例，或一个构造函数只能初始化一次（JS版本），且<strong>自行实例化</strong>，并像整个系统提供整个实例。常用在下面这些场景下，解决特定的问题：</p>
+<ul>
+<li>整个项目需要一个<strong>共享</strong>访问点或共享数据</li>
+<li>包含了大量静态常量（通常是配置数据）和静态方法的<strong>工具类</strong></li>
+<li>创建一个对象需要消耗的资源过多</li>
+</ul>
+<p>实现上，分懒汉型和饿汉型。它们的主要区别在初始化单一实例的时机在类创建时还是访问时。懒汉型需要注意<strong>线程安全</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 饿汉型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Singleton</span> <span class="variable">singleton</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 限制外部访问</span></span><br><span class="line">  <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 暴露的public方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> singleton;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 其他方法</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 懒汉型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Singleton</span> <span class="variable">singleton</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 限制外部访问</span></span><br><span class="line">  <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 暴露的public方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> sychronized Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (singleton == <span class="literal">null</span>) &#123;</span><br><span class="line">      singleton = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> singleton;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JavaScript中就灵活多了。最常用的字面量变量就是最简单的单例，强行使用构造函数，也可以借助闭包的特点实现。另外，JavaScript是单线程，不需要考虑线程安全的问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 字面量变量</span></span><br><span class="line"><span class="keyword">const</span> singleton = &#123;</span><br><span class="line">  <span class="comment">// 一些属性</span></span><br><span class="line">  <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span>,</span><br><span class="line">  <span class="comment">// 一些方法</span></span><br><span class="line">  <span class="title function_">baz</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 闭包</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Singleton</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> singleton = <span class="variable language_">this</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">foo</span> = <span class="string">&#x27;bar&#x27;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">baz</span> = <span class="function">() =&gt;</span> &#123; <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello world!&#x27;</span>); &#125;;</span><br><span class="line">  <span class="title class_">Singleton</span> = <span class="function">() =&gt;</span> singleton;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h4><p>当放开单例限制，编程多例模式时，可以通过加入计数器来限制。但不常用，下面给出JavaScript版本例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Singleton</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> singleton = <span class="variable language_">this</span> = [];</span><br><span class="line">  <span class="comment">// 比如限制为3</span></span><br><span class="line">  <span class="keyword">const</span> limit = <span class="number">3</span>;</span><br><span class="line">  <span class="comment">// 一些初始化工作</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; limit; i++) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    [].<span class="title function_">push</span>(&#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title class_">Singleton</span> = <span class="function">() =&gt;</span> singleton;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式意思是，将创建对象的过程封装起来，在OOP语言中体现在定义一个创建一类对象的接口，让实例化过程在子类中完成。浅显的来讲，就是让工厂类将具有共性、创建过程复杂的一类对象的创建过程封装起来，便于业务类使用，同时也便于日后拓展。业务类只需要交给工厂类需要的对象类名（Java）或别的标志就可以得到所需对象。</p>
+<p>使用场景上，它是new模式的替代品，在任何需要对象的场景下都可以使用，但是只有下面这些情况下是比较合适的：</p>
+<ul>
+<li>需要灵活解耦的框架</li>
+<li>产品类创建过程复杂、有差异性且有共性。比如连接邮箱客户端的三种协议POP3、IMAP、HTTP的构造过程抽象成一个<code>IConnectMail</code>接口，再设计各自的工厂类。在日后有新的连接邮箱客户端协议时，只需新增一个工厂类即可。</li>
+</ul>
+<p>Java中工厂类可以使用反射等方法创建新对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 产品类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">abstractProduct</span> &#123;</span><br><span class="line">  <span class="comment">// 共有方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">  <span class="comment">// 抽象方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">abstractMethod</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">product1</span> <span class="keyword">extends</span> <span class="title class_">abstractProduct</span>() &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">abstractMethod</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 差异化方法</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">product2</span> <span class="keyword">extends</span> <span class="title class_">abstractProduct</span>() &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">abstractMethod</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 差异化方法</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Factory</span> &#123;</span><br><span class="line">  <span class="comment">// 入参根据场景调整</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> &lt;T <span class="keyword">extends</span> <span class="title class_">abstractProduct</span>&gt; T <span class="title function_">createProduct</span><span class="params">(Class&lt;T&gt; c)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Factory1</span> <span class="keyword">extends</span> <span class="title class_">Factory</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> &lt;T <span class="keyword">extends</span> <span class="title class_">Product</span>&gt; T <span class="title function_">createProduct</span><span class="params">(Class&lt;T&gt; c)</span> &#123;</span><br><span class="line">    <span class="type">Product</span> <span class="variable">p</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      p = (Product)Class.forName(c.getName()).newInstance();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JavaScript中，工厂模式的实现更加轻量级，因为构造对象的方式更加简单，使用函数将多个产品类间的共性抽出来就行了。样例略。</p>
+<h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><p>抽象模式在工厂模式的基础上又抽象了一层，产品类接口下是多个<strong>产品族</strong>抽象类，产品族下才是明确的产品类。相对应的，工厂接口下的多个工厂方法根据最细节的产品类生产对象。它的优势在：</p>
+<ul>
+<li>可以不公开地控制产品族间的约束</li>
+<li>更好地组织多维度（更多是2维）上多个产品间的生产</li>
+</ul>
+<p>缺点也很明显，产品族的修改将会直接影响工厂接口和产品抽象类，这是开闭原则的大忌。因此，在<strong>产品维度固定，且有必要从多维度上划分产品</strong>时，才会使用抽象工厂模式。比如Windows、Linux、Mac OS上的文本编辑器与图像处理程序就是两个维度的多个产品。</p>
+<p>样例略。</p>
+<h3 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h3><p>模板方法模式比较好理解，就是将子类中共有的<strong>算法框架</strong>抽象到抽象类中实现，注意是框架，而不是具体的步骤。子类可以根据自己的需要，在不改变框架的基础上，重定义算法的某些步骤，得到不同的结果。下面举个例子就能更方便地看明白了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> student = &#123;</span><br><span class="line">  <span class="title function_">study</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">gotoPrimarySchool</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">gotoMiddleSchool</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">gotoUniversity</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> stu1 = <span class="title class_">Object</span>.<span class="title function_">assign</span>(<span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="title class_">Student</span>), &#123;</span><br><span class="line">  <span class="title function_">gotoPrimarySchool</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;子弟学校 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">gotoMiddleSchool</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;人大附中 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">gotoUniversity</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;清华大学 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> stu2 = <span class="title class_">Object</span>.<span class="title function_">assign</span>(<span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="title class_">Student</span>), &#123;</span><br><span class="line">  <span class="title function_">gotoPrimarySchool</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;子弟学校 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">gotoMiddleSchool</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;华师一附中 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">gotoUniversity</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;中科大 &quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">stu1.<span class="title function_">study</span>(); <span class="comment">//子弟学校 人大附中 清华大学 </span></span><br><span class="line">stu2.<span class="title function_">study</span>(); <span class="comment">//子弟学校 华师一附中 中科大 </span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，同样是调用学习方法<code>study</code>，<code>stu1</code>和<code>stu2</code>可以再不影响公用算法流程下，定义自己的算法步骤。使用Java实现是一样的思路：</p>
+<ul>
+<li>定义抽象类，声明可以差异化的基本方法，实现模板方法，在模板方法中调用可以差异化的基本方法</li>
+<li>子类根据需要，实现自己的基本方法</li>
+</ul>
+<p>模板方法模式核心就在于<strong>封装不变部分，开放可变部分</strong>，共有的算法步骤也较容易维护。因此，使用在下面的场景里：</p>
+<ul>
+<li>子类共有相同算法流程</li>
+<li>将核心算法设计为模板方法，细节功能由子类补充</li>
+</ul>
+<h3 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h3><p>建造者模式和工厂模式类似，意思是，讲一个复杂对象的<strong>构建</strong>和<strong>表示</strong>分离，使同样的构建过程可以有不同的表示。其中的<strong>构建</strong>强调的是不同基本方法的调用顺序安排，而不是基本方法的实现（这也是它和工厂方法的最大区别）；<strong>表示</strong>是指产品子类对于基本方法的差异性实现。</p>
+<p>对比上面模板方法模式来看，就是<code>study</code>的顺序对于不同人不一样，这个顺序有另外的建造类描述并实现。可以看到，建造者模式主要的使用场景是：</p>
+<ul>
+<li>相同的执行方法，不同的执行顺序，产生不同的结果</li>
+<li>产品类中，不同的构建顺序会有不同的结果</li>
+<li>用户希望执行次序可控</li>
+</ul>
+<p>在实现时，建造类通过传入新状态或其他方式影响产品类的模板方式执行次序。在建造类和产品类之上，使用导演类可以起到封装的作用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 产品类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Product</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 差异化业务</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抽象建造类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">  <span class="comment">// 设置构建的次序，以获得不同的结果</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">()</span>;</span><br><span class="line">  <span class="comment">// 建造</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> Product <span class="title function_">build</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体建造类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Builder1</span> <span class="keyword">extends</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">Product</span> <span class="variable">product</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Product</span>();</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 差异化逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> Product <span class="title function_">buildProduct</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> product;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导演类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Director</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Builder1</span>();</span><br><span class="line">  <span class="keyword">public</span> Product <span class="title function_">getProductA</span><span class="params">()</span> &#123;</span><br><span class="line">    builder.setSequence();</span><br><span class="line">    <span class="keyword">return</span> builder.build();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>代理模式即为其他对象提供一个代理来控制对这个对象的访问，浅显易懂。利用代理模式还可以拦截原始请求，做额外的事情。应用很广泛。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="comment">// 作为示例的一个方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RealObject</span> <span class="keyword">implements</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 业务逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Proxy</span> <span class="keyword">implements</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="comment">// 代理的对象</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">Object</span> <span class="variable">object</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Proxy</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.subject = <span class="keyword">new</span> <span class="title class_">Proxy</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 传递代理者</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Proxy</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.before();</span><br><span class="line">    <span class="built_in">this</span>.object.request();</span><br><span class="line">    <span class="built_in">this</span>.after();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 预处理</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 善后处理</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了普通代理，还有强制代理即只能通过被代理对象对象访问到代理。另外，AOP（Aspect Oriented Progarmming）模式也是建立在代理模式的基础上的。ES6中的proxy和ES7中的装饰器就是AOP概念下的产物。</p>
+<h3 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h3><p>原型模式即不通过<code>new</code>而是通过对象复制生产同类对象。非常好理解。在Java中，一个实现了<code>cloneable</code>接口的对象即使用了原型模式。而JavaScript更是<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/12/13/you-dont-know-js-part1/#%E5%8E%9F%E5%9E%8B%E7%BB%A7%E6%89%BF">天生使用原型模式</a>实现对象的继承和拓展。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">class</span> <span class="title class_">PrototypeClass</span> implements <span class="title class_">Cloneable</span> &#123;</span><br><span class="line">  @<span class="title class_">Override</span></span><br><span class="line">  public <span class="title class_">PrototypeClass</span> <span class="title function_">clone</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title class_">PrototypeClass</span> p = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      p = (<span class="title class_">PrototypeClass</span>)<span class="variable language_">super</span>.<span class="title function_">clone</span>();</span><br><span class="line">      <span class="comment">// 其他操作</span></span><br><span class="line">    &#125; <span class="keyword">catch</span>(<span class="title class_">CloneNotSupportedException</span> e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的优势在于更加轻量级，避免了构造函数的约束。问题在于，第一会跳过构造函数（这个JavaScript没有），第二是深浅拷贝的问题，第三在Java中，clone带有final成员的类会抛出异常。</p>
+<h3 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h3><p>中介者模式主要用在多个对象那个间有比较复杂的交互场景下，用一个中介对象封装对象间的一系列交互，中介往往与各对象都有交互，从而使其耦合松散，符合迪米特法则。从类图上看，它把原先的蛛网状结构简化为了星型结构。</p>
+<p>它的优点是减少了类间依赖，缺点是有些时候中介者会膨胀的很大。使用场景上，在有协调概念出现的场景都有它的发挥空间：</p>
+<ul>
+<li>机场调度中心</li>
+<li>MVC框架中的Controller</li>
+<li>媒体网关，中介服务</li>
+</ul>
+<p>因为应用场景广泛，这里不举样例。</p>
+<h3 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h3><p>命令模式即将一个用对象组织每一个请求，从而允许使用请求完成一系列操作，同时还可以对请求排队或记录日志或<strong>撤销以及恢复</strong>。模式主要包括三个角色：</p>
+<ul>
+<li><strong>接受者</strong>，完成请求内操作的角色</li>
+<li><strong>命令</strong>，封装好的系列操作</li>
+<li><strong>调用者</strong>，接受、执行命令的角色</li>
+</ul>
+<p>这种设计模式在存在上面三种角色的场景很适用，易于封装常用的命令，且很容易拓展，当命令间共同点较多时，还可以结合模板方法模式进行改进。</p>
+<p>例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Receiver</span> &#123;</span><br><span class="line">  <span class="comment">// 定义所有接受者必须完成的业务</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">work</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Receiver1</span> <span class="keyword">extends</span> <span class="title class_">Receiver</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">work</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 差异化业务</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">otherWork1</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Receiver2</span> <span class="keyword">extends</span> <span class="title class_">Receiver</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">work</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 差异化业务</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">otherWork2</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Command</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">exec</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Command1</span> <span class="keyword">extends</span> <span class="title class_">Command</span> &#123;</span><br><span class="line">  <span class="comment">// 对特定接受者命令</span></span><br><span class="line">  <span class="keyword">private</span> Receiver receiver;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Command1</span><span class="params">(Receiver _receiver)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.receiver = _receiver;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">exec</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.receiver.work();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Command2</span> <span class="keyword">extends</span> <span class="title class_">Command</span> &#123;</span><br><span class="line">  <span class="comment">// 对特定接受者命令</span></span><br><span class="line">  <span class="keyword">private</span> Receiver receiver;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Command2</span><span class="params">(Receiver _receiver)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.receiver = _receiver;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">exec</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.receiver.work();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用者</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Invoker</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> Command command;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setCommand</span><span class="params">(Command _command)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.command = _command;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">react</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.command.exec();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h3><p>责任链模式重点在“链”，将有机会处理请求的所有对象组成链，沿着这条链传递请求直到有对象处理它为止。它和Express和Redux中的<strong>中间件</strong>的概念有相似之处，区别在于责任链上一般只会有一个或部分对象处理请求。它替换了场景代码中的大堆<code>if else</code>与<code>switch</code>语句。</p>
+<p>一个狭义的抽象处理者像下面这样。使用模板方法模式，将抽象的业务逻辑外的处理流程实现在抽象类，细节的业务逻辑放在子类里完成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Handler</span> &#123;</span><br><span class="line">  <span class="comment">// 下一个处理者</span></span><br><span class="line">  <span class="keyword">private</span> Handler next;</span><br><span class="line">  <span class="comment">// 处理逻辑</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> Response <span class="title function_">handle</span><span class="params">(Request req)</span> &#123;</span><br><span class="line">    <span class="type">Response</span> <span class="variable">res</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.getLevel().equals(req.getLevel())) &#123;</span><br><span class="line">      <span class="comment">// 只处理属于自己的level</span></span><br><span class="line">      res = <span class="built_in">this</span>.exec(req);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 如果有下一个处理者，交给它</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.next != <span class="literal">null</span>) &#123;</span><br><span class="line">        res = <span class="built_in">this</span>.next.handle(req);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 自行处理</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置下一个处理者</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setNext</span><span class="params">(Handler _handler)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.next = _handler;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 处理者有自己的处理级别</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">abstract</span> Level <span class="title function_">getLevel</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 处理者有自己的处理逻辑</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">abstract</span> Response <span class="title function_">exec</span><span class="params">(Request req)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子类示例</span></span><br><span class="line"><span class="keyword">public</span> classHandler1 <span class="keyword">extends</span> <span class="title class_">Handler</span> &#123;</span><br><span class="line">  <span class="comment">// 自己的处理逻辑</span></span><br><span class="line">  <span class="keyword">protected</span> Response <span class="title function_">exec</span><span class="params">(Request req)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 自己的处理级别</span></span><br><span class="line">  <span class="keyword">protected</span> Level <span class="title function_">getHandlerLevel</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Level</span> &#123;</span><br><span class="line">  <span class="comment">// 定义一个请求和处理等级</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Request</span> &#123;</span><br><span class="line">  <span class="comment">// 获取请求等级</span></span><br><span class="line">  <span class="keyword">public</span> Level <span class="title function_">getRequestLevel</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Response</span> &#123;</span><br><span class="line">  <span class="comment">// 定义返回的数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的优点在解耦了请求与处理者，使系统更加灵活。问题在责任链比较长时，遍历整个责任链会带来性能问题。Express中类似的中间件则不会，因为处理后可以决定是否执行<code>next()</code>，跳到下一个中间件。</p>
+<p>上面Java的实现通过<code>next</code>属性连接所有的处理者（类似链表），在JavaScript的工程实现上，一般在上层又有一层封装，用数组保存所有处理者，再建立之间的连接。这种动态的连接支持动态增删处理者，甚至改变他们的处理顺序。</p>
+<h3 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h3><p>装饰模式也是一种比较常见的模式，它可以动态地为一个对象增加一些额外的功能，使用装饰器类返回对象比定义子类继承要来得更加灵活。在设计上，有下面几个角色：</p>
+<ul>
+<li>抽象构件，即被修饰的对象抽象</li>
+<li>具体构件，被修饰的客体</li>
+<li>装饰器，一般是一个抽象类，将具体装饰器的共性抽出来，<strong>其必有一个private属性指向原始的抽象构件</strong>。</li>
+<li>具体装饰器，装饰具体构件的原有方法，一般来说需要有所有与具体构件public方法同名的方法，<strong>且在方法内会使用到而非单纯替换原同名方法</strong>（类似滚雪球的过程）。</li>
+</ul>
+<p>它的使用类似下面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 场景类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Scene</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Component</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Component</span>();</span><br><span class="line">    <span class="comment">// 装饰</span></span><br><span class="line">    c = <span class="keyword">new</span> <span class="title class_">Decorator1</span>(c);</span><br><span class="line">    <span class="comment">// 再次装饰</span></span><br><span class="line">    c = <span class="keyword">new</span> <span class="title class_">Decorator2</span>(c);</span><br><span class="line">    <span class="comment">// 执行</span></span><br><span class="line">    c.exec();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JavaScript中的<code>Object.create()</code>和<code>Object.assign()</code>和装饰模式有几分相似。</p>
+<p>它的优势在于装饰类间不相互耦合，且装饰次序可以灵活修改，可以很好地重构、替换继承关系。劣势在于包装层次过多时，不利于调试时发现错误。装饰模式一般用于：</p>
+<ul>
+<li>动态增强一个类、对象的功能</li>
+<li>批量为一批对象或类改装或增加功能</li>
+</ul>
+<p>总之就是使用继承总感觉小题大做的场合下（OOP语言中）。JS下扩展功能要容易很多。</p>
+<h3 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h3><p>策略模式意为定义一组算法，将每个算法单独封装为可以相互替换的模块。在使用时，有三个主要角色：</p>
+<ul>
+<li>策略模块，被封装好的算法策略，屏蔽了高层逻辑对策略的直接访问（<strong>高内聚</strong>）</li>
+<li>抽象策略，抽出策略共性的接口，如下面的</li>
+<li>具体策略，具体的算法策略，包含具体的算法</li>
+</ul>
+<p>在算法间可以自由切换、最好屏蔽算法细节时常用，比如Web编程中常见的<strong>表格验证</strong>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> strategy = &#123;</span><br><span class="line">  <span class="attr">notEmpty</span>: <span class="function"><span class="params">val</span> =&gt;</span> val.<span class="property">length</span> &gt; <span class="number">0</span>,</span><br><span class="line">  <span class="attr">name</span>: <span class="function"><span class="params">val</span> =&gt;</span> val.<span class="property">length</span> &gt; <span class="number">1</span> &amp;&amp; val.<span class="property">length</span> &lt; <span class="number">10</span>,</span><br><span class="line">  <span class="attr">age</span>: <span class="function"><span class="params">val</span> =&gt;</span> +val &gt; <span class="number">0</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="function"><span class="params">val</span> =&gt;</span> val.<span class="title function_">match</span>(<span class="regexp">/\d+&#123;6,&#125;/g</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> validator = &#123;</span><br><span class="line">  <span class="attr">rules</span>: strategy,</span><br><span class="line">  <span class="attr">verify</span>: <span class="function">(<span class="params">rule, val</span>) =&gt;</span> <span class="variable language_">this</span>.<span class="property">rules</span>[rule](val)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">formValidate</span>(<span class="params">formData</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; name, age, password, introduction &#125; = formData;</span><br><span class="line">  <span class="keyword">return</span> validator.<span class="title function_">verify</span>(<span class="string">&#x27;name&#x27;</span>, name) &amp;&amp;</span><br><span class="line">      validator.<span class="title function_">verify</span>(<span class="string">&#x27;age&#x27;</span>, age) &amp;&amp;</span><br><span class="line">      validator.<span class="title function_">verify</span>(<span class="string">&#x27;password&#x27;</span>, password) &amp;&amp;</span><br><span class="line">      validator.<span class="title function_">verify</span>(<span class="string">&#x27;notEmpty&#x27;</span>, introduction);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>策略模式的优势在扩展性良好，同时避免了<code>if else</code>以及<code>switch</code>语句。它的问题也很明显，策略类增多时，会不好维护，同时所有策略类都需要对外暴露。当策略类数目膨胀时需要考虑到这些问题。同时，现在在哪些时机如何组合策略并没有严格定义，实际实现时，会参考建造者模式里一样，定义一个<strong>导演类</strong>，把常用的组合方式定义出来。减少策略类的暴露。</p>
+<h3 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h3><p>适配器模式即，把一个类的接口变成客户端期待的另一个接口，从而使原先不匹配的两个类能够一起工作。简单点说，就是加了一个中间层做翻译工作。这种模式下有三种角色：</p>
+<ul>
+<li>目标角色，即期望接口</li>
+<li>源角色，即原始接口</li>
+<li>适配器角色，即转换类</li>
+</ul>
+<p>在实现上，通常使用一个同时继承两个类的类作为中转。因为对象很轻量级，JS中就更容易实现了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Target</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Target1</span> <span class="keyword">extends</span> <span class="title class_">Target</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 目标逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Adaptee</span> &#123;</span><br><span class="line">  <span class="comment">// 原有逻辑</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Adapter</span> <span class="keyword">extends</span> <span class="title class_">Adaptee</span> <span class="keyword">implements</span> <span class="title class_">Target</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">request</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>.foo();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的优点在可以将两个不相关的类在一起运行，提高了类的复用程度，它通常用来救火，完成拓展。由于实际工程中，业务变更较常出现，适配器模式也很常用。</p>
+<h4 id="拓展-1"><a href="#拓展-1" class="headerlink" title="拓展"></a>拓展</h4><p>如需要多适配一的场景，此时无法多继承（Java），在适配类中引用多个类即可。</p>
+<h3 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h3><p>迭代器模式，顾名思义是提供一种方法按顺序访问容器中的每个元素，而<strong>无需暴露容器的细节</strong>。在实现时，通常要自己实现一个迭代器。Java中通过拓展<code>java.util.Iterator</code>实现，JavaScript中，则通过封装数组实现。实现时，要考虑下面几个方法：</p>
+<ul>
+<li>判断是否到达尾部</li>
+<li>返回下一个元素</li>
+<li>删除当前元素</li>
+</ul>
+<p>像下面这样</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 迭代器</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Iterator</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> Object <span class="title function_">next</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">remove</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 容器</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Demo</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(Object o)</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">(Object o)</span>;</span><br><span class="line">  <span class="keyword">public</span> Iterator <span class="title function_">iterator</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在所有高级语言基本都有这个接口或基础实现。这个模式已经很少用到。</p>
+<h3 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h3><p>组合模式用在表示<strong>树状结构的数据</strong>中，使用户对单个对象和组合对象使用具有一致性。组合模式下有三种角色：</p>
+<ul>
+<li>Component，节点抽象角色，参与组合对象的共有方法和属性</li>
+<li>Leaf，叶子对象，遍历的最小单位</li>
+<li>Composite，树枝节点</li>
+</ul>
+<p>用JavaScript表示，就像下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> node = &#123;</span><br><span class="line">  <span class="title function_">commonMethod</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> branchNode = <span class="title class_">Object</span>.<span class="title function_">create</span>(node);</span><br><span class="line"><span class="keyword">const</span> leafNode = <span class="title class_">Object</span>.<span class="title function_">create</span>(node);</span><br><span class="line"></span><br><span class="line">branchNode = <span class="title class_">Object</span>.<span class="title function_">create</span>(branch, &#123;</span><br><span class="line">  <span class="attr">children</span>: [],</span><br><span class="line">  <span class="title function_">add</span>(<span class="params">node</span>) &#123;</span><br><span class="line">    children.<span class="title function_">push</span>(node);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">remove</span>(<span class="params">index</span>) &#123;</span><br><span class="line">    children.<span class="title function_">splice</span>(index,<span class="number">1</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">print</span>(<span class="params"></span>) &#123;</span><br><span class="line">    children.<span class="title function_">forEach</span>(<span class="function"><span class="params">child</span> =&gt;</span> &#123; <span class="variable language_">console</span>.<span class="title function_">log</span>(child); &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">leafNode = <span class="title class_">Object</span>.<span class="title function_">create</span>(leafNode, &#123;</span><br><span class="line">  <span class="comment">// ...重写node的同名方法</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>组合模式在表示整合局部的关系时很有用，但是由于树枝节点和叶子节点的使用方式不同，在使用两种节点时，需要直接调用接口的实现类，这一点违背了依赖导致原则（面向接口编程）。使用上分为透明模式和安全模式，后者就像上面一样，在实现类上区分开树枝和叶子节点，透明模式下，所有的方法均抽象到抽象类中实现，而在叶子节点调用不合法方法时抛出异常。</p>
+<p>综上来看，组合模式即使用用数据结构描述一颗多叉树。</p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>观察者模式，也叫发布订阅模式，可以说是前端最熟悉也是最常见的一种设计模式了。小到页面事件监听，大到Vue的设计原理都能看到观察者模式的影子。它的内涵在将信息流从原来的<strong>pull变成push</strong>。从而不需要使用<code>while</code>，<code>setInterval</code>这种很消耗资源的方式。代价是，需要硬编码到被监听者中，在状态改变时，push信息到监听者那里。通常实现时，这个过程可以抽象到很底层完成，如Vue使用<code>Object.defineProperty</code>，并不影响整体实现。另外，为了实现多对多的监听，往往需要在被监听者和监听者之间增加spy（或者叫probe）这样的角色进行中转和广播通知。</p>
+<p>这时候可以定义<code>Observable</code>接口，当然了，它需要可以增删监听者和在发生事件后提醒监听者。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Observable</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(Observer o)</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(Observer o)</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">notify</span><span class="params">(String text)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IFoo</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">work</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sleep</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Observer</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">(String text)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Victim</span> <span class="keyword">implements</span> <span class="title class_">Observable</span>, IFoo &#123;</span><br><span class="line">  <span class="keyword">private</span> ArrayList&lt;Observer&gt; oList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Observer&gt;();</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(Observer o)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.oList.add(o);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(Observer o)</span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.oList.remove(o);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">notify</span><span class="params">(String text)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (Observer o: oList) &#123;</span><br><span class="line">      o.update(text);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">work</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">    <span class="built_in">this</span>.notify(<span class="string">&quot;Working...&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sleep</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="built_in">this</span>.notify(<span class="string">&quot;Sleeping...&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个简单的JavaScript实现如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventUtil</span> = &#123;</span><br><span class="line">  <span class="comment">// 全局事件管理</span></span><br><span class="line">  <span class="keyword">var</span> events = &#123;&#125;,</span><br><span class="line">  <span class="comment">// 注册事件</span></span><br><span class="line">    on = <span class="keyword">function</span> (<span class="params">type, handler</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (events[type]) &#123;</span><br><span class="line">        events[type].<span class="title function_">push</span>(handler);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        events[type] = [handler];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  <span class="comment">// 触发事件</span></span><br><span class="line">    emit = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">        events[type][i];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>观察者模式的优势在于在两个对象有<strong>频繁信息交互或希望监听特定时机</strong>时很有用，当信息很多时，可以考虑增加中间层，设计消息队列处理。Java本身也提供<code>java.util.Observer</code>和<code>java.util.Observable</code>用来实现这种模式。</p>
+<p>建立在观察者模式的基础上，有响应式编程这样新的编程范式出现，<a target="_blank" rel="noopener" href="http://reactivex.io/">ReactiveX</a>就是在这种范式基础上推出的多语言框架。JavaScript版本的叫做<a target="_blank" rel="noopener" href="http://reactivex.io/rxjs/manual/overview.html">RxJS</a>，相信看完这个简介对你会非常有帮助。</p>
+<h3 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h3><p>门面模式又叫外观模式，它要求所有子系统与外部通信时必须使用统一的对象进行，提供高层的接口，尽量掩盖不必要的业务细节，使得子系统更易用。因为实现起来重点在于统一通信数据格式和封装业务细节。这种模式也非常常用。比如在通常的前后端协调时，后端回传前端请求的数据通常都是统一的格式，避免错误同时减少前端工作量。比如下面这样。同样，有时后端也会要求前端在请求时使用统一的数据格式（不常见）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> successRet = &#123;</span><br><span class="line">  <span class="comment">// 错误码</span></span><br><span class="line">  <span class="attr">code</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="comment">// 返回数据</span></span><br><span class="line">  <span class="attr">data</span>: &#123;</span><br><span class="line">    <span class="attr">userInfo</span>: &#123;</span><br><span class="line">      <span class="attr">id</span>: <span class="number">0000001</span>,</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> errorRet = &#123;</span><br><span class="line">  <span class="attr">code</span>: <span class="number">0002</span>,</span><br><span class="line">  <span class="comment">// 错误原因</span></span><br><span class="line">  <span class="attr">message</span>: <span class="string">&quot;请求过于频繁！&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>门面模式可以极大地提升封装性，增加系统的高内聚，同时也减少了系统内外的耦合，提高了灵活度和安全性。劣势在于对扩展不利，所有的改动几乎都要对应到门面（Facade）类的硬编码。因此门面模式的使用场景是：</p>
+<ul>
+<li>为一个复杂的系统或模块提供对外接口</li>
+<li>子系统间相对独立</li>
+</ul>
+<p>通常情况下，门面类只负责聚合，不参与具体的子系统逻辑。另外，在系统庞大时，很可能有不止一个门面入口。后端接口微服务化的趋势下，在系统内，拆分原来庞大的接口，同时面向前端不同设备，设计不同的服务汇合接入点正是门面模式的体现。</p>
+<h3 id="备忘录模式"><a href="#备忘录模式" class="headerlink" title="备忘录模式"></a>备忘录模式</h3><p>备忘录模式即，在不破坏封装性的前提下，捕获一个对象的内部状态，在对象外保存，并在合适的时候可以将对象恢复到保存的状态。这个概念很简单，涉及到三个角色：</p>
+<ul>
+<li>发起人，需要记录状态的对象</li>
+<li>备忘录， 用来储存状态</li>
+<li>备忘录管理者，对备忘录进行管理，保存和恢复</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Memorial</span> &#123;</span><br><span class="line">  <span class="attr">state</span>: <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="title function_">memorize</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Memento</span>(<span class="variable language_">this</span>.<span class="property">state</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">restore</span>(<span class="params">memento</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">state</span> = memento.<span class="property">state</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Memento</span> &#123;</span><br><span class="line">  <span class="attr">state</span>: <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">state</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">state</span> = state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Manager</span> = &#123;</span><br><span class="line">  <span class="attr">memento</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> m = <span class="keyword">new</span> <span class="title class_">Memorial</span>();</span><br><span class="line"><span class="title class_">Manager</span>.<span class="property">memento</span> = <span class="title class_">Memorial</span>.<span class="title function_">memorize</span>();</span><br><span class="line"><span class="title class_">Memorize</span>.<span class="title function_">restore</span>(<span class="title class_">Manager</span>.<span class="property">memento</span>);</span><br></pre></td></tr></table></figure>
+
+<p>它的优点很明显，可以保存和回复状态，支持回滚事务。但在使用时，通常是结合了别的设计模式的变种。</p>
+<h4 id="拓展-2"><a href="#拓展-2" class="headerlink" title="拓展"></a>拓展</h4><p>结合原型模式，可以直接用clone对象的方式保存状态。这么做问题是当状态对象较大时，会有时间和空间的开销，优势是可以直接将状态存储在类内部，避免了其余类的定义。</p>
+<p>在多状态存储上，Java可以借用BeanUtil工具类（书中所说），JavaScript中就灵活很多了（还是因为轻量级的对象）。同样的多备忘录模式就不再赘述。另外，需要保证备忘录的保密性时，封装成业务类的内置类，设置权限为<code>private</code>即可，JS中同理。</p>
+<h3 id="访问者模式"><a href="#访问者模式" class="headerlink" title="访问者模式"></a>访问者模式</h3><p>访问者模式指，封装作用在数据结构上各元素的操作，它可以在不改变数据的前提下定义新的对于元素的操作。实现原理上，</p>
+<ul>
+<li>被访问类新增访问方法（如<code>accept</code>），注入访问类，同时将自己交给访问类</li>
+<li>访问类根据得到的被访问类对象，执行想要的操作</li>
+<li>场景类中通过调用访问方法访问被访问类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Element</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(IVisitor v)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Element</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 注入访问类</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(IVisitor v)</span> &#123;</span><br><span class="line">    visitor.visit(<span class="built_in">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IVisitor</span>() &#123;</span><br><span class="line">  <span class="comment">// 通过重载对不同元素定义不同的访问方式</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Element e)</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(OtherElement e)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，为了保证依赖倒置原则，被访问类和访问类都可以再抽象出抽象类和接口。另外，访问者模式通常和组合模式、迭代器模式一同出现。访问者模式的优点：</p>
+<ul>
+<li>符合单一职责原则</li>
+<li>拓展性优秀</li>
+</ul>
+<p>缺点在于，被访问者要暴露细节给访问者，通常会增加很多约定，使代码不稳定。另外重载中依赖的是具体元素违背了依赖倒置原则。</p>
+<p>访问器模式的应用场景<strong>通常是使用迭代器模式已经不能满足的场合</strong>。比如对不同的元素有不同的遍历操作，甚至涉及到元素内部的逻辑。使用访问器模式可以封装和掩盖这种差异性。</p>
+<h4 id="拓展-3"><a href="#拓展-3" class="headerlink" title="拓展"></a>拓展</h4><p>在访问器模式和迭代器模式一同出现时，可以增加统计功能，在每次访问元素时收集统计信息。在往深处拓展，甚至可以抽象访问器为接口，从而拓展不同类型的访问器，如用来展示数据和用来统计数据的。</p>
+<h3 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h3><p>这种模式就很好理解了。即将客体抽象成一个<strong>有限状态机</strong>，客体有一个初始状态，在某特定时机下会跃迁到另一状态，且状态间的跳转是有规律可循的。这种模式在编程中非常常见，自然语言分析、所有可以用马尔科夫过程描述的事物变化都可以抽象成状态模式实现。在实现时，主要要完成三方面工作：</p>
+<ul>
+<li>定义<strong>所有状态</strong>，根据状态的薄厚程度，用常量或类定义</li>
+<li>定义修改状态的行为，在方法内往往要根据上一时刻状态做判断，这些行为定义在状态内部</li>
+<li>在上下文中调用这些行为</li>
+</ul>
+<p>在实现时，为了避免<code>switch</code>语句，会使用一个上下文类，托管当前状态，在状态切换时，先调用状态类中的行为，再通知上下文类更换托管的状态。两者相互注入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">State</span> &#123;</span><br><span class="line">  <span class="comment">// 注入上下文对象</span></span><br><span class="line">  <span class="keyword">protected</span> Context c;</span><br><span class="line">  <span class="comment">// 设置上下文</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setContext</span><span class="params">(Context c)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.context = c;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 行为</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="title function_">action1</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="title function_">action2</span><span class="params">()</span>;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">State1</span> &#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">action1</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">action2</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>.context.setState(Context.STATE2);</span><br><span class="line">    <span class="comment">// 切换到state2</span></span><br><span class="line">    <span class="built_in">super</span>.context.handleAction2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Context</span> &#123;</span><br><span class="line">  <span class="comment">// 注入所有状态</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">state</span> <span class="variable">STATE1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">State1</span>();</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">state</span> <span class="variable">STATE2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">State2</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> State CurrState;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> State <span class="title function_">getState</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.CurrState;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置当前状态</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setState</span><span class="params">(State currState)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.currState = currState;</span><br><span class="line">    <span class="comment">// 切换当前状态</span></span><br><span class="line">    <span class="built_in">this</span>.CurrState.setContext(<span class="built_in">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 行为委托</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleAction1</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.CurrState.action1();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleAction2</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.CurrState.action2();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>增加了上下文类Context后，避免了大量的<code>switch</code>语句，问题是，状态较多时，定义的类也会较多。状态模式在工作流开发中很常用。</p>
+<h3 id="解释器模式"><a href="#解释器模式" class="headerlink" title="解释器模式"></a>解释器模式</h3><p>解释器模式顾名思义，即定义一个解释器，去按文法解释一种语言中的句子。当然这个语言以科学运算和编程语句居多。它的应用场景比较特殊，即需要语句解析介入的场景，比如自然语言分析、或者真的编写一个语言的解释器。通常开发解释器工程量和难度都较大，且会遇到效率问题。一般应用较少。</p>
+<p>在这个模式下。主要有下面这些角色；</p>
+<ul>
+<li>抽象解释器，用来派生具体的表达式解释器</li>
+<li>终结符解释器，即不需要解释的，字面意义的符号，比如<code>1</code>或<code>a</code>等</li>
+<li>非终结符解释器，和两边表达式相关联的符号解释器，比如<code>+</code>或<code>*</code>等</li>
+<li>上下文角色</li>
+</ul>
+<h3 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h3><p>享元模式是一种重要的池技术，原理上指使用共享对象支持大量的细粒度的对象。我们可以将这些对象内的状态拆分成可共享状态和不可共享状态。对象往往可以按可共享状态拆分为细粒度较大的若干部分，放在共享对象池中，再贴上自己的不可共享状态。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 享元</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">SharedObject</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> String intrinsic;</span><br><span class="line">  <span class="comment">// 共享的状态作为享元的key</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> String Extrinsic;</span><br><span class="line">  <span class="comment">// 共享的状态需要可以设置</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">SharedObject</span><span class="params">(String E)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.Extrinsic = E;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 业务方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="title function_">foo</span><span class="params">()</span>;</span><br><span class="line">  <span class="comment">// 不可共享状态的getter/setter</span></span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">getIntrinsic</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> intrinsic;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setIntrinsic</span><span class="params">(String intrinsic)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.intrinsic = intrinsic;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 享元工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SharedObjectFactory</span> &#123;</span><br><span class="line">  <span class="comment">// 共享池</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> HashMap&lt;String, SharedObject&gt; pool = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, SharedObject&gt;();</span><br><span class="line">  <span class="comment">// 工厂方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> SharedObject <span class="title function_">getSharedObject</span><span class="params">(String Extrinsic)</span> &#123;</span><br><span class="line">    <span class="type">SharedObject</span> <span class="variable">o</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 从池中寻找</span></span><br><span class="line">    <span class="keyword">if</span> (pool.containsKey(Extrinsic)) &#123;</span><br><span class="line">      o = pool.get(Extrinsic);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      o = <span class="keyword">new</span> <span class="title class_">SharedObject1</span>(Extrinsic);</span><br><span class="line">      <span class="comment">// 放到池中</span></span><br><span class="line">      pool.put(Extrinsic, o);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在共享对象池中，建议使用可共享状态的简单组合构成池内元素的key值（最好是基本类型），一方面减少编程负担，另一方面还可以提高工作效率。享元模式主要使用在下面场景下：</p>
+<ul>
+<li>系统中存在大量相似对象</li>
+<li>对象具备相近的外部状态和与环境无关的内部状态</li>
+</ul>
+<h3 id="桥梁模式"><a href="#桥梁模式" class="headerlink" title="桥梁模式"></a>桥梁模式</h3><p>桥梁模式又叫桥接模式，是比较轻量级的一种设计模式，意为将抽象和实现解耦，使两者可以独立变化。角色上，桥梁模式分为主体和客体，在主体内注入客体的接口&#x2F;抽象类，并在主体的方法内使用，提供setter或构造函数方法。这样继承自主体的类就可以根据传入setter&#x2F;构造函数的客体实现类的不同得到不同的实现结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="comment">// 基本方法</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Object1</span> <span class="keyword">implements</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 自己的逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Object2</span> <span class="keyword">implements</span> <span class="title class_">Object</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 自己的逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Subject</span> &#123;</span><br><span class="line">  <span class="comment">// 必须有一个注入的客体</span></span><br><span class="line">  <span class="keyword">private</span> Object o;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 必须可以通过构造函数/setter注入</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Subject</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.o = o;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得客体行为</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bar</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.o.foo();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得客体</span></span><br><span class="line">  <span class="keyword">public</span> Object <span class="title function_">getObject</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Subject1</span> <span class="keyword">extends</span> <span class="title class_">Subject</span> &#123;</span><br><span class="line">  <span class="comment">// 覆写构造函数</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Subject1</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>(o);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 自身业务</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bar</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>.bar();</span><br><span class="line">    <span class="comment">// ... 其余业务</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Scene</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object1</span>();</span><br><span class="line">    <span class="type">Subject</span> <span class="variable">s</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Subject1</span>(o);</span><br><span class="line">    s.bar();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>桥梁模式的扩展能力很强，它是<strong>对普通的继承的一种灵活的补充</strong>，避免了父类对子类的强侵入，可以将父类可能会变化的部分抽出去，通过注入的方式引入，方便子类随时更换。</p>
+<h2 id="设计模式的比较"><a href="#设计模式的比较" class="headerlink" title="设计模式的比较"></a>设计模式的比较</h2><h3 id="创建类"><a href="#创建类" class="headerlink" title="创建类"></a>创建类</h3><p>和创建类相关的模式：</p>
+<ul>
+<li>工厂模式</li>
+<li>抽象工厂模式</li>
+<li>建造者模式</li>
+<li>单例模式</li>
+<li>原型模式</li>
+</ul>
+<p>后两者容易理解。重点对比上面三个模式：</p>
+<ul>
+<li>工厂模式注重<strong>整体的构建过程</strong>，成产出的对象具有很强的<strong>相似性</strong></li>
+<li>建造者模式注重<strong>建造的过程</strong>，希望在每一步最好都可定制，根据步骤的不同生产出差异化的对象，<strong>通常伴生导演类</strong>。</li>
+<li>抽象工厂模式通常和<strong>产品族</strong>关系密切，尤其是一组事物有很明显的两个或多个划分方法时使用，其余等同工厂模式</li>
+</ul>
+<h3 id="结构类"><a href="#结构类" class="headerlink" title="结构类"></a>结构类</h3><p>结构类指调整或组合类产生更大结构来适应更高层次逻辑需求，大多通过增加中间层解决问题，有下面的相关模式：</p>
+<ul>
+<li>适配器模式</li>
+<li>桥梁模式</li>
+<li>组合模式</li>
+<li>装饰模式</li>
+<li>门面模式</li>
+<li>享元模式</li>
+<li>代理模式</li>
+</ul>
+<p>其中简单明了的有桥梁模式、组合模式、门面模式、享元模式，下面对比下其他的几种模式：</p>
+<ul>
+<li>代理模式即在原对象和用户间增加了一个中间层，在不改变原接口的情况下，<strong>增加准入和限定操作</strong></li>
+<li>装饰模式是代理模式的加强，装饰类并不起中间层的作用，不做准入判断，它<strong>单纯地在原接口上增强或削弱功能</strong></li>
+<li>适配器模式和它们差别较大，它也起包装作用，作用于两个不同的对象，重点在<strong>伪装和转换</strong></li>
+</ul>
+<h3 id="行为类"><a href="#行为类" class="headerlink" title="行为类"></a>行为类</h3><p>这一批模式重点在修饰类的行为：</p>
+<ul>
+<li>责任链模式</li>
+<li>命令模式</li>
+<li>解释器模式</li>
+<li>迭代器模式</li>
+<li>中介者模式</li>
+<li>备忘录模式</li>
+<li>观察者模式</li>
+<li>状态模式</li>
+<li>策略模式</li>
+<li>模板方法模式</li>
+<li>访问者模式</li>
+</ul>
+<p>下面比较一些类似的模式</p>
+<ul>
+<li>命令模式强调把<strong>动作解耦</strong>，将其分为<strong>执行对象和执行行为</strong>，在行为类内部注入执行对象，使用执行者操作命令</li>
+<li>策略模式强调包装<strong>对等的可替换的多个算法</strong>，通常有一个上下文类，封装所有的算法</li>
+</ul>
+<p>比如在表单验证时，策略模式会将所有的验证规则对等地定义出来，再由一个表单验证上下文对象包裹起来；命令模式下，首先要明确所有验证规则的接受者（Receiver），再定义所有的验证“命令”，最后由执行者（Invoker）操作命令完成工作，具体工作是在接受者那里完成的，命令只负责组织。</p>
+<p>关于策略模式和状态模式，</p>
+<ul>
+<li>策略模式没有状态的概念，虽然有上下文类<code>Context</code>，但是切换的状态只是不同的算法而已</li>
+<li>状态模式重点关注状态，它同样有上下文类<code>Context</code>，但<strong>相同的行为在不同的状态下产生的结果不同</strong>。在实现上体现在，上下文类内保存了当前状态，虽然状态间都有相同方法，但实现不同。</li>
+</ul>
+<p>至于观察者模式和责任链模式，</p>
+<ul>
+<li>观察者模式重点在<strong>观察和被观察的关系</strong>（想想事件监听），被观察者中需要注入监听者（Observable），再由监听者告知观察者（Observer），整条链是有回调的，链上传递的信息可以自由变化，即最后返回给用户数据的总是第一个被观察者</li>
+<li>责任链模式重点在<strong>事务链条化处理</strong>的过程（想想中间件），每个处理者都必须通过<code>next</code>属性明确指定下一个目标，整条链是责任链，链上角色相互平等，传递的信息一般不会改变结构，最终由最后一个角色返回结果</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>首先先来比较策略模式和桥梁模式。它俩的共同点在都有一个注入依赖关系。策略模式中算法封装被注入到上下文类<code>Context</code>中，桥梁模式中差异化继承的部分被单独抽出再注入父类里。它们的区别主要在：</p>
+<ul>
+<li>策略模式着重于封装一系列不同的行为</li>
+<li>桥梁模式在不破坏封装的情况下将差异化的实现部分从抽象部分抽取出来，因此必然有抽象化角色和实现化角色</li>
+</ul>
+<p>门面模式和中介者模式就比较好区分了，它们的应用场景有很大不同;</p>
+<ul>
+<li>门面模式用来掩盖下面复杂的子系统，提供统一的高层接口（“金玉其外”），它并不管下面的子系统间怎样耦合（“败絮其中”）</li>
+<li>中介者模式要用在同事对象间（通常至少3个）复杂交互时，化网状结构为星型结构，减少耦合</li>
+</ul>
+<p>最后，代理模式、装饰模式、适配器模式（不严格）、桥梁模式、门面模式都可以总结为<strong>包装模式</strong>，它们并没有为原来的类增加新的功能，只是增加了新的包装或插件。</p>
+<h2 id="设计模式的组合"><a href="#设计模式的组合" class="headerlink" title="设计模式的组合"></a>设计模式的组合</h2><h3 id="shell命令解释demo"><a href="#shell命令解释demo" class="headerlink" title="shell命令解释demo"></a>shell命令解释demo</h3><p>主要采用命令模式、责任链模式、模板方法模式。</p>
+<h3 id="银行扣款demo"><a href="#银行扣款demo" class="headerlink" title="银行扣款demo"></a>银行扣款demo</h3><p>主要采用策略模式、工厂方法模式、门面模式</p>
+<h3 id="产品消费事件demo"><a href="#产品消费事件demo" class="headerlink" title="产品消费事件demo"></a>产品消费事件demo</h3><p>产品创建时摄影工厂模式，保证产品和工厂的紧耦合，避免创建事件不触发的可能性</p>
+<h2 id="新模式"><a href="#新模式" class="headerlink" title="新模式"></a>新模式</h2><h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><p>MVC其实算不上一种新模式，但是从上世纪90年代起到现在实在是太流行了。它的目的是通过C（Controller）将模型M（Model）和视图V（View）分离开。书中具体在讲MVC在Java Web开发中的实现，这里从略。</p>
+<h3 id="规格书模式"><a href="#规格书模式" class="headerlink" title="规格书模式"></a>规格书模式</h3><p>规格书模式多用在描述一个规范或条件的场合下，比如“性别男年龄大于20且位于北京”。通过定义抽象类以及<code>AND</code>，<code>OR</code>，<code>NOT</code>等的组合，可以得到更复杂的规格书对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ISpec</span>() &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span>;</span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">and</span><span class="params">(ISpec s)</span>;</span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">or</span><span class="params">(ISpec s)</span>;</span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">not</span><span class="params">(ISpec s)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> Spec <span class="keyword">implements</span> <span class="title class_">ISpec</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">and</span><span class="params">(ISpec s)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AndSpec</span>(<span class="built_in">this</span>, spec);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">or</span><span class="params">(ISpec s)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> newOrSpec(<span class="built_in">this</span>, spec);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> ISpec <span class="title function_">not</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> notSpec(<span class="built_in">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AndSpec</span> <span class="keyword">extends</span> <span class="title class_">Spec</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> ISpec left;</span><br><span class="line">  <span class="keyword">private</span> ISpec right;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">AndSpec</span><span class="params">(ISpec left, ISpec right)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.left = left;</span><br><span class="line">    <span class="built_in">this</span>.right = right;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> left.isSatisfied(o) &amp;&amp; right.isSatisfied(o);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrSpec</span> <span class="keyword">extends</span> <span class="title class_">Spec</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> ISpec left;</span><br><span class="line">  <span class="keyword">private</span> ISpec right;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">OrSpec</span><span class="params">(ISpec left, ISpec right)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.left = left;</span><br><span class="line">    <span class="built_in">this</span>.right = right;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> left.isSatisfied(o) || right.isSatisfied(o);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotSpec</span> <span class="keyword">extends</span> <span class="title class_">Spec</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> ISpec spec;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">NotSpec</span><span class="params">(ISpec s)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.spec = s;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> !<span class="built_in">this</span>.spec.isSatisfied(o);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">bizSpec</span> <span class="keyword">extends</span> <span class="title class_">Spec</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> Object obj;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">bizSpec</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.obj = o;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSatisfied</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="comment">// 根据业务逻辑决定真值判断</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>规格模式应用场景比较局限，在LINQ（Language INtegrated Query，语言集成查询）中常见，用来构造WHERE子句。</p>
+<h3 id="对象池模式"><a href="#对象池模式" class="headerlink" title="对象池模式"></a>对象池模式</h3><p>对象池模式和享元模式相似，都是循环使用对象，但是对象池模式是整个直接取出到池中，避免初始化和释放资源时的消耗。如连接池和线程池就是常见的例子。</p>
+<h3 id="雇工模式"><a href="#雇工模式" class="headerlink" title="雇工模式"></a>雇工模式</h3><p>雇工模式是常见的“接口-实现”的倒转实现。比如，小学老师教小学学生，中学老师教中学学生，大学老师教大学学生。在实现时，我们先定义学习接口，再实现所有的学生类。再实现老师时，直接调用学生接口的学习方法就完成了教学的实现。雇工模式为一组类提供通用的功能，不需要类实现这些功能，而在客体上实现功能。它和命令模式有相似之处。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IService</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">serving</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Object</span> <span class="keyword">implements</span> <span class="title class_">IService</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">serving</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 服务完成</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Servant</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(IService s)</span> &#123;</span><br><span class="line">    s.serving();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="黑板模式"><a href="#黑板模式" class="headerlink" title="黑板模式"></a>黑板模式</h3><p>黑板模式是观察者模式的拓展，它允许消息有多个读写者，且同时进行。消息生产者通过“黑板”这个总线，将消息传递给对应的消息消费者。这可以是一种宏观的设计理念，使用数据库或者消息队列当做“黑板”都是可以的。</p>
+<h3 id="空对象模式"><a href="#空对象模式" class="headerlink" title="空对象模式"></a>空对象模式</h3><p>空对象通过实现一个无意义的默认类避免程序出现null值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NullAnimal</span> <span class="keyword">implements</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> makeSound &#123;</span><br><span class="line">    <span class="comment">// 什么都不写</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>–END–</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/blog/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+              <a href="/blog/tags/%E7%B1%BB/" rel="tag"># 类</a>
+              <a href="/blog/tags/%E6%8E%A5%E5%8F%A3/" rel="tag"># 接口</a>
+              <a href="/blog/tags/%E6%8A%BD%E8%B1%A1%E7%B1%BB/" rel="tag"># 抽象类</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/01/22/chengdu-chongqing-wuhan-travel/" rel="prev" title="川渝毕业旅行游记">
+                  <i class="fa fa-chevron-left"></i> 川渝毕业旅行游记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/01/27/my-first-pwa-app/" rel="next" title="我的第一个PWA开发记录">
+                  我的第一个PWA开发记录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="参考：my-git&#x2F;git-workflow-tutorial.md at master · xirong&#x2F;my-git  git工作流有多种使用方法，在实际工作中的不良工作习惯，会造成很让人头大的麻烦。下面距离一些常用的工作流。 集中式类似SVN，集中式工作流以中央仓库作为项目所有修改的单点实体，只用到master这一个分支。开发者提交功能修改到中央库前，采用rebase的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git工作流最佳实践">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2018/08/16/git-workflow/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="参考：my-git&#x2F;git-workflow-tutorial.md at master · xirong&#x2F;my-git  git工作流有多种使用方法，在实际工作中的不良工作习惯，会造成很让人头大的麻烦。下面距离一些常用的工作流。 集中式类似SVN，集中式工作流以中央仓库作为项目所有修改的单点实体，只用到master这一个分支。开发者提交功能修改到中央库前，采用rebase的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-16T15:28:34.000Z">
+<meta property="article:modified_time" content="2018-08-16T15:29:29.815Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="工作流">
+<meta property="article:tag" content="pull request">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2018/08/16/git-workflow/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2018/08/16/git-workflow/","path":"2018/08/16/git-workflow/","title":"git工作流最佳实践"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>git工作流最佳实践 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">集中式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E5%88%86%E6%94%AF"><span class="nav-number">2.</span> <span class="nav-text">功能分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitflow"><span class="nav-number">3.</span> <span class="nav-text">gitflow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#forking"><span class="nav-number">4.</span> <span class="nav-text">forking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pull-request"><span class="nav-number">5.</span> <span class="nav-text">pull request</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/08/16/git-workflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="git工作流最佳实践 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git工作流最佳实践
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-08-16 23:28:34 / 修改时间：23:29:29" itemprop="dateCreated datePublished" datetime="2018-08-16T23:28:34+08:00">2018-08-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/08/16/git-workflow/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/16/git-workflow/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/xirong/my-git/blob/master/git-workflow-tutorial.md">my-git&#x2F;git-workflow-tutorial.md at master · xirong&#x2F;my-git</a></p>
+</blockquote>
+<p>git工作流有多种使用方法，在实际工作中的不良工作习惯，会造成很让人头大的麻烦。下面距离一些常用的工作流。</p>
+<h3 id="集中式"><a href="#集中式" class="headerlink" title="集中式"></a>集中式</h3><p>类似SVN，集中式工作流以中央仓库作为项目所有修改的单点实体，只用到master这一个分支。<strong>开发者提交功能修改到中央库前，采用<code>rebase</code>的方式“在其基础上添加自己的修改”，得到完美的线性历史；遇到冲突时，通过<code>git status</code>和<code>git add</code>合并冲突</strong>。最后<code>git rebase --continue</code>即可。遇到困难无法进行下去时，<code>git rebase --abort</code>就可以撤回到rebase前的状态。</p>
+<p>在这种工作流下，使用<code>rebase</code>参数比不使用的<code>git pull</code>好处在于，rebase后的提交记录会少一次累赘的“合并提交”。</p>
+<h3 id="功能分支"><a href="#功能分支" class="headerlink" title="功能分支"></a>功能分支</h3><p>git相较SVN强大在分布式的特征。功能分支工作流主要针对新增功能集成到正式项目。功能分支工作流仍然以中央仓库为基础，但不是直接提交本地历史到各自的本地master分支，而是在开发新功能时<strong>创建新的分支，描述新功能</strong>。不同的功能分支相互隔离，同时也保证master分支的代码一定没有问题。一旦功能分支push到master，意味着功能与其他开发者共享。</p>
+<p>合并到master分支的过程通过创建pull request进行，在pull request请求中，让其他开发者有机会先去review变更。Pull request被接受后，剩下的工作就和集中式很像了，拉取master分支代码，合并，提交。</p>
+<p>工作流程上：</p>
+<ol>
+<li>先checkout功能分支</li>
+<li>做本地开发提交，以及<code>push -u</code>推送到远端分支（<code>-u</code>是跟踪远端对应分支的意思）</li>
+<li>完成开发后，提交pull request，请求合并远端功能分支到master，团队其他成员可以进行评论</li>
+<li>在接受前，团队<strong>所有成员</strong>有需要，可以提交自己的修改到该功能分支，也会显示在pull request里</li>
+<li>在pull-request被接受后，在本地master上可以用pull或者<code>pull -r</code>的方式合并功能分支，前者更像功能和原来代码的合并，后者更偏向线型的提交历史</li>
+</ol>
+<h3 id="gitflow"><a href="#gitflow" class="headerlink" title="gitflow"></a>gitflow</h3><p>Gitflow工作流通过为功能开发、发布准备和维护分配独立的分支，让发布迭代过程更流畅。相较功能分支更复杂，但也更健壮。仍然用中央仓库作为所有开发者的交互中心。相对于使用仅有的一个master分支，Gitflow工作流使用两个分支来记录项目的历史。master分支存储了正式发布的历史，而<strong>develop分支作为功能的集成分支。</strong>从而可以在master的<strong>所有提交附上版本号</strong>。</p>
+<p>每个新功能位于一个自己的分支，有着和功能分支一样的开发工作流，唯一不同的是，功能分支不是从master分支上拉出新分支，而是使用develop分支作为父分支。每次合并都位于develop分支。</p>
+<p>一旦develop分支上有了做一次发布（或者说快到了既定的发布日）的足够功能，就<strong>从develop分支上checkout一个发布分支release</strong>。从这个时间点开始之后新的功能不能再加到这个分支上——这个分支只应该做Bug修复、文档生成和其它面向发布任务。在release工作完成后，合并release分支到master，并加上tag。同时，<strong>release上做的修改要合并会develop分支</strong>。最后删除release分支。</p>
+<p>维护分支或说是热修复（hotfix）分支用于给产品发布版本（production releases）快速生成补丁，这是唯一可以直接从master分支fork出来的分支。修改完成后，修改应该立马合并回master和develop。master也应该为合并生成新的tag。</p>
+<h3 id="forking"><a href="#forking" class="headerlink" title="forking"></a>forking</h3><p>Forking工作流是分布式工作流，可以安全可靠地管理大团队的开发者（developer）和不信任贡献者（contributor）的提交。这种工作流不是使用单个服务端仓库作为『中央』代码基线，而让各个开发者都有一个服务端仓库。这意味着各个代码贡献者有2个Git仓库而不是1个：一个本地私有的，另一个服务端公开的。Forking工作流的一个主要优势是，贡献的代码可以被集成，而不需要所有人都能push代码到仅有的中央仓库中。开发者push到自己的服务端仓库，而只有项目维护者才能push到正式仓库。</p>
+<p>新开发者想要在项目上工作时，不是直接从正式仓库克隆，而是fork正式项目在服务器上创建一个拷贝。这个仓库拷贝作为他个人公开仓库 —— 其它开发者不允许push到这个仓库，<strong>但可以pull下来修改</strong>。要提交本地修改时，push提交到自己公开仓库中 —— 而不是正式仓库中。 然后，给正式仓库发起一个pull request，让项目维护者知道有更新已经准备好可以集成了。为了集成功能到正式代码库，<strong>维护者pull贡献者的变更到自己的本地仓库中</strong>，检查变更以确保不会让项目出错， 合并变更到自己本地的master分支， 然后push master分支到服务器的正式仓库中。到此，贡献的提交成为了项目的一部分，其它的开发者应该执行pull操作与正式仓库同步自己本地仓库。</p>
+<p>具体来说，大致有下面几步：</p>
+<ol>
+<li>开发者fork正式仓库</li>
+<li>开发者clone自己的fork出来的仓库，与之前工作流不一样的是，<strong>Forking工作流需要2个远程别名 —— 一个指向正式仓库，另一个指向开发者自己的服务端仓库。</strong>，像下面这样  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add upstream https://bitbucket.org/maintainer/repo</span><br></pre></td></tr></table></figure></li>
+<li>开发者修改都是私有的，如果项目往前走了，可以用git pull获得新的提交</li>
+<li>开发者准备分享新功能时，需要先push到自己的公开仓库中，然后发起pull request通知项目维护者，集成开发者的功能分支</li>
+<li>项目维护者通过GUI岔开pull request或者pull代码到自己的本地仓库，再手动合并。</li>
+<li>开发者通过<code>pull upstream master</code>的方式拉取项目最新进展</li>
+</ol>
+<h3 id="pull-request"><a href="#pull-request" class="headerlink" title="pull request"></a>pull request</h3><p>pull request用于合并不同分支或不同仓库的代码，并在合并前进行一些讨论和代码微调，在上面不同工作流的情况下具体功能体现也不同。</p>
+<p>上面几种工作流范式只是几种标准的建议，正式的项目版本管理中，可以糅合上面的一些特点。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/git/" rel="tag"># git</a>
+              <a href="/blog/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag"># 工作流</a>
+              <a href="/blog/tags/pull-request/" rel="tag"># pull request</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/08/16/some-tips-3/" rel="prev" title="工作中的遇到的一些小知识 3">
+                  <i class="fa fa-chevron-left"></i> 工作中的遇到的一些小知识 3
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/09/02/dont-make-me-think-note/" rel="next" title="《Don't make me think》 笔记">
+                  《Don't make me think》 笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

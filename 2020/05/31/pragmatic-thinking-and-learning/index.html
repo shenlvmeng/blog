@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="程序设计其实就是解决问题，它需要发明、创造和灵感  《程序员思维修炼》的作者同时也是《程序员修炼之道》的作者，在书中都有体现实用主义的影子。而在本书中，思考的角度则更高。从思维方式、学习能力等角度出发，提出了对不同人有着不同借鉴意义的真知灼见。全书思路发散，图结构而非树状结构的全书脉络让人较难在脑海中一次回忆起全部内容。开头对于专家模型的介绍稍显突兀，而后对R型思维的介绍，包括概念介绍、需要重视">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《程序员思维修炼》—— 思维方式和学习技巧">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2020/05/31/pragmatic-thinking-and-learning/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="程序设计其实就是解决问题，它需要发明、创造和灵感  《程序员思维修炼》的作者同时也是《程序员修炼之道》的作者，在书中都有体现实用主义的影子。而在本书中，思考的角度则更高。从思维方式、学习能力等角度出发，提出了对不同人有着不同借鉴意义的真知灼见。全书思路发散，图结构而非树状结构的全书脉络让人较难在脑海中一次回忆起全部内容。开头对于专家模型的介绍稍显突兀，而后对R型思维的介绍，包括概念介绍、需要重视">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-31T11:07:14.000Z">
+<meta property="article:modified_time" content="2020-05-31T14:03:42.468Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="思维">
+<meta property="article:tag" content="学习能力">
+<meta property="article:tag" content="右脑">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2020/05/31/pragmatic-thinking-and-learning/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2020/05/31/pragmatic-thinking-and-learning/","path":"2020/05/31/pragmatic-thinking-and-learning/","title":"《程序员思维修炼》—— 思维方式和学习技巧"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《程序员思维修炼》—— 思维方式和学习技巧 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%AA%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">绪论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">个人理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95"><span class="nav-number">1.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E6%96%B0%E6%89%8B%E5%88%B0%E4%B8%93%E5%AE%B6"><span class="nav-number">2.</span> <span class="nav-text">从新手到专家</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC"><span class="nav-number">2.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-1"><span class="nav-number">2.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A4%E8%AF%86%E5%A4%A7%E8%84%91"><span class="nav-number">3.</span> <span class="nav-text">认识大脑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-1"><span class="nav-number">3.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-2"><span class="nav-number">3.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%8F%B3%E8%84%91"><span class="nav-number">4.</span> <span class="nav-text">利用右脑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-2"><span class="nav-number">4.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-3"><span class="nav-number">4.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%A4%A7%E8%84%91"><span class="nav-number">5.</span> <span class="nav-text">调试大脑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-3"><span class="nav-number">5.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-4"><span class="nav-number">5.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">6.</span> <span class="nav-text">主动学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-4"><span class="nav-number">6.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-5"><span class="nav-number">6.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E9%AA%8C%E7%A7%AF%E7%B4%AF"><span class="nav-number">7.</span> <span class="nav-text">经验积累</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-5"><span class="nav-number">7.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-6"><span class="nav-number">7.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%8E%A7%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">注意力控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%A6%82%E6%8B%AC-6"><span class="nav-number">8.1.</span> <span class="nav-text">个人概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-7"><span class="nav-number">8.2.</span> <span class="nav-text">摘录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E8%B6%8A%E4%B8%93%E5%AE%B6"><span class="nav-number">9.</span> <span class="nav-text">超越专家</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E5%BD%95-8"><span class="nav-number">9.1.</span> <span class="nav-text">摘录</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/05/31/pragmatic-thinking-and-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《程序员思维修炼》—— 思维方式和学习技巧 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《程序员思维修炼》—— 思维方式和学习技巧
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-05-31 19:07:14 / 修改时间：22:03:42" itemprop="dateCreated datePublished" datetime="2020-05-31T19:07:14+08:00">2020-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">思考</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/05/31/pragmatic-thinking-and-learning/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/31/pragmatic-thinking-and-learning/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>程序设计其实就是解决问题，它需要发明、创造和灵感</p>
+</blockquote>
+<p>《程序员思维修炼》的作者同时也是《程序员修炼之道》的作者，在书中都有体现实用主义的影子。而在本书中，思考的角度则更高。从思维方式、学习能力等角度出发，提出了对不同人有着不同借鉴意义的真知灼见。全书思路发散，图结构而非树状结构的全书脉络让人较难在脑海中一次回忆起全部内容。开头对于专家模型的介绍稍显突兀，而后对R型思维的介绍，包括概念介绍、需要重视和如何培养，思路上比较连贯。整体上还是读者自己形成看法和认识。后面对学习能力、注意力控制等的介绍倒是比较有实用性，可操作性较高。按第一章的专家模型来界定，就是面向新手、高级新手阶段的指令集。书中大脑调试一章对于有心理学基础的读者来讲，聊胜于无。整体来看，也完全可以面向非程序员群体，全书前半段更能开阔视野，后半段更有使用价值。</p>
+<p><em>吐槽一点，把书中对于“情境”一词翻译成“上下文”之后，我读起来舒服了很多。因此下面我也做了这样的“翻译”</em></p>
+<p>下面分章节简单摘录一些闪光点。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><h3 id="个人理解"><a href="#个人理解" class="headerlink" title="个人理解"></a>个人理解</h3><p>写代码是项脑力运动，软件项目运作中，弱点实际上在人，而非机器和代码。因此对于思维上的练习是很有裨益的。</p>
+<h3 id="摘录"><a href="#摘录" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>“软件产品处于应用、用户、规则和硬件的合力之下。这些因为总是在不断变化，迫使软件产品也随之改变” ——《没有银弹》</li>
+<li>始终关注上下文</li>
+<li>有些东西是基础的、各领域相通的。那么必然是存在某些根本和重要的东西。（然而作者没有举例）</li>
+</ul>
+<h2 id="从新手到专家"><a href="#从新手到专家" class="headerlink" title="从新手到专家"></a>从新手到专家</h2><h3 id="个人概括"><a href="#个人概括" class="headerlink" title="个人概括"></a>个人概括</h3><p>人对技能的掌握是可以分阶段的。在低能阶段，更需要固定的<strong>指令集</strong>，这可以通过培训、手册等手段实现；经过不断的<strong>模仿</strong>和意外情况以及新手自己的努力总结后，可以一步步进化到高能阶段，这个阶段会偏向按<strong>直觉</strong>行事，在新手看来就像是magic。<strong>对于新手和专家的管理方式一定是不同的</strong>，新手更需要规则去避免思考，以及去做标准化；专家更需要自由化的工作环境来避免人为限制。</p>
+<h3 id="摘录-1"><a href="#摘录-1" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>专家的很多行为是如此的熟练以至于已经变成无意识的了</li>
+<li>德雷福斯模型的5个阶段：新手、高级新手、胜任者、精通者、专家。大多数人都停留在前两阶段。专家的比例极低，需要海量的时间积累。<ul>
+<li>新手只是要<strong>一个立竿见影的目标</strong>，他们需要一个指令清单和决策树能按部就班的执行下去</li>
+<li>高级新手已经可以根据经验从正确的上下文中采纳建议，但他们没有更高的全局思维</li>
+<li>胜任者能建立<strong>问题领域的概念模型</strong>，并有效的应用</li>
+<li>精通者有全局思维，并不断纠正以往不好的工作表现</li>
+<li>专家是各领域知识和信息的主要来源，根据直觉行事而不需要理由</li>
+</ul>
+</li>
+<li>任何对开发指定严格规则的方法或企业文化都会拖累专家业绩表现到新手水平</li>
+<li>元认知，即自我认知能力，往往在较高的技能层级才会具有，即知道自己不知道什么</li>
+<li>积极的实践需要4个条件<ul>
+<li>一个明确定义的任务</li>
+<li>任务具有适当难度</li>
+<li>环境能提供大量反馈</li>
+<li>提供重复犯错和纠正错误的机会</li>
+</ul>
+</li>
+<li>没有实践就没有技能，先通过<strong>模仿</strong>来学习进步</li>
+<li>要警惕工具中忽视上下文造成的不灵活性，结合实际保证一定的灵活度</li>
+<li><strong>培养知觉</strong></li>
+<li>学习学习能力</li>
+</ul>
+<h2 id="认识大脑"><a href="#认识大脑" class="headerlink" title="认识大脑"></a>认识大脑</h2><h3 id="个人概括-1"><a href="#个人概括-1" class="headerlink" title="个人概括"></a>个人概括</h3><p>人的大脑并没有明显区分出左脑司情感，右脑司逻辑。但是思维模式上却是区分出L（Logic）型和R（Rich）型。L型偏细节、偏实现、偏逻辑；R型偏整体、偏设计、偏模式。L型能帮助你100%解决问题，R型则需要等待idea<strong>涌现</strong>出来。我们不能因为R型在日常生活或学习工作生涯中较少出现而忽视了它。</p>
+<h3 id="摘录-2"><a href="#摘录-2" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>L型又叫线性模式，R型又叫富模式。R型对知觉、问题解决和创造性非常重要，L型让你细致工作并实现目标、</li>
+<li>两种模式会竞争大脑总线。就像你回忆梦的时候，R型能帮你想象出来；但是想要把梦讲出来时，L型占用了总线，你无法获取到R型记忆了。</li>
+<li>R型思维不能直接控制</li>
+<li>大脑并没有一个中心主管思想，各种想法会分布式的涌现和竞争，不断刷新大脑闪存。只有胜利者能成为你的意识。所以你需要做好准备，记录你随时可能出现的idea</li>
+<li>每个人都有好点子，但是你不捕获的话，很容易沉没在脑海里</li>
+<li>L型处理让人踏实、舒适、可预期；R型则更像<strong>直觉</strong>，它喜欢综合学习，模式分析，而不愿受理性约束，因为它并不需要基于原因或已有事实来输出结果。因此R型具有直觉性、跳跃性。我们日常生活做出的决定，几乎都不是纯L型或纯R型的结果，比如，你为什么结婚？</li>
+<li>R型的<strong>综合</strong>和L型的<strong>分析</strong>不同。综合意味着脱离细节、在乎全貌。有些任务专注细节反而难以完成，而从全貌出发可能更简单，比如左手画圆，右手画方?</li>
+<li>社会和教育鼓励L型，但是R型也是不可缺少的。</li>
+<li>一成不变的工作环境不利于大脑发展，丰富的感官机会会更有利。</li>
+<li>“美学在于选择、共鸣、同化和爱，而非创造”</li>
+<li>L型看树木，R型看森林</li>
+</ul>
+<h2 id="利用右脑"><a href="#利用右脑" class="headerlink" title="利用右脑"></a>利用右脑</h2><h3 id="个人概括-2"><a href="#个人概括-2" class="headerlink" title="个人概括"></a>个人概括</h3><p>R型对于工作和生活是一定有帮助的，先体验对问题有个感官认识，而后上手会更快。有些时候，难题会被意外的灵感解决。R型可以通过一些方式去培养，如晨写来培养找到感觉的过程、或散步沉思来转移L型注意力给R型发挥空间等。我们在日常中会无意识的用到R型，比如类比、隐喻甚至是幽默。</p>
+<h3 id="摘录-3"><a href="#摘录-3" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li><strong>利用多感官反馈</strong>，可以从视觉、触觉、听觉或者其他角度创造多种体验，<strong>刺激你的大脑</strong>，让它发挥魔力</li>
+<li>L型思维会符号化感官输入，要创造条件避免这样，比如<strong>角色扮演</strong>，洞察真实事物</li>
+<li>R型引入日常工作，可以提高工作效率<ul>
+<li><strong>先体验去感受模式</strong>，一次多感官、亲身实践的上下文更有助于学习。当然，对于没有门槛或者低门槛的活动这么做会更好用</li>
+<li>让R型开路，之后L型紧跟，酒醉写作，酒醒修改，综合两种思维模式</li>
+<li>结对编程：一个使用R型发现模式，一个使用L型专心实现（比较理想化了）</li>
+</ul>
+</li>
+<li>隐喻是最日常的沟通R型和L型的方式。隐喻的参考系差别越大，创造性的成果就越大<ul>
+<li>随机并列锻炼联想能力</li>
+<li><strong>系统隐喻</strong>，使用日常事物去类比代码模型。但是有时很难找到这样的类比</li>
+</ul>
+</li>
+<li>幽默在于在不同想法中制造新奇的联系，也可以锻炼R型</li>
+<li>你的大脑会记录所有输入，R型负责组织和模式发现，并随机涌现结果。很多时候，涌现的结果是无法用言语表达的。这个时候，可以利用图像流或者自由笔记<ul>
+<li>图像流：想象一个问题，观察图像，大声描述出来，努力用各种感官去想象</li>
+<li>自由笔记：去写作，不要分心</li>
+<li>晨写：让无防备的大脑倾倒想法</li>
+<li>利用散步：使用散步，比如在树林或公园等安全的环境里随便走走，做到<strong>心不在焉</strong>，让R型自己工作。</li>
+</ul>
+</li>
+<li><strong>L型是命令性的，主动工作；R性则不能被命令，只能去邀请</strong></li>
+<li>R型除了帮助你形成想法，还能帮你发现模式。如代码、神谕</li>
+<li>尝试新鲜事物，锻炼大脑</li>
+</ul>
+<h2 id="调试大脑"><a href="#调试大脑" class="headerlink" title="调试大脑"></a>调试大脑</h2><h3 id="个人概括-3"><a href="#个人概括-3" class="headerlink" title="个人概括"></a>个人概括</h3><p>人的大脑因为进化原因，是有些先天“缺陷”的。你需要了解它们避免决策时的误差。这些“缺陷”在心理学领域的书籍中会有更加详细和科学的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/">介绍</a>。</p>
+<h3 id="摘录-4"><a href="#摘录-4" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>人具有认知偏见，如思维定势、基本归因错误、自我服务偏见等</li>
+<li>大脑处理现实复杂性的方法就是把庞大、复杂的系统符号化为简单易操作的对象。这也使得人类非常不善于从过去的事情推断未来的事情。我们总是假定事情是一个稳定和线性的递进，然而现实是非线性的。<ul>
+<li>“很少”不意味着没有，<em>黑天鹅事件</em>总会发生</li>
+<li>过早下结论</li>
+</ul>
+</li>
+<li>重视上下文：认清时代影响，一个人的特性可能和其时代有关。</li>
+<li>了解个体倾向，每个人有不同的性格特征，<strong>你无法改变别人</strong>。</li>
+<li><strong>记住你是高级动物</strong>，在一些时候，避免大脑中进化而来的低级动物逻辑。比如见样学样，非好即坏。</li>
+<li>如何避免认识误差：<strong>自我辩论</strong>，如果你认为自己已经明确一些事情，尝试解释一下它的反面</li>
+</ul>
+<h2 id="主动学习"><a href="#主动学习" class="headerlink" title="主动学习"></a>主动学习</h2><h3 id="个人概括-4"><a href="#个人概括-4" class="headerlink" title="个人概括"></a>个人概括</h3><p>学习能力是可以有一些可量化可落地的手段去提高的。首先，学习一定是个<strong>主动</strong>的过程，你需要明确自己的目标（可以使用SMART模型），建立自己的学习计划。找到更适合自己的感官模式。之后有一些具体的手段，比如<strong>小组学习</strong>、<strong>SQ3R</strong>、<strong>思维导图</strong>、<strong>写文档</strong>、<strong>以教代学</strong>。</p>
+<h3 id="摘录-5"><a href="#摘录-5" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>“大脑不是一个用于灌输的容器，而是一束需要点燃的火焰”<ul>
+<li>学习需要你自己主动做</li>
+<li>仅仅掌握知识，不去实践，没有用</li>
+<li>需要有目标和反馈去纠正效果</li>
+</ul>
+</li>
+<li>SMART帮你明确目标<ul>
+<li>Specific，Measurable，Achievable，Relavant，Time-boxed。</li>
+<li>具体的：不能只是简单的想法</li>
+<li>可度量：可以量化</li>
+<li>可实现</li>
+<li>相关的：需要能在你掌控中</li>
+<li>时间可控的：需要有deadline</li>
+</ul>
+</li>
+<li><strong>时间是无法创造和销毁的</strong></li>
+<li>要有知识投资计划，就像理财一样<ul>
+<li>设定目标</li>
+<li>多样化投资，考虑风险和回报率</li>
+<li>主动投资</li>
+<li>定期投资：养成一种习惯</li>
+</ul>
+</li>
+<li>总有一种感官模式更适合你：视觉、听觉、动觉</li>
+<li>成人更适合<strong>小组学习</strong>，大家一起学习，相互促进，互相学习，学得更有效</li>
+<li><strong>相比经验式学习，阅读是一种效率极低的学习方式</strong>，SQ3R让阅读更有效<ul>
+<li>Survey、Question、Read、Recite、Review</li>
+<li><strong>概览</strong>：粗略阅读目录，形成整体印象</li>
+<li><strong>问题</strong>：搞清楚你想弄明白的问题</li>
+<li><strong>阅读</strong>：困难的地方可以放慢速度</li>
+<li><strong>复述</strong>：合上书本，用R型记忆感受，用你自己的语言复述内容</li>
+<li><strong>回顾</strong>：重读，扩展笔记，和人讨论</li>
+<li>这个方法也可以用来初高中学习</li>
+</ul>
+</li>
+<li>根据遗忘曲线，可以定期回顾来增强记忆</li>
+<li>思维导图提供了更高的自由度来表现关系，更有助于增强连接，获得更多感悟<ul>
+<li>绘制思维导图时可以不容那么认真</li>
+<li><strong>手写是关键</strong>，动觉可以帮助你在视觉外刺激大脑，加深记忆</li>
+<li>探索性的思维导图：想到哪儿画到哪儿，然后再整理，发现模式</li>
+</ul>
+</li>
+<li><strong>写文档的过程比写文档更重要</strong></li>
+<li>以教代学可以考验你是否真的理解了，同时解释过程中的隐喻可能会让你有新的收获。<ul>
+<li>在给聪明人解释时，对聪明人挑毛病的顾虑也是一大动力</li>
+</ul>
+</li>
+</ul>
+<h2 id="经验积累"><a href="#经验积累" class="headerlink" title="经验积累"></a>经验积累</h2><h3 id="个人概括-5"><a href="#个人概括-5" class="headerlink" title="个人概括"></a>个人概括</h3><p>实践是学习中必不可少的一步，如何更有效的从实践中学习也有些诀窍。</p>
+<h3 id="摘录-6"><a href="#摘录-6" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>经验主义：通过实践来构建认知，而不是通过学习来灌输。<ul>
+<li>让学习更有趣味性</li>
+</ul>
+</li>
+<li>波利亚的解题法：先确认已知量、未知量、上下文环境。然后有些方法<ul>
+<li>努力回忆类似未知量的问题</li>
+<li>画图</li>
+<li>是否用上所有已知量和条件</li>
+<li>换一种问题描述方式</li>
+<li>从未知量推到已知量</li>
+</ul>
+</li>
+<li>一个高效有益的学习环境应该允许你<strong>安全和方便</strong>地做3件事情：探索、创造和应用<ul>
+<li>在编码领域，这意味着，至少要有<strong>版本控制</strong>、<strong>单元测试</strong>和<strong>项目自动化</strong></li>
+</ul>
+</li>
+<li>失败分两种，其中<strong>没有产生任何知识的失败会阻止我们学习</strong></li>
+<li>上下文反馈是一种内在诀窍技术，其让学习者关注于非常简单的反馈循环，避免向学生传授一长串指令，从而形成一种意识，来纠正学生的学习表现。这种意识是非判断性的。内在诀窍的理念关注反馈，以此增长专业知识。</li>
+<li>面对时间压力时，人会缺乏创造性。要允许失败。建立允许失败的领域。</li>
+<li>参加一个周围都是专家的会议或聚会时，你的能力也会有提高。<strong>我们是天生的模仿者</strong>，把自己想象成专家甚至也有效果。可以想象实践并从中学习，会如同真实体验一样有效</li>
+</ul>
+<h2 id="注意力控制"><a href="#注意力控制" class="headerlink" title="注意力控制"></a>注意力控制</h2><h3 id="个人概括-6"><a href="#个人概括-6" class="headerlink" title="个人概括"></a>个人概括</h3><p>在信息化社会，过滤信息，管理注意力会提高你的工作效率。一方面要注意积累，管理好个人知识体系；另一方面要管理好自己的上下文，避免频繁切换，保持一个大的上下文环境，不管是物理上的还是软件上的。</p>
+<h3 id="摘录-7"><a href="#摘录-7" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>时间是你自己分配的，并不是我们没有时间了，而是我们的注意力不够</li>
+<li>着眼于现在，没有任何分心，没有任何自言自语。缓和L型嘈杂的声音带来的痛苦。<ul>
+<li>冥想：学习集中注意力。在冥想中，会沉浸到一种宽松的思维状态中。在这里你可以意识到自己和你的上下文，不用做出任何判断和回应。在这种风格的冥想中，需要做的只是注意自己的呼吸。不要与自己交谈，保持清醒。</li>
+</ul>
+</li>
+<li>在过度几种后，可以有意识地忘掉问题，让问题在思维中“浸泡”一会儿。注意把浸泡和拖延分开。</li>
+<li>使用wiki管理自己的知识体系<ul>
+<li>wiki页面间的相互链接会形成自然的知识体系和模型</li>
+</ul>
+</li>
+<li>维护上下文的成本时昂贵的，要较好地管理<ul>
+<li>避免大脑频繁切换上下文，这样会提高错误率。在深入进行的任务被打断后，需要10~20分钟的时间找回状态</li>
+<li>远离会打断思路的工具，比如即时聊天或者邮件</li>
+<li>利用外部缓存维护清单，如纸片或多窗口，只在大脑里存储“指针”</li>
+<li>切换时，可以做一些记录，方便切换回来</li>
+<li>保持足够大的上下文，比如所有信息都放在桌面，或使用多窗口维护上下文栈</li>
+<li>管理好你的多窗口</li>
+</ul>
+</li>
+</ul>
+<h2 id="超越专家"><a href="#超越专家" class="headerlink" title="超越专家"></a>超越专家</h2><blockquote>
+<p>人们看却没有看见，听却没有听见，吃却没有味觉，接触却没有触觉，说话却没有思考. —— 达芬奇</p>
+</blockquote>
+<h3 id="摘录-8"><a href="#摘录-8" class="headerlink" title="摘录"></a>摘录</h3><ul>
+<li>现在就开始动手吧<ul>
+<li>有私人wiki，建立知识图谱</li>
+<li>给思维放个假，让散步成为生活的一部分</li>
+</ul>
+</li>
+<li>专家容易见怪不怪，要避免这样</li>
+</ul>
+<p><em>–END–</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%80%9D%E7%BB%B4/" rel="tag"># 思维</a>
+              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%83%BD%E5%8A%9B/" rel="tag"># 学习能力</a>
+              <a href="/blog/tags/%E5%8F%B3%E8%84%91/" rel="tag"># 右脑</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/05/18/some-tips-7/" rel="prev" title="工作中的遇到的一些小知识 7">
+                  <i class="fa fa-chevron-left"></i> 工作中的遇到的一些小知识 7
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/06/01/principles-of-macroeconomics/" rel="next" title="《经济学原理》 - 宏观经济学原理笔记">
+                  《经济学原理》 - 宏观经济学原理笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

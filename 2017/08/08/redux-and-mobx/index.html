@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="此前一直未从0开始写过Redux的工程，近日想简单对比下Redux和Mobx的各自特点，于是动手撸了TodoList，感受了它们的不同。对比上看  Redux可靠规整，有一整套最佳实践，写大型应用时能避免很多坑 MobX轻便锋利，概念不多上手容易，在中小型应用中开发效率更高  ReduxRedux吸收了Flux和Elm的设计特点，正如它在Three Principles中写到的那样，唯一可信数据源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redux和Mobx：AK47和匕首">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/08/08/redux-and-mobx/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="此前一直未从0开始写过Redux的工程，近日想简单对比下Redux和Mobx的各自特点，于是动手撸了TodoList，感受了它们的不同。对比上看  Redux可靠规整，有一整套最佳实践，写大型应用时能避免很多坑 MobX轻便锋利，概念不多上手容易，在中小型应用中开发效率更高  ReduxRedux吸收了Flux和Elm的设计特点，正如它在Three Principles中写到的那样，唯一可信数据源">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-08-08T12:43:13.000Z">
+<meta property="article:modified_time" content="2017-08-08T12:48:06.000Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="状态管理">
+<meta property="article:tag" content="redux">
+<meta property="article:tag" content="MobX">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/08/08/redux-and-mobx/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/08/08/redux-and-mobx/","path":"2017/08/08/redux-and-mobx/","title":"Redux和Mobx：AK47和匕首"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Redux和Mobx：AK47和匕首 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redux"><span class="nav-number">1.</span> <span class="nav-text">Redux</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%92%8CReact%E7%9A%84%E4%BA%92%E5%8A%A8"><span class="nav-number">1.1.</span> <span class="nav-text">和React的互动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Action-Creator"><span class="nav-number">1.2.</span> <span class="nav-text">Action Creator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Split-Reducer"><span class="nav-number">1.3.</span> <span class="nav-text">Split Reducer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Middleware%E5%92%8CAsync-Action"><span class="nav-number">1.4.</span> <span class="nav-text">Middleware和Async Action</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%B8%B8%E7%94%A8%E7%9A%84store-API"><span class="nav-number">1.5.</span> <span class="nav-text">其他常用的store API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%9A%E6%89%8B%E6%9E%B6"><span class="nav-number">1.6.</span> <span class="nav-text">脚手架</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MobX"><span class="nav-number">2.</span> <span class="nav-text">MobX</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8EReact%E7%9A%84%E7%BB%93%E5%90%88"><span class="nav-number">2.1.</span> <span class="nav-text">与React的结合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%9A%E6%89%8B%E6%9E%B6-1"><span class="nav-number">2.2.</span> <span class="nav-text">脚手架</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/08/08/redux-and-mobx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Redux和Mobx：AK47和匕首 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redux和Mobx：AK47和匕首
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-08-08 20:43:13 / 修改时间：20:48:06" itemprop="dateCreated datePublished" datetime="2017-08-08T20:43:13+08:00">2017-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/08/08/redux-and-mobx/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/08/redux-and-mobx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>此前一直未从0开始写过Redux的工程，近日想简单对比下<a target="_blank" rel="noopener" href="http://redux.js.org/docs">Redux</a>和<a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx">Mobx</a>的各自特点，于是动手撸了TodoList，感受了它们的不同。对比上看</p>
+<ul>
+<li>Redux可靠规整，有一整套最佳实践，写大型应用时能避免很多坑</li>
+<li>MobX轻便锋利，概念不多上手容易，在中小型应用中开发效率更高</li>
+</ul>
+<h3 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h3><p>Redux吸收了Flux和Elm的设计特点，正如它在<a target="_blank" rel="noopener" href="http://redux.js.org/docs/introduction/ThreePrinciples.html">Three Principles</a>中写到的那样，<strong>唯一可信数据源，状态数据只读，状态改变为纯函数</strong>，这三大特点最大可能提升了可预测性，减少了调试的难度。同时，在概念上也易于理解。不过，复杂的设定和较多的代码入侵使得个人项目使用时稍显笨重，团队项目使用在改动已有代码时又会有牵一发动全身的感觉。</p>
+<p>在数据流上，Redux规定<strong>action</strong>描述state的改变情况，<strong>reducer</strong>根据<code>action</code>定义state如何更新。</p>
+<ul>
+<li><strong>action</strong>，由type和payload部分组成，描述发生了什么变化，如<code>&#123; type: &#39;ADD_TODO&#39;, text: &#39;Eat pie.&#39; &#125;</code></li>
+<li><strong>reducer</strong>，接受state和action作为入参，返回一个<strong>全新的state</strong>，正如文档里所说<strong>Redux assumes you never mutate your data</strong></li>
+</ul>
+<p>在这种设计理念下，我们借助redux创建state，之后所有的状态更新，都通过state.dispatch提交action完成，再借由connect等工具同步更新组件的props实现数据绑定的效果。除了设计理念外，Redux一些工程实践上的设计也值得一提</p>
+<h4 id="和React的互动"><a href="#和React的互动" class="headerlink" title="和React的互动"></a>和React的互动</h4><p>Redux并不是和React绑定了，但确实经常和React同时出现。react-redux是用来和react绑定的库。在结合了Redux后，React会有一些最佳工程实践</p>
+<ul>
+<li><strong>区分开绘制组件和容器组件</strong>，前者只负责将数据转化为标签，后者负责接入数据，完成逻辑，组织绘制组件，并向其传递用户交互触发dispatch的函数。这样的层级设计将会增加解耦，减少后期修改时的工作量</li>
+<li>在最外侧调用<code>createStore</code>生成store并传入<code>&lt;Provider&gt;</code>组件，内部的容器组件，通过<code>connect</code>，<code>mapStateToProps</code>，<code>mapDispatchToProps</code>就能便利地和store进行沟通，就像下面这样</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">mapStateToProps</span> = (<span class="params">state, ownProps</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">active</span>: state.<span class="property">filter</span> === ownProps.<span class="property">filter</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">mapDispatchToProps</span> = (<span class="params">dispatch, ownProps</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">handleClick</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">dispatch</span>(<span class="title function_">setFilter</span>(ownProps.<span class="property">filter</span>))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">FilterLink</span> = <span class="title function_">connect</span>(</span><br><span class="line">  mapStateToProps,</span><br><span class="line">  mapDispatchToProps</span><br><span class="line">)(<span class="title class_">Link</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Action-Creator"><a href="#Action-Creator" class="headerlink" title="Action Creator"></a>Action Creator</h4><p>使用函数创建标准化的action，而不要把action直接写在dispatch内。就像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">addTodo</span>(<span class="params">text</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">type</span>: <span class="variable constant_">ADD_TODO</span>,</span><br><span class="line">    text</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">dispatch</span>(<span class="title function_">addTodo</span>(text))</span><br></pre></td></tr></table></figure>
+
+<p>这么做在action发生更改时，只需要修改定义函数的位置即可，简单方便。可以发现上面的action creator中，完成的工作只是简单的组装type和函数的入参在同一个action object里。当这样的函数很多时，还可以用action creator creator来帮我们一行生成这些类似的action creator。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">createActionCreator</span> = (<span class="params">type, ...argNames</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> action = &#123; type &#125;</span><br><span class="line">    argNames.<span class="title function_">forEach</span>(<span class="function">(<span class="params">arg, index</span>) =&gt;</span> &#123;</span><br><span class="line">      action[arg] = args[index]</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> action</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> addTodo = <span class="title function_">createActionCreator</span>(<span class="variable constant_">ADD_TODO</span>, <span class="string">&#x27;text&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> setFilter = <span class="title function_">createActionCreator</span>(<span class="variable constant_">SET_FILTER</span>, <span class="string">&#x27;filter&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> toggleTodo = <span class="title function_">createActionCreator</span>(<span class="variable constant_">TOGGLE_TODO</span>, <span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;to&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Split-Reducer"><a href="#Split-Reducer" class="headerlink" title="Split Reducer"></a>Split Reducer</h4><p>除了上面讲到的Action Creator外，split reducer页很常见，它的应用场景出现在当state比较复杂时，可以针对state的每个field单独写reducer，然后通过Redux的<code>combineReducers</code>组合起来。</p>
+<p>就像TodoList中，筛选条件<code>filter</code>和待办事项<code>todos</code>可以拆出两个reducer去更改。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">todos</span> = (<span class="params">state = [], action</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.<span class="property">type</span>) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="attr">ADD_TODO</span>:</span><br><span class="line">      <span class="keyword">return</span>  [</span><br><span class="line">        ...state,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">id</span>: action.<span class="property">id</span>,</span><br><span class="line">          <span class="attr">text</span>: action.<span class="property">text</span>,</span><br><span class="line">          <span class="attr">status</span>: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    <span class="keyword">case</span> <span class="attr">TOGGLE_TODO</span>:</span><br><span class="line">      <span class="keyword">return</span> state.<span class="title function_">map</span>(<span class="function"><span class="params">todo</span> =&gt;</span></span><br><span class="line">        (todo.<span class="property">id</span> === action.<span class="property">id</span>) ? &#123;...todo, <span class="attr">status</span>: action.<span class="property">to</span> || +!todo.<span class="property">status</span>&#125; : todo</span><br><span class="line">      )</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">filter</span> = (<span class="params">state = <span class="string">&#x27;SHOW_ALL&#x27;</span>, action</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.<span class="property">type</span>) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="attr">SET_FILTER</span>:</span><br><span class="line">      <span class="keyword">return</span> action.<span class="property">filter</span></span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> todoApp = <span class="title function_">combineReducers</span>(&#123;</span><br><span class="line">  todos,</span><br><span class="line">  filter</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Middleware和Async-Action"><a href="#Middleware和Async-Action" class="headerlink" title="Middleware和Async Action"></a>Middleware和Async Action</h4><p>首先，我们要明确一点，Redux中只有dispatch能改变store，然而默认情况下，dispatch只接受action。因此，当我们想异步修改store时，异步的逻辑只能写在组件里（Vuex里则可以通过action异步提交commit）。设想一下，假如一个<code>fetch</code>API的逻辑在多处都用到时，只能在这些地方重复书写这些代码。好在，Redux提供了middleware的概念，和<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/23/express-js/#%E4%B8%AD%E9%97%B4%E4%BB%B6">Express中的中间件</a>类似，不同的是Redux中中间件处理的是用户提交的dispatch请求而已。</p>
+<p><a target="_blank" rel="noopener" href="http://redux.js.org/docs/advanced/Middleware.html">文档</a>里对中间件的介绍非常到位，鉴于我们对express以及<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/">co</a>中类似概念的了解，我们直接从第4步看起：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">logger</span>(<span class="params">store</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> next = store.<span class="property">dispatch</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Previously:</span></span><br><span class="line">  <span class="comment">// store.dispatch = function dispatchAndLog(action) &#123;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> <span class="title function_">dispatchAndLog</span>(<span class="params">action</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;dispatching&#x27;</span>, action)</span><br><span class="line">    <span class="keyword">let</span> result = <span class="title function_">next</span>(action)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;next state&#x27;</span>, store.<span class="title function_">getState</span>())</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">applyMiddlewareByMonkeypatching</span>(<span class="params">store, middlewares</span>) &#123;</span><br><span class="line">  middlewares = middlewares.<span class="title function_">slice</span>()</span><br><span class="line">  middlewares.<span class="title function_">reverse</span>()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Transform dispatch function with each middleware.</span></span><br><span class="line">  middlewares.<span class="title function_">forEach</span>(<span class="function"><span class="params">middleware</span> =&gt;</span></span><br><span class="line">    store.<span class="property">dispatch</span> = <span class="title function_">middleware</span>(store)</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，原理其实是类似的，关键点在于使用store的<code>dispatch</code>方法依次暂存上一个节点，这么做的好处是保证最终能抛出最后真正的dispatch，且能实现链式的效果。然而，使用dispatch显得还不自然，于是就有了下面的版本，每次将next主动传入，当让applyMiddleware里需要额外传入next。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">logger</span> = store =&gt; <span class="function"><span class="params">next</span> =&gt;</span> <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;dispatching&#x27;</span>, action)</span><br><span class="line">  <span class="keyword">let</span> result = <span class="title function_">next</span>(action)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;next state&#x27;</span>, store.<span class="title function_">getState</span>())</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">crashReporter</span> = store =&gt; <span class="function"><span class="params">next</span> =&gt;</span> <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">next</span>(action)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;Caught an exception!&#x27;</span>, err)</span><br><span class="line">    <span class="title class_">Raven</span>.<span class="title function_">captureException</span>(err, &#123;</span><br><span class="line">      <span class="attr">extra</span>: &#123;</span><br><span class="line">        action,</span><br><span class="line">        <span class="attr">state</span>: store.<span class="title function_">getState</span>()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">throw</span> err</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Warning: Naïve implementation!</span></span><br><span class="line"><span class="comment">// That&#x27;s *not* Redux API.</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">applyMiddleware</span>(<span class="params">store, middlewares</span>) &#123;</span><br><span class="line">  middlewares = middlewares.<span class="title function_">slice</span>()</span><br><span class="line">  middlewares.<span class="title function_">reverse</span>()</span><br><span class="line">  <span class="keyword">let</span> dispatch = store.<span class="property">dispatch</span></span><br><span class="line">  middlewares.<span class="title function_">forEach</span>(<span class="function"><span class="params">middleware</span> =&gt;</span></span><br><span class="line">    dispatch = <span class="title function_">middleware</span>(store)(dispatch)</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, store, &#123; dispatch &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助中间件的帮助，我们可以在dispatch前完成我们想要的操作：打log，catch错误，甚至提前终止流程。而异步dispatch正是借助了thunk中间件的帮助。它的实现很简单。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">thunk</span> = store =&gt; <span class="function"><span class="params">next</span> =&gt;</span> <span class="function"><span class="params">action</span> =&gt;</span></span><br><span class="line">  <span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span></span><br><span class="line">    ? <span class="title function_">action</span>(store.<span class="property">dispatch</span>, store.<span class="property">getState</span>)</span><br><span class="line">    : <span class="title function_">next</span>(action)</span><br></pre></td></tr></table></figure>
+
+<p>在我们通过<code>applyMiddleware</code>注入到store中后，就可以在<code>dispatch</code>中写入函数了！就像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fetchPosts</span>(<span class="params">subreddit</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">dispatch</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">dispatch</span>(<span class="title function_">requestPosts</span>(subreddit))</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">fetch</span>(<span class="string">`https://www.reddit.com/r/<span class="subst">$&#123;subreddit&#125;</span>.json`</span>)</span><br><span class="line">      .<span class="title function_">then</span>(<span class="function"><span class="params">response</span> =&gt;</span> response.<span class="title function_">json</span>())</span><br><span class="line">      .<span class="title function_">then</span>(<span class="function"><span class="params">json</span> =&gt;</span> <span class="title function_">dispatch</span>(<span class="title function_">receivePosts</span>(subreddit, json)))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fetchPostsIfNeeded</span>(<span class="params">subreddit</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch, getState</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">shouldFetchPosts</span>(<span class="title function_">getState</span>(), subreddit)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">dispatch</span>(<span class="title function_">fetchPosts</span>(subreddit))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在使用时正常dispatch即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">dispatch</span>(<span class="title function_">fetchPostsIfNeeded</span>(selectedSubreddit))</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他常用的store-API"><a href="#其他常用的store-API" class="headerlink" title="其他常用的store API"></a>其他常用的store API</h4><ul>
+<li><code>getState()</code> 获取当前的state状态</li>
+<li><code>subscribe(listener)</code> 在每次更改state时触发</li>
+<li><code>createStore()</code> 根据输入的reducer，initState，middleware等生成store</li>
+</ul>
+<h4 id="脚手架"><a href="#脚手架" class="headerlink" title="脚手架"></a>脚手架</h4><p>官网在介绍时列举了许多依赖库，却并没有给出示例的脚手架。没有舒服的脚手架，效率和工作热情都会受影响。这里介绍一种使用<a target="_blank" rel="noopener" href="https://github.com/facebookincubator/create-react-app">create-react-app</a>快速搭建Redux脚手架的过程，下面的Mobx类似。</p>
+<p>项目依赖大概有下面这些</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://facebook.github.io/react/">react</a></li>
+<li><a target="_blank" rel="noopener" href="http://redux.js.org/">redux</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/reactjs/react-redux">react-redux</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ReactTraining/react-router">react-router</a>&#x2F;<a target="_blank" rel="noopener" href="https://github.com/ReactTraining/history">history</a></li>
+<li><a target="_blank" rel="noopener" href="https://webpack.github.io/">webpack</a> 打包工具</li>
+<li><a target="_blank" rel="noopener" href="http://babeljs.io/">babel</a> polyfill方案</li>
+<li><a target="_blank" rel="noopener" href="http://eslint.org/">eslint</a> JS代码风格标准化</li>
+<li><a target="_blank" rel="noopener" href="https://stylelint.io/">stylelint</a> CSS代码风格标准化</li>
+<li><a target="_blank" rel="noopener" href="http://postcss.org/">postcss</a></li>
+</ul>
+<p>但其实<a target="_blank" rel="noopener" href="https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html">create-react-app</a>可以帮你搭好其中包括react、react-dom、eslint、babel、webpack、postcss等绝大多数依赖环境，且完成配置。剩下的react-redux和react-router手动安装即可。</p>
+<p>create-react-app类似于vue-cli，创建的默认配置不满意时，还可以<code>npm run eject</code>将默认配置撤销成用户配置，交给用户自己配置。</p>
+<h3 id="MobX"><a href="#MobX" class="headerlink" title="MobX"></a>MobX</h3><p>对比Redux，诞生于2015年3月的MobX在概念上吸收Vue，Knockout等MVVM框架要更多一些<a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx#credits">1</a>，号称是TFRP（Transparent Functional Reactive Programming）。Transparent在依赖项的更新是隐式完成的，Functional在Computed中的使用，Reactive就不说了。MobX原名Mobservable，而后改名为MobX，官方并未说明如何发音，姑且读作moʊ-bex。和Redux对比来看，巧合的是<a target="_blank" rel="noopener" href="https://mobx.js.org/intro/overview.html">MobX的设计理念</a>也可以分为三部分：</p>
+<ul>
+<li>将所有的状态抽出来，用observable修饰</li>
+<li>描述出状态到视图的映射关系，这个过程因框架而异，但是一般React多一些，使用observer修饰</li>
+<li>在要修改状态的位置使用action包裹（强烈建议你这么做）</li>
+</ul>
+<p>不过还有很核心的一点，文档里并没有提到</p>
+<ul>
+<li>把所有state修改的副作用放在<code>autorun/reaction/when</code>体内，在必要时在体内继续使用action</li>
+</ul>
+<p>哇，是不是简洁了很多。你对observable对象做的所有修改（不论有没有用action包裹）都会自动反映在视图中，在项目结构上，你完全可以根据自己需要组织。不过，没有Redux里transaction的概念，MobX中对状态的修改在时间上都是不可回溯的。同时，没有中间件的概念，意味着在状态比较复杂时，可维护性就会下降。</p>
+<p>整个MobX的关键API主要是由下面几部分组成的</p>
+<ul>
+<li>observable 创建被依赖项，在设计中即state</li>
+<li>computed 被依赖项的计算值，和Vue中的computed属性一致</li>
+<li>action 动作，用来修改state，显式的使用可以使逻辑更清楚，当然不在action里修改observable也是允许的</li>
+<li>observer和autorun&#x2F;reaction&#x2F;when，前者是derivation即根据state衍生出的结果，后者是reaction即state变化会触发的副作用（如IO等）</li>
+</ul>
+<h4 id="与React的结合"><a href="#与React的结合" class="headerlink" title="与React的结合"></a>与React的结合</h4><p>MobX和React相结合的方式就自由了很多。大体上使用<code>components</code>存储组件，<code>stores</code>描述状态。</p>
+<p>在<code>stores</code>描述状态时，</p>
+<ul>
+<li>通过<code>@observable</code>描述需要响应变化的状态变量，同时尽量将所有改变状态变量的操作封装成整个class的方法（并不强制），便于管理。</li>
+<li>通过<code>@computed</code>声明能够直接根据当前状态变量得到的衍生值。有意思的是，MobX只在observable变化时更新这个值，而不是在用户需要时去计算，从而节省了许多时间</li>
+<li>通过<code>autorun()</code>，<code>reaction()</code>，<code>when()</code>声明式地定义状态改变时的side effect，它们的执行结果都会返回一个dispose函数，在它们的生命周期结束后方便显式垃圾回收。它们三个都是除了用户操作外几乎唯一能进行副作用操作的地方，其中<ul>
+<li><code>autorun()</code>在定义时就会被执行一次</li>
+<li><code>reaction()</code>仅在变化时执行，且对函数内部改变状态不敏感</li>
+<li><code>when()</code>则是在变化时执行一次即失效</li>
+</ul>
+</li>
+<li>通过<code>@action</code>描述对状态做修改的行为，推荐使用，修饰在方法名前，开启strict模式后，则是强制要求使用</li>
+</ul>
+<p>上面这些关键字都有修饰词（如：<code>@action.bound</code>）还有对应的ES5语法。（如：<code>@observable key = value</code>等同于<code>extendObservable(this, &#123; key: value &#125;)</code>）。MobX并不要求使用单一的状态树，可以用多个文字组织你的状态。其中的一个store文件可能像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TodoList</span> &#123;</span><br><span class="line">  id = <span class="number">0</span></span><br><span class="line">  @observable todos = []</span><br><span class="line"></span><br><span class="line">  @computed <span class="keyword">get</span> <span class="title function_">activeTodoCount</span>() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">status</span> === <span class="number">0</span>).<span class="property">length</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">saveToStorage</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 第一次不会触发</span></span><br><span class="line">    <span class="title function_">reaction</span>(</span><br><span class="line">      <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="title function_">toJS</span>(),</span><br><span class="line">      <span class="function"><span class="params">todos</span> =&gt;</span> <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;todo-mobx&#x27;</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; todos &#125;))</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">addTodo</span>(<span class="params">title</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">id</span>++;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">push</span>(<span class="keyword">new</span> <span class="title class_">TodoItem</span>(&#123;<span class="attr">id</span>: <span class="variable language_">this</span>.<span class="property">id</span>, title, <span class="attr">status</span>: <span class="number">0</span>&#125;))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">toggleAll</span>(<span class="params">status</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">forEach</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">status</span> = +status)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">delete</span>(<span class="params">id</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> todoId = <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">findIndex</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">id</span> === id)</span><br><span class="line">    <span class="keyword">if</span> (todoId !== -<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">splice</span>(todoId, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">clearCompleted</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">todos</span> = <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">status</span> === <span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">toJS</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">todos</span>.<span class="title function_">map</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="title function_">toJS</span>())</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">fromJS</span>(<span class="params">arr</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> todoStore = <span class="keyword">new</span> <span class="title class_">TodoList</span>();</span><br><span class="line">    todoStore.<span class="property">todos</span> = arr.<span class="title function_">map</span>(<span class="function"><span class="params">todo</span> =&gt;</span> <span class="title class_">TodoItem</span>.<span class="title function_">from</span>(todo))</span><br><span class="line">    <span class="keyword">return</span> todoStore</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>components</code>文件夹下做的事和使用其他框架其实差别不大。区别主要在引入observer后，用<code>@observer</code>装饰组件类。需要修改状态时，可以直接对props中传入的store进行<br>修改（不过还是建议使用store中定义好的方法修改），视图就会同步更新，副作用也会同步完成。一个使用了mobx-react的组件大概像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">@observer</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TodoList</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; todoStore, filterStore &#125; = <span class="variable language_">this</span>.<span class="property">props</span></span><br><span class="line">    <span class="keyword">if</span> (!todoStore.<span class="property">todos</span>.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="language-xml"><span class="tag">&lt;<span class="name">section</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">input</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">onChange</span>=<span class="string">&#123;this.toggleAll&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">checked</span>=<span class="string">&#123;todoStore.activeTodoCount</span> === <span class="string">0&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        /&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">          &#123;this.getVisibleTodos().map(todo =&gt; (</span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">TodoItem</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">              <span class="attr">key</span>=<span class="string">&#123;todo.id&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">              <span class="attr">todo</span>=<span class="string">&#123;todo&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">              <span class="attr">filterStore</span>=<span class="string">&#123;filterStore&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">              <span class="attr">handleDestroy</span>=<span class="string">&#123;this.handleDestroy&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">            /&gt;</span></span></span><br><span class="line"><span class="language-xml">          ))&#125;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">getVisibleTodos</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; todoStore, filterStore &#125; = <span class="variable language_">this</span>.<span class="property">props</span></span><br><span class="line">    <span class="keyword">return</span> todoStore.<span class="property">todos</span>.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">switch</span> (filterStore.<span class="property">filter</span>) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="attr">ACTIVE</span>:</span><br><span class="line">          <span class="keyword">return</span> todo.<span class="property">status</span> === <span class="number">0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="attr">COMPLETED</span>:</span><br><span class="line">          <span class="keyword">return</span> todo.<span class="property">status</span> === <span class="number">1</span></span><br><span class="line">        <span class="keyword">case</span> <span class="attr">REMOVED</span>:</span><br><span class="line">          <span class="keyword">return</span> todo.<span class="property">status</span> === <span class="number">2</span></span><br><span class="line">        <span class="attr">default</span>:</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  toggleAll = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> checked = e.<span class="property">target</span>.<span class="property">checked</span>;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">todoStore</span>.<span class="title function_">toggleAll</span>(checked !== <span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleDestroy = <span class="function">(<span class="params">id</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">todoStore</span>.<span class="title function_">delete</span>(id)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了直接使用store外，<a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx-react">mobx-react</a>还提供了将observable对象通过<code>&lt;Provider&gt;</code>和<code>inject</code><a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx-react#provider-and-inject">2</a>传入组件的方式。其他的用法可以参看<a target="_blank" rel="noopener" href="https://mobx.js.org/index.html">文档</a>，还有<a target="_blank" rel="noopener" href="http://cn.mobx.js.org/">中文版翻译</a>。</p>
+<h4 id="脚手架-1"><a href="#脚手架-1" class="headerlink" title="脚手架"></a>脚手架</h4><p>除了Redux里面提到的，因为MobX中用到了最新的decorator特性，<code>.babelrc</code>配置文件大概是下面这样</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;presets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;react&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;es2015&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;stage-1&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;plugins&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;transform-decorators-legacy&quot;</span><span class="punctuation">,</span> <span class="string">&quot;react-hot-loader/babel&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>package.json</code>中需要额外引入”mobx”和”mobx-react”两个库（至少）。官方还提供了<a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx-react-boilerplate">mobx-react-boilerplate</a>，这些环境都已帮你配置好，按照<code>README.md</code>操作即可。另外，官方提供的<a target="_blank" rel="noopener" href="https://github.com/mobxjs/awesome-mobx">awesome list</a>是一个非常好学习mobx的地方</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx#credits">https://github.com/mobxjs/mobx#credits</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mobxjs/mobx-react#provider-and-inject">https://github.com/mobxjs/mobx-react#provider-and-inject</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/" rel="tag"># 状态管理</a>
+              <a href="/blog/tags/redux/" rel="tag"># redux</a>
+              <a href="/blog/tags/MobX/" rel="tag"># MobX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/07/27/interview-algorithm-md/" rel="prev" title="《剑指Offer》JavaScript版解决方案">
+                  <i class="fa fa-chevron-left"></i> 《剑指Offer》JavaScript版解决方案
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/08/14/rxjs-brief/" rel="next" title="RxJS 真·简介">
+                  RxJS 真·简介 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

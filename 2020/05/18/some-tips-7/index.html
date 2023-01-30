@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="DNSDNS作为用来映射域名和IP地址的分布式数据库，使用TCP&#x2F;UDP端口号53。其中每一级域名限制63个字符，总长度不超过253个字符。 DNS系统中，常见的资源记录类型有：  A（Address）记录：最重要的记录，用于将特定主机名映射到对应主机的IPv4地址上 MX记录：用于将特定邮箱地址映射到对应邮箱服务器上 CNAME（Canonical Name Record）别名记录：用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作中的遇到的一些小知识 7">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2020/05/18/some-tips-7/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="DNSDNS作为用来映射域名和IP地址的分布式数据库，使用TCP&#x2F;UDP端口号53。其中每一级域名限制63个字符，总长度不超过253个字符。 DNS系统中，常见的资源记录类型有：  A（Address）记录：最重要的记录，用于将特定主机名映射到对应主机的IPv4地址上 MX记录：用于将特定邮箱地址映射到对应邮箱服务器上 CNAME（Canonical Name Record）别名记录：用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-18T09:02:41.000Z">
+<meta property="article:modified_time" content="2020-05-31T11:00:52.692Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="CDN">
+<meta property="article:tag" content="DNS">
+<meta property="article:tag" content="CNAME">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2020/05/18/some-tips-7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2020/05/18/some-tips-7/","path":"2020/05/18/some-tips-7/","title":"工作中的遇到的一些小知识 7"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>工作中的遇到的一些小知识 7 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS"><span class="nav-number">1.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E6%B1%A1%E6%9F%93"><span class="nav-number">1.1.</span> <span class="nav-text">域名污染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS%E8%AE%B0%E5%BD%95"><span class="nav-number">1.2.</span> <span class="nav-text">DNS记录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#useState%E5%92%8CuseEffect%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">useState和useEffect实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3%E4%B8%8E%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">proxy简单了解与应用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/05/18/some-tips-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="工作中的遇到的一些小知识 7 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          工作中的遇到的一些小知识 7
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-18 17:02:41" itemprop="dateCreated datePublished" datetime="2020-05-18T17:02:41+08:00">2020-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-05-31 19:00:52" itemprop="dateModified" datetime="2020-05-31T19:00:52+08:00">2020-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/05/18/some-tips-7/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/18/some-tips-7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><p>DNS作为用来映射域名和IP地址的<strong>分布式</strong>数据库，使用TCP&#x2F;UDP端口号53。其中每一级域名限制63个字符，总长度不超过253个字符。</p>
+<p>DNS系统中，常见的资源记录类型有：</p>
+<ul>
+<li>A（Address）记录：最重要的记录，用于将特定主机名映射到对应主机的IPv4地址上</li>
+<li>MX记录：用于将特定邮箱地址映射到对应邮箱服务器上</li>
+<li>CNAME（Canonical Name Record）别名记录：用于将某个别名指向某个A记录上</li>
+<li>AAAA记录：和A记录对应，用于将特定主机名映射到对应主机的IPv6地址上</li>
+</ul>
+<p>实现上，全球范围近1000台根域名服务器分为13组，编号A到M，剩下的Internet DNS命名空间被委托给其他DNS服务器。DNS系统也有各种各样的DNS软件所支持，其中最普遍的是BIND（Berkeley Internet Name Domain）。在查询时，有两种实现方式：<strong>递归</strong>和<strong>迭代</strong>，客户端使用递归，DNS服务器间使用迭代。如查询<code>shenlvmeng.github.io</code>（忽略本地host和DNS缓存和路由器DNS缓存）：</p>
+<ul>
+<li>客户端发送查询报文<code>query shenlvmeng.github.io</code>到边缘DNS服务器（一般是ISP的DNS服务器），DNS先检查缓存，若存在记录则直接返回结果</li>
+<li>若不存在或记录已过期，则：<ul>
+<li>DNS服务器向根域名服务器发送同样的查询报文，根服务器返回顶级域<code>.io</code>的权威域名服务器地址</li>
+<li>DNS服务器向<code>.io</code>域的权威域名服务器发送查询报文，得到二级域<code>.github.io</code>的权威域名服务器地址</li>
+<li>DNS服务器向<code>.github.io</code>域的权威域名服务器发送查询报文，得到主机<code>shenlvmeng</code>的A记录，<strong>存入自身缓存，设置TTL</strong>，返回给客户端</li>
+</ul>
+</li>
+</ul>
+<p>最初的DNS域名使用字符仅限于ASCII字符的子集，2008年后，ICANN通过决议，可以使用其他语言作为顶级域名的字符，如“xxx.中国”。使用punnycode码的IDNA系统，可以将unicode字符映射为有效的DNS字符集，有效避免IDN欺骗（即使用长得很像的不同字符作为钓鱼网站）。</p>
+<p>域名的所有者和IP也可以通过查找WHOIS域名数据库查询。对于大多数根域名，由ICANN维护，WHOIS的细节由控制那个域的域注册机构维护。</p>
+<h3 id="域名污染"><a href="#域名污染" class="headerlink" title="域名污染"></a>域名污染</h3><p>指一些刻意制造或无意制造的域名服务器数据包，指向错误的IP地址。这种错误有可能是域名服务器错误工作带来，也有可能是刻意为之。</p>
+<p>对于GFW来说，它会对所有经过它的在UDP端口53上的域名查询进行IDS入侵检测，一旦发现与黑名单关键词相匹配的域名查询请求，会伪装成目标域名的解析服务器返回虚假的查询结果。</p>
+<ul>
+<li>系统默认会从使用ISP提供的域名查询服务器去查询国外的权威服务器时，便被GFW污染，缓存虚假的IP地址。</li>
+<li>由于TCP连接的机制可靠，理论上无法对TCP协议的域名查询进行污染，理论上可以通过TCP协议查询真实的IP地址。但其实，对于真实的IP地址，会有其他方式封锁，或对查询行为使用连接重置进行拦截</li>
+<li>通常情况下，设置的NDS服务主要使用海外的DNS服务，所以都需要穿过GFW，不过一些小型的DNS有技术手段回避GFW污染，从而能够访问国外被封锁网站</li>
+</ul>
+<p>ISP域名劫持还包含一些互联网提供商劫持部分域名，转到自己制定的网站，已提供自己的广告。</p>
+<h3 id="DNS记录"><a href="#DNS记录" class="headerlink" title="DNS记录"></a>DNS记录</h3><p>在DNS的分布式数据库中，不同记录类型有不同的用途。下面介绍了一些常见的记录类型。</p>
+<ul>
+<li>A记录，传回一个32位的IPv4地址，映射主机名到IP</li>
+<li>AAAA记录，传回一个128位的IPv6地址，映射主机名到IP</li>
+<li>CNAME：一个主机名的别名，只能指向一个域名，不能指向IP地址，可以保证原域名地址映射IP地址修改时，别名也能同步修改。CNAME意为真实名称，所以应当读作<code>alias.com</code>的“CNAME“是<code>real.com</code>。为保证效率，应当避免CNAME指向其他CNAME。</li>
+<li>DNAME，和CNAME类似，不过不是映射域名，而是把域名下的整个解析子树映射到另一域名。如把<code>alias.com</code>DNAME到<code>real.com</code>后，不影响<code>alias.com</code>的原有的解析设置。而<code>xxx.alias.com</code>都会被映射到<code>xxx.real.com</code>上</li>
+<li>MX（邮件交换）记录，将邮箱后缀（<code>@</code>后的部分）映射到类型为A或者AAAA的地址记录，原则上禁止映射到CNAME上</li>
+<li>NS记录，委托DNS区域使用已提供的权威域名服务器</li>
+<li>SRV记录，进行服务定位</li>
+</ul>
+<p>所有的记录都有一个有效期（TTL，time-to-live），时间耗尽后，所包含的信息必须从权威服务器上得到更新。</p>
+<h2 id="useState和useEffect实现思路"><a href="#useState和useEffect实现思路" class="headerlink" title="useState和useEffect实现思路"></a><code>useState</code>和<code>useEffect</code>实现思路</h2><p>这两个React hooks中引入的特性背后是基于闭包 + 数组索引实现的，下面是一个实现的demo。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// useState</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">&quot;react-dom&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">values</span>: <span class="built_in">any</span>[] = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> useState&lt;T&gt;(<span class="attr">initialState</span>: T): [T, <span class="function">(<span class="params">newState: T</span>) =&gt;</span> <span class="built_in">void</span>] &#123;</span><br><span class="line">	<span class="keyword">const</span> currentCursor = cursor;</span><br><span class="line">	values[currentCursor] = values[currentCursor] || initialState;</span><br><span class="line">	<span class="keyword">const</span> <span class="title function_">setFunc</span> = (<span class="params">newState: T</span>) =&gt; &#123;</span><br><span class="line">		values[currentCursor] = newState;</span><br><span class="line">    <span class="comment">// 触发重新渲染</span></span><br><span class="line">		<span class="title function_">renderApp</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	cursor++;</span><br><span class="line">	<span class="keyword">return</span> [values[currentCursor], setFunc];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">App</span>: <span class="title class_">React</span>.<span class="property">FC</span>&lt;&#123;&#125;&gt; = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> [num, setNum] = useState&lt;<span class="built_in">number</span>&gt;(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> (</span><br><span class="line">		<span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setNum(num + 1)&#125;&gt;&#123;num&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;root&quot;</span>));</span><br><span class="line">  <span class="comment">// 重置计数器</span></span><br><span class="line">	cursor = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">renderApp</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// useEffect</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">&quot;react-dom&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">deps</span>: <span class="built_in">any</span>[][] = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useEffect</span>(<span class="params">cb: () =&gt; <span class="built_in">void</span>, dep: <span class="built_in">any</span>[]</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> currCursor = cursor;</span><br><span class="line">	<span class="keyword">if</span> (!deps[currCursor]) &#123;</span><br><span class="line">		deps[currCursor] = dep;</span><br><span class="line">		cursor++;</span><br><span class="line">		<span class="title function_">cb</span>();</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dep.<span class="title function_">some</span>(<span class="function">(<span class="params">d, index</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (d !== deps[currCursor][index]) &#123;</span><br><span class="line">			deps[currCursor][index] = d;</span><br><span class="line">			cursor++;</span><br><span class="line">			<span class="title function_">cb</span>();</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">App</span>: <span class="title class_">React</span>.<span class="property">FC</span>&lt;&#123;&#125;&gt; = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;ok&#x27;</span>), <span class="number">1000</span>);</span><br><span class="line">	&#125;, []);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> (</span><br><span class="line">		<span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>ok<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;root&quot;</span>));</span><br><span class="line">	cursor = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">renderApp</span>();</span><br></pre></td></tr></table></figure>
+
+<p>实际使用中，是把<code>useState</code>、<code>useEffect</code>这样的hooks放在<code>memorizedState</code>数组中，共用一个cursor。类似下面这样：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> memoizedState = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>; <span class="comment">// 当前下标</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useState</span>(<span class="params">initialValue</span>) &#123;</span><br><span class="line">  memoizedState[cursor] = memoizedState[cursor] || initialValue;</span><br><span class="line">  <span class="keyword">const</span> currentCursor = cursor;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">setState</span>(<span class="params">newState</span>) &#123;</span><br><span class="line">    memoizedState[currentCursor] = newState;</span><br><span class="line">    <span class="title function_">render</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> [memoizedState[cursor++], setState];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useEffect</span>(<span class="params">callback, depArray</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> hasNoDeps = !depArray;</span><br><span class="line">  <span class="keyword">const</span> deps = memoizedState[cursor];</span><br><span class="line">  <span class="keyword">const</span> hasChangedDeps = deps</span><br><span class="line">    ? !depArray.<span class="title function_">every</span>(<span class="function">(<span class="params">el, i</span>) =&gt;</span> el === deps[i])</span><br><span class="line">    : <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (hasNoDeps || hasChangedDeps) &#123;</span><br><span class="line">    <span class="title function_">callback</span>();</span><br><span class="line">    memoizedState[cursor] = depArray;</span><br><span class="line">  &#125;</span><br><span class="line">  cursor++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>memorized</code>数组也是hooks一定要在top level调用的原因。</p>
+<p>在React实际实现上，hooks是以链表的形式存储，通过<code>next</code>属性链接到下一个hook。同时每一个<code>memorized</code>数组都会绑定到一个fiber上，从而在再次渲染时更新对应节点。让hooks之间互不干扰。</p>
+<h2 id="proxy简单了解与应用"><a href="#proxy简单了解与应用" class="headerlink" title="proxy简单了解与应用"></a>proxy简单了解与应用</h2><p>Vue 3.0在重构后使用了ES6的proxy新特性来跟踪数据字段的更新。它可以封装一个目标对象，为之添加一个代理，返回一个Proxy对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Proxy</span>(target, handler)</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>handler</code>即代理配置对象，也是Proxy对象的“魔力”所在。对于一个空的handler，返回的Proxy近似于target本身。在handler上定义任何handler函数的集合，都会让返回Proxy对象有不同的表现。</p>
+<p><code>handler</code>有下面一些可选的属性：</p>
+<ul>
+<li><code>apply</code> 监听函数调用的钩子<ul>
+<li><code>apply: function(target, thisArg, argumentsList) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>construct</code> 监听使用<code>new</code>调用的钩子<ul>
+<li><code>construct: function(target, argumentsList, newTarget) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>defineProperty</code> 类似<code>Object.defineProperty</code><ul>
+<li><code>defineProperty: function(target, property, descriptor) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>get</code> 监听属性访问<ul>
+<li><code>get: function(target, property, receiver) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>deleteProperty</code> 监听<code>delete</code>操作<ul>
+<li><code>deleteProperty: function(target, property) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>getOwnPropertyDescriptor</code> 监听<code>Object.getOwnPropertyDescriptor</code></li>
+<li><code>getPrototypeOf()</code> 类似<code>Object.getPrototypeOf</code></li>
+<li><code>has</code> 监听<code>in</code>操作<ul>
+<li><code>has: function(target, prop) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>isExtensible</code> 监听<code>Object.isExtensible</code></li>
+<li><code>ownKeys</code> 监听<code>Object.getOwnPropertyNames</code>和<code>Object.getOwnPropertySymbols</code></li>
+<li><code>preventExtensions</code> 监听<code>Object.preventExtensions</code></li>
+<li><code>set</code> 监听属性设置<ul>
+<li><code>set: function(target, property, value, receiver) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>setPrototypeOf</code> 类似<code>Object.setPrototypeOf</code></li>
+</ul>
+<p>利用上面的<code>handler</code>已经可以实现很丰富的功能，immer的produce就有借助proxy来实现。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/CDN/" rel="tag"># CDN</a>
+              <a href="/blog/tags/DNS/" rel="tag"># DNS</a>
+              <a href="/blog/tags/CNAME/" rel="tag"># CNAME</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/04/17/fe-coverage-improve/" rel="prev" title="前端代码覆盖率实时统计改进方案">
+                  <i class="fa fa-chevron-left"></i> 前端代码覆盖率实时统计改进方案
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/05/31/pragmatic-thinking-and-learning/" rel="next" title="《程序员思维修炼》—— 思维方式和学习技巧">
+                  《程序员思维修炼》—— 思维方式和学习技巧 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

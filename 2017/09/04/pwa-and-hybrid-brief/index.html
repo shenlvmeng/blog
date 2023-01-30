@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="PWAPWA(Progressive Web App)渐进增强的Web App。最早提出在2015年，它最初的设计理念是，保留Web的精髓，让Web逐渐演进成App，而非现在Hybrid App（即现在最常用的UIWebView&#x2F;WebView+前端）形式。  可安装性 离线能力 推送能力  在PWA的概念下，网页可以被添加到主屏同时支持全屏运行，在Service Worker帮助下可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PWA以及Hybrid开发方案简介">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/09/04/pwa-and-hybrid-brief/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="PWAPWA(Progressive Web App)渐进增强的Web App。最早提出在2015年，它最初的设计理念是，保留Web的精髓，让Web逐渐演进成App，而非现在Hybrid App（即现在最常用的UIWebView&#x2F;WebView+前端）形式。  可安装性 离线能力 推送能力  在PWA的概念下，网页可以被添加到主屏同时支持全屏运行，在Service Worker帮助下可以">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-09-04T09:59:00.000Z">
+<meta property="article:modified_time" content="2017-09-04T10:01:26.000Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="PWA">
+<meta property="article:tag" content="hybrid">
+<meta property="article:tag" content="JSBridge">
+<meta property="article:tag" content="Web Worker">
+<meta property="article:tag" content="Service Worker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/09/04/pwa-and-hybrid-brief/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/09/04/pwa-and-hybrid-brief/","path":"2017/09/04/pwa-and-hybrid-brief/","title":"PWA以及Hybrid开发方案简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PWA以及Hybrid开发方案简介 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PWA"><span class="nav-number">1.</span> <span class="nav-text">PWA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hybrid%E6%96%B9%E6%A1%88%E7%9B%B8%E5%85%B3"><span class="nav-number">2.</span> <span class="nav-text">Hybrid方案相关</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/09/04/pwa-and-hybrid-brief/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PWA以及Hybrid开发方案简介 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PWA以及Hybrid开发方案简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-09-04 17:59:00 / 修改时间：18:01:26" itemprop="dateCreated datePublished" datetime="2017-09-04T17:59:00+08:00">2017-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/09/04/pwa-and-hybrid-brief/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/04/pwa-and-hybrid-brief/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="PWA"><a href="#PWA" class="headerlink" title="PWA"></a>PWA</h2><p>PWA(Progressive Web App)渐进增强的Web App。最早提出在2015年，它最初的设计理念是，保留Web的精髓，让Web逐渐演进成App，而非现在Hybrid App（即现在最常用的UIWebView&#x2F;WebView+前端）形式。</p>
+<ul>
+<li>可安装性</li>
+<li>离线能力</li>
+<li>推送能力</li>
+</ul>
+<p>在PWA的概念下，网页可以被添加到主屏同时支持全屏运行，在Service Worker帮助下可以离线运行，最后它仍是Web而并不用添加到App Store中。</p>
+<p>说到Service Worker很多人可能会想到Web Worker的概念。这两个看起来是包含关系的概念实际上有区别。</p>
+<ul>
+<li>Web Worker是JS多线程的一种实现方式，借助它可以让脚本在后台运行，worker对象和主线程通过message的方式交流，caniuse上的支持度为93%</li>
+<li>Service Worker是浏览器的一个新特性，配合PWA的概念一起使用，是PWA网络请求的代理，结合缓存管理等方案，提供很好的离线体验，caniuse支持度仅有73%</li>
+</ul>
+<p>一个<a target="_blank" rel="noopener" href="https://nolanlawson.github.io/cascadia-2016/#/35">介绍ppt</a>上展示了具体的区别：</p>
+<ul>
+<li>和tab的关系，Web Worker是一tab对多Web Worker，Service Worker则是多对一</li>
+<li>生命周期，Web Worker和选项卡同生共死，Service Worker则是完全独立的</li>
+<li>擅长场景，Web Worker用在多线程协同，Service Worker则可以提供很好的离线体验</li>
+<li>为保证安全Service Worker要求scheme为https</li>
+</ul>
+<p>Service Worker通过<code>navigator.serviceWorker.register(&#39;path&#39;).then</code>的方式注册，之后便能通过监听事件拿到所有scope里发生的请求，当然，可以在path后的第二个参数中显式地声明作用域（如<code>&#123;scope: &#39;/js&#39;&#125;</code>）。Service Worker可以监听它声明周期中的各事件</p>
+<ul>
+<li><strong>Install</strong> 发生在第一次注册和sw.js（这里的文件名只是举个例子）改变时，通常在这个阶段设定SW的初始状态和准备好缓存。缓存可以借助<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Cache">caches API</a>完成。</li>
+<li><strong>Fetch</strong> 发生在网络请求产生时，任何匹配了Request的网络请求都会被拦截，并返回缓存数据。只有找不到存在的缓存，才会产生一个请求</li>
+<li><strong>Activate</strong> 发生在SW更新或网页关掉再重新打开时，触发在install之后</li>
+<li><strong>Sync</strong> 发生在用户有网络时，用在用户进行依赖网络的操作时，会推迟到有网络时再执行。简单来说，所有的依赖网络的操作，都需要使用sync事件</li>
+</ul>
+<p>除了Service Worker，Manifest也是很重要的一部分。它用来描述应用程序的各种信息。它包括下面一些成员</p>
+<ul>
+<li><strong>background-color</strong> 在css加载前用作应用背景颜色</li>
+<li><strong>name</strong> 应用名，<strong>short_name</strong>也是类似意思</li>
+<li><strong>description</strong> 应用描述</li>
+<li><strong>display</strong> 显示模式，有<code>fullscreen</code>, <code>standalone</code>, <code>minimal-ui</code>和<code>browser</code>几种可以选择</li>
+<li><strong>icons</strong> 应用图标，数组类型，每项包含<code>src</code>, <code>type</code>和<code>sizes</code>几个属性</li>
+<li><strong>orientation</strong> 默认的屏幕朝向</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://pwa.rocks/">这里</a>有一个收集PWA酷站的地方。</p>
+<h2 id="Hybrid方案相关"><a href="#Hybrid方案相关" class="headerlink" title="Hybrid方案相关"></a>Hybrid方案相关</h2><p>离线包管理方案：</p>
+<ol>
+<li>本地开发测试，提交特性分支到远端，</li>
+<li>通过提MR的方式合并在当前迭代分支上，触发basement自动CI为zip格式，根据当前发包的状态，传递给NebulaMng管理</li>
+<li>NebulaMng基于zip生成版本号和配置文件，构建整个离线包，并推送给应用中心</li>
+<li>应用中心负责向客户端推送更新</li>
+<li>客户端根据策略拉取离线包、解压、渲染</li>
+</ol>
+<p>离线包本地渲染方案：</p>
+<ol>
+<li>加载公共资源包</li>
+<li>判断本地是否已安装该离线包，若有，则加载到内存，否则触发离线包下载</li>
+<li>WebView加载离线包url链接，加载前检查内存中是否存在页面数据，若有，从内存中取出并渲染，否则fallback到线上cdn地址</li>
+</ol>
+<p>离线包更新方案：</p>
+<ol>
+<li>应用中心广播或服务端发sync消息触发</li>
+<li>向wapcenter获取当前客户端下所有包信息</li>
+<li>在本地没有当前版本且WiFi条件或auto_install为1时更新本地包</li>
+</ol>
+<p>双向通信和JSBridge原理：</p>
+<ul>
+<li>WebView在载入页面时，注入JSBridge脚本。通过调用JSBridge.call，触发调用参数的序列化，并调用<code>console.log(h5container.message:xxx)</code>或<code>window.prompt</code>事件。WebView监听页面的console或prompt事件，解析传递的参数信息，然后通过NebulaService分发事件</li>
+<li>Service、Session、Page实例化时，内部都有一个H5PluginManager成员，通过类似EventEmitter的形式存储着一个action -&gt; plugin的map。每个plugin都有interceptEvent和handleEvent两个函数，处理事件的拦截和处理两个阶段</li>
+<li>WebView通过loadUrl(“javascript:JsBridge.callback”)的形式输入结果并运行回调</li>
+</ul>
+<p>实现上类似这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">;<span class="comment">//JsBridge</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"><span class="variable language_">window</span></span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> callbackList = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">JsBridge</span> = &#123;</span><br><span class="line">    <span class="comment">/* 参数说明</span></span><br><span class="line"><span class="comment">     * @evt &#123;string&#125; 调用接口名称 (必须)</span></span><br><span class="line"><span class="comment">     * @params &#123;object&#125; 配置参数 (可选)</span></span><br><span class="line"><span class="comment">     * @callback &#123;function&#125; 回调函数 (可选)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="attr">call</span>: <span class="keyword">function</span>(<span class="params">evt, params, callback</span>) &#123;</span><br><span class="line">      <span class="comment">//第一个参数必须为string</span></span><br><span class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> evt != <span class="string">&#x27;string&#x27;</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> params == <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">        callback = params;</span><br><span class="line">        params = <span class="literal">null</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">typeof</span> params != <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">        params = <span class="literal">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> callbackId = <span class="keyword">new</span> <span class="title class_">Date</span>().<span class="title function_">getTime</span>() + <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> callback == <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">        callbackList[callbackId] = callback;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> msg = &#123;</span><br><span class="line">        <span class="attr">callbackId</span>: callbackId,</span><br><span class="line">        <span class="attr">action</span>: evt,</span><br><span class="line">        <span class="attr">data</span>: params || &#123;&#125;</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="title function_">prompt</span>(<span class="string">&#x27;JsBridgeCall&#x27;</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(msg));</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">/* 参数说明</span></span><br><span class="line"><span class="comment">     * @params &#123;object&#125; 返回的数据 (必须)</span></span><br><span class="line"><span class="comment">     * 数据示例：&#123; callbackId: &#x27;xxx&#x27;, data: &#x27;&#x27; &#125;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="attr">callback</span>: <span class="keyword">function</span>(<span class="params">params</span>) &#123;</span><br><span class="line">      <span class="comment">// params = JSON.parse(params);</span></span><br><span class="line">      <span class="keyword">var</span> callbackId = params.<span class="property">callbackId</span>,</span><br><span class="line">        data = params.<span class="property">data</span>,</span><br><span class="line">        callbackHandler = callbackList[callbackId];</span><br><span class="line">      callbackHandler &amp;&amp; callbackHandler.<span class="title function_">call</span>(<span class="literal">null</span>, data);</span><br><span class="line">      <span class="keyword">delete</span> callbackList[callbackId]; <span class="comment">//删除回调</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(<span class="variable language_">window</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;<span class="comment">//JsBridgeReady</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"><span class="variable language_">document</span></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> evt = <span class="variable language_">document</span>.<span class="title function_">createEvent</span>(<span class="string">&#x27;HTMLEvents&#x27;</span>);</span><br><span class="line">  evt.<span class="title function_">initEvent</span>(<span class="string">&#x27;JsBridgeReady&#x27;</span>, <span class="literal">false</span>, <span class="literal">false</span>);</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">dispatchEvent</span>(evt)</span><br><span class="line">&#125;)(<span class="variable language_">document</span>);</span><br></pre></td></tr></table></figure>
+
+<p>native和H5混合方案：</p>
+<ul>
+<li>在RootView中创建离线包View再异步添加进来</li>
+<li>通过JSBridge进行交互</li>
+<li>提前拦截touch事件，防止冲突</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/PWA/" rel="tag"># PWA</a>
+              <a href="/blog/tags/hybrid/" rel="tag"># hybrid</a>
+              <a href="/blog/tags/JSBridge/" rel="tag"># JSBridge</a>
+              <a href="/blog/tags/Web-Worker/" rel="tag"># Web Worker</a>
+              <a href="/blog/tags/Service-Worker/" rel="tag"># Service Worker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/08/14/rxjs-brief/" rel="prev" title="RxJS 真·简介">
+                  <i class="fa fa-chevron-left"></i> RxJS 真·简介
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/09/08/photogallery-improvement/" rel="next" title="PhotoGallery技术改造">
+                  PhotoGallery技术改造 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="主干开发是相对GitFlow和Github Flow更贴合CI&#x2F;CD（持续集成&#x2F;持续分发）的高效版本控制管理实践，也更贴合Devops团队。  背景在软件开发的早年期间，GitFlow和GithubFlow被用来在软件开发中做版本控制管理。  GitFlow工作流中，分为主干分支（master）、开发分支（dev）、特性分支、分布分支、热修分支等，这些分支都是长期存在的，并在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trunk Based Development（主干开发）介绍">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2021/09/10/trunk-based-development/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="主干开发是相对GitFlow和Github Flow更贴合CI&#x2F;CD（持续集成&#x2F;持续分发）的高效版本控制管理实践，也更贴合Devops团队。  背景在软件开发的早年期间，GitFlow和GithubFlow被用来在软件开发中做版本控制管理。  GitFlow工作流中，分为主干分支（master）、开发分支（dev）、特性分支、分布分支、热修分支等，这些分支都是长期存在的，并在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nvie.com/img/git-model@2x.png">
+<meta property="og:image" content="https://images.prismic.io/launchdarkly/bf307def-6bfc-4d27-ac8b-f4dd1a403935_TrunkBasedDev-01+%283%29.png?auto=compress,format">
+<meta property="og:image" content="https://cloud.google.com/architecture/devops/images/devops-tech-trunk-based-development-typical-trunk-timeline.svg">
+<meta property="og:image" content="https://images.prismic.io/launchdarkly/7ad744e0-5c46-4a2f-b08d-6013a95e89c5_TrunkBasedDev-02+%283%29.png?auto=compress,format">
+<meta property="article:published_time" content="2021-09-10T02:44:08.000Z">
+<meta property="article:modified_time" content="2021-09-10T02:45:46.315Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="工作流">
+<meta property="article:tag" content="主干开发">
+<meta property="article:tag" content="GitFlow">
+<meta property="article:tag" content="GithubFlow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nvie.com/img/git-model@2x.png">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2021/09/10/trunk-based-development/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2021/09/10/trunk-based-development/","path":"2021/09/10/trunk-based-development/","title":"Trunk Based Development（主干开发）介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Trunk Based Development（主干开发）介绍 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%BB%E5%B9%B2%E5%BC%80%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">什么是主干开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E4%B8%BB%E5%B9%B2%E5%BC%80%E5%8F%91"><span class="nav-number">3.</span> <span class="nav-text">如何实现主干开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%BC%80%E5%8F%91%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">标准开发流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%B9%B2%E5%BC%80%E5%8F%91%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">5.</span> <span class="nav-text">主干开发的好处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2021/09/10/trunk-based-development/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Trunk Based Development（主干开发）介绍 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Trunk Based Development（主干开发）介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-09-10 10:44:08 / 修改时间：10:45:46" itemprop="dateCreated datePublished" datetime="2021-09-10T10:44:08+08:00">2021-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E8%A7%84%E8%8C%83/" itemprop="url" rel="index"><span itemprop="name">规范</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2021/09/10/trunk-based-development/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/09/10/trunk-based-development/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>主干开发是相对<a target="_blank" rel="noopener" href="https://nvie.com/posts/a-successful-git-branching-model/">GitFlow</a>和<a target="_blank" rel="noopener" href="https://guides.github.com/introduction/flow/">Github Flow</a>更贴合CI&#x2F;CD（持续集成&#x2F;持续分发）的高效版本控制管理实践，也更贴合Devops团队。</p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在软件开发的早年期间，GitFlow和GithubFlow被用来在软件开发中做版本控制管理。</p>
+<ul>
+<li>GitFlow工作流中，分为主干分支（<code>master</code>）、开发分支（<code>dev</code>）、特性分支、分布分支、热修分支等，这些分支都是长期存在的，并在需求开发完成&#x2F;bug修复完成&#x2F;代码发布等特定时候执行代码的CR（Code Review）和合码工作。且在合并时，由仓库的核心成员或者管理员们把握代码质量。随着项目的扩大，冲突的几率提高，每次代码合码时候的工作量也大大提升，带来了额外的仓库维护成本。Github Flow便随着Github逐渐流行起来。<br><img src="https://nvie.com/img/git-model@2x.png" alt="GitFlow"></li>
+<li>Github Flow工作流中，只有一个主干分支（<code>master</code>），一些特性分支以及发布时会用到的分布分支。开发者可以自由从主干分支签出特性分支开发、调试，并在需求完成后合入主干分支。一定程度上减少了长期存在分支的维护成本，但同样的，CR依然是项目管理者进行，特性分支合码时代码量依然有可能很大，团队内规范不好的话，也容易导致合码后主干分支不可发布。<br><img src="https://images.prismic.io/launchdarkly/bf307def-6bfc-4d27-ac8b-f4dd1a403935_TrunkBasedDev-01+%283%29.png?auto=compress,format" alt="Merge Conflict"></li>
+</ul>
+<p>主干开发（Trunk Based Development）是一种更敏捷的git工作流，所有的开发者都可以合码到主干分支，结合CI&#x2F;CD流程，有助于团队快速迭代。</p>
+<h2 id="什么是主干开发"><a href="#什么是主干开发" class="headerlink" title="什么是主干开发"></a>什么是主干开发</h2><p>主干开发和CI&#x2F;CD相互依赖相辅相成。</p>
+<ul>
+<li>进行主干开发才能保证CI&#x2F;CD，即每天充分多次的集成乃至发布</li>
+<li>CI&#x2F;CD过程中的<strong>快速</strong>自动化测试可以保证主干分支的可发布性</li>
+</ul>
+<p>在主干开发中每位或者每小组开发者将自己的工作分成小份，然后以每天至少一次的形式从自己的分支合并到主干，由于每次合并代码量不大，CR时间以及CI时间都会缩短。一个典型的主干开发时间轴如下：</p>
+<p><img src="https://cloud.google.com/architecture/devops/images/devops-tech-trunk-based-development-typical-trunk-timeline.svg" alt="主干开发时间轴"></p>
+<p>在主干开发中，某些情况下需要从主干分支中选出最佳的bug修复合并到对应版本中，但如果每天发布多次，则根本不需要发布分支，可直接从主干中部署。这样做的最大优势在于减少开发线，频繁执行小批量合并，将代码保持最新。从而降低团队的合码成本。</p>
+<h2 id="如何实现主干开发"><a href="#如何实现主干开发" class="headerlink" title="如何实现主干开发"></a>如何实现主干开发</h2><p>在进行主干开发时，开发者需要了解如何拆解工作为小份，同时，还需要让构建流程保持通过，如果CI失败，开发者需要立即停止当前工作修复问题，无法短期修复时，也要还原相应更改。通常来讲，主干开发有下面这样的特征：</p>
+<ul>
+<li>仓库里的活跃分支不超过3个</li>
+<li>分支的合码频率不少于每天1次，即分支的生存周期不超过1天</li>
+<li>没有代码冻结期或集成期</li>
+</ul>
+<p>在实践中，有下面一些tips：</p>
+<ul>
+<li><strong>小commit，多合码</strong>：将每次合码改动限制在少量的commit和较少的代码改动上，保证合码时轻松；主干分支应该有频繁的小批量改动合码</li>
+<li><strong>最少1天1合码</strong>：每天合并或关闭待合并分支，有效减少合码压力，提高增量发布敏捷度</li>
+<li><strong>同步Code Review</strong>：主干分支的每次合码需要保证CR的及时响应，这可以借助一些代码分析工具的辅助</li>
+<li><strong>全面的自动化测试覆盖</strong>：确保有全面的自动化单元测试套件，保证测试通过后再合并代码，这也是保证主干分支可发布的基础</li>
+<li><strong>构建快速</strong>：降低CI成本，构建和测试需要在几分钟内完成</li>
+</ul>
+<p>同时也带来两个新概念</p>
+<ul>
+<li><strong>分支抽象</strong>：在主干开发中，合码频率很高，有些大需求可能没有办法在1天内就完成合码，对于未完成的需求，可以在代码中先埋下未使用的新特性，等待需求完成后，再使用埋好的新功能。这种在源代码中提前埋下“代码分支”的方式成为抽象分支（Branch by abstraction）</li>
+<li><a target="_blank" rel="noopener" href="https://featureflags.io/"><strong>特性开关</strong></a>：在分支抽象的基础上，有些合并到主干的改动不一定想让所有用户都看见，可以在代码中预先埋入分支语句，再从配置中读取当前是否使用特性。这样可以实现功能灵活切换、实现ab-test等效果</li>
+</ul>
+<p><img src="https://images.prismic.io/launchdarkly/7ad744e0-5c46-4a2f-b08d-6013a95e89c5_TrunkBasedDev-02+%283%29.png?auto=compress,format" alt="feature-flags"></p>
+<h2 id="标准开发流"><a href="#标准开发流" class="headerlink" title="标准开发流"></a>标准开发流</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git checkout master &amp;&amp; git pull --prune</span><br><span class="line">git checkout -b &lt;feat/branch&gt;</span><br><span class="line"><span class="comment"># coding</span></span><br><span class="line">git push -u origin &lt;feat/branch&gt;</span><br><span class="line"><span class="comment"># after any updates</span></span><br><span class="line">git push</span><br><span class="line"><span class="comment"># or add --force if rebased during updates</span></span><br><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>更新本地master分支</li>
+<li>签出特性分支</li>
+<li>编码</li>
+<li>推送本地分支到远端</li>
+<li>提MR，如果MR后有更新，继续push，当rebase master遇到冲突时，推送需要增加<code>-f</code>参数</li>
+<li>合码</li>
+</ol>
+<blockquote>
+<p>注：因为主干开发每次合码量不大，建议使用<code>rebase</code>解决冲突</p>
+</blockquote>
+<h2 id="主干开发的好处"><a href="#主干开发的好处" class="headerlink" title="主干开发的好处"></a>主干开发的好处</h2><p>主干开发的最大好处在于对CI的亲和度。可以想象开发者完成当日工作，当日合码，当日测试通过完成集成，达到可发布状态。很大程度减少了合码的痛苦。进而有：</p>
+<ul>
+<li>持续CI</li>
+<li>持续CR</li>
+<li>持续CD</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>非常适用于敏捷开发中，对于团队成员能力过关（要懂得怎样拆分需求）、测试有着良好建设的团队来讲，是种提效的好方式，值得一试。相反如果成员拆分不够良好、代码review不够及时，测试不够自动化和系统，则不适用主干开发。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development">Trunk-based development</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.google.com/architecture/devops/devops-tech-trunk-based-development">DevOps技术：主干开发</a></li>
+<li><a target="_blank" rel="noopener" href="https://trunkbaseddevelopment.com/">Trunk Based Development: Introduction</a></li>
+<li><a target="_blank" rel="noopener" href="https://launchdarkly.com/blog/git-branching-strategies-vs-trunk-based-development/">Git Branching Strategies vs. Trunk-Based Development</a></li>
+<li><a target="_blank" rel="noopener" href="https://launchdarkly.com/blog/what-are-feature-flags/">What Are Feature Flags?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag"># 工作流</a>
+              <a href="/blog/tags/%E4%B8%BB%E5%B9%B2%E5%BC%80%E5%8F%91/" rel="tag"># 主干开发</a>
+              <a href="/blog/tags/GitFlow/" rel="tag"># GitFlow</a>
+              <a href="/blog/tags/GithubFlow/" rel="tag"># GithubFlow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/03/22/clean-architecture/" rel="prev" title="《架构整洁之道》—— 软件设计的思考">
+                  <i class="fa fa-chevron-left"></i> 《架构整洁之道》—— 软件设计的思考
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/10/20/taihu-lark-riding/" rel="next" title="环太湖骑记">
+                  环太湖骑记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

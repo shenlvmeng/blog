@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="下面的内容主要来自作者André Staltz的egghead.io  ![cycle-flow](http:&#x2F;&#x2F;ow5o14n5d.bkt.clouddn.com&#x2F;blogcycle-flow.svg)  设计cycle.js设计上有三个特点：  万物都是Stream（collections + 时间） Logic和Effect分离（借助main和drivers） app是纯数据流（data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cycle.js介绍">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/10/15/cycle-js-introduction/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="下面的内容主要来自作者André Staltz的egghead.io  ![cycle-flow](http:&#x2F;&#x2F;ow5o14n5d.bkt.clouddn.com&#x2F;blogcycle-flow.svg)  设计cycle.js设计上有三个特点：  万物都是Stream（collections + 时间） Logic和Effect分离（借助main和drivers） app是纯数据流（data">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-10-15T07:29:52.000Z">
+<meta property="article:modified_time" content="2018-04-02T14:36:11.787Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="Reactive Programming">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Cycle.js">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/10/15/cycle-js-introduction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/10/15/cycle-js-introduction/","path":"2017/10/15/cycle-js-introduction/","title":"cycle.js介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>cycle.js介绍 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVI"><span class="nav-number">2.1.</span> <span class="nav-text">MVI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xstream"><span class="nav-number">3.</span> <span class="nav-text">xstream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/10/15/cycle-js-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="cycle.js介绍 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cycle.js介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-10-15 15:29:52" itemprop="dateCreated datePublished" datetime="2017-10-15T15:29:52+08:00">2017-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-04-02 22:36:11" itemprop="dateModified" datetime="2018-04-02T22:36:11+08:00">2018-04-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">框架</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/10/15/cycle-js-introduction/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/10/15/cycle-js-introduction/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>下面的内容主要来自<a target="_blank" rel="noopener" href="https://egghead.io/courses/cycle-js-fundamentals">作者André Staltz的egghead.io</a></p>
+</blockquote>
+<div style="width: 50%;margin: 0 auto;">![cycle-flow](http://ow5o14n5d.bkt.clouddn.com/blogcycle-flow.svg)</div>
+
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>cycle.js设计上有三个特点：</p>
+<ul>
+<li>万物都是Stream（collections + <strong>时间</strong>）</li>
+<li>Logic和Effect分离（借助<code>main</code>和<code>drivers</code>）</li>
+<li>app是纯数据流（data flow）</li>
+</ul>
+<p>第一部分正如<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/08/14/rxjs-brief/">RxJS中介绍</a>的一样，可以用Observable建模。</p>
+<p>第二部分中，logic是数学相关的东西，是抽象的。effects则是影响实际世界的效应（如DOM、HTTP等），是实际的。将两者更好地分离开来是Cycle.js的设计初衷。而logic纯函数的特点优势也是很明显的（无副作用）。</p>
+<p>上面的两部分在Cycle.js中，借助xstream, RxJS等Reactive Programming的库，以main和driver函数来实现。其中<code>main</code>实现逻辑、生产数据，<code>driver</code>订阅消费数据，交由cycle.js制造Effect。<a target="_blank" rel="noopener" href="http://lmatteis.github.io/cyclejs-slides/keynote/assets/player/KeynoteDHTMLPlayer.html#60">这里</a>有一个浅显易懂的例子。</p>
+<p>除了简单的DOM Effect外，还有HTTP请求等。交给不同的drivers完成就行了。这一点上和<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/06/19/elm-introduction/#Effects">Elm设计</a>很像。</p>
+<p>对比流行的React、Angular、Vue，组件化的设计模式当然也涉及到。文档的<a target="_blank" rel="noopener" href="https://cycle.js.org/components.html">Components</a>部分讲得很清楚：</p>
+<blockquote>
+<p>Any Cycle.js app can be reused as a component in a larger Cycle.js app.</p>
+</blockquote>
+<p>即任何一个Cycle.js的应用都可以直接重用成更大应用的一个组件，无需额外的操作。原因很简单，任何一个logic都是在<code>main</code>函数中完成的，这也是开发者唯一需要做的事。而这个函数接收的<code>sources</code>以及返回给Cycle.js的<code>sinks</code>都是一个包含DOM、HTTP等stream的对象，且键值对都一样，可以看下面这张图更好理解：</p>
+<div style="width: 50%;margin: 0 auto;">![cycle.js component](https://cycle.js.org/img/dataflow-component.svg)</div>
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>完全可以在main中生产多种数据，作为对象返回，交给不同driver的得到不一样的effects。将main中数据交给driver的过程抽象在run函数中，完成数据生产和订阅的过程。这个过程并不复杂。下面是一个简陋的实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">run</span>(<span class="params">mainFn, drivers</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> sinks = <span class="title function_">mainFn</span>();</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">  	<span class="keyword">if</span> (sinks[key]) &#123;</span><br><span class="line">  	  drivers[key](sinks[key]);</span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">run</span>(main, &#123;</span><br><span class="line">  <span class="attr">DOM</span>: domDriver,</span><br><span class="line">  <span class="attr">other</span>: otherDriver</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上面的实现手法只实现了单向的从逻辑到Effects的映射过程，要完成相反的从实际世界到逻辑的过程，需要读取外界的事件。要这么做，不仅main函数需要可以接受入参<code>sources</code>，生产Effects的drivers也要能够返回main需要的<code>sources</code>。类似地，sources的类型可以是DOM或者其他的合法input。同时，连接两者的<code>run</code>函数会遇到循环的问题，driver的入参和出参正好是main的出参和入参，这也是<strong>Cycle</strong>一词的来源。解决办法是先fake一个的初始数据流，得到Effects后，再用Effects初始化main，最后用main替换fake的数据流即可。</p>
+<p>继续改造<code>run</code>函数，考虑到driver有多种类型，需要事先为所有driver都使用fakeSinks。在构造好drivers后，使用drivers的返回，构造main。最后用<code>imitate</code>替代掉fakeSinks即可。这就是Cycle.js核心部分run的设计思路，实际上，run部分的代码也只有一百余行。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">run</span>(<span class="params">mainFn, drivers</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> fakeSinks = &#123;&#125;;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    fakeSinks[key] = xs.<span class="title function_">create</span>();</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> sources = &#123;&#125;;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    sources[key] = drivers[key](fakeSinks[key]);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> sinks = <span class="title function_">mainFn</span>(sources);</span><br><span class="line"></span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(sinks).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    fakeSinks[key].<span class="title function_">imitate</span>(sinks[key];)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了run，drivers也是Cycle.js设计的重要部分。它需要能够根据main逻辑的描述灵活地生成对应的Effects。如DOM，在main逻辑中声明所需的DOM结构，对应地，在domDriver中，根据结构生成实际的DOM元素（不论是使用createElement还是vDOM）。</p>
+<p>不过仅仅在main逻辑中描述DOM结构是不够的，逻辑上还应该包括如何响应Effects的输入。类似地，这部分应该从driver中的hardcode抽离出来，由main声明，driver实现。类似下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> events$ = sources.<span class="property">DOM</span>.<span class="title function_">selectEvents</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;click&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">DOM</span>: events$.<span class="title function_">startWith</span>(<span class="literal">null</span>).<span class="title function_">map</span>(</span><br><span class="line">      xs.<span class="title function_">periodic</span>(<span class="number">1000</span>)</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    ).<span class="title function_">flatten</span>()</span><br><span class="line">    .<span class="title function_">map</span>(<span class="function"><span class="params">i</span> =&gt;</span> (&#123;</span><br><span class="line">      <span class="attr">tagName</span>: <span class="string">&#x27;H1&#x27;</span>,</span><br><span class="line">      <span class="attr">children</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">tagName</span>: <span class="string">&#x27;SPAN&#x27;</span>,</span><br><span class="line">          <span class="attr">children</span>:[<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;))</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的DOM结构可以进一步抽象函数，便于代码书写。另外，Cycle.js中使用makeDOMDriver的方式是为了显示声明DOM容器名，避免hardcode在driver中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">h</span>(<span class="params">tagName, children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    tagName,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">h1</span>(<span class="params">children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">tagName</span>: <span class="string">&#x27;H1&#x27;</span>,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">span</span>(<span class="params">children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">tagName</span>: <span class="string">&#x27;SPAN&#x27;</span>,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">.<span class="title function_">map</span>(</span><br><span class="line">  <span class="title function_">h1</span>([</span><br><span class="line">    <span class="title function_">span</span>([<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>])</span><br><span class="line">  ])</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>习惯了上面的思考方式后，可以考虑如何使用Cycle.js的问题了。通常情况下，一个空白的Cycle.js的脚手架像下面这样（使用UMD方案时）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; makeDOMDriver &#125; = <span class="title class_">CycleDOM</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line">  <span class="comment">// TODO</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> drivers = &#123;</span><br><span class="line">  <span class="attr">DOM</span>: <span class="title function_">makeDOMDriver</span>(<span class="string">&#x27;#app&#x27;</span>),</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Cycle</span>.<span class="title function_">run</span>(main, drivers);</span><br></pre></td></tr></table></figure>
+
+<p>结合HTML内容的声明和用户输入事件的读取，可以得到下面的结果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; div, label, input, hr, h1, makeDOMDriver &#125; = <span class="title class_">CycleDOM</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// &#x27;&#x27;---------------&gt;</span></span><br><span class="line">  <span class="comment">// div--------------&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> input$ = sources.<span class="property">DOM</span>.<span class="title function_">select</span>(<span class="string">&#x27;.name&#x27;</span>).<span class="title function_">events</span>(<span class="string">&#x27;change&#x27;</span>)；</span><br><span class="line">  <span class="keyword">const</span> name$ = input$.<span class="title function_">map</span>(<span class="function"><span class="params">ev</span> =&gt;</span> ev.<span class="property">target</span>.<span class="property">value</span>).<span class="title function_">startWidth</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">  	<span class="attr">DOM</span>: name$.<span class="title function_">map</span>(<span class="function"><span class="params">name</span> =&gt;</span></span><br><span class="line">  	  <span class="title function_">div</span>([</span><br><span class="line">  	  	<span class="title function_">label</span>([<span class="string">&#x27;Name: &#x27;</span>]),</span><br><span class="line">  	  	<span class="title function_">input</span>(<span class="string">&#x27;.name&#x27;</span>, &#123;<span class="attr">attrs</span>: &#123;<span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>&#125;&#125;),</span><br><span class="line">  	  	<span class="title function_">hr</span>(),</span><br><span class="line">  	  	<span class="title function_">h1</span>(<span class="string">`Hello <span class="subst">$&#123;name&#125;</span>!`</span>)</span><br><span class="line">  	  ])</span><br><span class="line">  	)</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> drivers = &#123;</span><br><span class="line">  <span class="attr">DOM</span>: <span class="title function_">makeDOMDriver</span>(<span class="string">&#x27;#app&#x27;</span>),</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Cycle</span>.<span class="title function_">run</span>(main, drivers);</span><br></pre></td></tr></table></figure>
+
+<p>其中要格外注意的是，<code>name$</code>需要有<code>startWith</code>才能有流的起始数据，从而初始化真实DOM。</p>
+<p>结合灵活的流操作符，如<code>merge</code>, <code>fold</code>等，可以实现更加复杂点的应用，如官网给出的<a target="_blank" rel="noopener" href="https://cycle.js.org/basic-examples.html#basic-examples-increment-a-counter">计数器</a></p>
+<p>除了DOMDriver，HTTPDriver也是很常用的一种Driver，可以借助它实现HTTP的request和response的响应。如官网给的<a target="_blank" rel="noopener" href="https://cycle.js.org/basic-examples.html#basic-examples-http-requests">样例</a></p>
+<h3 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h3><div style="width:70%;margin: 0 auto;">![MVI模型](http://ow5o14n5d.bkt.clouddn.com/cycle-mvi.svg)</div>
+
+<p>MVI（Model-View-Intent）是Cycle.js提出的编程范式，可以将main的内容拆分成三部分，</p>
+<ul>
+<li>第一部分Intent将Effects传递过来的事件转换成Model逻辑可以接受的类型，</li>
+<li>第二部分Model实现具体逻辑，即state的改动</li>
+<li>最终由View部分将逻辑转换成DOMDriver可以接受的数据流传递到最后的vdom。</li>
+</ul>
+<p>使用这种方式拆分后的代码实际上类似<code>view(model(intent(sources.DOM)))</code>。如文档中<a target="_blank" rel="noopener" href="https://cycle.js.org/model-view-intent.html">介绍</a>的那样。</p>
+<p>关于组件拆分和<strong>isolate</strong>，可以参看文档的<a target="_blank" rel="noopener" href="https://cycle.js.org/components.html#components-isolating-multiple-instances">Components</a>部分。另外，在Cycle.js的状态管理工具<a target="_blank" rel="noopener" href="https://github.com/staltz/cycle-onionify">cycle-onionify</a>中也用到了<code>isolate</code>，使用<code>isolate</code>可以保证组件间的stream、状态相互独立。</p>
+<h2 id="xstream"><a href="#xstream" class="headerlink" title="xstream"></a>xstream</h2><p>万物皆Stream的概念是需要额外的库支持的。因此没有接触过RxJS的建议先学习一下这种思路。</p>
+<p>Cycle.js允许使用RxJS等多种Reactive Programming库构造响应式的流结构，不过推荐针对Cycle.js定制的<a target="_blank" rel="noopener" href="https://staltz.com/xstream/">xstream</a>。xstream学习成本简单，API仅有26个，此外文件体积小，速度适中。熟悉RxJS后，学习xstream就更简单了。</p>
+<p>xstream的API分为<strong>Factories</strong>和<strong>Operators</strong>。前者通过Producer或合并等方式生产新的Stream，后者是Stream的相关方法。</p>
+<p>学习xstream了解4个概念就足够了（如果你已经熟悉RxJS的思想后），<strong>Stream</strong>, <strong>Listener</strong>, <strong>Producer</strong>, <strong>MemoryStream</strong>。</p>
+<ul>
+<li><strong>Stream</strong>，类似EventEmitter和RxJS中的Subject，一个Stream可以注册多个Listener，Stream上有event出现时，所有Listener都会收到通知。除此之外，Stream可以通过<strong>operators</strong>生产新的Stream，如<code>fold</code>, <code>map</code>等。可以使用<code>shamefullySend*</code>手动触发event，但是应避免使用这种方式</li>
+<li><strong>Listener</strong>，和RxJS中的Observer类似，是有<code>next</code>, <code>error</code>, <code>complete</code>三种状态的对象，用来处理stream的三种event。通过<code>addListener</code>和<code>removeListener</code>和Stream建立联系。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> listener = &#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;The Stream gave me a value: &#x27;</span>, value);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">error</span>: <span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;The Stream gave me an error: &#x27;</span>, err);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">complete</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;The Stream told me it is done.&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>Producer</strong>，生产Stream所需的event。xstream使用<code>create(producer)</code>等方法生产Stream。一个Producer只能绑定一个Stream。Producer本身拥有<code>start</code>和<code>stop</code>便于在没有Listener监听时停止工作。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">var</span> producer = &#123;</span><br><span class="line">  <span class="attr">start</span>: <span class="keyword">function</span> (<span class="params">listener</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">id</span> = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> listener.<span class="title function_">next</span>(<span class="string">&#x27;yo&#x27;</span>), <span class="number">1000</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">stop</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(<span class="variable language_">this</span>.<span class="property">id</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">id</span>: <span class="number">0</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>MemoryStream</strong>，和Stream不同的是会记录最后一次的event信息。类似RxJS里的BehaviorSubject。</li>
+</ul>
+<p>生产Stream的函数有下面这些：</p>
+<ul>
+<li><code>create(producer)</code>和<code>createWithMemory(producer)</code></li>
+<li><code>never()</code> 生产不产生event的Stream</li>
+<li><code>empty()</code> 生产立即结束的Stream</li>
+<li><code>error(error)</code> 生产立即错误的Stream</li>
+<li><code>from(input)</code> 通过数组、Promise、Observable等生产Stream</li>
+<li><code>of(a1,a2,a3)</code> 生产根据输入产生的一系列event</li>
+<li><code>fromArray(array)</code>, <code>fromPromise(promise)</code>, <code>fromObservable(observable)</code></li>
+<li><code>periodic(period)</code> 周期性产生递增的数</li>
+<li><code>merge(s1, s2)</code> 合并两个流</li>
+<li><code>combine(s1, s2)</code> 合并两个流中的值</li>
+</ul>
+<p>Stream的相关方法有：</p>
+<ul>
+<li><code>addListener(listener)</code>和<code>removeListener(listener)</code></li>
+<li><code>subscribe(listener)</code>注册listener返回remove的函数</li>
+<li><code>map(project)</code>和<code>mapTo(projectedValue)</code> 映射event中的值</li>
+<li><code>filter(passes)</code> 过滤</li>
+<li><code>take(amount)</code> 限制Stream的event数目</li>
+<li><code>drop(amount)</code> 忽略前<code>amount</code>次的event数目</li>
+<li><code>last()</code> 只释放最后一次event</li>
+<li><code>startWith(initialValue)</code> 以给定值开始</li>
+<li><code>endWhen(other)</code> 使用其他Stream决定是否完成当前Stream</li>
+<li><code>fold(accumulate, seed)</code> 以给定值开始累加</li>
+<li><code>replaceError(replace)</code> 取代一个流中的所有error</li>
+<li><code>flatten()</code> 将streams的Stream压缩为一个Stream，输出流中的数据只来自于当前Stream</li>
+<li><code>compose(operator)</code></li>
+<li><code>remember()</code> 缓存最后一个值</li>
+<li><code>debug(labelOrSpy)</code> 不修改流，便于debug</li>
+<li><code>imitate(target)</code> 使用给定流替换原有Stream</li>
+<li><code>shamefullySendNext/Error/Complete</code></li>
+</ul>
+<p>另外一些实用的Stream相关方法，在extra部分中引入，包括如下</p>
+<ul>
+<li><code>buffer(separator)</code> 缓存部分内容一同输出，输出时机由输入的Stream决定</li>
+<li><code>concat(s1, s2, ..., sn)</code> 将Stream按照参数顺序从前到后连接起来</li>
+<li><code>debounce(period)</code>和<code>throttle(period)</code> 防抖和节流</li>
+<li><code>delay(period)</code> 时延</li>
+<li><code>dropRepeats(isEquals)</code> 丢掉邻接的重复数据</li>
+<li><code>dropUntil(other)</code> 根据其他Stream决定该Stream的开始时机</li>
+<li><code>flattenConcurrently()</code> 类似<code>flatten()</code>，不过流中的数据根据时间merge，<code>flattenSequentially()</code>类似，将Stream先后连接</li>
+<li><code>fromDiagram(diagram, options)</code> 通过图表创建Stream</li>
+<li><code>fromEvent(element, eventName, useCapture)</code> 通过DOM事件创建Stream</li>
+<li><code>pairwise()</code> 和上一个值成对组成event的值</li>
+<li><code>sampleCombine(streams)</code> source流和其他发生时间最近的流event相组合</li>
+<li><code>split(separator)</code> 类似<code>buffer</code>，将stream拆分为释放streams的Stream</li>
+<li><code>tween(config)</code> 根据配置创建缓动函数，用于制作动画</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/cyclejs-community/awesome-cyclejs">cyclejs-community&#x2F;awesome-cyclejs: A curated list of awesome Cycle.js resources</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/Reactive-Programming/" rel="tag"># Reactive Programming</a>
+              <a href="/blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/blog/tags/Cycle-js/" rel="tag"># Cycle.js</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/10/13/css-definitive-guide-content/" rel="prev" title="《CSS权威指南》脉络">
+                  <i class="fa fa-chevron-left"></i> 《CSS权威指南》脉络
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/11/04/sapiens-a-brief-history-of-humankind/" rel="next" title="《人类简史》读书笔记">
+                  《人类简史》读书笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="软件生命周期中80%的成本消耗在了维护上 《Java语言编码规范》  在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。 EditorConfig EditorConfig是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由.editorconfig自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。 E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="提升项目可维护性的一些习惯">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2017/04/13/project-habits/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="软件生命周期中80%的成本消耗在了维护上 《Java语言编码规范》  在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。 EditorConfig EditorConfig是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由.editorconfig自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。 E">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/poster/project-habits.jpeg">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/editorconfig.png">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/git-commit.png">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/commitizen.png">
+<meta property="article:published_time" content="2017-04-13T09:42:38.000Z">
+<meta property="article:modified_time" content="2017-04-15T07:33:34.000Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="习惯">
+<meta property="article:tag" content="lint">
+<meta property="article:tag" content="editorconfig">
+<meta property="article:tag" content="commit message">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shenlvmeng.github.com/blog/blog/images/poster/project-habits.jpeg">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2017/04/13/project-habits/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2017/04/13/project-habits/","path":"2017/04/13/project-habits/","title":"提升项目可维护性的一些习惯"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>提升项目可维护性的一些习惯 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#EditorConfig"><span class="nav-number">1.</span> <span class="nav-text">EditorConfig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E6%94%BE%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">存放位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">关于文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="nav-number">1.2.1.</span> <span class="nav-text">通配符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.2.</span> <span class="nav-text">属性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5"><span class="nav-number">1.3.</span> <span class="nav-text">支持情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eslint"><span class="nav-number">2.</span> <span class="nav-text">eslint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">2.3.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sublime%E6%8F%92%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">sublime插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Commit-message%E8%A7%84%E8%8C%83"><span class="nav-number">3.</span> <span class="nav-text">Commit message规范</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.0.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Commitizen"><span class="nav-number">3.0.2.</span> <span class="nav-text">Commitizen</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/13/project-habits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="提升项目可维护性的一些习惯 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          提升项目可维护性的一些习惯
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-13 17:42:38" itemprop="dateCreated datePublished" datetime="2017-04-13T17:42:38+08:00">2017-04-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-04-15 15:33:34" itemprop="dateModified" datetime="2017-04-15T15:33:34+08:00">2017-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/04/13/project-habits/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/13/project-habits/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="/blog/blog/images/poster/project-habits.jpeg"></p>
+<blockquote><p>软件生命周期中80%的成本消耗在了维护上</p>
+<footer><strong>《Java语言编码规范》</strong></footer></blockquote>
+
+<p>在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。</p>
+<h3 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h3><p><img src="/blog/blog/images/editorconfig.png"></p>
+<p><a target="_blank" rel="noopener" href="http://editorconfig.org/">EditorConfig</a>是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由<code>.editorconfig</code>自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。</p>
+<p>EditorConfig的语法类似<code>.gitignore</code>，比较好理解。下面是官网给出了规定Python和JavaScript文件格式的<code>.editorconfig</code>文件样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># EditorConfig is awesome: http://EditorConfig.org</span><br><span class="line"></span><br><span class="line"># top-most EditorConfig file</span><br><span class="line">root = true</span><br><span class="line"></span><br><span class="line"># Unix-style newlines with a newline ending every file</span><br><span class="line">[*]</span><br><span class="line">end_of_line = lf</span><br><span class="line">insert_final_newline = true</span><br><span class="line"></span><br><span class="line"># Matches multiple files with brace expansion notation</span><br><span class="line"># Set default charset</span><br><span class="line">[*.&#123;js,py&#125;]</span><br><span class="line">charset = utf-8</span><br><span class="line"></span><br><span class="line"># 4 space indentation</span><br><span class="line">[*.py]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 4</span><br><span class="line"></span><br><span class="line"># Tab indentation (no size specified)</span><br><span class="line">[Makefile]</span><br><span class="line">indent_style = tab</span><br><span class="line"></span><br><span class="line"># Indentation override for all JS under lib directory</span><br><span class="line">[lib/**.js]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 2</span><br><span class="line"></span><br><span class="line"># Matches the exact files either package.json or .travis.yml</span><br><span class="line">[&#123;package.json,.travis.yml&#125;]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 2</span><br></pre></td></tr></table></figure>
+
+<p>不过通常的项目用不到这么复杂的配置文件。<a target="_blank" rel="noopener" href="https://github.com/angular/angular.js/blob/master/.editorconfig">这里</a>是Angular的配置文件，<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/1.1/.editorconfig">这里</a>是曾经Vue.js的配置文件。官网给出了完整的使用EditorConfig的<a target="_blank" rel="noopener" href="https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig">工程列表</a>。</p>
+<h4 id="存放位置"><a href="#存放位置" class="headerlink" title="存放位置"></a>存放位置</h4><p>打开一个文件时，EditorConfig插件会去打开文件的目录和其每一级父目录查找<code>.editorconfig</code>文件，直到有一个配置文件<code>root=true</code>。</p>
+<p>读取顺序从上到下，路径最短的文件最后被读取，优先级最高。</p>
+<h4 id="关于文件格式"><a href="#关于文件格式" class="headerlink" title="关于文件格式"></a>关于文件格式</h4><p>EditorConfig文件使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/INI%E6%96%87%E4%BB%B6">INI格式</a>，目的是可以和<a target="_blank" rel="noopener" href="https://docs.python.org/2/library/configparser.html">Python Config Library</a>兼容。每个分段（原文：‘section’）由一个<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Glob_(programming)">globs</a>开头。斜杠(<code>/</code>)作为路径分隔符，<code>#</code>或者<code>;</code>作为注释。注释应该单独占一行。EditorConfig文件使用UTF-8格式、CRLF或LF作为换行符。</p>
+<h5 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h5><p>EditorConfig目前支持下面这些通配符：</p>
+<ul>
+<li><code>*</code>	匹配除&#x2F;之外的任意字符串</li>
+<li><code>**</code>	匹配任意字符串</li>
+<li><code>?</code>	匹配任意单个字符</li>
+<li><code>[name]</code>	匹配name字符</li>
+<li><code>[!name]</code>	匹配非name字符</li>
+<li><code>&#123;s1,s3,s3&#125;</code>	匹配任意给定的字符串（0.11.0起支持）</li>
+<li><code>&#123;num1..num2&#125;</code>匹配<em>num1</em>和<em>num2</em>间的整数</li>
+</ul>
+<p>最后特殊字符可以用<code>\</code>转义.</p>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>目前<a target="_blank" rel="noopener" href="https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties">普遍支持的属性</a>包括下面这些：</p>
+<ul>
+<li>root：表明是最顶层的配置文件，发现设为true时，才会停止查找.editorconfig文件。</li>
+<li>indent_style：可以选择tab或space</li>
+<li>indent_size：设置整数表示规定每级缩进的列数或空格数。如果设定为tab，则会使用tab_width的值（如果已指定）。</li>
+<li>tab_width：设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。</li>
+<li>end_of_line：定义换行符，支持lf、cr和crlf。</li>
+<li>charset：编码格式，支持latin1、utf-8、utf-8-bom、utf-16be和utf-16le，不建议使用uft-8-bom。</li>
+<li>trim_trailing_whitespace：设为true表示会除去换行行首的任意空白字符，false反之。</li>
+<li>insert_final_newline：设为true表明使文件以一个空白行结尾，false反之。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>目前已有大量的IDE或文本编辑器支持EditorConfig配置。有些不需要下载插件，有些则需要。详情可参见<a href="(http://editorconfig.org/">官网</a>。</p>
+<h3 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h3><p><a target="_blank" rel="noopener" href="http://eslint.org/">ESLint</a>是非常流行的一个JavaScript代码检查器。便于在运行前检查出代码中潜在的错误。它的作者是Nicholas Zakas，红宝书的作者。网站也有<a target="_blank" rel="noopener" href="http://eslint.cn/">中译版</a>。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装eslint前，需要有node.js的环境，之后通过npm安装即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g eslint</span><br></pre></td></tr></table></figure>
+
+<p>当然也可以本地安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install eslint --save-dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>安装完成后，需要在项目目录下生成<code>.eslintrc</code>配置文件才可以使用<code>eslint</code>命令。这一步可以通过<code>eslint --init</code>按着引导完成，也可以根据自己需要修改。eslint推荐使用了一些规则，可以通过下面这样开启（<code>extends</code>的属性还可以是<code>all</code>，即启用所有规则，<strong>不推荐使用</strong>）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extends&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> <span class="string">&quot;eslint:recommended&quot;</span> <span class="punctuation">]</span></span><br><span class="line">    ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置项里，还可以通过<code>env</code>指令<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring#specifying-environments">代码环境</a>，像下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;env&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;browser&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;node&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>同样，具体的<a target="_blank" rel="noopener" href="http://eslint.cn/docs/rules/">规则</a>也是可以配置的，每个规则的配置项都有一个默认值，规则键对应的值为数值时，是下面的意思</p>
+<ul>
+<li>0 Disable the rule</li>
+<li>1 Warn about the rule</li>
+<li>2 Throw error about the rule</li>
+</ul>
+<p>对应的值为数组时，则会更改规则配置项的原默认值，如下面例子中的<code>quote</code>规则：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="comment">// 使用默认的分号规则，违背时会有警告消息</span></span><br><span class="line">        <span class="attr">&quot;semi&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">        <span class="comment">// 使用双引号包裹字符串，违背是会抛出错误</span></span><br><span class="line">        <span class="attr">&quot;quotes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">2</span><span class="punctuation">,</span> <span class="string">&quot;double&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>关于eslint的更多配置项，可参考<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring">官网</a>。</p>
+<p>若项目中使用到了ES6语法，则还需要安装<code>babel-eslint</code>包，并指定<code>.eslintrc</code>中<code>parser</code>和<code>parseOptions</code>两项。具体的配置大概是下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extends&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> <span class="string">&quot;eslint:recommended&quot;</span> <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parser&quot;</span><span class="punctuation">:</span> <span class="string">&quot;babel-eslint&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parserOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        ecmaVersion<span class="punctuation">:</span> <span class="number">6</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  	...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>ESLint 支持几种格式的配置文件：</p>
+<ul>
+<li>JavaScript - 使用<code>.eslintrc.js</code>然后输出一个配置对象。</li>
+<li>YAML - 使用<code>.eslintrc.yaml</code>或<code>.eslintrc.yml</code>去定义配置的结构。</li>
+<li>JSON - 使用<code>.eslintrc.json</code>去定义配置的结构ESLint的JSON文件允许JavaScript风格的注释。</li>
+<li>Deprecated - 使用<code>.eslintrc</code>，可以使JSON也可以是YAML。</li>
+<li>package.json - 在<code>package.json</code>里创建一个<code>eslintConfig</code>属性，在那里定义你的配置。</li>
+</ul>
+<p>如果同一个目录下有多个配置文件，ESLint只会使用一个，优先级是上面列表从上到下的顺序。</p>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>可以在文件中书写注释在运行时更改eslint的配置（实际上几乎所有的配置项都可以在注释中通过<code>eslint-xxx</code>这样的形式修改）。</p>
+<p>当文件中出现已考虑到的规则例外时，可以通过<code>/*eslint quotes: [&quot;error&quot;, &quot;double&quot;]*/</code>或<code>/*eslint eqeqeq: 0, curly: 2*/</code>这样的形式临时添加例外。</p>
+<p>当文件出现不想被检测到的规则例外时，可以通过<code>/*eslint-disable*/</code>和<code>/*eslint-enable*/</code>避免警告。单行例外可以使用<code>/*eslint-disable-line*/</code>更详细的配置可以参见<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring#disabling-rules-with-inline-comments">文档</a>。</p>
+<h4 id="sublime插件"><a href="#sublime插件" class="headerlink" title="sublime插件"></a>sublime插件</h4><p>上面说的这些工作，在配置完成后，需要在命令行中通过<code>eslint xxx.file</code>这样的形式lint。借助编辑器的插件可以获得可视化的lint结果，妈妈再也不用担心我的找不到错误了（误）。因为个人原因，下面仅以sublime为例。</p>
+<p>下载eslint for sublime插件前，需要下载Sublime-Linter。因为前者利用了后者作为lint的平台。在<code>Ctrl+Shift+P</code>找到<code>Package Controll: Install Packages</code>后（什么？你没有装Package Control？），搜索Sublime-Linter下载安装即可。完成后，可以在<code>Prefences -&gt; Package Settings</code>或<code>Tools</code>选项卡中找到Sublime Linter的身影。</p>
+<p>之后同样的方式搜索Sublime-contrib-eslint下载安装即可。建议在安装前去<a target="_blank" rel="noopener" href="https://github.com/roadhump/SublimeLinter-eslint">官网</a>看看，避免遇到不必要的问题。</p>
+<p>这些工作完成后了，可以选择SublimeLinter的mode为load&#x2F;save，之后在文件载入和保存时都会对文件进行lint操作，并将违背规则的地方标出。</p>
+<h3 id="Commit-message规范"><a href="#Commit-message规范" class="headerlink" title="Commit message规范"></a>Commit message规范</h3><p><img src="/blog/blog/images/git-commit.png"></p>
+<p>git每次修改后需要填写commit message才能提交。这一步可以通过给<code>git commit</code>添加<code>-m</code>参数完成，像下面那样，也可以在<code>git commit</code>打开的vi界面下填写多行文本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">&#x27;some commit message&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>git并没有对commit message的风格做出规范，可以用中文，可以用英文，甚至当你不知道该写些什么的时候，还可以去某些<a target="_blank" rel="noopener" href="http://whatthecommit.com/index.txt">网站</a>参考。</p>
+<p>但是在团队协作中，还是建议清晰明了地书写此次commit的目的和做的修改。实际上，commit message规范这种事一直在做。比如<a target="_blank" rel="noopener" href="https://eggjs.org/zh-cn/contributing.html#commit-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83">egg.js</a>, <a target="_blank" rel="noopener" href="https://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md">Angular</a>或者更加简洁的规范：<a target="_blank" rel="noopener" href="https://github.com/thoughtbot/dotfiles/blob/master/gitmessage">这样</a>或<a target="_blank" rel="noopener" href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages">这样</a>。其中Angular的规范应用较广，还有<a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">commitizen</a>工具帮助生成changelog和检查commit message样式。</p>
+<h5 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h5><p>根据Angular的规范，commmit message包括三个部分：<strong>Header</strong>, <strong>Body</strong>和<strong>Footer</strong>。其中Header是必需的，Body和Footer则不是。模板像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</span><br><span class="line">// 空行</span><br><span class="line">&lt;body&gt;</span><br><span class="line">// 空行</span><br><span class="line">&lt;footer&gt;</span><br></pre></td></tr></table></figure>
+
+<p>模板中，<strong>type</strong>为提交commit的类型，<strong>只有</strong>下面这些选择：</p>
+<ul>
+<li>feat: 新功能</li>
+<li>fix: 修复问题</li>
+<li>docs: 修改文档</li>
+<li>style: 修改代码格式，不影响代码逻辑</li>
+<li>refactor: 重构代码，理论上不影响现有功能</li>
+<li>perf: 提升性能</li>
+<li>test: 增加修改测试用例</li>
+<li>chore: 修改工具相关（包括但不限于文档、代码生成等）</li>
+<li>deps: 升级依赖</li>
+</ul>
+<p>其中前两种commit一定会出现在changelog中。</p>
+<p><strong>scope</strong>为修改文件的范围（包括但不限于doc, middleware, core, config, plugin）；<strong>subject</strong>用一句话清楚的描述这次提交做了什么，首字母小写；<strong>body</strong>作为subject的补充，增加原因和目的等具体内容，可以不写。</p>
+<p><strong>footer</strong>部分中，<strong>当有非兼容修改(Breaking Change)时必须在这里描述清楚</strong>，或者描述关联issue。下面是一个完整的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9</span><br><span class="line">Older IEs serialize html uppercased, but IE9 does not...</span><br><span class="line">Would be better to expect case insensitive, unfortunately jasmine does</span><br><span class="line">not allow to user regexps for throw expectations.</span><br><span class="line">Document change on eggjs/egg#123</span><br><span class="line">Closes #392</span><br><span class="line">BREAKING CHANGE:</span><br><span class="line">  Breaks foo.bar api, foo.baz should be used instead</span><br></pre></td></tr></table></figure>
+
+<p>代码用于撤销此前commit所做修改时，message用revert开头，后面跟着被撤销commit的Header。像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">revert: feat(pencil): add &#x27;graphiteWidth&#x27; option</span><br><span class="line"></span><br><span class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</span><br></pre></td></tr></table></figure>
+
+<p>如果当前commit与被撤销的commit，在同一个发布（release）里面，那么它们都不会出现在Change log中。</p>
+<h5 id="Commitizen"><a href="#Commitizen" class="headerlink" title="Commitizen"></a>Commitizen</h5><p><a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">Commitizen</a>就是方便你做出上面提交的工具，可以通过npm安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g commitizen</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，使用<code>git cz</code>代替<code>git commit</code>命令来提交改动。之后会出现指引帮助你完成一次合格的提交。</p>
+<p><img src="/blog/blog/images/commitizen.png"></p>
+<p>commitizen的插件cz-conventional-changelog可以帮助我们完成commit message，首先通过下面的命令安装并配置cz-conventional-changelog。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cz-conventional-changelog</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&#123; &quot;path&quot;: &quot;cz-conventional-changelog&quot; &#125;&#x27;</span> &gt; ~/.czrc</span><br></pre></td></tr></table></figure>
+
+<p>之后运行下面的命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://editorconfig.org/">EditorConfig</a></li>
+<li><a target="_blank" rel="noopener" href="http://eslint.cn/">ESLint中文站</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/roadhump/SublimeLinter-eslint">roadhump&#x2F;SublimeLinter-eslint: This linter plugin for SublimeLinter provides an interface to ESLint</a></li>
+<li><a target="_blank" rel="noopener" href="http://jonathancreamer.com/setup-eslint-with-es6-in-sublime-text/">Setup ESLint with ES6 in Sublime Text</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html">Commit message 和 Change log 编写指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://eggjs.org/zh-cn/contributing.html">egg.js代码贡献规范</a></li>
+<li><a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">Commitizen</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E4%B9%A0%E6%83%AF/" rel="tag"># 习惯</a>
+              <a href="/blog/tags/lint/" rel="tag"># lint</a>
+              <a href="/blog/tags/editorconfig/" rel="tag"># editorconfig</a>
+              <a href="/blog/tags/commit-message/" rel="tag"># commit message</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2017/04/11/how-browsers-work-2/" rel="prev" title="浏览器是如何工作的 下 布局与绘制">
+                  <i class="fa fa-chevron-left"></i> 浏览器是如何工作的 下 布局与绘制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2017/04/18/cors/" rel="next" title="跨域技法之CORS">
+                  跨域技法之CORS <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="The only valid measurement of code quality: WTFs&#x2F;minute  在成为一个程序员的初期，实现功能还需磕磕绊绊的阶段，我们大抵没有精力操心代码风格的问题；而在能够搞定环境和API使用的时间段，大部分人又会沉湎于使用一门语言让想象实现的成就感，而没有发现暗藏在迭代后的危机。往往迭代了一段时间后，才发现之前埋下的巨坑已经让自己无从下手。这时一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《代码整洁之道》——有一个好的代码品味">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2019/12/02/clean-code/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="The only valid measurement of code quality: WTFs&#x2F;minute  在成为一个程序员的初期，实现功能还需磕磕绊绊的阶段，我们大抵没有精力操心代码风格的问题；而在能够搞定环境和API使用的时间段，大部分人又会沉湎于使用一门语言让想象实现的成就感，而没有发现暗藏在迭代后的危机。往往迭代了一段时间后，才发现之前埋下的巨坑已经让自己无从下手。这时一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-02T15:08:32.000Z">
+<meta property="article:modified_time" content="2019-12-28T09:50:49.697Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="编程">
+<meta property="article:tag" content="重构">
+<meta property="article:tag" content="代码">
+<meta property="article:tag" content="代码风格">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2019/12/02/clean-code/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2019/12/02/clean-code/","path":"2019/12/02/clean-code/","title":"《代码整洁之道》——有一个好的代码品味"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《代码整洁之道》——有一个好的代码品味 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">观念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D"><span class="nav-number">2.</span> <span class="nav-text">命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%82%E7%9B%B4%E6%A0%BC%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">垂直格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%AA%E5%90%91%E6%A0%BC%E5%BC%8F"><span class="nav-number">5.2.</span> <span class="nav-text">横向格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%92%8C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">6.</span> <span class="nav-text">对象和数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C"><span class="nav-number">8.</span> <span class="nav-text">边界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">9.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">10.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F"><span class="nav-number">11.</span> <span class="nav-text">系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3"><span class="nav-number">12.</span> <span class="nav-text">迭代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B"><span class="nav-number">13.</span> <span class="nav-text">并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E4%B8%AA%E5%AE%9E%E4%BE%8B"><span class="nav-number">14.</span> <span class="nav-text">3个实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%EF%BC%9Aargs"><span class="nav-number">14.1.</span> <span class="nav-text">命令行参数解析：args</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JUnit"><span class="nav-number">14.2.</span> <span class="nav-text">JUnit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SerialDate%E9%87%8D%E6%9E%84"><span class="nav-number">14.3.</span> <span class="nav-text">SerialDate重构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%B3%E9%81%93%E5%92%8C%E5%90%AF%E5%8F%91"><span class="nav-number">15.</span> <span class="nav-text">味道和启发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A-1"><span class="nav-number">15.1.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">15.2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0-1"><span class="nav-number">15.3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">15.4.</span> <span class="nav-text">一般性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">15.5.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8D%E7%A7%B0"><span class="nav-number">15.6.</span> <span class="nav-text">名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">15.7.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B"><span class="nav-number">16.</span> <span class="nav-text">并发编程示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-x2F-%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">16.1.</span> <span class="nav-text">客户端&#x2F;服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%83%BD%E7%9A%84%E6%89%A7%E8%A1%8C%E8%B7%AF%E5%BE%84"><span class="nav-number">16.2.</span> <span class="nav-text">可能的执行路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E7%B1%BB%E5%BA%93"><span class="nav-number">16.3.</span> <span class="nav-text">了解类库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E5%8D%87%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-number">16.4.</span> <span class="nav-text">提升吞吐量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">16.5.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">16.6.</span> <span class="nav-text">测试多线程代码</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/12/02/clean-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《代码整洁之道》——有一个好的代码品味 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《代码整洁之道》——有一个好的代码品味
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-02 23:08:32" itemprop="dateCreated datePublished" datetime="2019-12-02T23:08:32+08:00">2019-12-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-12-28 17:50:49" itemprop="dateModified" datetime="2019-12-28T17:50:49+08:00">2019-12-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/12/02/clean-code/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/12/02/clean-code/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>The only valid measurement of code quality: WTFs&#x2F;minute</p>
+</blockquote>
+<p>在成为一个程序员的初期，实现功能还需磕磕绊绊的阶段，我们大抵没有精力操心代码风格的问题；而在能够搞定环境和API使用的时间段，大部分人又会沉湎于使用一门语言让想象实现的成就感，而没有发现暗藏在迭代后的危机。往往迭代了一段时间后，才发现之前埋下的巨坑已经让自己无从下手。这时一部分人醒悟过来，意识到一个优良的代码风格对于项目推进的长远意义。这也是《Clean Code》这本书的宗旨。它较之《程序员修炼之道》更为具体，较之《重构》更为宏观。对于工作一段时间后的程序员来说，是一个很好的提醒和反思归纳的建议。让代码work的方式是千万种，而让代码可持续，可扩展，长久work的方式也许需要前辈指引些方法。</p>
+<h2 id="观念"><a href="#观念" class="headerlink" title="观念"></a>观念</h2><blockquote>
+<p>Later equals never —— Leblanc Law</p>
+</blockquote>
+<p>糟糕的代码会让人难以下手，拖慢进度，若无人着手改善，混乱会持续增加，进而降低团队生产力，降低人效，然后搞砸整个项目。为什么不一开始就打好基础，写出整洁代码呢？</p>
+<p>下面是一些大师对“整洁代码”的界定</p>
+<ul>
+<li>“代码逻辑直截了当，缺陷难以隐藏；减少依赖关系，从而便于维护；性能调优，省得引人做出没规矩的优化，干出蠢事；整洁的代码只干一件事” —— Bjarne Stroustrup</li>
+<li>“代码简单直接，如同优美的散文；从不隐藏设计者的意图，充满干净利落的抽象和直截了当的控制语句” —— Grady Booch</li>
+<li>“可由作者外的人阅读和扩展，应该有单元测试和验收测试；只使用有意义的命名；提供尽量正交的使用方法（一种而非多种做一件事的方法）；尽量少的API；尽量少的依赖关系，且要明确定义和清晰提供；代码应从字面意义上表达其含义” —— Dave Thomas</li>
+<li>“整洁的代码总是看起来像某位特别在意的人写的，几乎没有改进的余地，所有的改进都会回到原点” —— Michael Feather</li>
+<li>“能通过所有测试；没有重复代码，表达力强大；体现系统中的全部设计理念；包括尽量少的实体，如类、方法、函数。” —— Ron Jeffries</li>
+<li>“整洁代码让每个例程都深合己意；漂亮代码让语言看起来像是专门为解决那个问题而存在” —— Ward Cunningham</li>
+</ul>
+<p>编写代码的难度，取决于读周边代码的难度，要想干得快，就先让代码易读。</p>
+<blockquote>
+<p>让营地比你来时更干净 —— 童子军军规</p>
+</blockquote>
+<h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p>好的命名，可以让人一眼就明白代码的逻辑。看下面两段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;<span class="type">int</span>[]&gt; getThem() &#123;</span><br><span class="line">  List&lt;<span class="type">int</span>[]&gt; list1 = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;<span class="type">int</span>[]&gt;();</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span>[] x : theList)</span><br><span class="line">    <span class="keyword">if</span> (x[<span class="number">0</span>] == <span class="number">4</span>)</span><br><span class="line">      list1.add(x)</span><br><span class="line">  <span class="keyword">return</span> list1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> List&lt;Cell&gt; <span class="title function_">getFlaggedCells</span><span class="params">()</span> &#123;</span><br><span class="line">  List&lt;Cell&gt; flaggedCells = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Cell&gt;();</span><br><span class="line">  <span class="keyword">for</span> (Cell cell : gameBoard)</span><br><span class="line">    <span class="keyword">if</span> (cell.isFlagged)</span><br><span class="line">      flaggedCells.add(cell);</span><br><span class="line">  <span class="keyword">return</span> flaggedCells;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是一些准则：</p>
+<ul>
+<li>名副其实，一旦发现更好的，就替换掉旧的。<strong>如果名称还需要注释补充，那就不算名副其实</strong></li>
+<li>避免误导，提防使用不同之处较小的名称，比如<code>UsernameListEmptyFilter</code>和<code>UsernameListNullFilter</code>，不要混用1和l，以及0和O</li>
+<li>做有意义的区分，少废话，反例是<code>a1</code>和<code>a2</code>，<code>nameString</code>和<code>name</code></li>
+<li>使用<strong>能读出来</strong>的名称，方便程序员的沟通</li>
+<li>使用<strong>可搜索</strong>的名称，仅在块作用域或短函数内使用单字母名称</li>
+<li>不把类型信息放在名称中</li>
+<li>减少不必要的前缀和后缀</li>
+<li>类名应该是名词，方法名应该是动词或动词短语</li>
+<li>别玩梗</li>
+<li>标准化语素，为每一个抽象概念选择一个统一的词</li>
+<li>别用有多重含义的词汇，这会增加使用者顾虑和理解成本</li>
+<li>只在没有明确定义的场景下使用语境（类，前缀……）</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>下面是一些准则：</p>
+<ul>
+<li><strong>短小，更短小</strong></li>
+<li><strong>只做一件事，只做一件事，只做一件事</strong>，重要的事情说三遍<ul>
+<li>还有一种方式可以帮助判断函数是不是只做了一件事：<strong>函数语句是否在一个抽象层级上</strong></li>
+<li>只做一件事的函数无法被继续合理拆分成多段</li>
+</ul>
+</li>
+<li>让代码拥有从上到下的自然的阅读顺序，尽量避免跳来跳去的阅读顺序</li>
+<li>为函数使用<strong>描述性</strong>的名称</li>
+<li>函数<strong>最多3个入参</strong>，最理想是没有参数，其次是1个，再其次是2个，要避免3个参数<ul>
+<li><strong>布尔类型的参数会让你的函数难以理解</strong></li>
+<li>使用二元参数时，最好保证前后顺序不敏感</li>
+<li>对于复杂的入参，可以用对象封装起来</li>
+</ul>
+</li>
+<li>函数要么只做副作用（<em>做什么事</em>），要么没有副作用（<em>回答什么事</em>），而且能从名称中一目了然地看到</li>
+<li>用异常代替错误码，错误处理也是一件事</li>
+<li><strong>别重复自己（Don’t repeat yourself, DRY）</strong>。重复是软件中一切邪恶的根源，软件开发领域的所有创新都在不断尝试从源代码中消灭重复</li>
+</ul>
+<p>函数是语言的动词，类是名词。大师级的程序员把系统当做故事来讲，而不是程序来写。他们使用特定编程语言提供的工具构建一种<strong>更丰富和更具表达力的语言</strong>。好的函数必须干净利落的组合在一起，形成清晰明确的语言，帮你<strong>讲好故事</strong>。这个过程不是一蹴而就的，你可以现象什么就写什么，然后一点点打磨它。</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><blockquote>
+<p>使用注释 &#x3D; 承认自己无法用代码表达清楚意图</p>
+</blockquote>
+<p>列举注释的准则前，必须摆正观念。<strong>注释是一种必须的恶，如果编程语言足够有表达力，或你长于用语言表达自己的意图，那么就不需要注释。注释的恰当用法是弥补我们用代码表达意图时遭遇的失败。</strong>注释存在的时间越久，具体所描述的事实就越远。原因很简单，程序员不可能坚持维护注释。</p>
+<p>的确，程序员应该让注释保持可维护而精准，但最好能直接写清楚代码，保证无须编写注释。<strong>真实只在一处：代码</strong>，只有代码能忠实告诉你它做的事。</p>
+<ul>
+<li><strong>注释无法挽救糟糕的代码</strong>，与其为糟糕代码补充大量注释，不如花时间写出整洁有表达力的代码</li>
+<li><strong>用代码代替注释</strong></li>
+<li>有些无法避免且合理存在的注释<ul>
+<li>法律信息</li>
+<li>对函数名的补充</li>
+<li>对稍微反常规意图的解释，避免误解</li>
+<li>糟糕的代码来自外部库或外部API</li>
+<li>敏感代码的警告</li>
+<li>TODO、FIXME</li>
+<li>Javadoc</li>
+</ul>
+</li>
+<li>下面则是一些很常见的糟糕注释，它们只是糟糕代码的借口<ul>
+<li>只有自己看得懂的注释</li>
+<li>对函数名的复述</li>
+<li>误导性注释</li>
+<li>日志型注释，如Milestone记录</li>
+<li>废话</li>
+<li>位置标记，如<code>====================</code></li>
+<li>代码署名</li>
+<li><em>大多数</em>注释掉的代码</li>
+<li>百科式的介绍</li>
+<li>私有代码的Javadoc</li>
+</ul>
+</li>
+</ul>
+<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>格式即代码风格，可以利用lint这样的自动化工具完成，需要在团队内保持一致。</p>
+<h3 id="垂直格式"><a href="#垂直格式" class="headerlink" title="垂直格式"></a>垂直格式</h3><p>在从上到下的组织上，</p>
+<ul>
+<li>可以向报纸一样，先大纲，再粗线条概述，再给出细节，越往下细节越多</li>
+<li>用<strong>空行</strong>分隔概念</li>
+<li>靠近的代码行暗示了代码间的紧密关系</li>
+<li>应避免迫使读者在源文件和类之间跳来跳去<ul>
+<li>变量声明应尽量靠近使用位置</li>
+<li>循环中的控制变量总在循环语句中声明</li>
+<li>类成员在类顶部声明</li>
+<li>如果某个函数调用了另一个，就应该把它们放一起</li>
+<li>概念相关的代码应该放在一起，如<code>getHour</code>和<code>getMinute</code></li>
+<li>如果可以，最好把被调用的函数放在执行调用的函数下面</li>
+</ul>
+</li>
+</ul>
+<h3 id="横向格式"><a href="#横向格式" class="headerlink" title="横向格式"></a>横向格式</h3><ul>
+<li>水平字符的上限，100或120</li>
+<li>使用<strong>空格</strong>分隔概念</li>
+<li><strong>不需要水平对齐</strong>，以为从左到右的阅读顺序优先于从上到下</li>
+<li>学会用<strong>缩进</strong>表现层级</li>
+</ul>
+<h2 id="对象和数据结构"><a href="#对象和数据结构" class="headerlink" title="对象和数据结构"></a>对象和数据结构</h2><ul>
+<li><strong>对象</strong>把数据隐藏于抽象的后面，暴露操作数据的函数，<strong>数据结构</strong>暴露数据，不提供有意义的函数。</li>
+<li>过程式代码难以添加新的数据结构，因为必须修改所有函数；面向对象代码难以添加新函数，因为必须修改所有类</li>
+<li>得墨忒尔律：类C的方法f只应该调用以下对象的方法：<strong>C、f创建的对象、作为参数传给f的对象、C的成员所持有的对象</strong></li>
+<li><strong>数据结构</strong>只简单地拥有公有变量，没有函数；而<strong>对象</strong>则只拥有私有变量和函数。一半是对象一半是数据结构的混淆会增加添加新函数和数据结构的难度</li>
+<li>DTO（Data Transfer Objects，数据传输对象）就是只有公有变量，没有函数的类，Active Record就是DTO的一种</li>
+</ul>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>错误处理很重要，但要是它搞乱了代码逻辑，那就是错误的用法。</p>
+<ul>
+<li>返回异常而不是错误码</li>
+<li>try-catch-finally语句块就像事务，可以帮你定义用户应该期待些什么</li>
+<li>在Java中，可控异常违反开闭原则带来的成本要高于收益</li>
+<li>打包第三方API，一方面降低了依赖的覆盖面，另一方面也有助于模拟第三方调用</li>
+<li>可以把抛出错误封装成特定的函数</li>
+<li>别返回和传递null值</li>
+</ul>
+<h2 id="边界"><a href="#边界" class="headerlink" title="边界"></a>边界</h2><p>边界即我们代码和第三方代码的连接处。</p>
+<ul>
+<li>通过编写测试来概览和理解第三方代码的形式叫做<strong>学习性测试（learning tests）</strong>。它可以帮助我们快速试错和反馈，从而对第三方API快速上手。</li>
+<li>在第三方代码尚未就绪时，<strong>编写我们想要的接口</strong>，可以使我们能保持代码在自己控制中，并在未来通过编写adapter的形式无痛迁移</li>
+<li>应尽量避免过多依赖第三方的特定信息，更多依靠你能控制的东西，好过依靠你控制不了的东西，免得日后受其控制</li>
+</ul>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><ul>
+<li>TDD（Test-Driven Development）三定律<ul>
+<li>在编写不能通过的单元测试前，不编写生产代码</li>
+<li>只编写刚好无法通过的单元测试，不能编译也算</li>
+<li>只编写刚好足已通过失败测试的生产代码</li>
+</ul>
+</li>
+<li><strong>测试代码和生产代码一样重要</strong>。正是单元测试让你的代码可扩展、可维护、可复用</li>
+<li>整洁的测试代码一样要求<strong>可读性</strong>。大多数测试代码可以总结为构造-操作-检验（Build-Operate-Check）模式。第一个环节构造测试数据，第二个环节操作数据，第三个环节验证是否得到期望的结果</li>
+<li>每个测试中的断言数量应该尽量少，且只测试一个概念</li>
+<li>FIRST原则<ul>
+<li>Fast，测试应该能够快速运行</li>
+<li>Independent，测试间应该相互独立</li>
+<li>Repeatable，测试应该在任何环境下可重复通过</li>
+<li>Self-Validating，测试应该有布尔值输出</li>
+<li>Timely，测试应及时编写</li>
+</ul>
+</li>
+</ul>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li>类应该由一组成员开始，从静态到普通，从共有到私有。且很少会有公有成员。</li>
+<li>类应该短小，<strong>类的名称应该能描述其权责</strong>。类名无法精确明明时，类大概就太长了。类名越含糊，类越有可能拥有过多权责。类名应该控制在25个字母内，且不应该包含连词。</li>
+<li>单一权责原则（Single Responsibility Principle，SRP）认为，类和模块应有且仅有<strong>一条加以修改的原因</strong>。这个原则可以帮助创造更好的抽象。它也是OO设计中最重要的概念之一。</li>
+<li>内聚：类应该只有少量实体变量，且所有方法都应该操作其中一些。当类的每个变量都被每个方法使用时，我们认为该类具有最大的内聚性。当发现类逐渐丧失内聚性时，尽早拆分它！让它变成多个短小的类。这个拆分的过程也是权责的拆分过程。</li>
+<li>通过基类和子类，可以在不修改类的同时，保持类对新功能的开放。在理想系统中，我们通过扩展系统而非修改现有代码来添加新特性。可以通过抽象类和接口隔离细节修改带来的影响。</li>
+<li>降低类之间的连接耦合，可以采用依赖倒置原则（Dependency Inversion Principle，DIP），让类依赖于抽象（接口）而不是具体细节（自行构造类）</li>
+</ul>
+<h2 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h2><p><em>这一章的Java概念较多</em></p>
+<ul>
+<li>分开系统的构造和使用</li>
+<li><strong>依赖注入</strong>是控制反转的一种思路，它将第二权责从对象中拿出来，转移到专门的对象中去，从而遵循<strong>单一权责原则</strong></li>
+<li>我们应该专注于今天的用户故事，并且<strong>持续适当切分</strong>我们的关注面。书中举了Java AOP、AspectJ框架的例子</li>
+<li>实现时，使用<em>大致可工作的最简单方案</em>。只要软件构架有效切分了关注面，就比较好做根本性改动</li>
+</ul>
+<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>Kent Beck关于测试的4个原则：</p>
+<ul>
+<li>运行所有测试，全面测试并持续通过所有测试的系统，就是可测试的系统。测试也能减少重构时可能破坏代码的顾虑。</li>
+<li>不可重复，使用模板生成或继承等高级概念</li>
+<li>表达程序员的意图。代码应当清晰表达作者的意图。使用好名称、保持类和函数的短小，以及之前章节提到的各种方法</li>
+<li>尽可能减少类和方法的数目，避免前两条规范的矫枉过正</li>
+</ul>
+<h2 id="并发编程"><a href="#并发编程" class="headerlink" title="并发编程"></a>并发编程</h2><p>并发是一种解耦策略，帮助我们分解开<strong>做什么（目的）</strong>和<strong>何时（时机）</strong>。</p>
+<ul>
+<li>并发<strong>有时</strong>能改善性能，会在编写额外代码上带来额外开销</li>
+<li>正确的并发是复杂的</li>
+<li>并发会带来系统结构的变化</li>
+</ul>
+<p>有些防御并发代码问题的原则：</p>
+<ul>
+<li>单一权责：分离并发代码和其他代码</li>
+<li>限制对可能共享的数据的访问</li>
+<li>线程应尽可能独立</li>
+</ul>
+<p>并发执行模式：</p>
+<ul>
+<li>生产者-消费者模式：数据通过队列传递，队列本身是一种限定资源</li>
+<li>读者-作者模式</li>
+<li>宴席哲学家问题</li>
+</ul>
+<p>还有一些需要注意的事情：</p>
+<ul>
+<li>警惕同步方法间的依赖</li>
+<li>尽可能减小sychronized区域</li>
+<li>尽早考虑程序关闭问题</li>
+<li>测试线程代码</li>
+</ul>
+<h2 id="3个实例"><a href="#3个实例" class="headerlink" title="3个实例"></a>3个实例</h2><p>书中以三个实例的重构过程向我们表现了一些将之前思路应用于优化代码的方式。</p>
+<h3 id="命令行参数解析：args"><a href="#命令行参数解析：args" class="headerlink" title="命令行参数解析：args"></a>命令行参数解析：args</h3><blockquote>
+<p>编程是一种技术甚于科学的东西，要编写整洁代码，必须先写肮脏代码，然后再<strong>清理它</strong></p>
+</blockquote>
+<p>在你的初稿，当代码糟糕透顶时甚至是前几稿中，很可能还是会存在烂摊子：成员多得吓人，奇怪命名的魔法字符串，一大堆的try-catch-finally代码。程序员们不都是蠢人，这堆糟糕透顶的代码其实是从最初看起来很合理但是<strong>扩展性差</strong>的代码一步步演化来的。</p>
+<p>需要使用一些总结和抽象，来简明地表达你的目的。另外，在重构前，“我”（其实是作者）要不厌其烦地强调TDD的必要性，它能保证你重构的每一步，系统都可以工作。在重构过程中，放进拿出是常见的事，小步幅、保持测试通过，你可能会不断移动各种东西。</p>
+<p>优秀的代码设计，大都关乎<strong>分隔</strong>——创建合适的空间防止不同种类的代码。对关注面的分隔让代码更易于理解和维护（减少理解所需要的大脑缓存）</p>
+<h3 id="JUnit"><a href="#JUnit" class="headerlink" title="JUnit"></a>JUnit</h3><ul>
+<li>不必要的编码前缀（<code>f_</code>）</li>
+<li>未封装的条件判断</li>
+<li>建议使用肯定式代替否定式判断</li>
+<li>奇怪的不直观的函数名</li>
+<li>易造成理解困难的变量名</li>
+<li>拆分违反SRP原则的函数</li>
+<li>避免隐式时序耦合的函数，用hardcode的形式显示表现时序耦合</li>
+</ul>
+<h3 id="SerialDate重构"><a href="#SerialDate重构" class="headerlink" title="SerialDate重构"></a>SerialDate重构</h3><p>再强调一遍，<strong>重构前要有一个完整的验证可行性的测试</strong>。然后开始重构：</p>
+<ul>
+<li>没有描述力的类名和术语名</li>
+<li>使用枚举代替常量类</li>
+<li>抽象类中不应知道实现细节</li>
+<li>基类不宜知道子类的情况</li>
+<li>多余的注释</li>
+<li>变量声明应该放在尽量靠近使用的地方</li>
+<li>如果有专业术语，就不要自己命名了</li>
+<li>不要写无用的模板代码</li>
+<li>如果函数对成员进行操作，它就不应该是静态的</li>
+<li>用<strong>解释临时变量</strong>的方式，让大段的代码更为简化和有表达力</li>
+<li>消除魔术数</li>
+</ul>
+<h2 id="味道和启发"><a href="#味道和启发" class="headerlink" title="味道和启发"></a>味道和启发</h2><p>作者在这里对《重构：既有代码设计的改善》里提到的味道做了自己的一些扩充，也可以作为对上面章节的回顾。</p>
+<p><em>“味道”，即那些看起来不大对劲的代码</em></p>
+<h3 id="注释-1"><a href="#注释-1" class="headerlink" title="注释"></a>注释</h3><ul>
+<li>不恰当的信息，如修改记录</li>
+<li>过时的注释</li>
+<li>多余的废话</li>
+<li>错误的有误导性的注释</li>
+<li>注释掉的代码</li>
+</ul>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<li>多步才能完成的构建</li>
+<li>多步才能完成的测试</li>
+</ul>
+<h3 id="函数-1"><a href="#函数-1" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>过多的入参</li>
+<li>布尔类型参数</li>
+<li>从未被调用的函数</li>
+<li>用于返回的参数</li>
+</ul>
+<h3 id="一般性问题"><a href="#一般性问题" class="headerlink" title="一般性问题"></a>一般性问题</h3><ul>
+<li>源文件中有多种语言</li>
+<li>明显违背字面意义的直觉</li>
+<li>不考虑边界情况</li>
+<li>忽视安全问题</li>
+<li><strong>重复</strong>，这也是最常见的问题。每次看到重复代码都代表遗漏了抽象。有一些常见的设计模式可以帮助你。</li>
+<li>代码的抽象层级有问题，或混杂。抽象类用来容纳高层级概念，子类用来容纳低层级概念。不同层级概念放在不同容器中。</li>
+<li>基类依赖于子类。通常来说，基类对子类应该一无所知</li>
+<li>信息过多，违背SRP</li>
+<li>从未使用的代码</li>
+<li>不恰当的垂直分隔</li>
+<li>语素前后不一致</li>
+<li>基于巧合、预设假设的耦合。异或是两个没有直接目的之间的模块的耦合。</li>
+<li><strong>特性依恋</strong>，类的方法只应对自身的成员和方法感兴趣，不应关注其他类的成员和方法</li>
+<li>使用boolean或枚举参数让一个函数表现多态。使用多个函数通常由于向单个函数传递代码来选择函数行为</li>
+<li>晦涩的意图，如魔术数、魔术字符串、过度简写的表达式</li>
+<li>位置错误的权责</li>
+<li>不恰当的静态方法，如完全不需要多态的函数</li>
+<li>使用自解释的变量名</li>
+<li>使用自解释的函数名</li>
+<li>理解算法</li>
+<li>把逻辑依赖（脑海中的限制&#x2F;已知条件）改为物理依赖</li>
+<li>使用if&#x2F;else、switch前想想有没有多态的实现方法</li>
+<li>遵循团队lint规则</li>
+<li>足够准确</li>
+<li>未封装的条件判断</li>
+<li>未封装的边界条件检测</li>
+<li>避免否定性条件</li>
+<li><strong>函数应该只做一件事</strong></li>
+<li><strong>函数应该只在一个抽象层级上</strong></li>
+<li>隐蔽的时序性耦合</li>
+<li>别随意，先好好思考再下手</li>
+<li>应该在较高层级放置可配置数据</li>
+<li>避免传递浏览，即遵守德墨忒尔律</li>
+</ul>
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><ul>
+<li>使用通配符避免过长的导入清单</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">package</span>.*</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>不要继承<em>常量</em>，使用静态导入</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> EmployeeConstants.*</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在可以的情况下，用枚举代替常量</li>
+</ul>
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><ul>
+<li>使用描述性名称</li>
+<li>名称应该与抽象层级相符</li>
+<li>使用标准化语素</li>
+<li>使用无歧义的名称</li>
+<li>在较大作用范围使用较长名称，较小作用范围<em>可以</em>使用较短名称</li>
+<li>名称应该明确说明有副作用存在</li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li>要有足够的测试</li>
+<li>使用覆盖率工具</li>
+<li>别放过小测试</li>
+<li>被忽略的测试是对不确定事物的疑问</li>
+<li>测试边界条件</li>
+<li>测试失败的模式（pattern）会有启发性</li>
+<li>测试覆盖率的模式会有启发性</li>
+<li>测试应该快速</li>
+</ul>
+<h2 id="并发编程示例"><a href="#并发编程示例" class="headerlink" title="并发编程示例"></a>并发编程示例</h2><h3 id="客户端-x2F-服务端"><a href="#客户端-x2F-服务端" class="headerlink" title="客户端&#x2F;服务端"></a>客户端&#x2F;服务端</h3><ul>
+<li>如果吞吐量与I&#x2F;O有关，则并发编程可以提升运行效率</li>
+<li>保持并发系统整洁，把线程管理隔离到一个位置</li>
+</ul>
+<h3 id="可能的执行路径"><a href="#可能的执行路径" class="headerlink" title="可能的执行路径"></a>可能的执行路径</h3><p>深入到字节码和汇编语句的执行上，有些并非线程安全的操作中，不同的执行路径会带来不同结果。</p>
+<h3 id="了解类库"><a href="#了解类库" class="headerlink" title="了解类库"></a>了解类库</h3><ul>
+<li>Executor框架</li>
+<li>非锁定方案：AtomicBoolean，AtomicInteger和AtomicReference</li>
+<li>数据库连接、java.util中的容器、Servlet天生不是线程安全的</li>
+</ul>
+<h3 id="提升吞吐量"><a href="#提升吞吐量" class="headerlink" title="提升吞吐量"></a>提升吞吐量</h3><ul>
+<li>synchronized代码块最好能限制在小范围内</li>
+</ul>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>死锁需要满足4个条件：</p>
+<ul>
+<li><strong>互斥</strong>，即资源数量有限，或无法在同一时间为多个线程公用</li>
+<li><strong>上锁及等待</strong>，从线程获取资源到完成工作前，不会释放这个资源</li>
+<li><strong>无抢先机制</strong>，线程无法从其他线程处夺取资源</li>
+<li><strong>循环等待</strong></li>
+</ul>
+<p>相反地，有4种避免死锁的方式：</p>
+<ul>
+<li><strong>不互斥</strong>，使用允许同时使用的资源，或增加资源数目</li>
+<li><strong>不上锁及等待</strong>，如果有等待情况就释放所有资源从新来过</li>
+<li><strong>满足抢先机制</strong></li>
+<li><strong>不做循环等待</strong></li>
+</ul>
+<h3 id="测试多线程代码"><a href="#测试多线程代码" class="headerlink" title="测试多线程代码"></a>测试多线程代码</h3><ul>
+<li>复现问题可能很难，可以借助工具（如ConTest）帮助</li>
+</ul>
+<p><em>–END–</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
+              <a href="/blog/tags/%E9%87%8D%E6%9E%84/" rel="tag"># 重构</a>
+              <a href="/blog/tags/%E4%BB%A3%E7%A0%81/" rel="tag"># 代码</a>
+              <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BC/" rel="tag"># 代码风格</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/11/15/degit-improvement/" rel="prev" title="degit认识和改造">
+                  <i class="fa fa-chevron-left"></i> degit认识和改造
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/24/golang-learning/" rel="next" title="go语言入门学习">
+                  go语言入门学习 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
