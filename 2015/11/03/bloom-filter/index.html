@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"N573WZGUR1","apiKey":"f4b654279103617a4cefb92a132ff0c3","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
 
     <meta name="description" content="海量字符串检索是很考验算法效率的工作。Trie树和PAT树常用，但是内存占用严重。在垃圾邮件过滤或网络爬虫这种不要求检索结果完全正确的场景下，布隆过滤器是个很好的选择。 Hash函数Hash（中译为哈希，或者散列）函数在计算机领域，尤其是数据快速查找领域，加密领域用的极广。其作用是将一个大的数据集映射到一个小的数据集上面（这些小的数据集叫做哈希值，或者散列值）。Hash table（散列表，也叫哈">
 <meta property="og:type" content="article">
@@ -26,18 +26,18 @@
 <meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
 <meta property="og:description" content="海量字符串检索是很考验算法效率的工作。Trie树和PAT树常用，但是内存占用严重。在垃圾邮件过滤或网络爬虫这种不要求检索结果完全正确的场景下，布隆过滤器是个很好的选择。 Hash函数Hash（中译为哈希，或者散列）函数在计算机领域，尤其是数据快速查找领域，加密领域用的极广。其作用是将一个大的数据集映射到一个小的数据集上面（这些小的数据集叫做哈希值，或者散列值）。Hash table（散列表，也叫哈">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/bloom-filter-1.png">
-<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/bloom-filter-2.jpg">
-<meta property="og:image" content="http://shenlvmeng.github.com/blog/blog/images/bloom-filter-3.jpg">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/images/bloom-filter-1.png">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/images/bloom-filter-2.jpg">
+<meta property="og:image" content="http://shenlvmeng.github.com/blog/images/bloom-filter-3.jpg">
 <meta property="article:published_time" content="2015-11-03T10:57:54.000Z">
-<meta property="article:modified_time" content="2019-01-20T16:47:27.579Z">
+<meta property="article:modified_time" content="2023-02-05T07:54:18.377Z">
 <meta property="article:author" content="shenlvmeng">
 <meta property="article:tag" content="C">
 <meta property="article:tag" content="Hash">
 <meta property="article:tag" content="布隆过滤器">
 <meta property="article:tag" content="字符串检索">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://shenlvmeng.github.com/blog/blog/images/bloom-filter-1.png">
+<meta name="twitter:image" content="http://shenlvmeng.github.com/blog/images/bloom-filter-1.png">
 
 
 <link rel="canonical" href="http://shenlvmeng.github.com/blog/2015/11/03/bloom-filter/">
@@ -239,7 +239,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-01-21 00:47:27" itemprop="dateModified" datetime="2019-01-21T00:47:27+08:00">2019-01-21</time>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -266,6 +266,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>17 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -296,7 +311,7 @@
 <p>方法4消耗内存是相对较少的，但缺点是单一哈希函数发生冲突的概率太高。还记得数据结构课上学过的Hash表冲突的各种解决方法么？若要降低冲突发生的概率到1%，就要将BitSet的长度设置为URL个数的100倍</p>
 <p>实质上上面的算法都忽略了一个重要的隐含条件：允许小概率的出错，不一定要100%准确！也就是说少量url实际上没有没网络蜘蛛访问，而将它们错判为已访问的代价是很小的——大不了少抓几个网页呗。</p>
 <p>上面所举的爬虫只是一个例子，在允许少量错误的情况下，布隆过滤器将是最好的选择。</p>
-<h2 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h2><p><img src="/blog/blog/images/bloom-filter-1.png"></p>
+<h2 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h2><p><img src="/blog/images/bloom-filter-1.png"></p>
 <p>布隆过滤器（Bloom Filter）是由布隆（Burton Howard Bloom）在1970年提出的。它实际上是由一个很长的二进制向量和一系列随机映射函数组成，布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都远远超过一般的算法，缺点是有一定的误识别率（假正例False positives，即Bloom Filter报告某一元素存在于某集合中，但是实际上该元素并不在集合中）和删除困难，但是没有识别错误的情形（即假反例False negatives，如果某个元素确实没有在该集合中，那么Bloom Filter 是不会报告该元素存在于集合中的，所以不会漏报）。</p>
 <h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>如果想判断一个元素是不是在一个集合里，一般想到的是将所有元素保存起来，然后通过比较确定。链表，树等等数据结构都是这种思路. 但是随着集合中元素的增加，我们需要的存储空间越来越大，检索速度也越来越慢。不过世界上还有一种叫作散列表（又叫哈希表，Hash table）的数据结构。它可以通过一个Hash函数将一个元素映射成一个位阵列（Bit Array）中的一个点。这样一来，我们只要看看这个点是不是 1 就知道可以集合中有没有它了。这就是布隆过滤器的基本思想。</p>
 <h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
@@ -318,11 +333,11 @@
 <p>m &#x3D; -n * lnp &#x2F; (ln2) ^ 2</p>
 <p>上式表明，位数组的大小最好与插入元素的个数成线性关系，对于给定的 m，n，k，假正例概率最大为：(1 - e ^ (-k * (n + 0.5)&#x2F;(m - 1))) ^ k</p>
 <p>值得注意的是，k值并非越大越好。可以证明，当 k &#x3D; ln(2) * m&#x2F;n 时出错的概率是最小的。</p>
-<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-加入字符串"><a href="#1-加入字符串" class="headerlink" title="1.加入字符串"></a>1.加入字符串</h4><p><img src="/blog/blog/images/bloom-filter-2.jpg"></p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-加入字符串"><a href="#1-加入字符串" class="headerlink" title="1.加入字符串"></a>1.加入字符串</h4><p><img src="/blog/images/bloom-filter-2.jpg"></p>
 <p>为了表达S&#x3D;{x1, x2,…,xn}这样一个n个元素的集合，Bloom Filter使用k个相互独立的哈希函数（Hash Function），它们分别将集合中的每个元素映射到{1,…,m}的范围中。</p>
 <p>当我们往Bloom Filter中增加任意一个元素x时候，我们使用k个哈希函数得到k个哈希值，然后将数组中对应的比特位设置为1。即第i个哈希函数映射的位置hash<sub>i</sub>(x)就会被置为1（1≤i≤k）。</p>
 <p><strong>注意：</strong>如果一个位置多次被置为1，那么只有第一次会起作用，后面几次将没有任何效果。在下图中，k&#x3D;3，且有两个哈希函数选中同一个位置（从左边数第五位，即第二个”1”处）。</p>
-<h4 id="2-检查字符串是否在集合中"><a href="#2-检查字符串是否在集合中" class="headerlink" title="2. 检查字符串是否在集合中"></a>2. 检查字符串是否在集合中</h4><p><img src="/blog/blog/images/bloom-filter-3.jpg"></p>
+<h4 id="2-检查字符串是否在集合中"><a href="#2-检查字符串是否在集合中" class="headerlink" title="2. 检查字符串是否在集合中"></a>2. 检查字符串是否在集合中</h4><p><img src="/blog/images/bloom-filter-3.jpg"></p>
 <p>在判断y是否属于这个集合时，我们只需要对y使用k个哈希函数得到k个哈希值，如果所有hash<sub>i</sub>(y)的位置都是1（1≤i≤k），即k个位置都被设置为1了，那么我们就认为y是集合中的元素，否则就认为y不是集合中的元素。下图中y<sub>1</sub>就不是集合中的元素（因为y1有一处指向了“0”位）。y<sub>2</sub>或者属于这个集合，或者刚好是一个false positive。</p>
 <h4 id="3-删除字符串"><a href="#3-删除字符串" class="headerlink" title="3. 删除字符串"></a>3. 删除字符串</h4><p><strong>通常</strong>，字符串加入了就被不能删除了，因为删除会影响到其他字符串，且无法判断删除字符串是否真在集合内。实在需要删除字符串的可以使用Counting bloomfilter(CBF)，这是一种基本Bloom Filter的变体，CBF将基本Bloom Filter每一个Bit改为一个计数器，这样就可以实现删除字符串的功能了。</p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>C语言内，并没有定义Bitmap这个容器，所以需要自己实现。</p>
@@ -406,6 +421,20 @@
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">961k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">26:42</span>
+  </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

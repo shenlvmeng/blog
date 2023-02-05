@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"01WTSQD4O5","apiKey":"594aedcbfa1fad5b80958ce48f1bc16a","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"N573WZGUR1","apiKey":"f4b654279103617a4cefb92a132ff0c3","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
 
     <meta name="description" content="Be sharp, my friend.">
 <meta property="og:type" content="website">
@@ -227,7 +227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-01-21 00:47:27" itemprop="dateModified" datetime="2019-01-21T00:47:27+08:00">2019-01-21</time>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -254,6 +254,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>17 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -284,7 +299,7 @@
 <p>方法4消耗内存是相对较少的，但缺点是单一哈希函数发生冲突的概率太高。还记得数据结构课上学过的Hash表冲突的各种解决方法么？若要降低冲突发生的概率到1%，就要将BitSet的长度设置为URL个数的100倍</p>
 <p>实质上上面的算法都忽略了一个重要的隐含条件：允许小概率的出错，不一定要100%准确！也就是说少量url实际上没有没网络蜘蛛访问，而将它们错判为已访问的代价是很小的——大不了少抓几个网页呗。</p>
 <p>上面所举的爬虫只是一个例子，在允许少量错误的情况下，布隆过滤器将是最好的选择。</p>
-<h2 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h2><p><img src="/blog/blog/images/bloom-filter-1.png"></p>
+<h2 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h2><p><img src="/blog/images/bloom-filter-1.png"></p>
 <p>布隆过滤器（Bloom Filter）是由布隆（Burton Howard Bloom）在1970年提出的。它实际上是由一个很长的二进制向量和一系列随机映射函数组成，布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都远远超过一般的算法，缺点是有一定的误识别率（假正例False positives，即Bloom Filter报告某一元素存在于某集合中，但是实际上该元素并不在集合中）和删除困难，但是没有识别错误的情形（即假反例False negatives，如果某个元素确实没有在该集合中，那么Bloom Filter 是不会报告该元素存在于集合中的，所以不会漏报）。</p>
 <h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>如果想判断一个元素是不是在一个集合里，一般想到的是将所有元素保存起来，然后通过比较确定。链表，树等等数据结构都是这种思路. 但是随着集合中元素的增加，我们需要的存储空间越来越大，检索速度也越来越慢。不过世界上还有一种叫作散列表（又叫哈希表，Hash table）的数据结构。它可以通过一个Hash函数将一个元素映射成一个位阵列（Bit Array）中的一个点。这样一来，我们只要看看这个点是不是 1 就知道可以集合中有没有它了。这就是布隆过滤器的基本思想。</p>
 <h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
@@ -306,11 +321,11 @@
 <p>m &#x3D; -n * lnp &#x2F; (ln2) ^ 2</p>
 <p>上式表明，位数组的大小最好与插入元素的个数成线性关系，对于给定的 m，n，k，假正例概率最大为：(1 - e ^ (-k * (n + 0.5)&#x2F;(m - 1))) ^ k</p>
 <p>值得注意的是，k值并非越大越好。可以证明，当 k &#x3D; ln(2) * m&#x2F;n 时出错的概率是最小的。</p>
-<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-加入字符串"><a href="#1-加入字符串" class="headerlink" title="1.加入字符串"></a>1.加入字符串</h4><p><img src="/blog/blog/images/bloom-filter-2.jpg"></p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-加入字符串"><a href="#1-加入字符串" class="headerlink" title="1.加入字符串"></a>1.加入字符串</h4><p><img src="/blog/images/bloom-filter-2.jpg"></p>
 <p>为了表达S&#x3D;{x1, x2,…,xn}这样一个n个元素的集合，Bloom Filter使用k个相互独立的哈希函数（Hash Function），它们分别将集合中的每个元素映射到{1,…,m}的范围中。</p>
 <p>当我们往Bloom Filter中增加任意一个元素x时候，我们使用k个哈希函数得到k个哈希值，然后将数组中对应的比特位设置为1。即第i个哈希函数映射的位置hash<sub>i</sub>(x)就会被置为1（1≤i≤k）。</p>
 <p><strong>注意：</strong>如果一个位置多次被置为1，那么只有第一次会起作用，后面几次将没有任何效果。在下图中，k&#x3D;3，且有两个哈希函数选中同一个位置（从左边数第五位，即第二个”1”处）。</p>
-<h4 id="2-检查字符串是否在集合中"><a href="#2-检查字符串是否在集合中" class="headerlink" title="2. 检查字符串是否在集合中"></a>2. 检查字符串是否在集合中</h4><p><img src="/blog/blog/images/bloom-filter-3.jpg"></p>
+<h4 id="2-检查字符串是否在集合中"><a href="#2-检查字符串是否在集合中" class="headerlink" title="2. 检查字符串是否在集合中"></a>2. 检查字符串是否在集合中</h4><p><img src="/blog/images/bloom-filter-3.jpg"></p>
 <p>在判断y是否属于这个集合时，我们只需要对y使用k个哈希函数得到k个哈希值，如果所有hash<sub>i</sub>(y)的位置都是1（1≤i≤k），即k个位置都被设置为1了，那么我们就认为y是集合中的元素，否则就认为y不是集合中的元素。下图中y<sub>1</sub>就不是集合中的元素（因为y1有一处指向了“0”位）。y<sub>2</sub>或者属于这个集合，或者刚好是一个false positive。</p>
 <h4 id="3-删除字符串"><a href="#3-删除字符串" class="headerlink" title="3. 删除字符串"></a>3. 删除字符串</h4><p><strong>通常</strong>，字符串加入了就被不能删除了，因为删除会影响到其他字符串，且无法判断删除字符串是否真在集合内。实在需要删除字符串的可以使用Counting bloomfilter(CBF)，这是一种基本Bloom Filter的变体，CBF将基本Bloom Filter每一个Bit改为一个计数器，这样就可以实现删除字符串的功能了。</p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>C语言内，并没有定义Bitmap这个容器，所以需要自己实现。</p>
@@ -399,7 +414,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 15:01:06" itemprop="dateModified" datetime="2017-03-01T15:01:06+08:00">2017-03-01</time>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -426,6 +441,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -444,7 +474,7 @@
 <li>从根节点到某一节点，路径上经过的字符连接起来，为该节点对应的字符串。</li>
 <li>每个节点的所有子节点包含的字符都不相同<br>例如，给出一组单词：inn, int, at, age, adv, ant, 我们可以得到下面的Trie树</li>
 </ol>
-<p><img src="/blog/blog/images/trie-1.gif"></p>
+<p><img src="/blog/images/trie-1.gif"></p>
 <p>可以看出：</p>
 <ul>
 <li>每条边对应一个字母。</li>
@@ -565,6 +595,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -648,7 +693,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-01-21 16:59:13" itemprop="dateModified" datetime="2018-01-21T16:59:13+08:00">2018-01-21</time>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -675,6 +720,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>971</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -684,7 +744,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><img src="/blog/blog/images/poster/killer.jpeg"></p>
+          <p><img src="/blog/images/poster/killer.jpeg"></p>
 <p>风扇摆着头，床头柜的台灯射出幽暗的光。风衣被挂在墙上，毛线手套一半搭在桌沿，利刃发出寒光，滴着血。乔是个杀手。<br><br><br>温热散去，乔收去风衣，带上手套，收起匕首，将书桌歪斜的书本摆直。“导演”欣赏利落的人，乔却从来不把这当作刻意。谨慎有序是他的天性。<br><br><br>在夜间思考，在白天沉默。乔支起双手，刚开的水在手边冒着烟。凡事总有为什么，乔只是想把它摸清而已。门口响起三声闷响，脚步远去。</p>
 <p>订单又到了。<br><br><br>书架上摆满了乔的笔记。笔迹清晰整洁。他坚信，多人不成事。雨后的路灯下，乔避开光明的嘈杂。风衣滴着水，枪口还留着余热。人云亦云，厌恶之至。</p>
 <p>一道锁，两道锁，三道锁，水温正好。一口水，两片药，三点整，思考结束。<br><br><br>街上的杀手不只乔一人，乔也并不愿认识所有人。朋友间少不了兵戎相见，乔手里攥着他们的鲜血，在街头，在小巷，在桥洞下。只可惜，没能分享自己的哲学。<br><br><br>屋顶闪过微光，乔又记起，那些曾与他四目相对的脸。就像两周前，屋里的猫走时看他的最后一眼。然后，就不再回来<br><br><br>乔也喜欢过春天，鸣鸟，微风，可以倚坐桌边，一整天。猫蜷卧在窗台做梦，一下午。</p>
@@ -757,7 +817,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 14:18:26" itemprop="dateModified" datetime="2017-03-01T14:18:26+08:00">2017-03-01</time>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -784,6 +844,21 @@
   </span>
   
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -793,7 +868,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><img src="/blog/blog/docker-logo.jpg" alt="Docker"></p>
+          <p><img src="/blog/docker-logo.jpg" alt="Docker"></p>
 <h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。总之就是轻便型的虚拟环境。</p>
 <p>考虑到ONOS的实验环境搭建不易，Docker有助于我们移植搭建好的环境。</p>
 <h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><p>1、安装软件包apt-transport-https，使APT系统能够被https解析</p>
@@ -929,6 +1004,20 @@
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">961k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">26:42</span>
+  </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
