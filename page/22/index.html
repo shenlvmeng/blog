@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-count">144</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-count">430</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,247 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/13/project-habits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/04/13/project-habits/" class="post-title-link" itemprop="url">提升项目可维护性的一些习惯</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-13 17:42:38" itemprop="dateCreated datePublished" datetime="2017-04-13T17:42:38+08:00">2017-04-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/04/13/project-habits/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/13/project-habits/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><img src="/blog/images/poster/project-habits.jpeg"></p>
+<blockquote><p>软件生命周期中80%的成本消耗在了维护上</p>
+<footer><strong>《Java语言编码规范》</strong></footer></blockquote>
+
+<p>在前端编码时，经常遇到多人协作的情况，一些工具可以很好地提升代码维护成本。这里把最近的学习中遇到的几个分享在下面。</p>
+<h3 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h3><p><img src="/blog/images/editorconfig.png"></p>
+<p><a target="_blank" rel="noopener" href="http://editorconfig.org/">EditorConfig</a>是一套在编辑器间统一代码格式的解决方案。一个EditorConfig项目由<code>.editorconfig</code>自定义文件格式。相应的编辑器插件会按照配置文件格式化文档。</p>
+<p>EditorConfig的语法类似<code>.gitignore</code>，比较好理解。下面是官网给出了规定Python和JavaScript文件格式的<code>.editorconfig</code>文件样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># EditorConfig is awesome: http://EditorConfig.org</span><br><span class="line"></span><br><span class="line"># top-most EditorConfig file</span><br><span class="line">root = true</span><br><span class="line"></span><br><span class="line"># Unix-style newlines with a newline ending every file</span><br><span class="line">[*]</span><br><span class="line">end_of_line = lf</span><br><span class="line">insert_final_newline = true</span><br><span class="line"></span><br><span class="line"># Matches multiple files with brace expansion notation</span><br><span class="line"># Set default charset</span><br><span class="line">[*.&#123;js,py&#125;]</span><br><span class="line">charset = utf-8</span><br><span class="line"></span><br><span class="line"># 4 space indentation</span><br><span class="line">[*.py]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 4</span><br><span class="line"></span><br><span class="line"># Tab indentation (no size specified)</span><br><span class="line">[Makefile]</span><br><span class="line">indent_style = tab</span><br><span class="line"></span><br><span class="line"># Indentation override for all JS under lib directory</span><br><span class="line">[lib/**.js]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 2</span><br><span class="line"></span><br><span class="line"># Matches the exact files either package.json or .travis.yml</span><br><span class="line">[&#123;package.json,.travis.yml&#125;]</span><br><span class="line">indent_style = space</span><br><span class="line">indent_size = 2</span><br></pre></td></tr></table></figure>
+
+<p>不过通常的项目用不到这么复杂的配置文件。<a target="_blank" rel="noopener" href="https://github.com/angular/angular.js/blob/master/.editorconfig">这里</a>是Angular的配置文件，<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/1.1/.editorconfig">这里</a>是曾经Vue.js的配置文件。官网给出了完整的使用EditorConfig的<a target="_blank" rel="noopener" href="https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig">工程列表</a>。</p>
+<h4 id="存放位置"><a href="#存放位置" class="headerlink" title="存放位置"></a>存放位置</h4><p>打开一个文件时，EditorConfig插件会去打开文件的目录和其每一级父目录查找<code>.editorconfig</code>文件，直到有一个配置文件<code>root=true</code>。</p>
+<p>读取顺序从上到下，路径最短的文件最后被读取，优先级最高。</p>
+<h4 id="关于文件格式"><a href="#关于文件格式" class="headerlink" title="关于文件格式"></a>关于文件格式</h4><p>EditorConfig文件使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/INI%E6%96%87%E4%BB%B6">INI格式</a>，目的是可以和<a target="_blank" rel="noopener" href="https://docs.python.org/2/library/configparser.html">Python Config Library</a>兼容。每个分段（原文：‘section’）由一个<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Glob_(programming)">globs</a>开头。斜杠(<code>/</code>)作为路径分隔符，<code>#</code>或者<code>;</code>作为注释。注释应该单独占一行。EditorConfig文件使用UTF-8格式、CRLF或LF作为换行符。</p>
+<h5 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h5><p>EditorConfig目前支持下面这些通配符：</p>
+<ul>
+<li><code>*</code>	匹配除&#x2F;之外的任意字符串</li>
+<li><code>**</code>	匹配任意字符串</li>
+<li><code>?</code>	匹配任意单个字符</li>
+<li><code>[name]</code>	匹配name字符</li>
+<li><code>[!name]</code>	匹配非name字符</li>
+<li><code>&#123;s1,s3,s3&#125;</code>	匹配任意给定的字符串（0.11.0起支持）</li>
+<li><code>&#123;num1..num2&#125;</code>匹配<em>num1</em>和<em>num2</em>间的整数</li>
+</ul>
+<p>最后特殊字符可以用<code>\</code>转义.</p>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>目前<a target="_blank" rel="noopener" href="https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties">普遍支持的属性</a>包括下面这些：</p>
+<ul>
+<li>root：表明是最顶层的配置文件，发现设为true时，才会停止查找.editorconfig文件。</li>
+<li>indent_style：可以选择tab或space</li>
+<li>indent_size：设置整数表示规定每级缩进的列数或空格数。如果设定为tab，则会使用tab_width的值（如果已指定）。</li>
+<li>tab_width：设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。</li>
+<li>end_of_line：定义换行符，支持lf、cr和crlf。</li>
+<li>charset：编码格式，支持latin1、utf-8、utf-8-bom、utf-16be和utf-16le，不建议使用uft-8-bom。</li>
+<li>trim_trailing_whitespace：设为true表示会除去换行行首的任意空白字符，false反之。</li>
+<li>insert_final_newline：设为true表明使文件以一个空白行结尾，false反之。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>目前已有大量的IDE或文本编辑器支持EditorConfig配置。有些不需要下载插件，有些则需要。详情可参见<a href="(http://editorconfig.org/">官网</a>。</p>
+<h3 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h3><p><a target="_blank" rel="noopener" href="http://eslint.org/">ESLint</a>是非常流行的一个JavaScript代码检查器。便于在运行前检查出代码中潜在的错误。它的作者是Nicholas Zakas，红宝书的作者。网站也有<a target="_blank" rel="noopener" href="http://eslint.cn/">中译版</a>。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装eslint前，需要有node.js的环境，之后通过npm安装即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g eslint</span><br></pre></td></tr></table></figure>
+
+<p>当然也可以本地安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install eslint --save-dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>安装完成后，需要在项目目录下生成<code>.eslintrc</code>配置文件才可以使用<code>eslint</code>命令。这一步可以通过<code>eslint --init</code>按着引导完成，也可以根据自己需要修改。eslint推荐使用了一些规则，可以通过下面这样开启（<code>extends</code>的属性还可以是<code>all</code>，即启用所有规则，<strong>不推荐使用</strong>）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extends&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> <span class="string">&quot;eslint:recommended&quot;</span> <span class="punctuation">]</span></span><br><span class="line">    ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置项里，还可以通过<code>env</code>指令<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring#specifying-environments">代码环境</a>，像下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;env&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;browser&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;node&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>同样，具体的<a target="_blank" rel="noopener" href="http://eslint.cn/docs/rules/">规则</a>也是可以配置的，每个规则的配置项都有一个默认值，规则键对应的值为数值时，是下面的意思</p>
+<ul>
+<li>0 Disable the rule</li>
+<li>1 Warn about the rule</li>
+<li>2 Throw error about the rule</li>
+</ul>
+<p>对应的值为数组时，则会更改规则配置项的原默认值，如下面例子中的<code>quote</code>规则：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="comment">// 使用默认的分号规则，违背时会有警告消息</span></span><br><span class="line">        <span class="attr">&quot;semi&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">        <span class="comment">// 使用双引号包裹字符串，违背是会抛出错误</span></span><br><span class="line">        <span class="attr">&quot;quotes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">2</span><span class="punctuation">,</span> <span class="string">&quot;double&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>关于eslint的更多配置项，可参考<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring">官网</a>。</p>
+<p>若项目中使用到了ES6语法，则还需要安装<code>babel-eslint</code>包，并指定<code>.eslintrc</code>中<code>parser</code>和<code>parseOptions</code>两项。具体的配置大概是下面这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extends&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> <span class="string">&quot;eslint:recommended&quot;</span> <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parser&quot;</span><span class="punctuation">:</span> <span class="string">&quot;babel-eslint&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parserOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        ecmaVersion<span class="punctuation">:</span> <span class="number">6</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  	...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>ESLint 支持几种格式的配置文件：</p>
+<ul>
+<li>JavaScript - 使用<code>.eslintrc.js</code>然后输出一个配置对象。</li>
+<li>YAML - 使用<code>.eslintrc.yaml</code>或<code>.eslintrc.yml</code>去定义配置的结构。</li>
+<li>JSON - 使用<code>.eslintrc.json</code>去定义配置的结构ESLint的JSON文件允许JavaScript风格的注释。</li>
+<li>Deprecated - 使用<code>.eslintrc</code>，可以使JSON也可以是YAML。</li>
+<li>package.json - 在<code>package.json</code>里创建一个<code>eslintConfig</code>属性，在那里定义你的配置。</li>
+</ul>
+<p>如果同一个目录下有多个配置文件，ESLint只会使用一个，优先级是上面列表从上到下的顺序。</p>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>可以在文件中书写注释在运行时更改eslint的配置（实际上几乎所有的配置项都可以在注释中通过<code>eslint-xxx</code>这样的形式修改）。</p>
+<p>当文件中出现已考虑到的规则例外时，可以通过<code>/*eslint quotes: [&quot;error&quot;, &quot;double&quot;]*/</code>或<code>/*eslint eqeqeq: 0, curly: 2*/</code>这样的形式临时添加例外。</p>
+<p>当文件出现不想被检测到的规则例外时，可以通过<code>/*eslint-disable*/</code>和<code>/*eslint-enable*/</code>避免警告。单行例外可以使用<code>/*eslint-disable-line*/</code>更详细的配置可以参见<a target="_blank" rel="noopener" href="http://eslint.cn/docs/user-guide/configuring#disabling-rules-with-inline-comments">文档</a>。</p>
+<h4 id="sublime插件"><a href="#sublime插件" class="headerlink" title="sublime插件"></a>sublime插件</h4><p>上面说的这些工作，在配置完成后，需要在命令行中通过<code>eslint xxx.file</code>这样的形式lint。借助编辑器的插件可以获得可视化的lint结果，妈妈再也不用担心我的找不到错误了（误）。因为个人原因，下面仅以sublime为例。</p>
+<p>下载eslint for sublime插件前，需要下载Sublime-Linter。因为前者利用了后者作为lint的平台。在<code>Ctrl+Shift+P</code>找到<code>Package Controll: Install Packages</code>后（什么？你没有装Package Control？），搜索Sublime-Linter下载安装即可。完成后，可以在<code>Prefences -&gt; Package Settings</code>或<code>Tools</code>选项卡中找到Sublime Linter的身影。</p>
+<p>之后同样的方式搜索Sublime-contrib-eslint下载安装即可。建议在安装前去<a target="_blank" rel="noopener" href="https://github.com/roadhump/SublimeLinter-eslint">官网</a>看看，避免遇到不必要的问题。</p>
+<p>这些工作完成后了，可以选择SublimeLinter的mode为load&#x2F;save，之后在文件载入和保存时都会对文件进行lint操作，并将违背规则的地方标出。</p>
+<h3 id="Commit-message规范"><a href="#Commit-message规范" class="headerlink" title="Commit message规范"></a>Commit message规范</h3><p><img src="/blog/images/git-commit.png"></p>
+<p>git每次修改后需要填写commit message才能提交。这一步可以通过给<code>git commit</code>添加<code>-m</code>参数完成，像下面那样，也可以在<code>git commit</code>打开的vi界面下填写多行文本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">&#x27;some commit message&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>git并没有对commit message的风格做出规范，可以用中文，可以用英文，甚至当你不知道该写些什么的时候，还可以去某些<a target="_blank" rel="noopener" href="http://whatthecommit.com/index.txt">网站</a>参考。</p>
+<p>但是在团队协作中，还是建议清晰明了地书写此次commit的目的和做的修改。实际上，commit message规范这种事一直在做。比如<a target="_blank" rel="noopener" href="https://eggjs.org/zh-cn/contributing.html#commit-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83">egg.js</a>, <a target="_blank" rel="noopener" href="https://github.com/conventional-changelog/conventional-changelog/blob/v0.5.3/conventions/angular.md">Angular</a>或者更加简洁的规范：<a target="_blank" rel="noopener" href="https://github.com/thoughtbot/dotfiles/blob/master/gitmessage">这样</a>或<a target="_blank" rel="noopener" href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages">这样</a>。其中Angular的规范应用较广，还有<a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">commitizen</a>工具帮助生成changelog和检查commit message样式。</p>
+<h5 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h5><p>根据Angular的规范，commmit message包括三个部分：<strong>Header</strong>, <strong>Body</strong>和<strong>Footer</strong>。其中Header是必需的，Body和Footer则不是。模板像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</span><br><span class="line">// 空行</span><br><span class="line">&lt;body&gt;</span><br><span class="line">// 空行</span><br><span class="line">&lt;footer&gt;</span><br></pre></td></tr></table></figure>
+
+<p>模板中，<strong>type</strong>为提交commit的类型，<strong>只有</strong>下面这些选择：</p>
+<ul>
+<li>feat: 新功能</li>
+<li>fix: 修复问题</li>
+<li>docs: 修改文档</li>
+<li>style: 修改代码格式，不影响代码逻辑</li>
+<li>refactor: 重构代码，理论上不影响现有功能</li>
+<li>perf: 提升性能</li>
+<li>test: 增加修改测试用例</li>
+<li>chore: 修改工具相关（包括但不限于文档、代码生成等）</li>
+<li>deps: 升级依赖</li>
+</ul>
+<p>其中前两种commit一定会出现在changelog中。</p>
+<p><strong>scope</strong>为修改文件的范围（包括但不限于doc, middleware, core, config, plugin）；<strong>subject</strong>用一句话清楚的描述这次提交做了什么，首字母小写；<strong>body</strong>作为subject的补充，增加原因和目的等具体内容，可以不写。</p>
+<p><strong>footer</strong>部分中，<strong>当有非兼容修改(Breaking Change)时必须在这里描述清楚</strong>，或者描述关联issue。下面是一个完整的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9</span><br><span class="line">Older IEs serialize html uppercased, but IE9 does not...</span><br><span class="line">Would be better to expect case insensitive, unfortunately jasmine does</span><br><span class="line">not allow to user regexps for throw expectations.</span><br><span class="line">Document change on eggjs/egg#123</span><br><span class="line">Closes #392</span><br><span class="line">BREAKING CHANGE:</span><br><span class="line">  Breaks foo.bar api, foo.baz should be used instead</span><br></pre></td></tr></table></figure>
+
+<p>代码用于撤销此前commit所做修改时，message用revert开头，后面跟着被撤销commit的Header。像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">revert: feat(pencil): add &#x27;graphiteWidth&#x27; option</span><br><span class="line"></span><br><span class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</span><br></pre></td></tr></table></figure>
+
+<p>如果当前commit与被撤销的commit，在同一个发布（release）里面，那么它们都不会出现在Change log中。</p>
+<h5 id="Commitizen"><a href="#Commitizen" class="headerlink" title="Commitizen"></a>Commitizen</h5><p><a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">Commitizen</a>就是方便你做出上面提交的工具，可以通过npm安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g commitizen</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，使用<code>git cz</code>代替<code>git commit</code>命令来提交改动。之后会出现指引帮助你完成一次合格的提交。</p>
+<p><img src="/blog/images/commitizen.png"></p>
+<p>commitizen的插件cz-conventional-changelog可以帮助我们完成commit message，首先通过下面的命令安装并配置cz-conventional-changelog。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cz-conventional-changelog</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&#123; &quot;path&quot;: &quot;cz-conventional-changelog&quot; &#125;&#x27;</span> &gt; ~/.czrc</span><br></pre></td></tr></table></figure>
+
+<p>之后运行下面的命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://editorconfig.org/">EditorConfig</a></li>
+<li><a target="_blank" rel="noopener" href="http://eslint.cn/">ESLint中文站</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/roadhump/SublimeLinter-eslint">roadhump&#x2F;SublimeLinter-eslint: This linter plugin for SublimeLinter provides an interface to ESLint</a></li>
+<li><a target="_blank" rel="noopener" href="http://jonathancreamer.com/setup-eslint-with-es6-in-sublime-text/">Setup ESLint with ES6 in Sublime Text</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html">Commit message 和 Change log 编写指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://eggjs.org/zh-cn/contributing.html">egg.js代码贡献规范</a></li>
+<li><a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/">Commitizen</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1024,153 +1265,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/29/javascript-async-programming-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/03/29/javascript-async-programming-1/" class="post-title-link" itemprop="url">JavaScript中的异步编程 上</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2017-03-29 14:28:06 / 修改时间：15:03:10" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">2017-03-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/03/29/javascript-async-programming-1/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>本文启发于阮一峰老师的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2015/04/generator.html">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>下篇传送门<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/">JavaScript中的异步编程 下</a></p>
-</blockquote>
-<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
-<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
-<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/">Event Loop</a> 的体现。</p>
-<p>在<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
-<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
-<p>大概是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></span><br><span class="line"><span class="title function_">asy</span>(), <span class="title function_">cal</span>();</span><br><span class="line"><span class="comment">//它们的定义和使用像下面这样</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">asy</span> (callback) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">//异步工作代码</span></span><br><span class="line">        <span class="title function_">callback</span>();</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">cal</span> () &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello!&#x27;</span>); <span class="comment">//或其它什么</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">asy</span>(cal);</span><br></pre></td></tr></table></figure>
-
-<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
-<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
-<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
-<p>大概是这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target.<span class="title function_">on</span>(<span class="string">&#x27;someevent&#x27;</span>, handler); <span class="comment">// 注册事件</span></span><br><span class="line">target.<span class="title function_">emit</span>(<span class="string">&#x27;someevent&#x27;</span>); <span class="comment">//触发事件</span></span><br></pre></td></tr></table></figure>
-
-<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventUtil</span> = &#123;</span><br><span class="line">    <span class="comment">// 全局事件管理</span></span><br><span class="line">    <span class="keyword">var</span> events = &#123;&#125;,</span><br><span class="line">    <span class="comment">// 注册事件</span></span><br><span class="line">        on = <span class="keyword">function</span> (<span class="params">type, handler</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (events[type]) &#123;</span><br><span class="line">                events[type].<span class="title function_">push</span>(handler);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                events[type] = [handler];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    <span class="comment">// 触发事件</span></span><br><span class="line">        emit = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">                events[type][i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
-<p>也就是<a target="_blank" rel="noopener" href="http://redux.js.org/">Redux</a>和<a target="_blank" rel="noopener" href="https://vuex.vuejs.org/">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
-<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a target="_blank" rel="noopener" href="http://callbackhell.com/">回调地狱</a>”也为人诟病。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">async</span>(<span class="params">request, callback</span>) &#123;</span><br><span class="line">    <span class="comment">// Do something.</span></span><br><span class="line">    <span class="title function_">asyncA</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">        <span class="title function_">asyncB</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">            <span class="comment">// Do something</span></span><br><span class="line">            <span class="title function_">asyncC</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">                <span class="comment">// Do something</span></span><br><span class="line">                <span class="title function_">callback</span>(data);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
-<p>ES6中的<a target="_blank" rel="noopener" href="http://wiki.commonjs.org/wiki/Promises/A">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
-<p>它的使用方法像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span> (<span class="params">resolve, reject</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</span><br><span class="line">        <span class="title function_">resolve</span>(val);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="title function_">reject</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">promise.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//success handler</span></span><br><span class="line">&#125;, <span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//failure handler</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或是</span></span><br><span class="line">promise.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//success handler</span></span><br><span class="line">&#125;).<span class="title function_">catch</span>(<span class="params">err</span>) &#123;</span><br><span class="line">    <span class="comment">//error handler</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理一批次的异步任务</span></span><br><span class="line"><span class="keyword">var</span> p = <span class="title class_">Promise</span>.<span class="title function_">all</span>([p1, p2, p3]),</span><br><span class="line">    q = <span class="title class_">Promise</span>.<span class="title function_">race</span>([p1, p2, p3]);</span><br></pre></td></tr></table></figure>
-
-<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//constructor</span></span><br><span class="line"><span class="keyword">var</span> <span class="title class_">Promise</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">callbacks</span> = [];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Promise</span>.<span class="property"><span class="keyword">prototype</span></span> = &#123;</span><br><span class="line">    <span class="attr">construct</span>: <span class="title class_">Promise</span>,</span><br><span class="line">    <span class="attr">resolve</span>: <span class="keyword">function</span>(<span class="params">result</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">complete</span>(<span class="string">&quot;resolve&quot;</span>, result);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">reject</span>: <span class="keyword">function</span>(<span class="params">result</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">complete</span>(<span class="string">&quot;reject&quot;</span>, result);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">complete</span>: <span class="keyword">function</span>(<span class="params">type, result</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">callbacks</span>[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">callbacks</span>.<span class="title function_">shift</span>()[type](result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">then</span>: <span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">callbacks</span>.<span class="title function_">push</span>(&#123;</span><br><span class="line">            <span class="attr">resolve</span>: successHandler,</span><br><span class="line">            <span class="attr">reject</span>: failedHandler</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
-<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003028634">异步编程 promise模式 的简单实现</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/blog/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/23/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1195,13 +1289,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">961k</span>
+    <span title="站点总字数">974k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">26:42</span>
+    <span title="站点阅读时长">27:04</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -1245,7 +1339,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/blog/js/third-party/math/mathjax.js"></script>
 
 

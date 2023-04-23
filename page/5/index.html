@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">143</span>
+          <span class="site-state-item-count">144</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">424</span>
+        <span class="site-state-item-count">430</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,371 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/06/29/http-2-for-frontend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2020/06/29/http-2-for-frontend/" class="post-title-link" itemprop="url">面向前端的HTTP/2介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-06-29 22:41:51 / 修改时间：22:42:56" itemprop="dateCreated datePublished" datetime="2020-06-29T22:41:51+08:00">2020-06-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/06/29/http-2-for-frontend/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/29/http-2-for-frontend/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>23 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>正式版HTTP&#x2F;2发布于2015年5月，距今已经快5年了，相比老一辈HTTP 1.1有了许多改进。在具体讨论这些改进前，我们先简单回顾下HTTP这一路以来的历程。</p>
+<h2 id="历史回顾"><a href="#历史回顾" class="headerlink" title="历史回顾"></a>历史回顾</h2><p>HTTP在1991年发布了最初的HTTP0.9版本，主要用于学术交流，目的也只是用来在网络之间传递HTML超文本的内容。HTTP0.9基于TCP，只有一个GET请求类型，请求和文档响应都是ASCII字符流，响应数据类型只有HTML类型，在响应结束后立即断开连接。</p>
+<p>随着互联网发展，1994年底出现了拨号上网，网景推出浏览器后，WWW已经不仅局限于学术交流，浏览器中除了承载HTML以外，还包括了JavaScript、CSS、图片、音视频等资源。HTTP1.0在这个背景下于1996年推出（RFC1945），它支持了状态码、方法、头部的概念，响应内容不局限于超文本文件，编码类型也不仅限于ASCII。但是TCP连接在响应返回后依旧会断开连接。</p>
+<p>在浏览器等技术发展，HTTP请求更多也更复杂，HTTP1.0的已有问题暴露得越来越明显。TCP频繁建立连接的时延，缓存协商机制的不完整、大文件下载的支持等问题需要解决。于是HTTP1.1在1999年推出（RFC2616），这是个很庞大的协议，全文长达176页，在后续IETF对该规范进行更新时，则被拆分成了总页数更多的六个文档（即RFC7230协议族）。HTTP1.1包含了太多细节和可选的部分，包含不常用的功能和不合适的优化，因此几乎没有任何实现包含完整的协议功能。总的来看，HTTP1.1做了一些尝试：</p>
+<ul>
+<li>TCP持久连接（keep-alive），即在一个TCP连接上发起HTTP请求</li>
+<li>支持范围请求（Accept-Ranges）</li>
+<li>更强大的缓存机制（协商缓存和强缓存，以及相关的头部）</li>
+<li>提出了HTTP pipeline，尝试改善串行HTTP请求引起的线头阻塞（Head-of-line blocking）问题</li>
+<li>更多的错误相关状态码</li>
+<li>Host头处理</li>
+</ul>
+<p>之后HTTP1.1便被一直使用至今，随着互联网页面请求资源的数量和体积增大，HTTP1.1中没能妥善解决的问题越来越明显。HTTPbis工作组在2007年夏天便着手于HTTP1.1标准的更新，并最终在2014年初形成上面提到的RFC7230系列协议族。</p>
+<p><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/SPDY">SPDY</a>（SPeeDY）是由Google牵头开发的开源协议，意图在TLS和HTTP中间插入中间层，解决HTTP协议的问题。大约在2012年提出，也被大多数主流浏览器支持。最终在2015年HTTP&#x2F;2协议发布后，逐步放弃支持。实际上HTTP&#x2F;2也是在SPDY&#x2F;3草案的基础上形成的协议初稿。</p>
+<h2 id="历史问题"><a href="#历史问题" class="headerlink" title="历史问题"></a>历史问题</h2><h3 id="传输资源与延迟"><a href="#传输资源与延迟" class="headerlink" title="传输资源与延迟"></a>传输资源与延迟</h3><p>当今的互联网环境和20世纪末那会儿已经有了很大的不同，现在的Web页面更像一个应用的概念，而非一个简单的页面（SPA）。从HTTPArchive一个页面下请求的资源数已经上百，请求的资源体积也接近2M。</p>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/transfer-size-growth.png" alt="http-transfer-size"></p>
+<p>随着这些年网络硬件条件的迅猛发展，<strong>带宽</strong>已经不再是影响人们体验的因素，而<strong>网络延迟</strong>仍然没有太好的改善。高延迟的网络上（比如移动设备），即使拥有高连接速率，也很难获得优质快速的网络体验。页面从访问到打开的近70%时间都发生在网络上。</p>
+<h3 id="请求-响应模型"><a href="#请求-响应模型" class="headerlink" title="请求-响应模型"></a>请求-响应模型</h3><p>HTTP1.1是无状态协议，需要以客户端请求开始，然后才能响应。一个TCP上同时只能有一个请求&#x2F;响应。TCP协议的能力并没有被充分利用。在HTTP1.1启用keep-alive后，TCP连接重复建立的问题被解决。但是请求还是需要排队一个一个发送，TCP的RTT（round-trip time）还是比较可观。后续的HTTP1.1提出了<strong>HTTP管线化</strong>（pipeline），即将多个HTTP请求合并成一个，一起发送，这样的确提高了服务器的资源利用率，但是也会带来线头阻塞（head-of-line blocking）问题，即一个比较耗时的请求会影响后续的所有请求。另外，它会给重试带来麻烦，需要网络中间节点的支持。所以这个特性并没有得到浏览器和服务器认可，实现也并不普及。目前大多数桌面浏览器也是默认关闭这个特性的。</p>
+<p><img src="https://mdn.mozillademos.org/files/13727/HTTP1_x_Connections.png" alt="http-pipeline"></p>
+<h4 id="那些年，我们一起克服延迟的办法"><a href="#那些年，我们一起克服延迟的办法" class="headerlink" title="那些年，我们一起克服延迟的办法"></a>那些年，我们一起克服延迟的办法</h4><p>针对上面的困难，智慧的开发者们自然也是有了许多应对办法。</p>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/spriting.jpg"></p>
+<ul>
+<li>雪碧图：将小图片整合成一张大图。</li>
+<li>内联：将高优先级资源或小资源通过script标签或style标签或dataUrl的形式直接内嵌在页面里</li>
+<li>分片（sharding）与域名散列：将图片或者其他资源分发到不同主机。最初的HTTP1.1规范（RFC2616）提到一个客户端最多只能对同一主机建立两个TCP连接。后来，两个连接的限制被取消了（RFC7230），现在的浏览器一般允许每个域名主机建立6-8个连接。根据httparchive.org的记录显示，在Top30万个URL中平均使用40个TCP连接来显示页面</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/bagder/http2-explained/master/images/expressen-sharding.jpg" alt="http-sharding"></p>
+<p>除此之外，为了减少请求数，前端会将代码合并并打包，这也是webpack这样的工具诞生的背景。</p>
+<h3 id="冗长的头部"><a href="#冗长的头部" class="headerlink" title="冗长的头部"></a>冗长的头部</h3><p>HTTP1.1中1000+字节的头部都是常见的且体积较大的，如<code>Cookie</code>。头部信息有许多多余信息。这也让许多大请求建立连接的过程变得很慢。</p>
+<p>总结来看，HTTP1.1遗留了下面几个问题：</p>
+<ul>
+<li>对TCP利用较差，同时只能有一个请求&#x2F;响应<ul>
+<li>目前应对方法：开多个TCP连接（分片），减少请求数（合并资源）；这些方法多少会遇到TCP慢启动、DNS开销等问题</li>
+</ul>
+</li>
+<li>HTTP头部没有压缩，占用较大空间<ul>
+<li>目前应对方法：减少请求数、使用cookie-less域名</li>
+</ul>
+</li>
+<li>固有的请求-响应模式，重要资源无法优先推送<ul>
+<li>目前应对方法：内联资源</li>
+</ul>
+</li>
+</ul>
+<p>HTTP&#x2F;2对于上面这些问题自然是重拳出击。</p>
+<h2 id="HTTP-x2F-2概述"><a href="#HTTP-x2F-2概述" class="headerlink" title="HTTP&#x2F;2概述"></a>HTTP&#x2F;2概述</h2><blockquote>
+<p>“HTTP&#x2F;2 enables a more efficient use of network resources and a reduced perception of latency by introducing header field compression and allowing multiple concurrent exchanges on the same connection. It also introduces unsolicited push of representations from servers to clients.”</p>
+</blockquote>
+<p>根据<a target="_blank" rel="noopener" href="https://httpwg.org/specs/rfc7540.html">RFC7540</a>的摘要，简明扼要地点出了HTTP&#x2F;2带来的几个重要特性：</p>
+<ul>
+<li>多路复用的二进制协议；一个TCP连接上不再只有1个请求&#x2F;响应，同时采用二进制而非文本传输数据</li>
+<li>头部压缩；用二进制分帧配合专门设计的头部压缩算法（HPACK）大大减少头部体积，HPACK有专门的<a target="_blank" rel="noopener" href="https://httpwg.github.io/specs/rfc7541.html">RFC7541</a>来规范。</li>
+<li>服务器推送；在客户端发送请求前，主动将资源推送给客户端</li>
+</ul>
+<p>整个HTTP&#x2F;2实际上还是在HTTP的框架下的，对HTTP1.1也是完全兼容的，这意味着你可以像以前一样使用HTTP的API、方法、头部、状态码这些：</p>
+<ul>
+<li>HTTP&#x2F;2必须维持HTTP的范式。它只是一个让客户端发送请求到服务器的基于TCP的协议</li>
+<li>不能改变<code>http://</code>和<code>https://</code>这样的URL，也不能对其添加新的结构。使用这类URL的网站太多了，没法指望他们全部改变。</li>
+<li>HTTP1.1的服务器和客户端依然会存在很久，所以必须提供HTTP1.1到HTTP&#x2F;2服务器的代理</li>
+<li>不再使用小版本号。服务器和客户端都必须确定自己是否完整兼容http2或者彻底不兼容</li>
+</ul>
+<h3 id="协商"><a href="#协商" class="headerlink" title="协商"></a>协商</h3><p>SPDY依赖于TLS，不过从SPDY中诞生的HTTP&#x2F;2却可以选择是否基于TLS。由此带来2种HTTP&#x2F;2协商机制。对于普通的HTTP1.1，通过给服务器发送一个带升级头部的报文。如果服务器支持HTTP&#x2F;2，它将以“101 Switching”作为回复的状态码，并从此开始在该连接上使用HTTP&#x2F;2。这种连接方式也被称为<strong>h2c</strong>（HTTP&#x2F;2 cleartext），此时HTTP&#x2F;2在TCP之上运行。出于安全性考虑。<strong>几乎所有的主流浏览器都不支持这种协商实现</strong>（curl可以支持）。</p>
+<p>对于在TLS之上的https，Next Protocol Negotiation (NPN)是一个用来在TLS服务器上协商SPDY的协议。IETF将这个非正式标准进行规范化，从而演变成了ALPN（Application Layer Protocol Negotiation）。ALPN会伴随HTTP&#x2F;2中的使用而推广，考虑到SPDY会使用NPN，而许多服务器又会同时提供SPDY以及HTTP&#x2F;2，所以在这些服务器上同时支持ALPN以及NPN显然会成为最理所当然的选择。ALPN和NPN的主要区别在于，ALPN中由服务端最终决定通信协议，NPN中由客户端最终决定。</p>
+<h2 id="HTTP-x2F-2特性"><a href="#HTTP-x2F-2特性" class="headerlink" title="HTTP&#x2F;2特性"></a>HTTP&#x2F;2特性</h2><p>在HTTP&#x2F;2的介绍中提到，协议通过定义一个优化的基础连接的HTTP语义映射来解决HTTP1.1的问题。具体地，它允许在<strong>同一连接</strong>上<strong>交错</strong>地建立请求和响应消息，并使用<strong>高效率编码</strong>的HTTP报头字段。它还允许<strong>请求的优先级</strong>，让更多的重要的请求更快速的完成，进一步提升了性能。最终协议设计为对网络更友好，因为它相对HTTP&#x2F;1.x减少了TCP连接。最后，这种封装也通过使用<strong>二进制消息帧</strong>使信息处理更具扩展性。</p>
+<p>里面加粗的部分即HTTP&#x2F;2带来的几个新特性：</p>
+<ul>
+<li>单一TCP连接</li>
+<li>二进制分帧<ul>
+<li>请求优先级</li>
+<li>服务端推送</li>
+<li>流量控制</li>
+</ul>
+</li>
+<li>多路复用</li>
+<li>头部压缩（HPACK）</li>
+</ul>
+<h3 id="二进制分帧“层”"><a href="#二进制分帧“层”" class="headerlink" title="二进制分帧“层”"></a>二进制分帧“层”</h3><p>首先，HTTP&#x2F;2是个二进制协议。它的请求和响应都是流的形式，它基本的协议单位是帧。每个帧都有不同的类型和用途。HTTP&#x2F;2所有性能增强的核心也在于这个新的二进制分帧层，它定义了如何封装 HTTP 消息并在客户端与服务器之间传输。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/binary_framing_layer01.svg" alt="http2-framing-layer"></p>
+<p>从图中能看到，在TLS之上，HTTP&#x2F;2之下新增了一个二进制分帧层。这里所谓的“层”，指的是位于套接字接口与应用可见的高级HTTP API之间一个经过优化的新编码机制：HTTP的语义（包括各种动词、方法、标头）都不受影响，不同的是传输期间对它们的<strong>编码方式</strong>变了。不同于HTTP1.x里面用换行符作为分隔，HTTP&#x2F;2中将信息分割成帧，并进行二进制编码。整个分帧过程由客户端和服务端替我们完成。</p>
+<h3 id="数据流和帧"><a href="#数据流和帧" class="headerlink" title="数据流和帧"></a>数据流和帧</h3><p>上面这种二进制分帧机制改变了客户端与服务器之间交换数据的方式，也带来了流的概念。</p>
+<ul>
+<li>流（Stream）：一个双向字节帧流穿过HTTP&#x2F;2连接中的虚拟通道，可以承载一条或多条消息。</li>
+<li>消息：与逻辑请求或响应消息对应的完整的一系列帧。</li>
+</ul>
+<p>流的生存周期包含idle、reserved(local)、reserved(remote)、open、half closed(local)、half closed(remote)、closed多个阶段。状态间通过特定的帧类型流转。在不同状态下对应着不同的能力，对于<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7540#section-5.1">状态规范</a>描述以外的操作请求都会给出协议错误（PROTOCOL_ERROR）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">                         +--------+</span><br><span class="line">                 send PP |        | recv PP</span><br><span class="line">                ,--------|  idle  |--------.</span><br><span class="line">               /         |        |         \</span><br><span class="line">              v          +--------+          v</span><br><span class="line">       +----------+          |           +----------+</span><br><span class="line">       |          |          | send H /  |          |</span><br><span class="line">,------| reserved |          | recv H    | reserved |------.</span><br><span class="line">|      | (local)  |          |           | (remote) |      |</span><br><span class="line">|      +----------+          v           +----------+      |</span><br><span class="line">|          |             +--------+             |          |</span><br><span class="line">|          |     recv ES |        | send ES     |          |</span><br><span class="line">|   send H |     ,-------|  open  |-------.     | recv H   |</span><br><span class="line">|          |    /        |        |        \    |          |</span><br><span class="line">|          v   v         +--------+         v   v          |</span><br><span class="line">|      +----------+          |           +----------+      |</span><br><span class="line">|      |   half   |          |           |   half   |      |</span><br><span class="line">|      |  closed  |          | send R /  |  closed  |      |</span><br><span class="line">|      | (remote) |          | recv R    | (local)  |      |</span><br><span class="line">|      +----------+          |           +----------+      |</span><br><span class="line">|           |                |                 |           |</span><br><span class="line">|           | send ES /      |       recv ES / |           |</span><br><span class="line">|           | send R /       v        send R / |           |</span><br><span class="line">|           | recv R     +--------+   recv R   |           |</span><br><span class="line">| send R /  `-----------&gt;|        |&lt;-----------&#x27;  send R / |</span><br><span class="line">| recv R                 | closed |               recv R   |</span><br><span class="line">`-----------------------&gt;|        |&lt;----------------------&#x27;</span><br><span class="line">                         +--------+</span><br><span class="line"></span><br><span class="line">   send:   endpoint sends this frame</span><br><span class="line">   recv:   endpoint receives this frame</span><br><span class="line"></span><br><span class="line">   H:  HEADERS frame (with implied CONTINUATIONs)</span><br><span class="line">   PP: PUSH_PROMISE frame (with implied CONTINUATIONs)</span><br><span class="line">   ES: END_STREAM flag</span><br><span class="line">   R:  RST_STREAM frame</span><br></pre></td></tr></table></figure>
+
+<p>流和帧的关系是：</p>
+<ul>
+<li>所有通信都在一个TCP连接上完成，这个连接可以承载任意数量的流</li>
+<li>每个流上面都有唯一标识符和<em>可选</em>的优先级信息，里面会承载要传递的消息</li>
+<li>每条消息都是一条逻辑HTTP信息（如请求或相应），有完整的HTTP语义，其中可能有一个或多个帧</li>
+<li>帧是最小的通信单位，承载着特定类型的数据，例如HTTP 标头、消息负载等等。帧可以<strong>交错发送</strong>，然后再根据帧头的数据流标识符进行组装</li>
+</ul>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/streams_messages_frames01.svg" alt="http2-frame"></p>
+<p>所有的帧以8字节的报头开始并且跟着0到16383字节长度的主体。帧格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| R |     Length (14)           |   Type (8)    |   Flags (8)   |</span><br><span class="line">+-+-+-----------+---------------+-------------------------------+</span><br><span class="line">|R|                 Stream Identifier (31)                      |</span><br><span class="line">+=+=============================================================+</span><br><span class="line">|                   Frame Payload (0...)                      ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li>R：保留字段</li>
+<li>Length：14位无符号整数的帧主体长度</li>
+<li>Type：帧类型，它描述了剩余的帧报头和帧主体将如何被解释</li>
+<li>Flags：为帧类型保留的8位布尔类型字段，根据不同帧类型赋予不同语义</li>
+<li>Stream Identifier：31字节的流标识符(见StreamIdentifiers)。0是保留的，标明帧是与连接相关作为一个整体而不是一个单独的流。</li>
+</ul>
+<h3 id="请求与响应复用"><a href="#请求与响应复用" class="headerlink" title="请求与响应复用"></a>请求与响应复用</h3><p>在HTTP1.1中，客户端要想发起多个并行请求以提升性能，则必须使用多个TCP连接，这种对TCP效率低下的利用，在HTTP&#x2F;2中得到改善。二进制分帧层将HTTP消息分解为互不依赖的帧，然后交错发送，最后再在另一端把它们重新组装起来。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/multiplexing01.svg" alt="http2-reusing"></p>
+<p>在上图中，流1和流3交错在同一个TCP连接上并行运行。这种机制带来了下面一些具体的提升：</p>
+<ul>
+<li>请求之间交错且互不影响</li>
+<li>响应之间交错且互不影响</li>
+<li>可以使用一个连接并行发送多个请求和响应</li>
+<li>不必再为了优化HTTP1.1性能做雪碧图、分片等骚操作</li>
+<li>一定程度上解决了线头阻塞问题</li>
+</ul>
+<h3 id="流控制"><a href="#流控制" class="headerlink" title="流控制"></a>流控制</h3><p>HTTP&#x2F;2的流控制类似TCP，但是更为精细和更靠近应用层。借助HTTP&#x2F;2流控制，可以实现在用户暂停一个大型视频流后，减少或阻塞视频里带来的HTTP流量，又或者中间代理匹配上下游流量速率。HTTP&#x2F;2流控制提出了一些规则，但<strong>并没有指出特定算法</strong>，目标在于允许不需要协议改动的情况下改进流量控制算法。</p>
+<ul>
+<li>流量控制是逐跳的，而不是头尾端点的</li>
+<li>流量控制是基于窗口更新帧的。接收端广播自己准备在流及整个连接过程中接收的字节大小。这是一个信用为基础的方案。</li>
+<li>流量控制是有方向性的，由接收端全权掌握。</li>
+<li>流量控制窗口初始值是65,535字节，不过接收方可以设置一个更大的值</li>
+<li>帧类型决定了是否适用流量控制规则。目前只有DATA帧受流量控制</li>
+<li>不能被禁用</li>
+<li>通过使用<code>WINDOW_UPDATE</code>帧类型来实现</li>
+</ul>
+<h3 id="流优先级"><a href="#流优先级" class="headerlink" title="流优先级"></a>流优先级</h3><p>HTTP&#x2F;2标准允许每个数据流都有一个关联的权重和依赖关系：</p>
+<ul>
+<li>可以向每个数据流分配一个介于1至256之间的整数。</li>
+<li>每个数据流与其他数据流之间可以存在显式依赖关系。</li>
+</ul>
+<p>优先级的目的是让客户端可以构建和传递“优先级树”，表明它倾向于如何接收响应。反过来，服务器可以使用此信息通过控制CPU、内存和其他资源的分配设定数据流处理的优先级。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/stream_prioritization01.svg" alt="http2-priority"></p>
+<p>数据流依赖关系通过将另一个数据流的唯一标识符作为父项引用进行声明；如果忽略标识符，相应数据流将依赖于“根数据流”。分配时，会尽可能先向父数据流分配资源，然后再向其依赖项分配资源。共享相同父项的数据流按其权重比例分配资源。在上图中，数据流B获得的资源是数据流A所获资源的三分之一。</p>
+<p>新建流的终端可以在报头帧中包含优先级信息来对流标记优先级。对于已存在的流，优先级帧可以用来改变流优先级。</p>
+<p>更详细规范参考<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7540#section-5.3">RFC</a>。</p>
+<h3 id="帧类型"><a href="#帧类型" class="headerlink" title="帧类型"></a>帧类型</h3><h4 id="DATA"><a href="#DATA" class="headerlink" title="DATA"></a>DATA</h4><p>数据帧，类型0x0，传递和流关联的任意变量值长度的字节数据。例如，一个或多个数据帧被用来携带HTTP请求或者响应的载体。数据帧定义了以下标记：</p>
+<ul>
+<li>END_STREAM (0x1) ：用来表示当前帧是确定的流发送的最后一帧。设置这个标记时流进入到一种半封闭状态或者关闭状态。</li>
+<li>END_SEGMENT (0x2) ：表示是当前端的最后一帧。代理端绝对不能跨越多个端的边界来合并帧，转发帧的时候代理端必须保持片段的边界。</li>
+<li>PADDED (0x8) ： 位4用来表示Pad Length字段是可见的。</li>
+</ul>
+<p>数据帧绝对需要与流相关联，且遵从流量控制。</p>
+<h4 id="HEADERS"><a href="#HEADERS" class="headerlink" title="HEADERS"></a>HEADERS</h4><p>报头帧，类型0x1，用来打开一个流，并携带头部片段。能在流打开或者半封闭(远程)的状态下发送。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|Pad Length? (8)|</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|E|                 Stream Dependency? (31)                     |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|  Weight? (8)  |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|                   Header Block Fragment (*)                 ...</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                           Padding (*)                       ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>它有以下标记：</p>
+<ul>
+<li>END_STREAM (0x1) ：用来标识这是发送端对确定的流发送的最后报头区块。设置这个标记将使流进入一种半封闭状态。后面伴随带有END_STREAM标记的延续帧的报头帧表示流的终止。延续帧不用来终止流。</li>
+<li>END_SEGMENT (0x2) ：表示这是当前端的最后一帧。中介端绝对不能跨片段来合并帧，且在转发帧的时候必须保持片段的边界。</li>
+<li>END_HEADERS (0x4) ：表示帧包含了整个的报头块，且后面没有延续帧。不带有END_HEADERS标记的报头帧在同个流上后面必须跟着延续帧。</li>
+<li>PADDED (0x8) ：表示Pad Length字段会呈现。</li>
+<li>PRIORITY (0x8) ：设置指示专用标记(E)，流依赖及权重字段将会呈现</li>
+</ul>
+<h4 id="PRIORITY"><a href="#PRIORITY" class="headerlink" title="PRIORITY"></a>PRIORITY</h4><p>优先级帧，类型0x2。明确了发送者建议的流的优先级，它可以在任意时间的流中发送。优先级帧不包含任何标记（flag）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|E|                  Stream Dependency (31)                     |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|   Weight (8)  |</span><br><span class="line">+-+-------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="RST-STREAM"><a href="#RST-STREAM" class="headerlink" title="RST_STREAM"></a>RST_STREAM</h4><p>类型0x3，允许流的立即终止。通常用来取消一个流，或表示有错误发生。绝不应该在idle状态下发出。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        Error Code (32)                        |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="SETTINGS"><a href="#SETTINGS" class="headerlink" title="SETTINGS"></a>SETTINGS</h4><p>设置帧，类型0x4。包含影响如何与终端通信的设置参数，并且用来确认这些参数的接收。设置帧<em>必须</em>由两个终端在连接开始的时候发送，并且<em>可以</em>由各个终端在连接生存期的任意时间发送。</p>
+<h4 id="PUSH-PROMISE"><a href="#PUSH-PROMISE" class="headerlink" title="PUSH_PROMISE"></a>PUSH_PROMISE</h4><p>推送承诺帧，类型0x5。用来在流发送者准备发送流之前告知对等端。包含了终端准备创建的长流的31位无符号标记以及提供附加上下文的报头的集合。通常在服务器中使用。推送承诺的接收端可以选择给推送承诺的发送端返回一个与被承诺的流标识符相关的RST_STREAM标记来拒绝接收承诺流。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| [Pad High(8)] | [Pad Low (8)] |X|  Promised Stream ID (31)  ...</span><br><span class="line">+---------------+---------------+-+-----------------------------+</span><br><span class="line">...    Promised Stream ID       | Header Block Fragment (*)   ...</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">|                   Header Block Fragment (*)                 ...</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                           Padding (*)                       ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h4><p>类型0x6。从发送端测量最小的RTT时间的机制，同样也是一种检测连接是否可用的方法。PING帧可以被任何终端发送，且必须在载体中包含一个8字节长度的任意数据。</p>
+<h4 id="GOAWAY"><a href="#GOAWAY" class="headerlink" title="GOAWAY"></a>GOAWAY</h4><p>超时帧，类型0x7。通知远端对等端不要在这个连接上建立新流。超时帧可以由客户端或者服务端发送。发送后，可以针对新的流创建一个新的连接。这个帧的目的是允许终端优雅的停止接收新的流，但仍可以继续完成之前已经建立的流的处理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|X|                  Last-Stream-ID (31)                        |</span><br><span class="line">+-+-------------------------------------------------------------+</span><br><span class="line">|                      Error Code (32)                          |</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                  Additional Debug Data (*)                    |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>32位的错误码中包含了关闭连接的原因。</p>
+<h4 id="WINDOW-UPDATE"><a href="#WINDOW-UPDATE" class="headerlink" title="WINDOW_UPDATE"></a>WINDOW_UPDATE</h4><p>窗口更新帧，类型0x8。用来实现流控制。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|X|              Window Size Increment (31)                     |</span><br><span class="line">+-+-------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="CONTINUATION"><a href="#CONTINUATION" class="headerlink" title="CONTINUATION"></a>CONTINUATION</h4><p>延续帧，类型0x9，用来延续一个报头区块。在END_HEADERS标记前，可以在HEADERS帧、PUSH_PROMISE帧以及CONTINUATION帧后接续任意数量的CONTINUATION帧。它包含一个flag：</p>
+<ul>
+<li>END_HEADERS (0x4) : 设置指示这个帧的报头区块的终止</li>
+</ul>
+<p>延续帧必须与流相关联。如果延续帧的相关流表示字段是0x0，终端必须响应一个类型为协议错误的连接错误。</p>
+<h3 id="服务器推送"><a href="#服务器推送" class="headerlink" title="服务器推送"></a>服务器推送</h3><p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/push01.svg" alt="http2-server-push"></p>
+<p>HTTP&#x2F;2中的服务器推送打破了原来HTTP中的请求-响应语义（对原有语义也做了<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7540#section-8.1">改进</a>），支持服务器可以对一个客户端请求发送多个响应。在原先的HTTP1.1中我们可能会将重要资源内联到网页中，减少网络延迟，这实际上等同于HTTP&#x2F;2中的强制推送。在HTTP&#x2F;2中的服务器推送还有下面一些功能：</p>
+<ul>
+<li>推送的资源能被客户端缓存（服务器也只能推送可被缓存的资源）</li>
+<li>在不同页面之间可以重用</li>
+<li>可以由服务器设定优先级</li>
+<li>可以被客户端拒绝</li>
+</ul>
+<p>服务器推送数据流由PUSH_PROMISE帧发起，需要先于请求推送资源的响应数据传输。实现上的策略是先于父响应（即，DATA 帧）发送所有PUSH_PROMISE帧，其中包含所承诺资源的HTTP头部。客户端接收到PUSH_PROMISE帧后，它可以根据自身情况选择接受拒绝（通过RST_STREAM帧）数据流。（例如，如果资源已经位于缓存中）</p>
+<p>客户端完全掌控服务器推送的使用方式。客户端可以限制并行推送的数据流数量；调整初始的流控制窗口以控制在数据流首次打开时推送的数据量；或完全停用服务器推送。这些在HTTP&#x2F;2连接开始时通过SETTINGS帧传输，可能随时更新。</p>
+<h3 id="头部压缩"><a href="#头部压缩" class="headerlink" title="头部压缩"></a>头部压缩</h3><p>在HTTP1.1中，头部数据使用以纯文本的形式传输，所占空间较大，在使用HTTP Cookie后，更是会达到上千字节。为了减少此开销和提升性能，HTTP&#x2F;2使用专门设计的<a target="_blank" rel="noopener" href="https://httpwg.github.io/specs/rfc7541.html">HPACK</a>压缩格式压缩请求和响应头部，这种格式通过静态霍夫曼编码对传输的头部字段进行编码。HPACK要求客户端和服务器同时维护和更新一个包含之前见过的标头字段的索引列表，利用之前传输值的索引列表，我们可以通过传输索引值的方式对重复值进行编码，索引值可用于有效查询和重构完整的头部键值对。</p>
+<p><img src="https://developers.google.com/web/fundamentals/performance/http2/images/header_compression01.svg" alt="hpack"></p>
+<p>作为一种进一步优化方式，HPACK压缩上下文包含一个<a target="_blank" rel="noopener" href="https://httpwg.org/specs/rfc7541.html#static.table.definition">静态表</a>和一个动态表：静态表在规范中定义，并提供了一个所有连接都可能使用的常用HTTP头部字段列表；动态表最初为空，将根据在特定连接内交换的值进行更新。</p>
+<p>早期版本的HTTP&#x2F;2和SPDY使用的<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc1951">DEFLATE</a>对头部进行压缩，但是在2012年夏天出现了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/w/index.php?title=CRIME&oldid=660948120">CRIME</a>这种安全攻击。因此，之后HTTP&#x2F;2的头部压缩采用了专门设计的HPACK方案。在使用HPACK后，初次访问后的压缩率能达到70%~80%，甚至90%+。</p>
+<h2 id="支持度与调试"><a href="#支持度与调试" class="headerlink" title="支持度与调试"></a>支持度与调试</h2><p>支持度上，<a target="_blank" rel="noopener" href="https://caniuse.com/#search=http%2F2">主流浏览器</a>和<a target="_blank" rel="noopener" href="https://github.com/http2/http2-spec/wiki/Implementations">服务器程序</a>都已支持。你也可以访问<a target="_blank" rel="noopener" href="https://http2.akamai.com/demo">这个网址</a>体验HTTP&#x2F;2和HTTP1.1在load大量图片时的延迟对比。</p>
+<p>如果你想确认当前网页中的哪些请求是使用的HTTP&#x2F;2，可以在chrome devTools下的network选项卡里查看“Protocol”列（未发现此列的可以在表头右键找到并勾选显示），其中HTTP&#x2F;2将显示为h2。正如之前所说，支持HTTP&#x2F;2的浏览器会和服务器使用特定协议协商，对于不支持HTTP&#x2F;2的情况，会自动会退到HTTP1.1版本。</p>
+<p>尽管HTTP&#x2F;2使用二进制传输数据，然而浏览器为我们掩盖了实现细节。如果想要深入查看甚至是调试二进制分帧层的功能，如何去debug呢？</p>
+<ul>
+<li>Wireshark</li>
+<li>curl</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/bradfitz/http2/tree/master/h2i">h2i</a>，不过这个好像已经不维护了</li>
+</ul>
+<h2 id="TLS调优"><a href="#TLS调优" class="headerlink" title="TLS调优"></a>TLS调优</h2><p>目前各大浏览器只在<code>https://</code>的基础上支持HTTP&#x2F;2，即在TLS层之上的HTTP&#x2F;2。多出的TLS的层也是会增加时延和成本的，具体涉及到的TLS握手、会话和加密套件协商过程还有优化空间，如减少证书层级、减少证书大小等。其余优化方向可以查看参考中一些文章介绍。</p>
+<h2 id="之前的优化还应该继续用么"><a href="#之前的优化还应该继续用么" class="headerlink" title="之前的优化还应该继续用么"></a>之前的优化还应该继续用么</h2><h3 id="继续保持的"><a href="#继续保持的" class="headerlink" title="继续保持的"></a>继续保持的</h3><ul>
+<li>减少DNS查询<ul>
+<li>减少域名</li>
+<li>启用预读：dns-prefetch</li>
+</ul>
+</li>
+<li>使用CDN</li>
+<li>避免重定向</li>
+<li>资源压缩<ul>
+<li>代码压缩（JS、HTML、CSS）</li>
+<li>资源压缩（图片、字体、音频、视频）</li>
+<li>文本压缩（Gzip）</li>
+</ul>
+</li>
+<li>使用缓存</li>
+</ul>
+<h3 id="不再需要的"><a href="#不再需要的" class="headerlink" title="不再需要的"></a>不再需要的</h3><ul>
+<li>分片与域名散列：HTTP&#x2F;2对于一个域名只使用一个TCP连接，分片反而会浪费资源，同时也会影响流控制、头部压缩的表现。</li>
+<li>资源打包合并：HTTP&#x2F;2支持多路复用，资源合并会降低缓存利用率，且会让开发流程更复杂。（<a target="_blank" rel="noopener" href="https://github.com/pikapkg/snowpack">snowpack</a>了解一下）</li>
+<li>资源内联：可以由服务器推送解决这类需求，资源内联一方面无法缓存，另一方面会让页面代码更大</li>
+</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
+<li>Q: 既然HTTP&#x2F;2是在SPDY工作基础上设计的，那HTTP&#x2F;2推出后，SPDY还使用吗</li>
+<li>A: Google公开声明了他们会在2016年移除Chrome里对SPDY和NPN的支持，并且极力推动服务器迁移至HTTP&#x2F;2。2016年2月他们<a target="_blank" rel="noopener" href="https://blog.chromium.org/2016/02/transitioning-from-spdy-to-http2.html">声明</a>了SPDY和NPN会在Chrome 51之后被移除。</li>
+<li>Q: 这个协议是否只对大型网站有效</li>
+<li>A: 由于缺乏内容分发网络，小网站的网络延迟往往较高，而多路复用的能力可以极大的改善在高网络延迟下的体验。</li>
+<li>Q: 基于TLS让速度变得更慢</li>
+<li>A: 正如上一节提到的，TLS的握手确实增加了额外的开销，也有越来越多的方案提出来减少TLS往返的时间。TLS同时也会更多消耗CPU等资源，更多例子可见<a target="_blank" rel="noopener" href="https://istlsfastyet.com/">istlsfastyet.com</a>。不过一方面HTTP&#x2F;2并不强制要求基于TLS，另一方面HTTP&#x2F;2带来的性能提升使得即使基于TLS，通常也会比HTTP1.1更快</li>
+<li>Q: 为什么不使用文本传输</li>
+<li>A: 的确，如果可以直接读出协议内容，那么调试和追踪都会变得更为简单。但是二进制带来的灵活度更高，何况浏览器会自动帮你解析。</li>
+<li>Q: 看起来，HTTP1.1中的一些短板并没有改彻底</li>
+<li>A: 实际上，设计HTTP&#x2F;2之初的目标就包括向前兼容HTTP&#x2F;1.1的范式，来保证升级协议也不用重写底层的很多东西。老的HTTP功能，如协议头、状态码、可怕的Cookie，这些都保留了。性能优化更多通过增加了一个中间分帧层解决的。</li>
+<li>Q: 目前使用的广泛程度如何</li>
+<li>A: 在2015年年底大多数浏览器就已经支持HTTP&#x2F;2，目前约96%的浏览器支持HTTP&#x2F;2，同时约46%的网站支持HTTP&#x2F;2。</li>
+</ul>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><ul>
+<li>官网在给出HTTP&#x2F;2规范时，也曾预计要10年时间和HTTP1.1并存，在这个期间，Web优化的思路也可能会有调整</li>
+<li><a target="_blank" rel="noopener" href="https://wiki.openssl.org/index.php/TLS1.3">TLS1.3</a>。2020年2月的<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8740">RFC8740</a>中给出了基于TLS1.3的HTTP&#x2F;2的实现建议。</li>
+<li>既然TCP容易遇到线头阻塞问题，那么能不用使用UDP呢？Google提出的<a target="_blank" rel="noopener" href="https://www.chromium.org/quic">QUIC</a>（Quick UDP Internet Connection）它在很大程度上继承了SPDY的衣钵。QUIC可以理解成TCP + TLS + HTTP&#x2F;2替代实现。</li>
+<li>2018年10月，互联网工程任务组HTTP及QUIC工作小组正式将基于QUIC协议的HTTP（英语：HTTP over QUIC）重命名为<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/draft-ietf-quic-http/">HTTP&#x2F;3</a>以为确立下一代规范做准备。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://imququ.com/post/http2-new-opportunities-and-challenges.html">HTTP&#x2F;2：新的机遇与挑战</a></li>
+<li><a target="_blank" rel="noopener" href="https://imququ.com/post/http2-resource.html">HTTP&#x2F;2 资料汇总</a></li>
+<li><a target="_blank" rel="noopener" href="https://http2.github.io/">HTTP&#x2F;2官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://httpwg.org/specs/rfc7540.html">HTTP&#x2F;2规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://httpwg.github.io/specs/rfc7541.html">HPACK规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/performance/http2">HTTP&#x2F;2简介</a></li>
+<li><a target="_blank" rel="noopener" href="https://ye11ow.gitbooks.io/http2-explained/content/">HTTP&#x2F;2讲解</a></li>
+<li><a target="_blank" rel="noopener" href="https://imququ.com/post/header-compression-in-http2.html">HTTP&#x2F;2 头部压缩技术介绍</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fex-team/http2-spec/blob/master/HTTP2%E4%B8%AD%E8%8B%B1%E5%AF%B9%E7%85%A7%E7%89%88(06-29).md">HTTP&#x2F;2草案13中英对照</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.mnot.net/talks/h2fe/#8">HTTP&#x2F;2 for Front-End Developers</a></li>
+<li><a target="_blank" rel="noopener" href="http://velocityconf.com/devops-web-performance-2015/public/schedule/detail/42385">HTTP&#x2F;2 is here, let’s optimize!</a></li>
+<li><a target="_blank" rel="noopener" href="https://caniuse.com/#search=HTTP%2F2">HTTP&#x2F;2支持度</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/http2/http2-spec/wiki/Implementations">HTTP&#x2F;2实现列表</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.chainnews.com/articles/401950499827.htm">HTTP发展史梳理笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://http2.akamai.com/demo">HTTP&#x2F;2 is the future of the Web | Akamai</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1438,217 +1803,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/04/17/fe-coverage-improve/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2020/04/17/fe-coverage-improve/" class="post-title-link" itemprop="url">前端代码覆盖率实时统计改进方案</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-04-17 00:08:03 / 修改时间：00:16:26" itemprop="dateCreated datePublished" datetime="2020-04-17T00:08:03+08:00">2020-04-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2020/04/17/fe-coverage-improve/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/17/fe-coverage-improve/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>8.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>14 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/">旧的覆盖率方案</a>实现了覆盖率采集的可行性探索。但是旧方案中也存在着侵入较多，适用场景有局限性，istanbul版本老旧，sourcemap支持不足等问题需要优化。有关覆盖率采集、维护、呈现、上报需要一个更通用和更具可拓展性的方案。</p>
-<p>因此，在对整个覆盖率要解决的问题和目标进行抽象后，可以得到以下的实现方案。</p>
-<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img src="https://s1.ax1x.com/2020/04/16/JEZ1J0.png" alt="整体结构"></p>
-<p>新的覆盖率方案可以分为3层：</p>
-<ul>
-<li><strong>采集层</strong>，这一层主要解决对代码进行<strong>插桩</strong>（instrument）的过程，只有插桩过的代码才能在执行的过程中不断积累覆盖率数据，从而通过端到端测试得到代码的覆盖率情况</li>
-<li><strong>数据层</strong>，采集到的覆盖率数据有上报的需求，浏览器端数据只有上报到服务端才能查看和操作，如果接入第三方平台，就更需要有专门数据<strong>处理和上报</strong>，这一层正是完成这部分工作</li>
-<li><strong>视图层</strong>，方案要自带<strong>视图化</strong>能力，给开发者更直观的反馈，同时要有<strong>可交互性</strong>，满足开发者的日常需求。这一层要能比较方便地绑定到流行的服务端环境中，减少侵入成本</li>
-</ul>
-<p>整体实现上，基于新版本<a target="_blank" rel="noopener" href="https://github.com/gotwarlost/istanbul">istanbuljs</a>。下面分层介绍各层实现中需要进行的工作。</p>
-<h2 id="采集层"><a href="#采集层" class="headerlink" title="采集层"></a>采集层</h2><p>代码插桩实现中，拆分为下面几点：</p>
-<h3 id="babel-preset"><a href="#babel-preset" class="headerlink" title="babel preset"></a>babel preset</h3><p>对于使用babel转码的工程来说，<a target="_blank" rel="noopener" href="https://github.com/istanbuljs/babel-plugin-istanbul">babel-plugin-istanbul</a>直接提供了一个可以插桩代码的插件。这里要做的只是区分线上和其他环境，以及预定义preset，减少用户babel配置成本。</p>
-<p>babel preset的书写可以参考<a target="_blank" rel="noopener" href="https://babeljs.io/docs/en/presets#creating-a-preset">babel preset</a>一节，我们只需将原先<code>.babelrc</code>或<code>babel.config.js</code>中的配置项用<code>require</code>包裹即可。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">env</span>: &#123;</span><br><span class="line">            <span class="attr">development</span>: &#123;</span><br><span class="line">                <span class="attr">plugins</span>: [</span><br><span class="line">                    [<span class="built_in">require</span>(<span class="string">&#x27;babel-plugin-istanbul&#x27;</span>)]</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">boe</span>: &#123;</span><br><span class="line">                <span class="attr">plugins</span>: [</span><br><span class="line">                    [<span class="built_in">require</span>(<span class="string">&#x27;babel-plugin-istanbul&#x27;</span>)]</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>相对应的，接入方需要额外在<code>scm_build.sh</code>脚本中额外传入boe环境变量来区分boe和线上环境：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$BUILD_TYPE</span> = <span class="string">&quot;offline&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    BABEL_ENV=boe yarn build</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    yarn build</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>同时，默认情况下，istanbul只会对后缀为<code>[&#39;.js&#39;, &#39;.cjs&#39;, &#39;.mjs&#39;, &#39;.ts&#39;, &#39;.tsx&#39;, &#39;.jsx&#39;]</code>的文件进行处理，为了处理<code>.vue</code>文件，需要显式给<code>babel-plugin-istanbul</code>文件传入<code>extension</code>字段。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">env</span>: &#123;</span><br><span class="line">            <span class="attr">development</span>: &#123;</span><br><span class="line">                <span class="attr">plugins</span>: [</span><br><span class="line">                    [<span class="built_in">require</span>(<span class="string">&#x27;babel-plugin-istanbul&#x27;</span>), &#123; <span class="attr">extension</span>: [<span class="string">&#x27;.js&#x27;</span>, <span class="string">&#x27;.cjs&#x27;</span>, <span class="string">&#x27;.mjs&#x27;</span>, <span class="string">&#x27;.ts&#x27;</span>, <span class="string">&#x27;.tsx&#x27;</span>, <span class="string">&#x27;.jsx&#x27;</span>, <span class="string">&#x27;.vue&#x27;</span>] &#125;]</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">boe</span>: &#123;</span><br><span class="line">                <span class="attr">plugins</span>: [</span><br><span class="line">                    [<span class="built_in">require</span>(<span class="string">&#x27;babel-plugin-istanbul&#x27;</span>), &#123; <span class="attr">extension</span>: [<span class="string">&#x27;.js&#x27;</span>, <span class="string">&#x27;.cjs&#x27;</span>, <span class="string">&#x27;.mjs&#x27;</span>, <span class="string">&#x27;.ts&#x27;</span>, <span class="string">&#x27;.tsx&#x27;</span>, <span class="string">&#x27;.jsx&#x27;</span>, <span class="string">&#x27;.vue&#x27;</span>] &#125;]</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="hookRequire动态插桩"><a href="#hookRequire动态插桩" class="headerlink" title="hookRequire动态插桩"></a><code>hookRequire</code>动态插桩</h3><p>有些场景下并不使用babel进行转码，这里以最典型的TypeScript为例，<code>.ts</code>文件可以用<code>tsc</code>编译。<code>tsc</code>编译后的js代码只有插桩后，才可能采集到的覆盖率数据，因此接入方需要在所有业务代码的import之前调用hook，保证所有的服务端js代码在被执行前都完成了插桩。</p>
-<p>实现上，新版本istanbuljs整个是个monorepo，原来istanbul各模块的功能拆分到了packages的各子项目中。其中和hook相关的位于<strong>istanbul-lib-hook</strong>。这个库虽然并没有API和文档。但还好，和老版本的hook.js区别不大。使用暴露出来的<strong>hookRequire</strong>方法即可，使用方式也与之前无异。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// old</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> istanbul <span class="keyword">from</span> <span class="string">&#x27;istanbul&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> &#123; hook &#125; = istanbul;</span><br><span class="line"></span><br><span class="line">instrumenter = <span class="keyword">new</span> <span class="title class_">Instrumenter</span>(options);</span><br><span class="line"><span class="keyword">const</span> transformer = instrumenter.<span class="property">instrumentSync</span>.<span class="title function_">bind</span>(instrumenter);</span><br><span class="line">hook.<span class="title function_">hookRequire</span>(matcher, transformer, &#123;</span><br><span class="line">    <span class="attr">postLoadHook</span>: <span class="function">(<span class="params">file: <span class="built_in">any</span></span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// new</span></span><br><span class="line"><span class="keyword">import</span> &#123; hookRequire &#125; <span class="keyword">from</span> <span class="string">&#x27;istanbul-lib-hook&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; createInstrumenter &#125; <span class="keyword">from</span> <span class="string">&#x27;istanbul-lib-instrument&#x27;</span>;</span><br><span class="line"></span><br><span class="line">instrumenter = <span class="title function_">createInstrumenter</span>(options);</span><br><span class="line"><span class="keyword">const</span> transformer = instrumenter.<span class="property">instrumentSync</span>.<span class="title function_">bind</span>(instrumenter);</span><br><span class="line"><span class="title function_">hookRequire</span>(matcher, transformer, &#123;</span><br><span class="line">    <span class="attr">postLoadHook</span>: <span class="function">(<span class="params">file: <span class="built_in">any</span></span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p><code>hookRequire</code>方法接受3个参数：</p>
-<ul>
-<li><code>matcher</code>，来自用户输入，用来判断当前文件是否要被hook</li>
-<li><code>transformer</code>，最关键的代码转换函数，读入代码，返回转换后的代码，插桩的转换由<strong>istanbul-lib-instrument</strong>提供（原先的instrumenter.js），理论上也能支持其他的转换函数。这里使用<code>instrumentSync</code>这个同步转换。</li>
-<li><code>options</code>，支持verbose和postLoadHook两个选项<ul>
-<li><code>verbose</code>，boolean，是否打印详细日志</li>
-<li><code>postLoadHook</code>，function，成功回调，函数会传入完整的文件名</li>
-</ul>
-</li>
-</ul>
-<h3 id="sourcemap处理"><a href="#sourcemap处理" class="headerlink" title="sourcemap处理"></a>sourcemap处理</h3><p>由于istanbuljs插桩的是编译后的js代码，需要借助sourcemap才能找到源文件的覆盖情况。编译后文件的覆盖情况对开发者没有借鉴意义。使用<code>hookRequire</code>动态插桩时，还是需要自己处理sourcemap。</p>
-<p>老版本istanbul对sourcemap并不支持，需要借助<a target="_blank" rel="noopener" href="https://github.com/SitePen/remap-istanbul">remap-istanbul</a>才能实现。新版本的istanbuljs有一个独立的包<strong>istanbul-lib-source-maps</strong>支持这方面的功能。遗憾的是，再次没有文档介绍如何使用。</p>
-<p>通过查看测试样例和阅读源码可以发现，istanbul-lib-instrument中的<code>instrumentSync</code>支持第三个<code>sourcemap</code>参数，如果传入，则会在采集文件的覆盖率数据中附加该文件的sourcemap信息到<code>inputSourceMap</code>字段。而istanbul-lib-source-maps这个包可以对覆盖率数据中带有<code>inputSourceMap</code>字段的数据进行反映射，得到源文件覆盖情况。最终达到我们的目的。</p>
-<p>源文件的sourcemap信息需要自己采集，这里借鉴的nyc中使用的方案：<a target="_blank" rel="noopener" href="https://github.com/thlorenz/convert-source-map">convert-source-map</a>。这个npm包可以读取文件末尾的sourcemap字符串并转换为sourcemap对象。所以整体上，实现sourcemap处理的流程如下：</p>
-<ol>
-<li>在hookRequire的transformer中拿到代码字符串</li>
-<li>通过convert-source-map的<code>fromSource</code>方法拿到sourcemap对象</li>
-<li>在调用istanbul-lib-instrument的<code>instrumentSync</code>方法时，传入该对象<ol>
-<li>instrumenter内部的visitor.js调用source-coverage.js的<code>inputSourceMap</code>方法将文件的sourcemap传入</li>
-<li>source-coverage.js将sourcemap存入覆盖率数据中</li>
-</ol>
-</li>
-<li>使用istanbul-lib-source-maps中的<code>transformCoverage</code>方法转换覆盖率数据即可得到原始的覆盖率</li>
-</ol>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createInstrumenter &#125; <span class="keyword">from</span> <span class="string">&#x27;istanbul-lib-instrument&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> convert <span class="keyword">from</span> <span class="string">&#x27;convert-source-map&#x27;</span>;</span><br><span class="line"></span><br><span class="line">instrumenter = <span class="title function_">createInstrumenter</span>(&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// Step 1</span></span><br><span class="line"><span class="keyword">const</span> <span class="attr">transformer</span>: <span class="title class_">Transformer</span> = <span class="function">(<span class="params">code, options</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// Step 2</span></span><br><span class="line">    <span class="keyword">const</span> sourceMap = convert.<span class="title function_">fromSource</span>(code);</span><br><span class="line">    <span class="comment">// Step 3</span></span><br><span class="line">    <span class="keyword">const</span> transformed = instrumenter.<span class="title function_">instrumentSync</span>(</span><br><span class="line">        code,</span><br><span class="line">        options.<span class="property">filename</span>,</span><br><span class="line">        sourceMap ? sourceMap.<span class="title function_">toObject</span>() : <span class="literal">undefined</span></span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">return</span> transformed;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">hook</span>(matcher, transformer, &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h2 id="数据层"><a href="#数据层" class="headerlink" title="数据层"></a>数据层</h2><p>在覆盖率数据维护上，主要有下面几点工作：</p>
-<h3 id="sourcemap处理-1"><a href="#sourcemap处理-1" class="headerlink" title="sourcemap处理"></a>sourcemap处理</h3><p>在代码插桩附带上sourcemap信息后，可以参考istanbul-lib-source-maps的测试用例，用<code>transformCoverage</code>方法转换得到原始的覆盖率，即上一个同名小节中的第4步。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getOriginalCoverage</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 采集到的覆盖率</span></span><br><span class="line">    <span class="keyword">const</span> currCoverage = <span class="variable language_">this</span>.<span class="title function_">getCoverage</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">const</span> coverageMap = <span class="title function_">createCoverageMap</span>(currCoverage);</span><br><span class="line">    <span class="keyword">const</span> mapStore = <span class="title function_">createSourceMapStore</span>(&#123;&#125;);</span><br><span class="line">    <span class="comment">// Step 4</span></span><br><span class="line">    <span class="keyword">const</span> transformed = <span class="keyword">await</span> mapStore.<span class="title function_">transformCoverage</span>(coverageMap);</span><br><span class="line">    <span class="comment">// 对应到源文件的覆盖率</span></span><br><span class="line">    <span class="keyword">return</span> transformed.<span class="property">data</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实现时，还需要注意对一些sourcemap结构体中的<code>sourceRoot</code>进行特殊处理，避免反映射后得到嵌套的错误路径。</p>
-<h3 id="覆盖率数据维护"><a href="#覆盖率数据维护" class="headerlink" title="覆盖率数据维护"></a>覆盖率数据维护</h3><p>在一个测试覆盖率的周期下，需要merge每次产生的新的覆盖率。同时，要能通过原始的覆盖率数据生成摘要，方便UI展示。</p>
-<p>istanbul-lib-coverage的<code>CoverageMap</code>类型自带的<code>merge</code>方法，可以merge新的覆盖率数据到源<code>CoverageMap</code>中。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">mergeClientCoverage</span>(<span class="params">clientCoverage: CoverageMap</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!clientCoverage) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> currCoverage = <span class="title function_">getCoverageObject</span>();</span><br><span class="line">    <span class="keyword">const</span> coverageMap = <span class="title function_">createCoverageMap</span>(currCoverage)</span><br><span class="line">    coverageMap.<span class="title function_">merge</span>(clientCoverage)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="基准覆盖数据维护"><a href="#基准覆盖数据维护" class="headerlink" title="基准覆盖数据维护"></a>基准覆盖数据维护</h3><p>有些js代码在未访问到业务代码时就会被执行到，比如<code>import</code>和<code>export</code>语句。这些覆盖率如果被清空，就再也无法通过端到端测试找回来，所以需要对于这部分覆盖数据专门维护，这里称作<strong>基准覆盖数据</strong>。</p>
-<p>实现上，在hook完成后，取得hook文件的覆盖率数据，即可得到。这里需要异步执行，保证能够取到。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">hook</span>(matcher, transformer, &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="attr">postLoadHook</span>: <span class="function">(<span class="params">filename: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="title function_">matcher</span>(filename) &amp;&amp; <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="title class_">Coverage</span>.<span class="title function_">saveBaselineCoverage</span>(filename));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>每次reset操作，实现上并非简单的清空数据，而是将覆盖率数据置为基准覆盖数据。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// express</span></span><br><span class="line">app.<span class="title function_">post</span>(<span class="string">&#x27;/reset&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title class_">Coverage</span>.<span class="title function_">restoreBaselineCoverage</span>();</span><br><span class="line">    res.<span class="title function_">json</span>(&#123; <span class="attr">code</span>: <span class="number">0</span> &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h3 id="数据上报"><a href="#数据上报" class="headerlink" title="数据上报"></a>数据上报</h3><p>数据上报只需实现定期上报，在上报时通过使用方预先定义好的中间件，便于使用方做预处理的工作。同时，提供一个关闭方法，可以在适当时机停止上报，形如：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CoverageCollector</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="title function_">use</span>(<span class="params">middleware: Middleware</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">middlewares</span>.<span class="title function_">push</span>(middleware);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="title function_">init</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">intervalFlag</span>) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">intervalFlag</span> = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="title function_">send</span>(), <span class="variable language_">this</span>.<span class="property">interval</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="title function_">close</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">intervalFlag</span>) &#123;</span><br><span class="line">            <span class="built_in">clearInterval</span>(<span class="variable language_">this</span>.<span class="property">intervalFlag</span>);</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">intervalFlag</span> = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">async</span> <span class="title function_">send</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">const</span> coverageData = <span class="variable language_">this</span>.<span class="property">middlewares</span>.<span class="title function_">reduce</span>(<span class="function">(<span class="params">data, middle</span>) =&gt;</span> <span class="title function_">middle</span>(data), coverage);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">await</span> axios.<span class="title function_">post</span>(<span class="variable language_">this</span>.<span class="property">url</span>, coverageData);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">log</span>(<span class="string">&#x27;Send coverage data failed: &#x27;</span>, err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="视图层"><a href="#视图层" class="headerlink" title="视图层"></a>视图层</h2><p>视图化和可操作性上，有下面几点工作：</p>
-<h3 id="路由提供"><a href="#路由提供" class="headerlink" title="路由提供"></a>路由提供</h3><p>中间件对于开发者的受益，体现在能够通过浏览器访问得到视图化和可操作性的覆盖率数据。在功能上，中间件提供5个路由：</p>
-<ul>
-<li><code>/</code>，GET，提供整个项目的覆盖率摘要页面</li>
-<li><code>/show</code>，GET，访问文件或文件夹时，提供文件覆盖率详情或文件夹覆盖率摘要</li>
-<li><code>/reset</code>，POST，重置当前项目的覆盖率，开始一次新的采集周期</li>
-<li><code>/object</code>，GET，返回覆盖率的原始数据的JSON格式</li>
-<li><code>/client</code>，POST，用来接收来自浏览器端的覆盖率数据，merge到整体的覆盖率数据中</li>
-</ul>
-<p>实现上，直接提供预定义好的app或express应用，npm包暴露一个attachHandler API，使用方直接挂载即可拥有上述功能。类似下面所示。</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="title function_">use</span>(<span class="title function_">mount</span>(<span class="string">&#x27;/coverage&#x27;</span>, attachHandler.<span class="title function_">koa</span>()));</span><br></pre></td></tr></table></figure>
-
-<p>由于绑定一定发生在服务端环境，可以的话，需要顺便区分线上和其他环境。</p>
-<h3 id="报告html页面生成"><a href="#报告html页面生成" class="headerlink" title="报告html页面生成"></a>报告html页面生成</h3><p>开发者应该能在每个测试周期内（即请求<code>/reset</code>前），通过访问特定路由得到渲染好的html页面。istanbuljs通过istanbul-lib-report和istanbul-reports两个包相互配合实现导出report的功能。其中：</p>
-<ul>
-<li>istanbul-lib-report：重点负责构建文件层级结构和生成摘要数据，定义遍历每个节点时行为的几个抽象类</li>
-<li>istanbul-reports：重点实现各种各样导出格式下内容的生成（只考虑了生成静态文件），通过实现istanbul-lib-report中ReportBase基类，完成遍历中内容的生成</li>
-</ul>
-<p>下面是README.md给出的示例</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> libReport = <span class="built_in">require</span>(<span class="string">&#x27;istanbul-lib-report&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> reports = <span class="built_in">require</span>(<span class="string">&#x27;istanbul-reports&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// coverageMap, for instance, obtained from istanbul-lib-coverage</span></span><br><span class="line"><span class="keyword">const</span> coverageMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> configWatermarks = &#123;</span><br><span class="line">    <span class="attr">statements</span>: [<span class="number">50</span>, <span class="number">80</span>],</span><br><span class="line">    <span class="attr">functions</span>: [<span class="number">50</span>, <span class="number">80</span>],</span><br><span class="line">    <span class="attr">branches</span>: [<span class="number">50</span>, <span class="number">80</span>],</span><br><span class="line">    <span class="attr">lines</span>: [<span class="number">50</span>, <span class="number">80</span>]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create a context for report generation</span></span><br><span class="line"><span class="keyword">const</span> context = libReport.<span class="title function_">createContext</span>(&#123;</span><br><span class="line">    <span class="attr">dir</span>: <span class="string">&#x27;report/output/dir&#x27;</span>,</span><br><span class="line">    <span class="comment">// The summarizer to default to (may be overridden by some reports)</span></span><br><span class="line">    <span class="comment">// values can be nested/flat/pkg. Defaults to &#x27;pkg&#x27;</span></span><br><span class="line">    <span class="attr">defaultSummarizer</span>: <span class="string">&#x27;nested&#x27;</span>,</span><br><span class="line">    <span class="attr">watermarks</span>: configWatermarks,</span><br><span class="line">    coverageMap,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// create an instance of the relevant report class, passing the</span></span><br><span class="line"><span class="comment">// report name e.g. json/html/html-spa/text</span></span><br><span class="line"><span class="keyword">const</span> report = reports.<span class="title function_">create</span>(<span class="string">&#x27;json&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">skipEmpty</span>: configSkipEmpty,</span><br><span class="line">    <span class="attr">skipFull</span>: configSkipFull</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// call execute to synchronously create and write the report to disk</span></span><br><span class="line">report.<span class="title function_">execute</span>(context)</span><br></pre></td></tr></table></figure>
-
-<p>在istanbul-reports&#x2F;lib&#x2F;html中主要定义了html相关内容的生成，但是其中对于fs模块的使用，限制了该npm包在server侧的应用。经过<a target="_blank" rel="noopener" href="https://github.com/istanbuljs/istanbuljs/issues/530">询问作者</a>得到，istanbuljs并没有想法支持动态生成html响应。另外，istanbul-lib-report和istanbul-reports关联较多，新开发一个report类型用于生成html响应成本较大。</p>
-<p>综上，使用旧的方案，即旧版本istanbul生成html响应比较合适。</p>
-<h2 id="新方案"><a href="#新方案" class="headerlink" title="新方案"></a>新方案</h2><p>上述工作完成后，最终可以实现一个新的覆盖率方案，基本解决了上面提到的侵入较多，适用场景有局限性，istanbul版本老旧，sourcemap支持不足等问题。</p>
-<h2 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h2><p>上面的改进方案解决了方案接入上的困难，和实现上的一些纰漏，满足了开发者自测时的需求。但同时也有以下不足：</p>
-<ul>
-<li>对于更复杂的数据呈现和与业务流程的整合，即<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2020/04/16/fe-coverage-scheme/">旧方案</a>已知问题的第4点：“不能以分支、版本、仓库等空间维度或以历史信息、趋势等时间维度查看覆盖率报告，也没有diff内容覆盖率功能”，还需要更多努力。</li>
-<li>对于一些特殊场景，如没有使用babel转码的纯前端，不使用express或koa框架的服务端等无法支持</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/thlorenz/convert-source-map">convert-source-map</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/istanbuljs/istanbuljs">istanbuljs</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/istanbuljs/nyc">nyc</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/blog/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1673,13 +1827,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">961k</span>
+    <span title="站点总字数">974k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">26:42</span>
+    <span title="站点阅读时长">27:04</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -1723,7 +1877,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/blog/js/third-party/math/mathjax.js"></script>
 
 
