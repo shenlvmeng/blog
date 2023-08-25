@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">144</span>
+          <span class="site-state-item-count">145</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">430</span>
+        <span class="site-state-item-count">434</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,208 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/05/18/some-tips-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2020/05/18/some-tips-7/" class="post-title-link" itemprop="url">工作中的遇到的一些小知识 7</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-18 17:02:41" itemprop="dateCreated datePublished" datetime="2020-05-18T17:02:41+08:00">2020-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-05-31 19:00:52" itemprop="dateModified" datetime="2020-05-31T19:00:52+08:00">2020-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/05/18/some-tips-7/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/18/some-tips-7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><p>DNS作为用来映射域名和IP地址的<strong>分布式</strong>数据库，使用TCP&#x2F;UDP端口号53。其中每一级域名限制63个字符，总长度不超过253个字符。</p>
+<p>DNS系统中，常见的资源记录类型有：</p>
+<ul>
+<li>A（Address）记录：最重要的记录，用于将特定主机名映射到对应主机的IPv4地址上</li>
+<li>MX记录：用于将特定邮箱地址映射到对应邮箱服务器上</li>
+<li>CNAME（Canonical Name Record）别名记录：用于将某个别名指向某个A记录上</li>
+<li>AAAA记录：和A记录对应，用于将特定主机名映射到对应主机的IPv6地址上</li>
+</ul>
+<p>实现上，全球范围近1000台根域名服务器分为13组，编号A到M，剩下的Internet DNS命名空间被委托给其他DNS服务器。DNS系统也有各种各样的DNS软件所支持，其中最普遍的是BIND（Berkeley Internet Name Domain）。在查询时，有两种实现方式：<strong>递归</strong>和<strong>迭代</strong>，客户端使用递归，DNS服务器间使用迭代。如查询<code>shenlvmeng.github.io</code>（忽略本地host和DNS缓存和路由器DNS缓存）：</p>
+<ul>
+<li>客户端发送查询报文<code>query shenlvmeng.github.io</code>到边缘DNS服务器（一般是ISP的DNS服务器），DNS先检查缓存，若存在记录则直接返回结果</li>
+<li>若不存在或记录已过期，则：<ul>
+<li>DNS服务器向根域名服务器发送同样的查询报文，根服务器返回顶级域<code>.io</code>的权威域名服务器地址</li>
+<li>DNS服务器向<code>.io</code>域的权威域名服务器发送查询报文，得到二级域<code>.github.io</code>的权威域名服务器地址</li>
+<li>DNS服务器向<code>.github.io</code>域的权威域名服务器发送查询报文，得到主机<code>shenlvmeng</code>的A记录，<strong>存入自身缓存，设置TTL</strong>，返回给客户端</li>
+</ul>
+</li>
+</ul>
+<p>最初的DNS域名使用字符仅限于ASCII字符的子集，2008年后，ICANN通过决议，可以使用其他语言作为顶级域名的字符，如“xxx.中国”。使用punnycode码的IDNA系统，可以将unicode字符映射为有效的DNS字符集，有效避免IDN欺骗（即使用长得很像的不同字符作为钓鱼网站）。</p>
+<p>域名的所有者和IP也可以通过查找WHOIS域名数据库查询。对于大多数根域名，由ICANN维护，WHOIS的细节由控制那个域的域注册机构维护。</p>
+<h3 id="域名污染"><a href="#域名污染" class="headerlink" title="域名污染"></a>域名污染</h3><p>指一些刻意制造或无意制造的域名服务器数据包，指向错误的IP地址。这种错误有可能是域名服务器错误工作带来，也有可能是刻意为之。</p>
+<p>对于GFW来说，它会对所有经过它的在UDP端口53上的域名查询进行IDS入侵检测，一旦发现与黑名单关键词相匹配的域名查询请求，会伪装成目标域名的解析服务器返回虚假的查询结果。</p>
+<ul>
+<li>系统默认会从使用ISP提供的域名查询服务器去查询国外的权威服务器时，便被GFW污染，缓存虚假的IP地址。</li>
+<li>由于TCP连接的机制可靠，理论上无法对TCP协议的域名查询进行污染，理论上可以通过TCP协议查询真实的IP地址。但其实，对于真实的IP地址，会有其他方式封锁，或对查询行为使用连接重置进行拦截</li>
+<li>通常情况下，设置的NDS服务主要使用海外的DNS服务，所以都需要穿过GFW，不过一些小型的DNS有技术手段回避GFW污染，从而能够访问国外被封锁网站</li>
+</ul>
+<p>ISP域名劫持还包含一些互联网提供商劫持部分域名，转到自己制定的网站，已提供自己的广告。</p>
+<h3 id="DNS记录"><a href="#DNS记录" class="headerlink" title="DNS记录"></a>DNS记录</h3><p>在DNS的分布式数据库中，不同记录类型有不同的用途。下面介绍了一些常见的记录类型。</p>
+<ul>
+<li>A记录，传回一个32位的IPv4地址，映射主机名到IP</li>
+<li>AAAA记录，传回一个128位的IPv6地址，映射主机名到IP</li>
+<li>CNAME：一个主机名的别名，只能指向一个域名，不能指向IP地址，可以保证原域名地址映射IP地址修改时，别名也能同步修改。CNAME意为真实名称，所以应当读作<code>alias.com</code>的“CNAME“是<code>real.com</code>。为保证效率，应当避免CNAME指向其他CNAME。</li>
+<li>DNAME，和CNAME类似，不过不是映射域名，而是把域名下的整个解析子树映射到另一域名。如把<code>alias.com</code>DNAME到<code>real.com</code>后，不影响<code>alias.com</code>的原有的解析设置。而<code>xxx.alias.com</code>都会被映射到<code>xxx.real.com</code>上</li>
+<li>MX（邮件交换）记录，将邮箱后缀（<code>@</code>后的部分）映射到类型为A或者AAAA的地址记录，原则上禁止映射到CNAME上</li>
+<li>NS记录，委托DNS区域使用已提供的权威域名服务器</li>
+<li>SRV记录，进行服务定位</li>
+</ul>
+<p>所有的记录都有一个有效期（TTL，time-to-live），时间耗尽后，所包含的信息必须从权威服务器上得到更新。</p>
+<h2 id="useState和useEffect实现思路"><a href="#useState和useEffect实现思路" class="headerlink" title="useState和useEffect实现思路"></a><code>useState</code>和<code>useEffect</code>实现思路</h2><p>这两个React hooks中引入的特性背后是基于闭包 + 数组索引实现的，下面是一个实现的demo。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// useState</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">&quot;react-dom&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">values</span>: <span class="built_in">any</span>[] = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> useState&lt;T&gt;(<span class="attr">initialState</span>: T): [T, <span class="function">(<span class="params">newState: T</span>) =&gt;</span> <span class="built_in">void</span>] &#123;</span><br><span class="line">	<span class="keyword">const</span> currentCursor = cursor;</span><br><span class="line">	values[currentCursor] = values[currentCursor] || initialState;</span><br><span class="line">	<span class="keyword">const</span> <span class="title function_">setFunc</span> = (<span class="params">newState: T</span>) =&gt; &#123;</span><br><span class="line">		values[currentCursor] = newState;</span><br><span class="line">    <span class="comment">// 触发重新渲染</span></span><br><span class="line">		<span class="title function_">renderApp</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	cursor++;</span><br><span class="line">	<span class="keyword">return</span> [values[currentCursor], setFunc];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">App</span>: <span class="title class_">React</span>.<span class="property">FC</span>&lt;&#123;&#125;&gt; = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> [num, setNum] = useState&lt;<span class="built_in">number</span>&gt;(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> (</span><br><span class="line">		<span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setNum(num + 1)&#125;&gt;&#123;num&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;root&quot;</span>));</span><br><span class="line">  <span class="comment">// 重置计数器</span></span><br><span class="line">	cursor = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">renderApp</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// useEffect</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">&quot;react-dom&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">deps</span>: <span class="built_in">any</span>[][] = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useEffect</span>(<span class="params">cb: () =&gt; <span class="built_in">void</span>, dep: <span class="built_in">any</span>[]</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> currCursor = cursor;</span><br><span class="line">	<span class="keyword">if</span> (!deps[currCursor]) &#123;</span><br><span class="line">		deps[currCursor] = dep;</span><br><span class="line">		cursor++;</span><br><span class="line">		<span class="title function_">cb</span>();</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dep.<span class="title function_">some</span>(<span class="function">(<span class="params">d, index</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (d !== deps[currCursor][index]) &#123;</span><br><span class="line">			deps[currCursor][index] = d;</span><br><span class="line">			cursor++;</span><br><span class="line">			<span class="title function_">cb</span>();</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">App</span>: <span class="title class_">React</span>.<span class="property">FC</span>&lt;&#123;&#125;&gt; = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;ok&#x27;</span>), <span class="number">1000</span>);</span><br><span class="line">	&#125;, []);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> (</span><br><span class="line">		<span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>ok<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;root&quot;</span>));</span><br><span class="line">	cursor = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">renderApp</span>();</span><br></pre></td></tr></table></figure>
+
+<p>实际使用中，是把<code>useState</code>、<code>useEffect</code>这样的hooks放在<code>memorizedState</code>数组中，共用一个cursor。类似下面这样：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> memoizedState = [];</span><br><span class="line"><span class="keyword">let</span> cursor = <span class="number">0</span>; <span class="comment">// 当前下标</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useState</span>(<span class="params">initialValue</span>) &#123;</span><br><span class="line">  memoizedState[cursor] = memoizedState[cursor] || initialValue;</span><br><span class="line">  <span class="keyword">const</span> currentCursor = cursor;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">setState</span>(<span class="params">newState</span>) &#123;</span><br><span class="line">    memoizedState[currentCursor] = newState;</span><br><span class="line">    <span class="title function_">render</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> [memoizedState[cursor++], setState];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useEffect</span>(<span class="params">callback, depArray</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> hasNoDeps = !depArray;</span><br><span class="line">  <span class="keyword">const</span> deps = memoizedState[cursor];</span><br><span class="line">  <span class="keyword">const</span> hasChangedDeps = deps</span><br><span class="line">    ? !depArray.<span class="title function_">every</span>(<span class="function">(<span class="params">el, i</span>) =&gt;</span> el === deps[i])</span><br><span class="line">    : <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (hasNoDeps || hasChangedDeps) &#123;</span><br><span class="line">    <span class="title function_">callback</span>();</span><br><span class="line">    memoizedState[cursor] = depArray;</span><br><span class="line">  &#125;</span><br><span class="line">  cursor++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>memorized</code>数组也是hooks一定要在top level调用的原因。</p>
+<p>在React实际实现上，hooks是以链表的形式存储，通过<code>next</code>属性链接到下一个hook。同时每一个<code>memorized</code>数组都会绑定到一个fiber上，从而在再次渲染时更新对应节点。让hooks之间互不干扰。</p>
+<h2 id="proxy简单了解与应用"><a href="#proxy简单了解与应用" class="headerlink" title="proxy简单了解与应用"></a>proxy简单了解与应用</h2><p>Vue 3.0在重构后使用了ES6的proxy新特性来跟踪数据字段的更新。它可以封装一个目标对象，为之添加一个代理，返回一个Proxy对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Proxy</span>(target, handler)</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>handler</code>即代理配置对象，也是Proxy对象的“魔力”所在。对于一个空的handler，返回的Proxy近似于target本身。在handler上定义任何handler函数的集合，都会让返回Proxy对象有不同的表现。</p>
+<p><code>handler</code>有下面一些可选的属性：</p>
+<ul>
+<li><code>apply</code> 监听函数调用的钩子<ul>
+<li><code>apply: function(target, thisArg, argumentsList) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>construct</code> 监听使用<code>new</code>调用的钩子<ul>
+<li><code>construct: function(target, argumentsList, newTarget) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>defineProperty</code> 类似<code>Object.defineProperty</code><ul>
+<li><code>defineProperty: function(target, property, descriptor) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>get</code> 监听属性访问<ul>
+<li><code>get: function(target, property, receiver) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>deleteProperty</code> 监听<code>delete</code>操作<ul>
+<li><code>deleteProperty: function(target, property) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>getOwnPropertyDescriptor</code> 监听<code>Object.getOwnPropertyDescriptor</code></li>
+<li><code>getPrototypeOf()</code> 类似<code>Object.getPrototypeOf</code></li>
+<li><code>has</code> 监听<code>in</code>操作<ul>
+<li><code>has: function(target, prop) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>isExtensible</code> 监听<code>Object.isExtensible</code></li>
+<li><code>ownKeys</code> 监听<code>Object.getOwnPropertyNames</code>和<code>Object.getOwnPropertySymbols</code></li>
+<li><code>preventExtensions</code> 监听<code>Object.preventExtensions</code></li>
+<li><code>set</code> 监听属性设置<ul>
+<li><code>set: function(target, property, value, receiver) &#123;&#125;</code></li>
+</ul>
+</li>
+<li><code>setPrototypeOf</code> 类似<code>Object.setPrototypeOf</code></li>
+</ul>
+<p>利用上面的<code>handler</code>已经可以实现很丰富的功能，immer的produce就有借助proxy来实现。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1131,240 +1333,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/01/04/2019-to-2020/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2020/01/04/2019-to-2020/" class="post-title-link" itemprop="url">2019回顾暨2020展望</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-01-04 17:51:06 / 修改时间：18:51:30" itemprop="dateCreated datePublished" datetime="2020-01-04T17:51:06+08:00">2020-01-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2020/01/04/2019-to-2020/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/01/04/2019-to-2020/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>又一年的开头，又一年的结尾，又一年的回首，又一年的新的惊喜。</p>
-<p>回头看看<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/01/03/2018-to-2019/">去年写的</a>，除了一些认为一定会发生的果然发生了之外，还出现了更多没想到的情况。又或许生活本就这么多意外，真是有趣。</p>
-<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="flag验收"><a href="#flag验收" class="headerlink" title="flag验收"></a>flag验收</h3><ul>
-<li><strong>内在素质</strong>：通过看书对做事的方法论有了比较清晰的认识，同时在“成为什么样的人”上也更有想法，更自信<ul>
-<li>看了8本扎实的书（有趣的是数目和去年一样），范围不仅局限在技术（只有2本和技术相关），均有博客积累<ul>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/01/21/how-to-do-things/">《高效能人士的七个习惯》——自我管理的理想模型</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/02/13/1587-a-year-of-no-significance/">关于《万历十五年》的一些思考</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/03/12/wisdom-of-life-pessimistic-life/">《人生的智慧》 ——幸福与人生</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/05/07/principles-of-microeconomics/">《经济学原理》 - 微观经济学原理笔记</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/05/28/the-pragmatic-programmer/">《程序员修炼之道》 —— 从小工到专家</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/06/29/quantum-physics-history/">量子物理简史</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/07/26/social-psychology-part-1/">社会心理学 Part 1 - 导论 &amp; 社会思维</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/08/07/social-psychology-part-2/">社会心理学 Part 2 - 社会影响</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/09/24/social-psychology-part-3/">社会心理学 Part 3 - 社会关系</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/11/02/social-psychology-part-4/">社会心理学 Part 4 - 应用</a></li>
-<li><a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2019/12/02/clean-code/">《代码整洁之道》——有一个好的代码品味</a></li>
-</ul>
-</li>
-<li>由于知识基数不够，尚未<strong>涌现</strong>出知识模型，还需要继续积累</li>
-</ul>
-</li>
-<li><strong>个人形象</strong>：前半段（“干净会穿搭”）超额完成，有了些自己的sense，后半段（“身体健康开朗”）做得比较失败，甚至不如去年。<ul>
-<li>工作日基本1点之后睡觉，起床时间9点半</li>
-<li>基本款各季衣物每月陆续置办中，有关注穿搭博主<ul>
-<li>基本款长、短T</li>
-<li>牛仔&#x2F;工装&#x2F;9分&#x2F;阔腿</li>
-<li>棒球帽&#x2F;冬帽&#x2F;渔夫帽</li>
-<li>卫衣&#x2F;连帽卫衣</li>
-<li>牛仔&#x2F;工装&#x2F;飞行员&#x2F;棒球外套</li>
-<li>皮&#x2F;工装夹克</li>
-<li>手表&#x2F;挂饰&#x2F;围巾</li>
-<li>小白鞋&#x2F;帆布鞋&#x2F;板鞋&#x2F;运动鞋</li>
-<li>香水&#x2F;吹风机</li>
-</ul>
-</li>
-<li>有了发型</li>
-<li>没有使用护肤产品</li>
-<li>锻炼身体上有退步，健康不如去年，体重增加<ul>
-<li>游泳频率降低</li>
-<li>无器材健身频率降低</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>社交</strong>，可以更自如和陌生人交流，认识新的朋友。保持着和新朋友的亲密关系，也深交了新的异性朋友</li>
-<li><strong>生活情趣</strong><ul>
-<li>坚持着已有爱好<ul>
-<li>拉琴：重拾了拉琴，但还没有明确的目标</li>
-<li>骑行：不如去年里程，爬坡有所退步，也没有出远门，但探索了北京东部、南部、西南部新<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/cycle/">路线</a>。<ul>
-<li>廊坊</li>
-<li>大兴机场</li>
-<li>香山</li>
-<li>唱歌：学习了恭太郎rap版《恋爱循环》和米津玄师的《LOSER》，KTV现场节目效果满分，还学了《I’m not afraid》半途而废</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>去了丽江&#x2F;大理&#x2F;上海（之前去过）</li>
-<li>探索了新爱好，感觉很棒<ul>
-<li>清吧喝酒</li>
-<li>剧本杀</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>工作事业</strong><ul>
-<li>超水平发挥，渐渐在寻找定位</li>
-<li>技术上还在积累，并没有突破</li>
-<li>业务上已经能handle一个小方向，并带实习生</li>
-</ul>
-</li>
-</ul>
-<h3 id="好的-amp-不好的"><a href="#好的-amp-不好的" class="headerlink" title="好的 &amp; 不好的"></a>好的 &amp; 不好的</h3><ul>
-<li>看书面变广是好事，书也是好书，不过数目还不够</li>
-<li>穿搭进步太多，也有了自己想法。不过局限在休闲风，可以尝试更多风格（如成熟干练）</li>
-<li>身体健康和作息习惯退步</li>
-<li>找女朋友这一目标又拖了一年</li>
-<li>对关系亲密的人有时反应太寡淡。容易伤人</li>
-<li>生活情趣上更丰富，但还可以再多探索，另外热情不足，积累不足</li>
-<li>工作事业比预想中顺利且乐观，要继续保持，适应新环境</li>
-</ul>
-<h2 id="2020"><a href="#2020" class="headerlink" title="2020"></a>2020</h2><p>下面是2020的展望：</p>
-<ul>
-<li><strong>内在素质</strong>：在编程相关领域上有更多积累，以应对未来的职业挑战，要能形成知识体系则更好<ul>
-<li>看完囤积的7本书（碰巧又和去年一样），形成研发知识体系积累<ul>
-<li>学至少1门新语言</li>
-<li>了解至少1个其他领域</li>
-</ul>
-</li>
-<li>看7本书之外的内容，积累通用素质和能力</li>
-</ul>
-</li>
-<li><strong>个人形象</strong>：探索新风格，补充基本款，调整作息，维持体重<ul>
-<li>每天最晚1点半前睡觉，9点起床</li>
-<li>控制饮食，体重回到&lt;80</li>
-<li>补全基本款<ul>
-<li>更多色系</li>
-<li>衬衫</li>
-<li>休闲西服、西裤、马甲、皮鞋</li>
-<li>篮球鞋、运动鞋</li>
-</ul>
-</li>
-<li>尝试新发型</li>
-</ul>
-</li>
-<li><strong>社交</strong>，更热情，在找对象上努努力</li>
-<li><strong>生活情趣</strong><ul>
-<li>去不止1个城市，最好是国外</li>
-<li>骑行：青海湖、百里画廊</li>
-<li>拉琴：有最少1首能拿出来展示的曲目</li>
-<li>探索新爱好<ul>
-<li>livehouse</li>
-<li>艺术展、灯光秀</li>
-<li>探店</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>工作事业</strong><ul>
-<li>能带小团队、带好团队</li>
-<li>能想清楚自己优势、定位</li>
-<li>将手里业务方向做到优秀</li>
-</ul>
-</li>
-</ul>
-<p>写了这么多，希望不是flag。我们明年拭目以待咯~</p>
-<p><em>Bye~</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/blog/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1389,13 +1357,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">974k</span>
+    <span title="站点总字数">986k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">27:04</span>
+    <span title="站点阅读时长">27:24</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
