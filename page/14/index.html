@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">146</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">434</span>
+        <span class="site-state-item-count">438</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,238 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/10/01/some-tips-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/10/01/some-tips-4/" class="post-title-link" itemprop="url">工作中的遇到的一些小知识 4</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-10-01 19:18:38 / 修改时间：19:20:04" itemprop="dateCreated datePublished" datetime="2018-10-01T19:18:38+08:00">2018-10-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/10/01/some-tips-4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/10/01/some-tips-4/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="lottie-production环境下bug修复总结"><a href="#lottie-production环境下bug修复总结" class="headerlink" title="lottie production环境下bug修复总结"></a>lottie production环境下bug修复总结</h2><p>现象：<br>前段时间，用lottie-web做动画的时候，发现在有个别动画在本地测试时可以正常播放，打包上线后会报库代码内的错误</p>
+<p>猜测原因：<br>打包过程中的uglify有损压缩了lottie-web的代码，导致部分特性的bug</p>
+<p>修复方式：</p>
+<ol>
+<li>在webpack配置中，为lottie-web专门指定一个chunk</li>
+<li>在optimization中，指定一个lottie的cacheGroup，保证一个专门的chunk</li>
+<li>minimizer中uglifyJSConfig指定exclude为lottie的chunk名，避免被uglify</li>
+<li>resolve中，指定lottie-web resolve到’..&#x2F;node_modules&#x2F;lottie-web&#x2F;build&#x2F;player&#x2F;lottie.min.js’，使用压缩过的版本</li>
+</ol>
+<p>大致像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">    <span class="attr">entry</span>: &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="attr">lottie</span>: [<span class="string">&#x27;lottie-web&#x27;</span>],</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="attr">resolve</span>: &#123;</span><br><span class="line">        <span class="attr">alias</span>: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="string">&#x27;lottie-web&#x27;</span>: path.<span class="title function_">join</span>(__dirname, <span class="string">&#x27;../node_modules/lottie-web/build/player/lottie.min.js&#x27;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="attr">optimization</span>: &#123;</span><br><span class="line">        <span class="attr">splitChunks</span>: &#123;</span><br><span class="line">            <span class="attr">cacheGroups</span>: &#123;</span><br><span class="line">                <span class="attr">lottie</span>: &#123;</span><br><span class="line">                    <span class="attr">chunks</span>: <span class="string">&#x27;initial&#x27;</span>,</span><br><span class="line">                    <span class="attr">name</span>: <span class="string">&#x27;lottie&#x27;</span>,</span><br><span class="line">                    <span class="attr">test</span>: <span class="string">&#x27;lottie&#x27;</span>,</span><br><span class="line">                    <span class="attr">enforce</span>: <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">minimizer</span>: [</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">                <span class="attr">exclude</span>: <span class="regexp">/lottie/</span>,</span><br><span class="line">            &#125;)</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>结果：<br>问题解决。</p>
+<h2 id="Android机型下rem适配不准的问题"><a href="#Android机型下rem适配不准的问题" class="headerlink" title="Android机型下rem适配不准的问题"></a>Android机型下rem适配不准的问题</h2><blockquote>
+<p>参考 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/14f6ce51a75f">https://www.jianshu.com/p/14f6ce51a75f</a></p>
+</blockquote>
+<p>通过比较<code>document.documentElement.style.fontSize</code>和<code>window.getComputedStyle(document.documentElement)[&#39;font-size&#39;]</code>，假设前者是a，后者是b，<code>a * a / b</code>计算得到和设计一致的尺寸。</p>
+<h2 id="3D旋转效果"><a href="#3D旋转效果" class="headerlink" title="3D旋转效果"></a>3D旋转效果</h2><p>利用CSS中的<code>backface-visibility: hidden;</code>属性，实现在<code>transform: rotateY(180deg)</code>时，页面翻转到不可见区域。</p>
+<h2 id="egret学习"><a href="#egret学习" class="headerlink" title="egret学习"></a>egret学习</h2><p>场景：H5小游戏开发</p>
+<p>投放场景：各种小游戏平台，也可以打包为Android、iOS、Windows Phone应用发布，甚至直接web访问H5页面</p>
+<p>开发语言：TypeScript</p>
+<p>开发方式：</p>
+<ul>
+<li>类Java的代码组织方式，MVC分离项目代码，M和C开发体验类似“用JavaScript写Java项目”。在View部分开发体验类似于用<code>canvas API写页面结构</code></li>
+<li>类Android的resource管理方式（定义json文件描述资源组和路径对应），在代码中用API动态分组或逐个load资源</li>
+<li>单一入口，流程上在stage加载完成后，load资源（同时给出loading页面），之后执行游戏逻辑</li>
+<li>使用dispatchEvent实现组件间的信息交流</li>
+</ul>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p>入口文件为index.html。在其中引入manifest.json。读入所需的库文件后，根据DOM容器的<code>data-*</code>属性确定项目配置，以及项目入口<code>*.ts</code>（一般是<code>Main.ts</code>）。之后打包编译到<code>bin-debug</code>。</p>
+<p>业务逻辑放在<code>/src</code>下，资源文件放在<code>/resources</code>中，资源文件用类似于Android的形式进行存取管理。</p>
+<h3 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h3><p>Displayable元素可以添加到容器中显示。包含下面基类。</p>
+<ul>
+<li>displayableContainer 视图元素容器<ul>
+<li>stage</li>
+<li>scrollView</li>
+<li>sprite</li>
+</ul>
+</li>
+<li>bitmap</li>
+<li>bitmapText</li>
+<li>textField</li>
+<li>movieClip</li>
+<li>shape</li>
+</ul>
+<p>movieClip表示逐帧动画。生成方法如下：</p>
+<ol>
+<li><code>RES.getRes</code>获取资源</li>
+<li>使用factory方法构造movieClipData</li>
+<li>使用movieClipData构造movieClip</li>
+</ol>
+<p>简单动画用tween来实现。</p>
+<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><ul>
+<li><code>egret publish</code>或run build。发布H5，runtime版本</li>
+<li>对应平台support工具，如Android、iOS、微信小程序</li>
+</ul>
+<p>不过在最新的egret launcher下，项目本身已经提供的发布到原生的快捷入口，参考<a target="_blank" rel="noopener" href="http://developer.egret.com/cn/github/egret-docs/Native/native/projectsetting/index.html">官方解释</a>。</p>
+<h3 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h3><p><strong>和React如何结合开发？</strong></p>
+<p>View层通过canvas、WebGL实现，不适合和React结合。</p>
+<p><strong>部署方式如何结合在App里</strong></p>
+<p>小游戏可以发布到HTML5平台，之后类似老的webview页面开发方式，部署到离线包平台或在线页面即可。</p>
+<h2 id="SSO实现方案"><a href="#SSO实现方案" class="headerlink" title="SSO实现方案"></a>SSO实现方案</h2><p>SSO - Single Sign On 单一站点登录。由一个站点的登录状态实现关联网站免登录。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>由sso.xxx.com记录用户登录态，其他需要使用同一登录态的网站需要同步该域名下的登录态cookie到自己的独立域名下。</p>
+<h3 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h3><p>一般公司内部的网站或ToC的集团网页间都有SSO控制，任意访问一个清除了所有cookie网页，观察network中开头的302报文即可发现实现SSO过程中的各跳转逻辑。</p>
+<p>实际步骤因实现而异：</p>
+<ol>
+<li>（转让控制权）访问目标网页，302到SSO的跳转特定页面，如jump.sso.xxx.com</li>
+<li>（写入cookie）302回目标网页的特定页面，如sso.mysite.com。该域名CNAME到sso.xxx.com的服务器</li>
+<li>（写入cookie）sso.mysite.com写入cookie到自己的同域名下，再次302到目标网页，完成SSO过程</li>
+</ol>
+<p>或者</p>
+<ol>
+<li>同上</li>
+<li>（写入cookie）jump.sso.xxx.com做cookie的检查确认，通过url的方式写入回调的user session，再302回mysite.com。</li>
+<li>（写入cookie）mysite.com的后台对应路由根据URL里的回调写入cookie，302到目标页面</li>
+</ol>
+<p>在写入cookie到新域名过程中，可以有不同的实现方式。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>第一步302到sso.xxx.com的时候已经可以带上xxx.com的cookie了，但是由于浏览器安全限制，并不能直接set cookie到独立域名下。需要再次302回原始域名，CNAME到sso的服务器，实现set cookie到独立域名。</p>
+<p>为了保证安全性，CNAME到sso的sso.mysite.com所传递的参数需要有安全机制保证。如时间戳、秘钥等保证请求的完整性。避免中间人伪造域名下的请求。同时，链接本身也应有<strong>时效性</strong>，在超过时间范围失效，避免拦截链接，实现钓鱼网站获取sso.xxx.com的登录态。</p>
+<p>具体步骤：</p>
+<ol>
+<li>302到jump.sso.xxx.com后，进行权限检查判断域名是否允许同步，匹配SSO的cookie域名下的cookie取交集，得到需要同步的cookie。</li>
+<li>通过以上两步后，302到sso.mysite.com，url中带上cookie和安全相关的参数</li>
+<li>根据安全参数校验、target是否允许同步，决定返回403还是302。</li>
+<li>通过校验后，同步登录态cookie，302到目标网页</li>
+</ol>
+<p>清除登录态时，如何做到相关域名的同时清除，还需要额外设计。</p>
+<p>当然，如果sso只在内网使用，在jump.sso.xxx.com做完安全验证后，通过url将结果交由sso.mysite.com设置登录态Cookie，要更为简洁。</p>
+<h2 id="git-branch-rename"><a href="#git-branch-rename" class="headerlink" title="git branch rename"></a>git branch rename</h2><p>如果分支在远端也有的话，工作需要分为本地和远端两部分。</p>
+<ol>
+<li>重命名本地分支</li>
+</ol>
+<ul>
+<li>如果就在该分支  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m new-name</span><br></pre></td></tr></table></figure></li>
+<li>如果在其他分支  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m old-name new-name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="2">
+<li>删除原分支，推送新分支<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin :old-name new-name</span><br></pre></td></tr></table></figure></li>
+<li>重置upstream设置<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin -u new-name</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="webpack无痛mock方案"><a href="#webpack无痛mock方案" class="headerlink" title="webpack无痛mock方案"></a>webpack无痛mock方案</h2><p>使用webpack-api-mocker实现，对比axios-mock-adapter和其余方案有几个优势：</p>
+<ul>
+<li>mock部分代码和业务代码分离开，让网络请求部分代码（&#x2F;apis）有清晰的逻辑，不混杂业务无关内容</li>
+<li>热更新，保存即生效</li>
+<li>本地dev环境无痛切换到production环境，无需修改任何代码</li>
+<li>基于webpack-dev-server，和整个项目耦合，无需本地起服务<br>本地开发时，配置webpack.dev.config.js，在devServer部分的配置中加入apiMocker即可。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> apiMocker = <span class="built_in">require</span>(<span class="string">&quot;webpack-api-mocker&quot;</span>);</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">    <span class="attr">devServer</span>: &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="title function_">before</span>(<span class="params">app</span>) &#123;</span><br><span class="line">            <span class="title function_">apiMocker</span>(app, path.<span class="title function_">resolve</span>(<span class="string">&#x27;./mock/index.js&#x27;</span>))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> 对应的路径下，写入mock数据和路径即可，可以灵活组织各模块的mock数据：</span><br><span class="line"><span class="keyword">const</span> proxy = &#123;</span><br><span class="line">    <span class="string">&#x27;GET /user/info&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;code&quot;</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;success&quot;</span>,</span><br><span class="line">        <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">            <span class="comment">// your mock data</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&#x27;POST /user/update&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;code&quot;</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;success&quot;</span>,</span><br><span class="line">        <span class="string">&quot;data&quot;</span>: <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = proxy;</span><br></pre></td></tr></table></figure>
+
+<p>更多使用，参考webpack-api-mocker文档。</p>
+<h2 id="webpack配置使用es6语法"><a href="#webpack配置使用es6语法" class="headerlink" title="webpack配置使用es6语法"></a>webpack配置使用es6语法</h2><p>如今现代的前端开发早已采用全es6的语法书写，然而webpack的配置文件需要通过node解析执行，一般还使用es5的语法书写。在需要使用<code>import</code>，<code>export</code>，数组、对象解构等最新特性时就很蛋疼。</p>
+<p>比如在最近的开发中，使用<code>webpack-api-mocker</code>时，希望拆分不同领域的接口到不同文件，最后通过对象结构的方式聚合在mocker的入口文件中。使用es5的语法就很麻烦。</p>
+<p>实际上，让webpack使用babel解析配置文件分两步即可：</p>
+<ol>
+<li><code>yarn add -D babel-register</code>，让webpack能够使用babel-loader转译配置文件</li>
+<li>修改配置文件后缀为，<code>webpack.config.babel.js</code>，webpack会使用<code>.js</code>前的字符串作为loader</li>
+</ol>
+<p>之后就可以愉快地使用es6语法写配置文件了。</p>
+<h2 id="autoprefixer-remove-webkit-box-orient解决方案"><a href="#autoprefixer-remove-webkit-box-orient解决方案" class="headerlink" title="autoprefixer remove -webkit-box-orient解决方案"></a>autoprefixer remove <code>-webkit-box-orient</code>解决方案</h2><p>autoprefixer是postcss的插件，会根据browser list，删除一些autodated的样式，其中就包括<code>-webkit-box-orient</code>这个用于hack实现多行省略号的CSS样式。</p>
+<p>几种方法：</p>
+<ul>
+<li>设置autoprefixer，<code>&#123;remove: false&#125;</code>，保留autodated的样式规则</li>
+<li>添加flexbox 2009老旧浏览器到broswer list中</li>
+<li>如下，通过注释临时disable autoprefixer</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* autoprefixer: ignore next */</span></span><br><span class="line">-webkit-box-orient: vertical;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1203,199 +1435,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/08/15/frontend-roadmap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/08/15/frontend-roadmap/" class="post-title-link" itemprop="url">frontend-roadmap</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-08-15 23:52:55" itemprop="dateCreated datePublished" datetime="2018-08-15T23:52:55+08:00">2018-08-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-08-16 00:08:03" itemprop="dateModified" datetime="2018-08-16T00:08:03+08:00">2018-08-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/08/15/frontend-roadmap/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/15/frontend-roadmap/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>607</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前端科技树探索之路"><a href="#前端科技树探索之路" class="headerlink" title="前端科技树探索之路"></a>前端科技树探索之路</h2><p>前端的涵盖范畴是和客户直接交互的部分。</p>
-<p>以下几个因素促进了前端在这些年差异化成一个需要专业人才的领域</p>
-<ul>
-<li>Web API不断丰富和更新，允许JS做更多的事情，同时也需要不停学习跟进</li>
-<li>语言规范赋予JS更多的特性和可能，允许专业的人做更专业的事</li>
-<li>Node等轮子的出现拓展了JS的应用场景，方向更加细化</li>
-<li>用户对界面要求越来越高，需要专门的人处理</li>
-</ul>
-<p>从而使前端渐渐分化出来成为一个面向复杂场景、承诺服务质量、进入工程领域的职业。</p>
-<p>更细化的说，面向复杂场景包括：</p>
-<ul>
-<li>浏览器应用、桌面应用、移动端应用、后端应用多宿主</li>
-<li>复杂的网络环境</li>
-<li>差异化巨大的浏览器和浏览器版本（所幸比以前好了很多）</li>
-<li>用户群体的不同</li>
-<li>……</li>
-</ul>
-<p>承诺服务质量包括：</p>
-<ul>
-<li>更快地渲染页面</li>
-<li>更美观的页面效果</li>
-<li>更流畅的用户交互体验</li>
-<li>更高的代码稳定性（对应着lint和debug能力）</li>
-<li>差异化环境的表现一致性</li>
-<li>……</li>
-</ul>
-<p>进入工程领域包括：</p>
-<ul>
-<li>更舒适的开发体验（设计模式与诸多轮子）</li>
-<li>更高的开发效率（如工作流的设计）</li>
-<li>更顺滑的团队间协作（如mock）</li>
-<li>版本控制</li>
-<li>……</li>
-</ul>
-<p>上面是作为一个技术的要求，在公司应用范畴，还需要考虑下面这些：</p>
-<ul>
-<li><p>产品设计</p>
-</li>
-<li><p>团队建设</p>
-</li>
-<li><p>人才培养</p>
-</li>
-<li><p>项目管理</p>
-</li>
-<li><p>立身之本</p>
-<ul>
-<li>HTML</li>
-<li>DOM</li>
-<li>JavaScript基本语法</li>
-<li>CSS</li>
-</ul>
-</li>
-<li><p>关联技术</p>
-<ul>
-<li>Web API</li>
-<li>ajax</li>
-<li>JSON</li>
-<li>正则</li>
-<li>SVG&#x2F;Canvas&#x2F;WebGL</li>
-<li>PWA</li>
-</ul>
-</li>
-<li><p>深入了解</p>
-<ul>
-<li>ES6 ES7</li>
-<li>TypeScript</li>
-<li>CSS3</li>
-<li>SASS Less</li>
-</ul>
-</li>
-<li><p>现有轮子</p>
-<ul>
-<li>NodeJS</li>
-<li>Electron</li>
-<li>React</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/blog/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/15/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/blog/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/15/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1418,13 +1459,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">986k</span>
+    <span title="站点总字数">1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">27:24</span>
+    <span title="站点阅读时长">27:55</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

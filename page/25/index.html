@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">146</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">434</span>
+        <span class="site-state-item-count">438</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,131 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/02/28/request-animation-frame/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/02/28/request-animation-frame/" class="post-title-link" itemprop="url">JS动画之requestAnimationFrame</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-02-28 17:06:47" itemprop="dateCreated datePublished" datetime="2017-02-28T17:06:47+08:00">2017-02-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/02/28/request-animation-frame/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/28/request-animation-frame/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>CSS3中提供了animation的特性，用来通过指定关键帧（@kenframe）来实现动画效果。这么做方便高效。但是浏览器的兼容效果则比较捉急，且不能实现高级的缓动函数，更别说暂停、回放、倒放等功能了。所以大部分炫酷的动画还是采用JS动画来完成。</p>
+<p>传统的JS动画无非是通过setInterval或是setTimeout定时器函数实现。这在对动画实时性以及流畅性要求不高时没有什么问题。不过当<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/">消息队列</a>较拥挤时，定时效果不能得到保障。同时不同浏览器的UI渲染频率各不相同，很可能与用户设置的时间间隔相冲突。如，相当一部分浏览器的显示频率是16.7ms，此时如果我们设置的时延是10ms就会出现丢帧的情况。为了解决这个问题，requestAnimationFrame千呼万唤始出来。</p>
+<p>requestAnimationFrame是window对象在HTML5中的新API。它的使用方法与setTimeout类似，不同的是，requestAnimationFrame()方法将告诉浏览器您希望执行动画，并请求浏览器调用指定的函数在下一次重绘之前调用回调函数更新动画。从而，不同的动画有了一个统一的刷新机制，可以提升系统性能，节省了CPU、GPU和电池等（CSS中的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/will-change">will-change</a>也发挥着类似功能）。</p>
+<p>那么requestAnimationFrame的兼容性如何呢？</p>
+<p><img src="/blog/images/request-animation-frame-graph-1.png"></p>
+<p>好像还不错。在老版本的浏览器上，也有shim方法来实现同样的效果，借助了setTimeout函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> lastTime = <span class="number">0</span>,</span><br><span class="line">        vendors = [<span class="string">&#x27;ms&#x27;</span>, <span class="string">&#x27;moz&#x27;</span>, <span class="string">&#x27;webkit&#x27;</span>, <span class="string">&#x27;o&#x27;</span>],</span><br><span class="line">        x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (x = <span class="number">0</span>; x &lt; vendors.<span class="property">length</span> &amp;&amp; !<span class="variable language_">window</span>.<span class="property">requestAnimationFrame</span>; ++x) &#123;</span><br><span class="line">        <span class="variable language_">window</span>.<span class="property">requestAnimationFrame</span> = <span class="variable language_">window</span>[vendors[x] + <span class="string">&#x27;RequestAnimationFrame&#x27;</span>];</span><br><span class="line">        <span class="variable language_">window</span>.<span class="property">cancelAnimationFrame</span>  = <span class="variable language_">window</span>[vendors[x] + <span class="string">&#x27;CancelAnimationFrame&#x27;</span>]</span><br><span class="line">                                   || <span class="variable language_">window</span>[vendors[x] + <span class="string">&#x27;CancelRequestAnimationFrame&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">window</span>.<span class="property">requestAnimationFrame</span>) &#123;</span><br><span class="line">        <span class="variable language_">window</span>.<span class="property">requestAnimationFrame</span> = <span class="keyword">function</span> (<span class="params">callback</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> currTime = <span class="keyword">new</span> <span class="title class_">Date</span>().<span class="title function_">getTime</span>(),</span><br><span class="line">                timeToCall = <span class="title class_">Math</span>.<span class="title function_">max</span>(<span class="number">0</span>, <span class="number">16</span> - (currTime - lastTime)),</span><br><span class="line">                id = <span class="variable language_">window</span>.<span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">                    <span class="title function_">callback</span>(currTime + timeToCall);</span><br><span class="line">                &#125;, timeToCall);</span><br><span class="line">            lastTime = currTime + timeToCall;</span><br><span class="line">            <span class="keyword">return</span> id;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">window</span>.<span class="property">cancelAnimationFrame</span>) &#123;</span><br><span class="line">        <span class="variable language_">window</span>.<span class="property">cancelAnimationFrame</span> = <span class="keyword">function</span> (<span class="params">id</span>) &#123;</span><br><span class="line">            <span class="variable language_">window</span>.<span class="built_in">clearTimeout</span>(id);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;());</span><br></pre></td></tr></table></figure>
+
+<p>那么requestAnimationFrame怎么用呢。语法像下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestID = <span class="variable language_">window</span>.<span class="title function_">requestAnimationFrame</span>(callback);               <span class="comment">// Firefox 23 / IE10 / Chrome / Safari 7 (incl. iOS)</span></span><br><span class="line">requestID = <span class="variable language_">window</span>.<span class="title function_">mozRequestAnimationFrame</span>(callback);                <span class="comment">// Firefox &lt; 23</span></span><br><span class="line">requestID = <span class="variable language_">window</span>.<span class="title function_">webkitRequestAnimationFrame</span>(callback); <span class="comment">// Older versions Chrome/Webkit</span></span><br></pre></td></tr></table></figure>
+
+<p>注意它只接受回调函数作为参数，不需要指定延时哦。同样的，相对应的还有一个<code>cancelAnimationFrame(requestID)</code>方法取消重绘。最常见的用法是在一个动画函数里通过requestAnimationFrame循环调用自身。就像下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">funFall = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> start = <span class="number">0</span>, during = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">var</span> _run = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        start++;</span><br><span class="line">        <span class="keyword">var</span> top = <span class="title class_">Tween</span>.<span class="property">Bounce</span>.<span class="title function_">easeOut</span>(start, objBall.<span class="property">top</span>, <span class="number">500</span> - objBall.<span class="property">top</span>, during);</span><br><span class="line">        ball.<span class="title function_">css</span>(<span class="string">&quot;top&quot;</span>, top);</span><br><span class="line">        <span class="title function_">shadowWithBall</span>(top);    <span class="comment">// 投影跟随小球的动</span></span><br><span class="line">        <span class="keyword">if</span> (start &lt; during) <span class="title function_">requestAnimationFrame</span>(_run);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="title function_">_run</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -809,142 +934,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2016/03/21/front-end-note-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2016/03/21/front-end-note-1/" class="post-title-link" itemprop="url">前端学习小计-H5标签</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-03-21 12:37:45" itemprop="dateCreated datePublished" datetime="2016-03-21T12:37:45+08:00">2016-03-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 14:23:00" itemprop="dateModified" datetime="2017-03-01T14:23:00+08:00">2017-03-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2016/03/21/front-end-note-1/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/21/front-end-note-1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>890</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>前言：与实验室同学参加百度前端学院，做了几个任务，做小小的总结如下。</p>
-<h2 id="html5标签"><a href="#html5标签" class="headerlink" title="html5标签"></a>html5标签</h2><p>html5标签增加了标签的语义化，更有助于爬虫爬取，代码阅读。对比无意义的div span等标签，article aside section等新标签的语义化更有助于文档结构化。</p>
-<ul>
-<li>article：独立的个体，可以是文章，博客等等。语义上article和article间是独立不相关的。</li>
-<li>section：彼此互补的部分，section间是有共同联系，互补的。section间共同构成一个整体。</li>
-<li>header：article的标题部分，可以是标题，作者，时间等等。</li>
-<li>hgroup：当标题部分的标题很多时，用hgroup包起来。只用h标签就能完成就不需要hgroup。</li>
-<li>aside：侧边栏，与article的主体部分相隔离，可以是额外介绍，可以是用户注册等。</li>
-<li>nav：导航栏，放置网站logo，导航列表等等。</li>
-<li>footer：尾注，可以是版权声明，帮助等等。</li>
-<li>caption：表题。可有可无。</li>
-<li>figure：放置图片，内设img标签。</li>
-<li>figcaption：图片标题</li>
-<li>cite&#x2F;var&#x2F;code&#x2F;samp&#x2F;kbd：引用、变量、代码、范例、键盘输入域</li>
-<li>datalist：输入列表</li>
-<li>time：时间，放置时间等，内有datetime属性</li>
-</ul>
-<p>使用html5标签，格式化文档，将大大增加代码可读性。</p>
-<h2 id="css布局"><a href="#css布局" class="headerlink" title="css布局"></a>css布局</h2><p>block代表块级元素，有宽和高独占一行；inline代表内联元素，无宽和高，不独占；inline-block内联块元素，不独占一行，有宽和高。</p>
-<p>position的取值有4中。static：默认，在文档流中；relative：相对于原位置位移，不移出文档流；absolute：相对于父容器位移，移出文档流；fixed，相当于屏幕位移，移出文档流；sticky，综合relative和fixed设置阈值。</p>
-<p>完成多栏设置时，可用inline-block,position:absolute,float。其中float适用性最广，inline-block最简洁，position最笨。使用float时，注意清除浮动。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/24/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/blog/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/26/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/24/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/blog/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/26/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -967,13 +958,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">986k</span>
+    <span title="站点总字数">1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">27:24</span>
+    <span title="站点阅读时长">27:55</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
