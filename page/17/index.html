@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">146</span>
+          <span class="site-state-item-count">147</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">438</span>
+        <span class="site-state-item-count">444</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,198 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/03/15/gallery-backend-with-egg-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/03/15/gallery-backend-with-egg-js/" class="post-title-link" itemprop="url">Photo Gallery中出现的常见需求解决方案</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-03-15 14:17:10" itemprop="dateCreated datePublished" datetime="2018-03-15T14:17:10+08:00">2018-03-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-04-07 20:01:10" itemprop="dateModified" datetime="2019-04-07T20:01:10+08:00">2019-04-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/03/15/gallery-backend-with-egg-js/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/15/gallery-backend-with-egg-js/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><img src="https://s2.ax1x.com/2019/04/07/Ahbr1x.png" alt="Ahbr1x.png"></p>
+<blockquote>
+<p>使用egg.js开发PhotoGallery管理后台过程中，遇到了一些典型需求，将处理过程整理如下，方面后面开发类似应用</p>
+</blockquote>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>新建<code>User</code>表，填充表结构，至少包含<code>账号</code>和<code>密码</code>两个字段。</p>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p>（Ajax）登录页面，对应<code>login</code>行为，处理登录请求，包括以下工作：</p>
+<ul>
+<li>调用服务匹配用户名密码</li>
+<li><em>（可选）</em> 检查用户类型</li>
+<li>密码需要加密存储</li>
+<li>储存用户信息到session</li>
+<li>返回提示信息</li>
+</ul>
+<p>（Ajax）注册页面，对应<code>register</code>行为，处理注册请求，包括以下工作：</p>
+<ul>
+<li>寻找重名等逻辑</li>
+<li>调用服务创建用户</li>
+<li>密码需要加密存储</li>
+<li>储存用户信息到session</li>
+<li>返回提示信息</li>
+</ul>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>用户管理，和数据库连接。对应到controller中大多数是POST请求。</p>
+<ul>
+<li>新增用户</li>
+<li>获取用户</li>
+<li>用户资料修改</li>
+<li>用户删除（使用用户状态更新实现）</li>
+</ul>
+<h3 id="Router与中间件"><a href="#Router与中间件" class="headerlink" title="Router与中间件"></a>Router与中间件</h3><ul>
+<li>添加中间件检查是否有session，否则同一跳转<code>/login</code>（业务逻辑）</li>
+<li><em>（可选）</em> Router上使用重定向让path更友好</li>
+<li><strong>一定不要瞎用301状态码</strong></li>
+</ul>
+<h3 id="页面js"><a href="#页面js" class="headerlink" title="页面js"></a>页面js</h3><ul>
+<li>使用Ajax或jsonp请求</li>
+</ul>
+<hr>
+<h2 id="无限滚动"><a href="#无限滚动" class="headerlink" title="无限滚动"></a>无限滚动</h2><h3 id="HTML部分"><a href="#HTML部分" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
+<li>提前加载所有图片（后续API动态请求，DOM插入时间损耗太大）。</li>
+<li>前若干张图片（假设为K）正常展示</li>
+<li>后若干张容器使用<code>display:none</code>或<code>height: 0</code>等手段避免展示</li>
+<li>后若干张图片使用<code>data-src</code>存储真实路径，避免提前加载，影响首屏时间</li>
+</ul>
+<h3 id="JS部分"><a href="#JS部分" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
+<li>设置参数保存当前展示图片的数目</li>
+<li>判断是否滚动到底端</li>
+<li>上述情况下增加展示的图片数目，删除避免展示的<code>class</code>，替换真正的<code>src</code>加载图片</li>
+<li>使用节流，保证弱网络环境下，没有连续的过多图片加载，使用<code>flag</code>控制程序触发，在最后一张图片加载完成后，更新<code>flag</code>布尔值，开放权限</li>
+<li><em>（可选）</em>，网络环境很差时，可以考虑<code>setTimeout</code>兜底，但不推荐</li>
+<li>注意在所有图片都加载完成时，停止监听<code>scroll</code>事件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> figure = $($(<span class="string">&#x27;#figures&#x27;</span>).<span class="title function_">children</span>()[index]);</span><br><span class="line">  <span class="keyword">if</span> (!figure) &#123;</span><br><span class="line">    $(<span class="variable language_">window</span>).<span class="title function_">off</span>(<span class="string">&#x27;scroll&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><h3 id="HTML部分-1"><a href="#HTML部分-1" class="headerlink" title="HTML部分"></a>HTML部分</h3><ul>
+<li>使用包裹<code>&lt;input type=&#39;file&#39;&gt;</code>的<code>&lt;form&gt;</code></li>
+<li><code>&lt;input type=&#39;file&#39;&gt;</code>使用<code>display: none</code>，通过更友好的方式trigger它的点击</li>
+<li><strong>注意：<code>type=file</code>的<code>input</code>标签一定要有<code>name</code>属性，否则不会被包裹在<code>FormData</code>中。</strong></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">&quot;upload&quot;</span> <span class="attr">class</span>=<span class="string">&quot;upload&quot;</span>&gt;</span>+ 点击上传<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">&quot;upload-form&quot;</span> <span class="attr">enctype</span>=<span class="string">&quot;multipart/form-data&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/*&quot;</span> <span class="attr">name</span>=<span class="string">&quot;files&quot;</span> <span class="attr">id</span>=<span class="string">&quot;upload-file&quot;</span> <span class="attr">multiple</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="JS部分-1"><a href="#JS部分-1" class="headerlink" title="JS部分"></a>JS部分</h3><ul>
+<li>使用Ajax提交替换form表单替换，来实现更复杂的回调和逻辑控制</li>
+<li>通过构造<code>FormData</code>，提交域内文件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;#upload&#x27;</span>).<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  $(<span class="string">&#x27;#upload-file&#x27;</span>).<span class="title function_">trigger</span>(<span class="string">&#x27;click&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$(<span class="string">&#x27;#upload-file&#x27;</span>).<span class="title function_">on</span>(<span class="string">&#x27;change&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  $.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: <span class="string">&#x27;/gallery/upload&#x27;</span>,</span><br><span class="line">    <span class="attr">type</span>: <span class="string">&#x27;POST&#x27;</span></span><br><span class="line">    <span class="attr">cache</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">data</span>: <span class="keyword">new</span> <span class="title class_">FormData</span>($(<span class="string">&#x27;#upload-form&#x27;</span>)[<span class="number">0</span>]),</span><br><span class="line">    <span class="attr">processData</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">contentType</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">success</span>: <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(data)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="后台路由"><a href="#后台路由" class="headerlink" title="后台路由"></a>后台路由</h3><ul>
+<li>配置Ajax和jsonp安全检查</li>
+</ul>
+<h3 id="控制器端"><a href="#控制器端" class="headerlink" title="控制器端"></a>控制器端</h3><p>使用插件，参考<a target="_blank" rel="noopener" href="https://github.com/eggjs/examples/blob/master/multipart/app/controller/multiple.js">examples&#x2F;multiple.js at master · eggjs&#x2F;examples</a></p>
+<h2 id="HTML模板"><a href="#HTML模板" class="headerlink" title="HTML模板"></a>HTML模板</h2><p>使用ES6的模板字符串。</p>
+<p>已知问题：</p>
+<ul>
+<li>似乎有些视图、逻辑未分离</li>
+</ul>
+<h2 id="使用七牛API上传文件"><a href="#使用七牛API上传文件" class="headerlink" title="使用七牛API上传文件"></a>使用七牛API上传文件</h2><p>使用服务端上传，<a target="_blank" rel="noopener" href="https://developer.qiniu.com/kodo/kb/1374/batch-upload-and-file-upload-more-resources">一次只能单张上传</a>。官网API文档<a target="_blank" rel="noopener" href="https://developer.qiniu.com/kodo/sdk/1289/nodejs">Node.js版</a>描述的并不清楚，下面是上传的简单流程展示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mac = <span class="keyword">new</span> qiniu.<span class="property">auth</span>.<span class="property">digest</span>.<span class="title class_">Mac</span>(config.<span class="property">accessKey</span>, config.<span class="property">secretKey</span>);</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  <span class="attr">scope</span>: config.<span class="property">bucketName</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> putPolicy = <span class="keyword">new</span> qiniu.<span class="property">rs</span>.<span class="title class_">PutPolicy</span>(options);</span><br><span class="line"><span class="keyword">const</span> uploadToken = putPolicy.<span class="title function_">uploadToken</span>(mac);</span><br><span class="line"><span class="keyword">const</span> qiniuConfig = <span class="keyword">new</span> qiniu.<span class="property">conf</span>.<span class="title class_">Config</span>();</span><br><span class="line">qiniuConfig.<span class="property">zone</span> = qiniu.<span class="property">zone</span>.<span class="property">Zone_z1</span>;</span><br><span class="line"><span class="keyword">const</span> formUploader = <span class="keyword">new</span> qiniu.<span class="property">form_up</span>.<span class="title class_">FormUploader</span>(qiniuConfig);</span><br><span class="line"><span class="keyword">const</span> putExtra = <span class="keyword">new</span> qiniu.<span class="property">form_up</span>.<span class="title class_">PutExtra</span>();</span><br><span class="line"></span><br><span class="line">formUploader.<span class="title function_">putFile</span>(uploadToken, key, localFile, putExtra, <span class="keyword">function</span>(<span class="params">respErr, respBody, respInfo</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (respErr) &#123;&#125;</span><br><span class="line">  <span class="keyword">if</span> (respInfo.<span class="property">statusCode</span> == <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>多文件上传使用外部队列暂存所有任务，并和回调函数关联即可实现。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1236,181 +1428,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/01/21/hainan-riding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/01/21/hainan-riding/" class="post-title-link" itemprop="url">海南东线环岛行游记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-01-21 16:53:49" itemprop="dateCreated datePublished" datetime="2018-01-21T16:53:49+08:00">2018-01-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-04-07 19:58:59" itemprop="dateModified" datetime="2019-04-07T19:58:59+08:00">2019-04-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%B8%B8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">游记</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/01/21/hainan-riding/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/21/hainan-riding/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>说起来是游记，但以流水账为主，谨记念第一次长途骑行和观光游</p>
-</blockquote>
-<p>去海南的主意不是我出的，最初我和C是打算去些更远的地方骑行。那还是2016年的下半年的事情，C在学苑超市偶遇我，突然说起要不要去台湾骑行。对于长期只在北京市里转来转去的我来说，实在太有诱惑力，于是我俩一拍即合。只是那会儿我既没实习更没工作，长途骑行也只能是计划。</p>
-<p>这一计划就是一年多，转眼就是17年的12月，时机成熟，我叫上凯哥。我们最终定下了5天的行程，从海口到三亚，中间在文昌、博鳌、兴隆和海棠湾停靠（这也是经典的环岛东线）。整个5天除了第1天，每天都有很贴近海边的路，风景还是不错的。路上遇到了蛮多骑友，他们来自不同的地方，有的甚至是从甘肃、辽宁这种地方骑过来的。除了晒伤和胳膊肘的轻伤外，这次难得的旅行还留下了下面这些经历。</p>
-<p>下图是我在首都机场候机的间隙拍的，窗外那架海航的波音747就是我们要乘坐的那架。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhMDA.jpg" alt="AhhMDA.jpg"></p>
-<p>我们到海口时已经是晚上了，第一晚住在租车的517驿站，环境比事先设想的要差劲一些，所幸也只住这一晚。租车的人并不是很多，听老板说寒假的时候是旺季，可能是都来避寒了吧。我们的行程是5天，刚好满足一个5日套餐，学生证还可以8.8折，可以说相当划算了。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahh1Et.jpg" alt="Ahh1Et.jpg"></p>
-<h2 id="Day1-海口-——-gt-龙楼"><a href="#Day1-海口-——-gt-龙楼" class="headerlink" title="Day1: 海口 ——&gt; 龙楼"></a>Day1: 海口 ——&gt; 龙楼</h2><p>第一天是整个行程里相对比较无趣的，并看不到海。路书里甚至有一条没法骑行的小路。最后从小路绕上213省道时，我们三个都累坏了。若没有凯哥的麦丽素，后果恐怕难以设想。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhnjH.jpg" alt="AhhnjH.jpg"></p>
-<p>在大致坡镇休息时，C瞥见了一家叫“琼海炒冰清补凉”的店，作为曾经在广东上了4年学的C，竟然也没断清楚句。拜这好奇所赐，我尝到了一道极好的甜点。</p>
-<p>这里的清补凉以椰奶为底，炒冰为料，辅以红豆、绿豆、薏米、椰果、葡萄干、莲子、仙草冻等。入口冰爽，糖水的味道清而不腻，实在美味。要是夏天品尝，应该更是大大提升幸福感。（右边的菜汤请忽略）</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhQHI.jpg" alt="AhhQHI.jpg"></p>
-<p>另外，由于我们三个的速度有所差距，为了避免走失的情况。在大致坡时，我们威逼利诱凯哥下载了行者，加入了我们“海南养生骑行群”，从而能共享队友的位置。这在后面几天派上了大用场。</p>
-<p>海南的人们大多比较慵懒，穿着拖鞋。很少见到穿着其他鞋的。海南的摩托和电动车非常多，十字路口过街的车流相当壮观。</p>
-<h2 id="Day2-龙楼-——-gt-博鳌"><a href="#Day2-龙楼-——-gt-博鳌" class="headerlink" title="Day2: 龙楼 ——&gt; 博鳌"></a>Day2: 龙楼 ——&gt; 博鳌</h2><p>在龙楼歇了一夜后，我们向博鳌出发。沿着213省道骑行十几公里后左拐，东郊椰林中成片椰树的画面就出现在面前。在后面的几天骑行里，我们逐渐发现椰树似乎是这边主要的木本植物。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhKud.jpg" alt="AhhKud.jpg"></p>
-<p>现在似乎是淡季，这边的野海滩几乎没有人。灰暗的天空营造出一种凄凉的既视感。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahh84f.jpg" alt="Ahh84f.jpg"></p>
-<p>离开东郊椰林后，我们坐船过江来到文昌市内，码头边停着许多渔船，散发着浓重的腥味。现在可能是休渔期，船上没看到什么人。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhbZX8.jpg" alt="AhbZX8.jpg"></p>
-<p>我们在文昌市吃过午饭，从海边延乡道绕回S213省道上，半路下起了小雨。不过不影响兴致，反倒驱散了骑车的燥热。等再次骑上县道时，离博鳌已经不远了。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahh3UP.jpg" alt="Ahh3UP.jpg"></p>
-<p>这边的鸡、牛、猪的养殖方式很有特点。在路的两边，很容易发现它们没人看管，自由踱步地觅食。有的甚至直接走上公路。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhY8S.jpg" alt="AhhY8S.jpg"></p>
-<p>C的估计真的非常准，我和他准时在下午5点半到达酒店（凯哥要慢一点）。我们晚上去了一家叫“海的故事”的酒吧，它建在海边，夜晚的海浪咆哮着涌上海岸，海风也比文昌那里凶猛些。享受着海风拂面的同时，我和C进行了一番恋爱观的探讨，然而都是纸上谈兵。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhJC8.jpg" alt="AhhJC8.jpg"></p>
-<h2 id="Day3-博鳌-——-gt-兴隆"><a href="#Day3-博鳌-——-gt-兴隆" class="headerlink" title="Day3: 博鳌 ——&gt; 兴隆"></a>Day3: 博鳌 ——&gt; 兴隆</h2><p>海南的东北人很多，新建的楼盘也很多，当然同样没人住的楼盘也挺多。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhauj.jpg" alt="Ahhauj.jpg"></p>
-<p>博鳌附近的省道修得极好，很适合骑车。不知道是不是因为亚洲论坛的缘由。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhNvQ.jpg" alt="AhhNvQ.jpg"></p>
-<p>在到达万宁市稍作休整后，我们转向海边的旅游公路进发，“旅游公路”这名字名副其实，海边的风景很不错。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhtgg.jpg" alt="Ahhtgg.jpg"></p>
-<p>路况同样很棒。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhdDs.jpg" alt="AhhdDs.jpg"></p>
-<p>在桥上还能看到某小河的入海口。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhwbn.jpg" alt="Ahhwbn.jpg"></p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhBEq.jpg" alt="AhhBEq.jpg"></p>
-<p>晚上5点多时，我们很幸运地赶上了夕阳，旅游公路上的远眺美不胜收。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhDU0.jpg" alt="AhhDU0.jpg"></p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhr5V.jpg" alt="Ahhr5V.jpg"></p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhyCT.jpg" alt="AhhyCT.jpg"></p>
-<p>由于拍照耽误了些时间，我们到达兴隆时已经比较晚了。吃了顿正宗的海（dong）南（bei）饺子，便结束了一天的行程。并没有泡到兴隆温泉。</p>
-<h2 id="Day4-万宁-——-gt-三亚海棠湾"><a href="#Day4-万宁-——-gt-三亚海棠湾" class="headerlink" title="Day4: 万宁 ——&gt; 三亚海棠湾"></a>Day4: 万宁 ——&gt; 三亚海棠湾</h2><p>海南的丘陵比较多，一路上很多上上下下的起伏。不过，真正意义上的爬坡出现在万宁和陵水的分界岭，是一个海拔100多米的爬坡。在下坡的路上，还看见了一群5、60岁大爷组成的车队，着实是老当益壮。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhc2F.jpg" alt="Ahhc2F.jpg"></p>
-<p>这一天的午餐在陵水进行，早听人说海南的粉很出名，四大粉中就有陵水酸粉的一个位置。这份是加了沙虫的，味道很赞。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahh68U.jpg" alt="Ahh68U.jpg"></p>
-<p>接下来又是S213上的狂奔，海棠湾位于三亚市区东北边，离蜈支洲岛比较近，有着相当不错的海景。我们入住的民宿正对着海（当然旁边的所有民宿都是这样）。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahhgv4.jpg" alt="Ahhgv4.jpg"></p>
-<p>天台上的风景也是不错的。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhbQts.jpg" alt="AhbQts.jpg"></p>
-<p>灯台旁的防波堤上，海浪有耐心地拍打。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhbMkj.jpg" alt="AhbMkj.jpg"></p>
-<h2 id="Day5-三亚海棠湾-——-gt-三亚"><a href="#Day5-三亚海棠湾-——-gt-三亚" class="headerlink" title="Day5: 三亚海棠湾 ——&gt; 三亚"></a>Day5: 三亚海棠湾 ——&gt; 三亚</h2><p>我们出发去三亚时已经是12月31号的事情了，这段路很近，只有30多公里。还车的时候，还没到正午。</p>
-<p>在三亚跨年是C设计好的环节，似乎在一个陌生的地方，哦不，严格意义上来说是在一个陌生的热闹的地方跨年，会很有feel。尽管对此我持保留意见，但我倒是也觉得这会是有趣的体验。</p>
-<p>1年说过就过去了。12月31号的这个青旅里，十几个来自世界各地的朋友玩着抽牌喝酒的游戏，和我们一样，等待2018的来临。唯一的不同是他们似乎真的很期待这一刻的到来。临到跨年的前几分钟，更是热情地拉着我们一同去海边看烟花。“打冬海”，她们有点激动地说。</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhhWr9.jpg" alt="AhhWr9.jpg"></p>
-<p>沿着海边的街直走，我才发现，三亚的跨年比想象中热闹。街头遍是从遥远的俄罗斯赶来的毛子兄弟。海边的跨年party上，他们更是在倒计时中载歌载舞。这恐怕是我这辈子见过最密集的毛子群体了。</p>
-<p>海水拍打的沙滩上，邀请我们的外国友人相互祝着“Happy new year”。恍惚间，一瓶劲酒被塞进手里。“Take a dip，let’s celebrate！”，一个褐发碧眼的年轻姑娘朗声笑着。盛情难却，我们一人一口，干完了最后的酒。</p>
-<p>远处有人放起烟花，仿佛春节似的。</p>
-<p>用一个这样的跨年作为环岛东线的结尾，挺好的。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1441,7 +1458,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">27:55</span>
+    <span title="站点阅读时长">28:11</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

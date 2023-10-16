@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">146</span>
+          <span class="site-state-item-count">147</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">438</span>
+        <span class="site-state-item-count">444</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,233 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2020/04/16/fe-coverage-scheme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2020/04/16/fe-coverage-scheme/" class="post-title-link" itemprop="url">前端代码覆盖率实时统计方案探索</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-04-16 23:46:17" itemprop="dateCreated datePublished" datetime="2020-04-16T23:46:17+08:00">2020-04-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-04-17 00:07:49" itemprop="dateModified" datetime="2020-04-17T00:07:49+08:00">2020-04-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2020/04/16/fe-coverage-scheme/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/16/fe-coverage-scheme/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>随着业务增长，代码逐渐复杂，前端有些时候不能通过自测保证代码质量，而测试同学从用户角度进行端到端的case测试，也有可能存在测试case不够全面或重复覆盖的情况。而测试覆盖质量只能通过测试case评审来保证，没有量化的、直观的客观数据。</p>
+<p>然而前端场景和后端不同，UI测试因为业务形态原因，变更会更频繁，编写和维护单测成本比较高。因此目前且短期内前端工程还是以传统的用户角度的端到端测试为主。另外，在SSR项目中，前端开发也会书写API层，这部分代码也需要测试覆盖到。目前前端生态还没有一个能同时覆盖UI层和API层的覆盖率统计框架，需要借助已有的工具实现这点。</p>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>提升开发自测质量和提测质量，避免case覆盖不全的问题，同时有直观的统计指标衡量。</p>
+<h3 id="预期效果"><a href="#预期效果" class="headerlink" title="预期效果"></a>预期效果</h3><p>分3个阶段：</p>
+<p>第一阶段：<strong>基本可用版本</strong>，能够采集UI层和API层的代码覆盖率，覆盖率采集过程对前端开发透明，无需开发业务以外的开发成本。能够打开浏览器页面直观查看各个代码覆盖率。</p>
+<p>第二阶段：<strong>丰富统计数据</strong>，在第一阶段基础上，能够<em>记录</em>不同分支甚至不同版本历史的覆盖率，能够借助gitlab只查看<em>增量文件</em>的覆盖率。</p>
+<p>第三阶段：<strong>打通QA平台</strong>，在第二阶段基础上，接入QA已有平台或自建平台，在第三方页面查看数据；形成一套覆盖率采集方案。</p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>本地、特性分支上使用</p>
+<h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p>覆盖率采集建立在<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Instrumentation_(computer_programming)">代码插桩</a>基础上。前端生态里比较成熟的工具是<a target="_blank" rel="noopener" href="https://github.com/gotwarlost/istanbul">istanbuljs</a>，该库的0.x.x版本位于<a target="_blank" rel="noopener" href="https://github.com/gotwarlost/istanbul">istanbul</a>库。关于该库的科普介绍，可以阅读ruanyifeng的<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2015/06/istanbul.html">科普文</a>。</p>
+<p>istanbul提供两种插桩方式：<strong>编译时</strong>和<strong>运行时</strong>。</p>
+<ul>
+<li>编译时<ul>
+<li>nyc命令行的<a target="_blank" rel="noopener" href="https://github.com/istanbuljs/nyc/blob/master/docs/instrument.md">instrument子命令</a>可以完成手动插桩</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/istanbuljs/babel-plugin-istanbul">babel-plugin-istanbul</a>可以在使用babel的前端工程里，在<strong>编译阶段</strong>植入插桩代码。TypeScript项目可以使用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@istanbuljs/nyc-config-typescript">@istanbuljs&#x2F;nyc-config-typescript</a>插件</li>
+</ul>
+</li>
+<li>运行时，需要借助<a target="_blank" rel="noopener" href="https://github.com/gotwarlost/istanbul-middleware">istanbul-middleware</a>中间件的帮助<ul>
+<li><code>im.hookLoader</code>，适用于服务端文件的动态插桩，方法利用istanbul-lib-hook中的<code>hookRequire</code>方法，hook被require引入的<strong>js文件</strong>，返回插桩后的js文件。因此需要在业务代码require前引入</li>
+<li><code>im.createClientHandler</code>，用于客户端<strong>js文件</strong>的动态插桩，它会把指定根路径下的js文件请求拦截，返回插桩后的代码。</li>
+</ul>
+</li>
+</ul>
+<p>在后台项目中，服务端代码使用<code>.ts</code>书写，本地使用<code>ts-node</code>启动，boe和线上使用<code>tsc</code>编译后的js文件启动。前端代码使用<code>.ts</code>书写，本地使用webpack + babel预编译成js。结合这个场景看，在node侧使用<code>hookLoader</code>，在UI测使用babel-plugin-istanbul插件更合适。</p>
+<p>总体来讲，工作分两步：<strong>代码插桩</strong>和<strong>可视化</strong>。</p>
+<h3 id="代码插桩"><a href="#代码插桩" class="headerlink" title="代码插桩"></a>代码插桩</h3><p>规划里一切功能的基础和本质都来自代码插桩。</p>
+<h4 id="client端"><a href="#client端" class="headerlink" title="client端"></a>client端</h4><p>client端可以直接使用目前仍良好维护的<a target="_blank" rel="noopener" href="https://github.com/istanbuljs/babel-plugin-istanbul">babel-plugin-istanbul</a>插件。在<code>.babelrc</code>中引入相关配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;env&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;test&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;plugins&quot;</span>: [<span class="string">&quot;istanbul&quot;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>仅在test环境下开启该插件。可以用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/cross-env">cross-env</a>这样的工具设置<code>NODE_ENV=test</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;test&quot;</span>: <span class="string">&quot;cross-env NODE_ENV=test npm run start&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>插件还有<code>include</code>，<code>exclude</code>，<code>useInlineSourceMaps</code>这样的配置项。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;env&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;test&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;plugins&quot;</span>: [</span><br><span class="line">        [<span class="string">&quot;istanbul&quot;</span>, &#123;</span><br><span class="line">          <span class="string">&quot;useInlineSourceMaps&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">          <span class="string">&quot;exclude&quot;</span>: [</span><br><span class="line">            <span class="string">&quot;**/*.spec.js&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;]</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>插桩后的业务代码如下所示：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cov_ac7rkuoyv = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> path = <span class="string">&quot;/Users/test/shenlvmeng/nyc-demo/src/App.js&quot;</span>;</span><br><span class="line">  <span class="keyword">var</span> hash = <span class="string">&quot;7dec600464f484deef063d183319f809a7c25687&quot;</span>;</span><br><span class="line">  <span class="keyword">var</span> <span class="variable language_">global</span> = <span class="keyword">new</span> <span class="title class_">Function</span>(<span class="string">&quot;return this&quot;</span>)();</span><br><span class="line">  <span class="keyword">var</span> gcv = <span class="string">&quot;__coverage__&quot;</span>;</span><br><span class="line">  <span class="keyword">var</span> coverageData = &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&quot;/Users/shenlvmeng/nyc-demo/src/App.js&quot;</span>,</span><br><span class="line">    <span class="attr">statementMap</span>: &#123;</span><br><span class="line">      <span class="string">&quot;0&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">start</span>: &#123;</span><br><span class="line">          <span class="attr">line</span>: <span class="number">8</span>,</span><br><span class="line">          <span class="attr">column</span>: <span class="number">2</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">end</span>: &#123;</span><br><span class="line">          <span class="attr">line</span>: <span class="number">14</span>,</span><br><span class="line">          <span class="attr">column</span>: <span class="number">9</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">fnMap</span>: &#123;</span><br><span class="line">      <span class="string">&quot;0&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;App&quot;</span>,</span><br><span class="line">        <span class="attr">decl</span>: &#123;</span><br><span class="line">          <span class="attr">start</span>: &#123;</span><br><span class="line">            <span class="attr">line</span>: <span class="number">7</span>,</span><br><span class="line">            <span class="attr">column</span>: <span class="number">9</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="attr">end</span>: &#123;</span><br><span class="line">            <span class="attr">line</span>: <span class="number">7</span>,</span><br><span class="line">            <span class="attr">column</span>: <span class="number">12</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">loc</span>: &#123;</span><br><span class="line">          <span class="attr">start</span>: &#123;</span><br><span class="line">            <span class="attr">line</span>: <span class="number">7</span>,</span><br><span class="line">            <span class="attr">column</span>: <span class="number">15</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="attr">end</span>: &#123;</span><br><span class="line">            <span class="attr">line</span>: <span class="number">33</span>,</span><br><span class="line">            <span class="attr">column</span>: <span class="number">1</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">line</span>: <span class="number">7</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">branchMap</span>: &#123;&#125;,</span><br><span class="line">    <span class="attr">s</span>: &#123;</span><br><span class="line">      <span class="string">&quot;0&quot;</span>: <span class="number">0</span>,</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">f</span>: &#123;</span><br><span class="line">      <span class="string">&quot;0&quot;</span>: <span class="number">0</span>,</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">b</span>: &#123;&#125;,</span><br><span class="line">    <span class="attr">_coverageSchema</span>: <span class="string">&quot;43e27e138ebf9cfc5966b082cf9a028302ed4184&quot;</span>,</span><br><span class="line">    <span class="attr">hash</span>: <span class="string">&quot;7dec600464f484deef063d183319f809a7c25687&quot;</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">var</span> coverage = <span class="variable language_">global</span>[gcv] || (<span class="variable language_">global</span>[gcv] = &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (coverage[path] &amp;&amp; coverage[path].<span class="property">hash</span> === hash) &#123;</span><br><span class="line">    <span class="keyword">return</span> coverage[path];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> coverage[path] = coverageData;</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _jsxFileName = <span class="string">&quot;/Users/test/shenlvmeng/nyc-demo/src/App.js&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) &#123;</span><br><span class="line">  cov_ac7rkuoyv.<span class="property">f</span>[<span class="number">0</span>]++;</span><br><span class="line">  cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">0</span>]++;</span><br><span class="line">  <span class="title class_">Object</span>(react__WEBPACK_IMPORTED_MODULE_0__[<span class="string">&quot;useEffect&quot;</span>])(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    cov_ac7rkuoyv.<span class="property">f</span>[<span class="number">1</span>]++;</span><br><span class="line">    cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">1</span>]++;</span><br><span class="line"></span><br><span class="line">    (<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">      cov_ac7rkuoyv.<span class="property">f</span>[<span class="number">2</span>]++;</span><br><span class="line">      cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">2</span>]++;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">__coverage__</span>);</span><br><span class="line">      cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">3</span>]++;</span><br><span class="line">      axios__WEBPACK_IMPORTED_MODULE_1___default.<span class="property">a</span>.<span class="property">defaults</span>.<span class="property">headers</span>.<span class="property">post</span>[<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>] = <span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">      cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">4</span>]++;</span><br><span class="line">      axios__WEBPACK_IMPORTED_MODULE_1___default.<span class="property">a</span>.<span class="title function_">post</span>(<span class="string">&#x27;http://localhost:4000/coverage/client&#x27;</span>, <span class="variable language_">window</span>.<span class="property">__coverage__</span>);</span><br><span class="line">    &#125;)();</span><br><span class="line">  &#125;, []);</span><br><span class="line">  cov_ac7rkuoyv.<span class="property">s</span>[<span class="number">5</span>]++;</span><br><span class="line">  <span class="keyword">return</span> react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">className</span>: <span class="string">&quot;App&quot;</span>,</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">16</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;, react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;header&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">className</span>: <span class="string">&quot;App-header&quot;</span>,</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">17</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;, react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;img&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">src</span>: _logo_svg__WEBPACK_IMPORTED_MODULE_2___default.<span class="property">a</span>,</span><br><span class="line">    <span class="attr">className</span>: <span class="string">&quot;App-logo&quot;</span>,</span><br><span class="line">    <span class="attr">alt</span>: <span class="string">&quot;logo&quot;</span>,</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">18</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;), react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;p&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">19</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;, <span class="string">&quot;Edit &quot;</span>, react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;code&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">20</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;, <span class="string">&quot;src/App.js&quot;</span>), <span class="string">&quot; and save to reload.&quot;</span>), react__WEBPACK_IMPORTED_MODULE_0___default.<span class="property">a</span>.<span class="title function_">createElement</span>(<span class="string">&quot;a&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">className</span>: <span class="string">&quot;App-link&quot;</span>,</span><br><span class="line">    <span class="attr">href</span>: <span class="string">&quot;https://reactjs.org&quot;</span>,</span><br><span class="line">    <span class="attr">target</span>: <span class="string">&quot;_blank&quot;</span>,</span><br><span class="line">    <span class="attr">rel</span>: <span class="string">&quot;noopener noreferrer&quot;</span>,</span><br><span class="line">    <span class="attr">__source</span>: &#123;</span><br><span class="line">      <span class="attr">fileName</span>: _jsxFileName,</span><br><span class="line">      <span class="attr">lineNumber</span>: <span class="number">22</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">__self</span>: <span class="variable language_">this</span></span><br><span class="line">  &#125;, <span class="string">&quot;Learn React&quot;</span>)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到针对每个文件，插桩后的代码新建了一个函数，用于更新这个文件的覆盖率信息。在业务代码执行时，会不断更新对应的计数器。前端代码run起来后，可以通过<code>window.__coverage</code>直接得到当前项目的覆盖率情况。</p>
+<p><strong>覆盖率计算原理</strong></p>
+<p>拿到代码字符串后，使用AST解析库解析出语法树，在对应树节点插入覆盖率语句，之后将语法树转成插桩后的代码。这个过程在0.x.x版本的实现可以参加<a target="_blank" rel="noopener" href="http://gotwarlost.github.io/istanbul/public/apidocs/files/lib_instrumenter.js.html#l467">这里</a>。</p>
+<p>0.x.x版本的instanbul使用<a target="_blank" rel="noopener" href="https://github.com/jquery/esprima">esprima</a>和<a target="_blank" rel="noopener" href="https://github.com/estools/escodegen">escodegen</a>。在最新的istanbuljs的<a target="_blank" rel="noopener" href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument">istanbul-lib-instrument</a>中使用babel相关的包完成解析、生成等功能，但插桩思路不变。</p>
+<h4 id="node端"><a href="#node端" class="headerlink" title="node端"></a>node端</h4><p>node端使用istanbul-middleware中间件的<code>hookLoader</code>完成动态插桩。该中间件为<a target="_blank" rel="noopener" href="https://github.com/gotwarlost/istanbul">instanbul</a>作者所写，所依赖的istanbul版本是目前已经不再维护的0.x.x版本，同时中间件也是基于express所写，年代较老。中间件的设计和我们的场景有些距离，因此需要在其基础上进行改造。</p>
+<p>在预期场景下，我们主要使用<code>im.hookLoader</code>和<code>im.createHandler</code>两个方法。</p>
+<h5 id="im-hookLoader"><a href="#im-hookLoader" class="headerlink" title="im.hookLoader"></a><code>im.hookLoader</code></h5><p><code>im.hookLoader</code>只是在instanbul hook的基础上做的简单封装。看<a target="_blank" rel="noopener" href="http://gotwarlost.github.io/istanbul/public/apidocs/files/lib_hook.js.html#l77">文档</a>可以发现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">hookRequire</span>(<span class="params">matcher, transformer, options</span>) &#123;</span><br><span class="line">    options = options || &#123;&#125;;</span><br><span class="line">    <span class="keyword">var</span> fn = <span class="title function_">transformFn</span>(matcher, transformer, options.<span class="property">verbose</span>),</span><br><span class="line">        postLoadHook = options.<span class="property">postLoadHook</span> &amp;&amp;</span><br><span class="line">            <span class="keyword">typeof</span> options.<span class="property">postLoadHook</span> === <span class="string">&#x27;function&#x27;</span> ? options.<span class="property">postLoadHook</span> : <span class="literal">null</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="title class_">Module</span>.<span class="property">_extensions</span>[<span class="string">&#x27;.js&#x27;</span>] = <span class="keyword">function</span> (<span class="params"><span class="variable language_">module</span>, filename</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> ret = <span class="title function_">fn</span>(fs.<span class="title function_">readFileSync</span>(filename, <span class="string">&#x27;utf8&#x27;</span>), filename);</span><br><span class="line">        <span class="keyword">if</span> (ret.<span class="property">changed</span>) &#123;</span><br><span class="line">            <span class="variable language_">module</span>.<span class="title function_">_compile</span>(ret.<span class="property">code</span>, filename);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">originalLoader</span>(<span class="variable language_">module</span>, filename);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (postLoadHook) &#123;</span><br><span class="line">            <span class="title function_">postLoadHook</span>(filename);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>hook require是利用CommonJS的模块加载规范实现的。这里介绍下模块加载流程相关的背景。</p>
+<h5 id="模块加载流程"><a href="#模块加载流程" class="headerlink" title="模块加载流程"></a>模块加载流程</h5><p>require和module来自nodejs的<a target="_blank" rel="noopener" href="https://nodejs.org/api/modules.html#modules_module">Modules</a>模块。无需显式引入（原因下面会提）即可使用里面的<code>module</code>, <code>require</code>, <code>exports</code>的关键字。在require一个包时，分为了<strong>解析、加载、封装、求值、缓存</strong>几步。</p>
+<ol start="0">
+<li>解析一步交给<code>module.require(modulename)</code>方法实现，该方法调用静态方法<code>Module._load</code>加载模块。</li>
+<li>加载时首先调用<code>Module._resolveFilename</code>解析路径，解析过程大致分为粗筛和精确定位</li>
+<li>粗筛，原生模块则直接返回模块名，否则从当前目录逐步向上寻找node_modules目录下的模块文件夹</li>
+<li>精确定位，首先在上面的目录下寻找有无没有拓展名的同名文件，再寻找以<code>js</code>、<code>json</code>、<code>node</code>拓展名结尾的文件；再寻找同名目录下<code>package.json</code>中<code>main</code>字段指定的路径，最后寻找同名目录下的index.js</li>
+<li>得到路径后，先试图从<code>Module._cache</code>中寻找有无模块缓存，若没有，则新建模块对象并缓存，之后调用<code>module.load()</code>方法加载该模块</li>
+<li>node默认只能load以<code>js</code>, <code>json</code>, <code>node</code>结尾的文件，除此之外均视为<code>.js</code>文件</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Module</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">load</span> = <span class="keyword">function</span>(<span class="params">filename</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">filename</span> = filename;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">paths</span> = <span class="title class_">Module</span>.<span class="title function_">_nodeModulePaths</span>(path.<span class="title function_">dirname</span>(filename));</span><br><span class="line">    <span class="keyword">var</span> extension = path.<span class="title function_">extname</span>(filename) || <span class="string">&#x27;.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Module</span>.<span class="property">_extensions</span>[extension]) extension = <span class="string">&#x27;.js&#x27;</span>;</span><br><span class="line">    <span class="title class_">Module</span>.<span class="property">_extensions</span>[extension](<span class="variable language_">this</span>, filename);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">loaded</span> = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><code>Module._extensions</code>键值对默认只包含对上述三种文件的处理。其中json和node文件较简单</li>
+</ol>
+<ul>
+<li>json，读取文件 &#x3D;&gt; <code>JSON.parse</code> &#x3D;&gt; 注入到<code>module.exports</code>上</li>
+<li>node，调用<code>process.dlopen</code>加载</li>
+<li>js，调用<code>module._compile()</code>处理文件内容</li>
+</ul>
+<ol start="5">
+<li><code>module._compile</code>执行js文件编译，编译前调用<code>Module.wrap</code>方法将模块封装在函数内，这也是<code>module</code>，<code>require</code>，<code>exports</code>，<code>__filename</code>，<code>__dirname</code>可以直接在模块内使用，且模块间的<code>module</code>，<code>require</code>，<code>exports</code>不相互干扰的原因。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Module</span>.<span class="property">wrap</span> = <span class="keyword">function</span>(<span class="params">script</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Module</span>.<span class="property">wrapper</span>[<span class="number">0</span>] + script + <span class="title class_">Module</span>.<span class="property">wrapper</span>[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title class_">Module</span>.<span class="property">wrapper</span> = [</span><br><span class="line">    <span class="string">&#x27;(function (exports, require, module, __filename, __dirname) &#123; &#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;\n&#125;);&#x27;</span></span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>wrap后，调用<code>vm.runInThisContext</code>将字符串转为可执行的js函数。最后一句执行封装的函数，注入当前module的相关信息到模块中</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Module</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_compile</span> = <span class="keyword">function</span>(<span class="params">content, filename</span>) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">var</span> wrapper = <span class="title class_">Module</span>.<span class="title function_">wrap</span>(content);</span><br><span class="line">  <span class="keyword">var</span> compiledWrapper = vm.<span class="title function_">runInThisContext</span>(wrapper, &#123;</span><br><span class="line">    <span class="attr">filename</span>: filename,</span><br><span class="line">    <span class="attr">lineOffset</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">displayErrors</span>: <span class="literal">true</span></span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 执行</span></span><br><span class="line">  result = compiledWrapper.<span class="title function_">call</span>(<span class="variable language_">this</span>.<span class="property">exports</span>, <span class="variable language_">this</span>.<span class="property">exports</span>, <span class="built_in">require</span>, <span class="variable language_">this</span>, filename, dirname);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，可以在REPL中输入<code>require.extensions</code>看到nodejs支持的3种文件拓展。而hookRequire所做的就是hook了加载<code>.js</code>的步骤，在交由<code>module._compile</code>处理前，前进行了插桩处理。</p>
+<blockquote>
+<p>注：<code>ts-node</code>能够import<code>.ts</code>文件也是因为在<code>module._extendsion</code>中添加了<code>.ts</code>的处理方法</p>
+</blockquote>
+<p>综上，在本地测试时，由于通过<code>ts-node</code>启动，<code>im.hookLoader</code>只会hook<code>.js</code>文件（0.x.x版本），会导致没有服务端代码覆盖率，上线前tsc后，就可以顺利注入，从<code>global.__coverage__</code>中拿到覆盖率数据。</p>
+<h4 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h4><p>服务端覆盖率数据采集借助上述的<code>im.hookLoader</code>就已完成。前端页面的代码覆盖率需要自行周期性上报。<code>im.createHandler</code>提供的API可以接收前端覆盖率，该方法创建的路由回调会调用<code>utils.mergeFileCoverage</code>最终将增量覆盖率数据累加在<code>global.__coverage__</code>中。</p>
+<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><p>可视化需要借助istanbul（0.x版本）本身提供的相关API，又或者直接更方便地使用<code>im.createHandler</code>。其方便封装了一些istanbul的API，实现的简单的可视化功能，更多介绍可以直接参考istanbul-middleware使用文档。</p>
+<h4 id="im-createHandler"><a href="#im-createHandler" class="headerlink" title="im.createHandler"></a><code>im.createHandler</code></h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createHandler</span>(<span class="params">opts</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">var</span> app = <span class="title function_">express</span>();</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//send static file for /asset/asset-name</span></span><br><span class="line">    app.<span class="title function_">use</span>(<span class="string">&#x27;/asset&#x27;</span>, express.<span class="title function_">static</span>(<span class="variable constant_">ASSETS_DIR</span>));</span><br><span class="line">    app.<span class="title function_">use</span>(<span class="string">&#x27;/asset&#x27;</span>, express.<span class="title function_">static</span>(path.<span class="title function_">join</span>(<span class="variable constant_">ASSETS_DIR</span>, <span class="string">&#x27;vendor&#x27;</span>)));</span><br><span class="line"></span><br><span class="line">    app.<span class="title function_">use</span>(bodyParser.<span class="title function_">urlencoded</span>(urlOptions));</span><br><span class="line">    app.<span class="title function_">use</span>(bodyParser.<span class="title function_">json</span>(jsonOptions));</span><br><span class="line"></span><br><span class="line">    app.<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="keyword">function</span> (<span class="params">req, res</span>) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        core.<span class="title function_">render</span>(<span class="literal">null</span>, res, origUrl);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面的使用上看，<code>im.createHandler</code>的使用是和express绑定的，并不适配koa的风格，要想使用在非express服务端场景里，或者增加额外功能，就需要重构这个方法。不过，由于一些API的使用从0.x.x版本迁移到新的monorepo的版本并不平滑，且新版本API暂无文档。所以尽管instanbul已经不再更新，对istanbul-middleware中间件的重构还只能保持对旧版本istanbul的依赖。</p>
+<h4 id="重构设计"><a href="#重构设计" class="headerlink" title="重构设计"></a>重构设计</h4><p>为了兼容koa环境，从istanbul-middleware库fork新版本istanbul-koa-middleware，使用ts重写。去掉无用的代码，重点需要改造的就是<code>createKoaHandler</code>方法。</p>
+<p>为减少istanbul-koa-middleware使用方的依赖，考虑使用类似istanbul-middleware的形式，在<code>createKoaHandler</code>内部定义koa应用，使用方只需引入koa-mount和istanbul-koa-middleware即可在任意路由上挂载覆盖率可视化相关子路由。</p>
+<p>除此之外：</p>
+<ul>
+<li>使用koa-static替代<code>express.static</code></li>
+<li>使用koa-mount替代<code>app.use(&#39;/some/path&#39;, someMiddleware)</code></li>
+<li>使用koa-router替代<code>app.get</code>和<code>app.post</code></li>
+<li>定义<code>WebFramework</code>接口，掩盖对回调中<code>res</code>使用方式的不同</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">WebFramework</span> &#123;</span><br><span class="line">    <span class="attr">setHeader</span>: <span class="function">(<span class="params">key: <span class="built_in">string</span>, value: <span class="built_in">string</span></span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">    <span class="attr">status</span>: <span class="function">(<span class="params">code: <span class="built_in">number</span></span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">    <span class="attr">write</span>: <span class="function">(<span class="params">content: <span class="built_in">any</span></span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">    <span class="attr">end</span>: <span class="function">(<span class="params">content?: <span class="built_in">string</span></span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">genWebFrameworkCtxFromKoaCtx</span>(<span class="params">ctx: Koa.ParameterizedContext</span>): <span class="title class_">WebFramework</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="title function_">setHeader</span>(<span class="params">key, value</span>) &#123;</span><br><span class="line">            ctx.<span class="title function_">set</span>(key, value);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="title function_">status</span>(<span class="params">code</span>) &#123;</span><br><span class="line">            ctx.<span class="property">status</span> = code;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="title function_">write</span>(<span class="params">content</span>) &#123;</span><br><span class="line">            ctx.<span class="property">res</span>.<span class="title function_">write</span>(content);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="title function_">end</span>(<span class="params">content</span>) &#123;</span><br><span class="line">            ctx.<span class="property">res</span>.<span class="title function_">end</span>(content);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，重构后的istanbul-koa-middleware就可以帮我们实现最简单的覆盖数据可视化了。后续的新增功能，也都建立在对<code>createHandler</code>函数的改造上。</p>
+<h3 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h3><p>在上面工作完成后，第一阶段目标基本已经实现。</p>
+<p><img src="https://s1.ax1x.com/2020/04/16/JEZliq.png" alt="效果图1"><br><img src="https://s1.ax1x.com/2020/04/16/JEZ8zT.png" alt="效果图2"></p>
+<p>但是，还有很多可以优化的地方，这也是后续阶段需要解决的问题：</p>
+<ul>
+<li>服务端代码如果没有正确设置source-map，覆盖率展示的文件是tsc之后的js文件，可读性差</li>
+<li>需要区分环境，在特定环境下才对代码文件插桩</li>
+<li>本地环境下可以访问到原始的ts文件，上传测试环境后，由于不会打包上传源文件，覆盖率报告将看不了原始ts文件的覆盖详情</li>
+<li>覆盖率报告功能太简单，不能以分支、版本、仓库等空间维度或以历史信息、趋势等时间维度查看<br>，也没有diff内容覆盖率功能</li>
+<li>出现了一些意义不大的文件，需要剔除</li>
+</ul>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://tech.youzan.com/front-coverage/">前端精准测试探索：覆盖率实时统计工具</a></li>
+<li><a target="_blank" rel="noopener" href="https://tech.kujiale.com/qian-duan-fu-gai-lu/">基于Istanbul 优雅地搭建前端JS覆盖率平台</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freecodecamp.org/news/requiring-modules-in-node-js-everything-you-need-to-know-e7fbd119be8/">Requiring modules in Node.js: Everything you need to know</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5d84456851882556f33d5fb0">node模块加载机制 - 掘金</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2211,213 +2438,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/11/15/degit-improvement/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2019/11/15/degit-improvement/" class="post-title-link" itemprop="url">degit认识和改造</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2019-11-15 21:51:58 / 修改时间：22:17:53" itemprop="dateCreated datePublished" datetime="2019-11-15T21:51:58+08:00">2019-11-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2019/11/15/degit-improvement/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/15/degit-improvement/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近日写了一个chrome插件的starter-boilerplate。但这类boilerplate被人们使用的方式常常是整合在cli库中。由于仓库本身的模板性质和git历史存在，并不合适使用npm分发或<code>git clone</code>快速搭建项目骨架。</p>
-<p>碰巧此前学习svelte的时候接触到了<a target="_blank" rel="noopener" href="https://github.com/Rich-Harris/degit">degit</a>，degit做的事很简单，<strong>复制git仓库代码</strong>。这也正是一个称职的boilerplate发挥光和热的方式。</p>
-<h2 id="degit使用"><a href="#degit使用" class="headerlink" title="degit使用"></a>degit使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">degit user/repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># these commands are equivalent</span></span><br><span class="line">degit github:user/repo</span><br><span class="line">degit git@github.com:user/repo</span><br><span class="line">degit https://github.com/user/repo</span><br><span class="line"></span><br><span class="line">degit user/repo my-new-project</span><br></pre></td></tr></table></figure>
-
-<p>上面是一个degit的基本用法，类似<code>git clone</code>指定仓库地址和本地目录名，默认将项目当前<code>master</code>分支的代码拷贝到本地。还可以在仓库后使用<code>#</code>分隔，指定分支名、tag名或commit hash。目前（2019&#x2F;11&#x2F;12）degit支持github、gitlab、BitBucket以及Sourcehut，暂不支持私有仓库。</p>
-<p>在一些情况下，我们可能希望在拷贝完代码后进行一些后置操作，如拷贝关联仓库或删除不必要文件等。对此，degit设计了<strong>actions</strong>来支持，可以在当前目录的<code>degit.json</code>中声明。目前actions只有<code>clone</code>和<code>remove</code>两种。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// degit.json</span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;action&quot;</span>: <span class="string">&quot;clone&quot;</span>,</span><br><span class="line">        <span class="string">&quot;src&quot;</span>: <span class="string">&quot;user/another-repo&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;action&quot;</span>: <span class="string">&quot;remove&quot;</span>,</span><br><span class="line">        <span class="string">&quot;files&quot;</span>: [<span class="string">&quot;LICENSE&quot;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-
-<h2 id="degit优势"><a href="#degit优势" class="headerlink" title="degit优势"></a>degit优势</h2><p>如README中提到的，degit和<code>git clone --depth 1</code>还是有所区别的：</p>
-<ul>
-<li><code>git clone</code>后，终归还是会有个<code>.git</code>目录，需要手动重置</li>
-<li>degit在实现时增加了缓存策略，在有些情况下不需要重复下载代码，速度更快</li>
-<li>“更少的字数”（<code>degit user/repo</code>而不是<code>git clone --depth 1 git@github.com:user/repo</code>）</li>
-<li>灵活度更高，如前后置操作如actions的支持</li>
-<li>更好的可扩展性，未来可以在degit基础上实现交互等更复杂的设计</li>
-</ul>
-<h2 id="degit原理"><a href="#degit原理" class="headerlink" title="degit原理"></a>degit原理</h2><p>那么degit快在哪里？它的思路借鉴于<a target="_blank" rel="noopener" href="https://github.com/vutran/zel">zel</a>和<a target="_blank" rel="noopener" href="https://github.com/lukeed/gittar">gittar</a>，即方便快捷地从git仓库中下载需要的源代码。原理上，<strong>利用某些git平台url的特定规则，从平台下载tar.gz包，再本地解压</strong>。</p>
-<p>degit实现集中在<code>src/index.js</code>中。<code>src/bin.js</code>只用来实现cli部分的入口代码，<code>src/utils.js</code>则包含了一些工具函数。</p>
-<h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><p>在<code>src/bin.js</code>中，流程分下面几步：</p>
-<ol>
-<li>利用<a target="_blank" rel="noopener" href="https://github.com/lukeed/mri">mri</a>做了基本的参数处理</li>
-<li>实例化Degit对象，注册logger的监听方法</li>
-<li>调用<code>clone</code>方法</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> d = <span class="title function_">degit</span>(src, args);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">on</span>(<span class="string">&#x27;info&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(chalk.<span class="title function_">cyan</span>(<span class="string">`&gt; <span class="subst">$&#123;event.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">on</span>(<span class="string">&#x27;warn&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(</span><br><span class="line">            chalk.<span class="title function_">magenta</span>(<span class="string">`! <span class="subst">$&#123;event.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>)</span><br><span class="line">        );</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    d.<span class="title function_">clone</span>(dest)</span><br><span class="line">        <span class="comment">// .then(() =&gt; &#123;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// &#125;)</span></span><br><span class="line">        .<span class="title function_">catch</span>(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">error</span>(chalk.<span class="title function_">red</span>(<span class="string">`! <span class="subst">$&#123;err.message.replace(<span class="string">&#x27;options.&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)&#125;</span>`</span>));</span><br><span class="line">            process.<span class="title function_">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
-
-<h3 id="Degit初始化"><a href="#Degit初始化" class="headerlink" title="Degit初始化"></a>Degit初始化</h3><p>对象实例包含下面几个成员，其中repo信息需要处理后才能拿到。</p>
-<ul>
-<li><code>src</code>，string，用户输入的仓库地址</li>
-<li><code>cache</code>，boolean，是否使用缓存，来自命令行<code>-c</code>或<code>--cache</code>参数</li>
-<li><code>force</code>，boolean，目标文件夹有内容时，是否覆盖，来自<code>-f</code>或<code>--force</code>参数</li>
-<li><code>verbose</code>，boolean，是否打印详细日志，来自<code>-v</code>或<code>--verbose</code>参数</li>
-<li><code>repo</code>，处理<code>src</code>拿到仓库的详情，包括<ul>
-<li><code>site</code>，网页域名</li>
-<li><code>user</code>，用户&#x2F;组织名</li>
-<li><code>name</code>，仓库名</li>
-<li><code>ref</code>，分支、tag、commit hash</li>
-<li><code>url</code>，完整的HTTP url</li>
-</ul>
-</li>
-<li><code>directiveActions</code>，actions配置对应的处理函数，包含<ul>
-<li><code>clone</code>，递归处理src的仓库</li>
-<li><code>remove</code>，调用<code>remove</code>方法移除指定文件</li>
-</ul>
-</li>
-</ul>
-<p>repo信息来自src经过正则匹配出的详细信息。由于要利用一些git平台的url拼接规则，需要排除已知平台以外的url。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 支持的范围</span></span><br><span class="line"><span class="keyword">const</span> supported = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="string">&#x27;github&#x27;</span>, <span class="string">&#x27;gitlab&#x27;</span>, <span class="string">&#x27;bitbucket&#x27;</span>, <span class="string">&#x27;git.sr.ht&#x27;</span>]);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">parse</span>(<span class="params">src</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> match = <span class="regexp">/^(?:https:\/\/([^/]+)\/|git@([^/]+)[:/]|([^/]+)[:/])?([^/\s]+)\/([^/\s#]+)(?:#(.+))?/</span>.<span class="title function_">exec</span>(</span><br><span class="line">        src</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(<span class="string">`could not parse <span class="subst">$&#123;src&#125;</span>`</span>, &#123;</span><br><span class="line">            <span class="attr">code</span>: <span class="string">&#x27;BAD_SRC&#x27;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> site = (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;github&#x27;</span>).<span class="title function_">replace</span>(</span><br><span class="line">        <span class="regexp">/\.(com|org)$/</span>,</span><br><span class="line">        <span class="string">&#x27;&#x27;</span></span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 排除范围外的url</span></span><br><span class="line">    <span class="keyword">if</span> (!supported.<span class="title function_">has</span>(site)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(</span><br><span class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket`</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_HOST&#x27;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 匹配出用户名、仓库名、分支/tag/commit hash名</span></span><br><span class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].<span class="title function_">replace</span>(<span class="regexp">/\.git$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">&#x27;master&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 完整的仓库地址，需要http开头的</span></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>.<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="subst"><span class="string">        site === <span class="string">&#x27;bitbucket&#x27;</span> ? <span class="string">&#x27;org&#x27;</span> : site === <span class="string">&#x27;git.sr.ht&#x27;</span> ? <span class="string">&#x27;&#x27;</span> : <span class="string">&#x27;com&#x27;</span></span></span></span><br><span class="line"><span class="subst"><span class="string">    &#125;</span>/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="仓库下载"><a href="#仓库下载" class="headerlink" title="仓库下载"></a>仓库下载</h3><p>下载仓库流程如下：</p>
-<p><img src="https://s2.ax1x.com/2019/11/15/Mdbl6S.png" alt="degit流程"></p>
-<h4 id="获取缓存信息"><a href="#获取缓存信息" class="headerlink" title="获取缓存信息"></a>获取缓存信息</h4><p>degit的缓存放在<code>/home</code>或<code>/tmp</code>下的<code>.degit</code>目录下，按照<code>site/user/name</code>的目录组织。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 缓存目录</span></span><br><span class="line"><span class="keyword">const</span> base = path.<span class="title function_">join</span>(homeOrTmp, <span class="string">&#x27;.degit&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> dir = path.<span class="title function_">join</span>(base, repo.<span class="property">site</span>, repo.<span class="property">user</span>, repo.<span class="property">name</span>);</span><br><span class="line"><span class="keyword">const</span> cached = <span class="title function_">tryRequire</span>(path.<span class="title function_">join</span>(dir, <span class="string">&#x27;map.json&#x27;</span>)) || &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>目录下有一个<code>map.json</code>和缓存的代码tar.gz包，包名格式为<code>&lt;commit-hash&gt;.tar.gz</code>。在map.json保存着此前使用过的分支名&#x2F;tag名&#x2F;简写commit名到commit hash的最新映射关系。形如下方：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;master&quot;</span><span class="punctuation">:</span> <span class="string">&quot;4e3a4089b4f0275964eb10a432dc1c15526a0b4d&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>这一步会尝试使用parse好的<code>site</code>、<code>user</code>、<code>name</code>属性找已有的缓存的<code>map.json</code>。没有找到时返回<code>&#123;&#125;</code>。</p>
-<h4 id="获取commit-hash"><a href="#获取commit-hash" class="headerlink" title="获取commit hash"></a>获取commit hash</h4><p>这一步分两种情况;</p>
-<ul>
-<li>使用缓存时，直接从上一步拿到的<code>map.json</code>里面找<code>ref</code>对应的commit hash</li>
-<li>不使用缓存时，需要从远端仓库拿分支名&#x2F;tag名到commit hash的对应关系（使用<code>git ls-remote</code>完成）。之后格式化为结构化数据并从中寻找<code>ref</code>对应的commit hash。如果中途失败，则fallback到使用缓存的方式。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">fetchRefs</span>(<span class="params">repo</span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; stdout &#125; = <span class="keyword">await</span> <span class="title function_">exec</span>(<span class="string">`git ls-remote <span class="subst">$&#123;repo.url&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> stdout</span><br><span class="line">            .<span class="title function_">split</span>(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">            .<span class="title function_">filter</span>(<span class="title class_">Boolean</span>)</span><br><span class="line">            .<span class="title function_">map</span>(<span class="function"><span class="params">row</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">const</span> [hash, ref] = row.<span class="title function_">split</span>(<span class="string">&#x27;\t&#x27;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 格式化过程</span></span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="comment">// 错误处理</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这一步若未找到hash，则无法构造下载的url，从而需要抛出错误。</p>
-<h4 id="构造下载地址"><a href="#构造下载地址" class="headerlink" title="构造下载地址"></a>构造下载地址</h4><p>根据不同的git平台固定的源码tar.gz归档url规则，构造下载的url，这也是degit思路的基础。目前支持gitlab、bucket、github风格的url。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 即将下载的tar.gz文件路径</span></span><br><span class="line"><span class="keyword">const</span> file = <span class="string">`<span class="subst">$&#123;dir&#125;</span>/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br><span class="line"><span class="comment">// 下载的url</span></span><br><span class="line"><span class="keyword">const</span> url =</span><br><span class="line">    repo.<span class="property">site</span> === <span class="string">&#x27;gitlab&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></span><br><span class="line">        : repo.<span class="property">site</span> === <span class="string">&#x27;bitbucket&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></span><br><span class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br></pre></td></tr></table></figure>
-
-<h4 id="创建目录并下载"><a href="#创建目录并下载" class="headerlink" title="创建目录并下载"></a>创建目录并下载</h4><p>不使用缓存时，会在创建缓存目录并下载。另外，指定<code>-f</code>或<code>--force</code>参数，会覆盖已有文件路径。最后使用https模块下载文件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">cache</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            fs.<span class="title function_">statSync</span>(file);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">            <span class="title function_">mkdirp</span>(path.<span class="title function_">dirname</span>(file));</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">await</span> <span class="title function_">fetch</span>(url, file);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="comment">// 错误处理</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="更新缓存"><a href="#更新缓存" class="headerlink" title="更新缓存"></a>更新缓存</h4><p>下载成功会更新本地缓存，保证以后使用缓存时能使用尽量新的包。</p>
-<ol>
-<li>当前使用包的commit hash如果和指定分支&#x2F;tag&#x2F;commit hash对应的hash一致，则不需要更新</li>
-<li>在需要更新时，检查老的hash是否还有使用，如果没有使用，则清除hash对应的tar.gz包</li>
-<li>更新map.json里的对应关系</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">updateCache</span>(<span class="params">dir, repo, hash, cached</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (cached[repo.<span class="property">ref</span>] === hash) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> oldHash = cached[repo.<span class="property">ref</span>];</span><br><span class="line">    <span class="keyword">if</span> (oldHash) &#123;</span><br><span class="line">        <span class="keyword">let</span> used = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> cached) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cached[key] === hash) &#123;</span><br><span class="line">                used = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!used) &#123;</span><br><span class="line">            <span class="comment">// we no longer need this tar file</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fs.<span class="title function_">unlinkSync</span>(path.<span class="title function_">join</span>(dir, <span class="string">`<span class="subst">$&#123;oldHash&#125;</span>.tar.gz`</span>));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">                <span class="comment">// ignore</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cached[repo.<span class="property">ref</span>] = hash;</span><br><span class="line">    fs.<span class="title function_">writeFileSync</span>(</span><br><span class="line">        path.<span class="title function_">join</span>(dir, <span class="string">&#x27;map.json&#x27;</span>),</span><br><span class="line">        <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(cached, <span class="literal">null</span>, <span class="string">&#x27;  &#x27;</span>)</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="解压tar-gz包"><a href="#解压tar-gz包" class="headerlink" title="解压tar.gz包"></a>解压tar.gz包</h4><p>创建cli中输入的目标目录，并将已下载到缓存中tar.gz包解压到目标路径下。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">mkdirp</span>(dest);</span><br><span class="line"><span class="keyword">await</span> <span class="title function_">untar</span>(file, dest);</span><br></pre></td></tr></table></figure>
-
-<h4 id="actions处理"><a href="#actions处理" class="headerlink" title="actions处理"></a><code>actions</code>处理</h4><p>如果在当前目录下获取到了<code>degit.json</code>，则执行后续的<code>clone</code>或<code>remove</code>操作。</p>
-<ul>
-<li>clone，在目标目录下继续一遍clone流程</li>
-<li>remove，删除指定文件或文件夹</li>
-</ul>
-<h2 id="degit改造"><a href="#degit改造" class="headerlink" title="degit改造"></a>degit改造</h2><p>degit虽好，但从上面也可以看到，支持仓库比较有限，且不支持私有仓库。在公司内部，无法从url推断git仓库类型时，degit就无法工作了。不过，借助degit本身的设计，稍微改造上面提到的“degit初始化”，“构造下载地址”部分，就可以让degit通过传参url风格的形式支持私有仓库。</p>
-<ul>
-<li>新增<code>-s</code>或<code>--style</code>命令行入参，表示git仓库url的风格，目前设计有github、gitlab、bitbucket这几个degit原始就支持的形式。</li>
-<li>解析仓库地址信息时，若有style入参，则先判断是否在上述允许范围内；保留原有从域名解析style的部分，新增若未解析出style，则从入参里取；最后再抛出不支持的仓库地址错误</li>
-<li>解析返回数据结构中，新增<code>style</code>字段表示url风格，原有的<code>site</code>为避免歧义，直接使用域名代替原有的域名前缀</li>
-<li>在构造下载地址时，直接根据style字段拼接url</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">parse</span>(<span class="params">src, style</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (style &amp;&amp; !supportedGitStyle.<span class="title function_">has</span>(style)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(<span class="string">`degit supports styles of github, gitlab, bitbucket`</span>, &#123;</span><br><span class="line">            <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_STYLE&#x27;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> site = match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;github.com&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> gitStyle =</span><br><span class="line">        style ||</span><br><span class="line">        (match[<span class="number">1</span>] || match[<span class="number">2</span>] || match[<span class="number">3</span>] || <span class="string">&#x27;gitlab&#x27;</span>).<span class="title function_">replace</span>(<span class="regexp">/\.(com|org)$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!supportedGitRepo.<span class="title function_">has</span>(gitStyle)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">DegitError</span>(</span><br><span class="line">            <span class="string">`degit supports GitHub, GitLab, Sourcehut and BitBucket without -s/--style parameters`</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">code</span>: <span class="string">&#x27;UNSUPPORTED_HOST&#x27;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> user = match[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">const</span> name = match[<span class="number">5</span>].<span class="title function_">replace</span>(<span class="regexp">/\.git$/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> ref = match[<span class="number">6</span>] || <span class="string">&#x27;master&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`https://<span class="subst">$&#123;site&#125;</span>/<span class="subst">$&#123;user&#125;</span>/<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; site, user, name, ref, url, <span class="attr">style</span>: gitStyle &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拼接url处</span></span><br><span class="line"><span class="keyword">const</span> url =</span><br><span class="line">    repo.<span class="property">style</span> === <span class="string">&#x27;gitlab&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/repository/archive.tar.gz?ref=<span class="subst">$&#123;hash&#125;</span>`</span></span><br><span class="line">        : repo.<span class="property">style</span> === <span class="string">&#x27;bitbucket&#x27;</span></span><br><span class="line">        ? <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/get/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span></span><br><span class="line">        : <span class="string">`<span class="subst">$&#123;repo.url&#125;</span>/archive/<span class="subst">$&#123;hash&#125;</span>.tar.gz`</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="可能存在的问题"><a href="#可能存在的问题" class="headerlink" title="可能存在的问题"></a>可能存在的问题</h3><p>绝大多数私有仓库，都会对用户身份做校验，直接访问tar.gz链接会报401错误。这需要根据不同的内部平台自己做处理了。</p>
-<p>因为特殊原因，改造后的包和代码不提供。</p>
-<p><em>–END–</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/blog/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -2448,7 +2468,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">27:55</span>
+    <span title="站点阅读时长">28:11</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
