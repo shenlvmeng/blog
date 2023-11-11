@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">147</span>
+          <span class="site-state-item-count">148</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">444</span>
+        <span class="site-state-item-count">453</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,180 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/06/dom-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/03/06/dom-1/" class="post-title-link" itemprop="url">HTML中的DOM 1级模型</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-03-06 11:26:29" itemprop="dateCreated datePublished" datetime="2017-03-06T11:26:29+08:00">2017-03-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-03-29 14:37:46" itemprop="dateModified" datetime="2017-03-29T14:37:46+08:00">2017-03-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/03/06/dom-1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/06/dom-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h2><p><strong>DOM（文档对象模型）</strong>是针对HTML和XML文档的一个API，描绘了层次化的节点树。开发者可以借助DOM对页面的某一部分进行添加、移除、修改。DOM来源于网景和微软提出的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Dynamic_HTML">DHTML</a>。1998年10月，DOM 1级规范称为W3C的标准，为文档查询和改动提供了接口。各大主流浏览器都完善地实现了DOM。</p>
+<hr>
+<p>DOM把HTML和XML文档描述成一个多层节点构成的结构。每个节点有都有自己的特点、数据和方法。</p>
+<p><strong>文档节点</strong>是每个文档的根节点。HTML中<code>&lt;html&gt;</code>元素是文档节点<em>唯一</em>的子节点，又称为<strong>文档元素</strong>。每一个标签都通过树中的一个节点表示，HTML元素表示为元素节点，特性通过特性节点表示，文档表示为文档节点，如此这样，总共有12中节点类型。</p>
+<h3 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h3><p>DOM 1级中定义了Node类型。JavaScript中的所有节点类型都继承于Node类型。每个节点都有一个<strong>nodeType</strong>属性。常用的取值如下：</p>
+<ul>
+<li>Node.ELEMENT_NODE(1)</li>
+<li>Node.ATTRIBUTE_NODE(2)</li>
+<li>Node.TEXT_NODE(3)</li>
+<li>Node.COMMENT_NODE(8)</li>
+<li>Node.DOCUMENT_NODE(9)</li>
+<li>Node.DOCUMENT_TYPE_NODE(10)</li>
+<li>Node.DOCUMENT_FRAGMENT_NODE(11)</li>
+</ul>
+<p>为了确保浏览器兼容性，建议还是将nodeType属性和数字值进行比较，减少使用常量。因为IE没有公开Node类型的构造函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (someNode.<span class="property">nodeType</span> == <span class="number">1</span>) &#123; <span class="comment">// 元素节点</span></span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;This is an element node.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了nodeType，节点类型还有<strong>nodeName</strong>和<strong>nodeValue</strong>两个属性。它们的取值取决于节点的类型。后面的介绍中也会提到。</p>
+<h4 id="节点关系"><a href="#节点关系" class="headerlink" title="节点关系"></a>节点关系</h4><p>在父子关系上，每个节点有一个<code>childNodes</code>属性，保存着<code>NodeList</code>对象。这个对象有<code>length</code>属性，也可以通过方括号访问其中的值，也可以通过<code>item()</code>方法访问，但它并不是Array的实例。且DOM结构的变化会实时地反映到这个<code>NodeList</code>对象中。<em>减少使用NodeList可以避免它带来的时延</em>。</p>
+<p>使用<code>firstChild</code>和<code>lastChild</code>属性可以分别访问到列表中第一个和最后一个节点。同时，每个节点都有一个parentNode属性，指向文档树的父节点。</p>
+<p>在兄弟关系上，使用<code>nextSibling</code>和<code>previousSibling</code>分别可以访问到下一个和上一个兄弟节点。<code>hasChildNodes()</code>在节点包含多个子节点时返回true。</p>
+<p>最后，所有节点都有<code>ownerDocument</code>属性，指向整个文档的文档节点。</p>
+<h4 id="节点操作"><a href="#节点操作" class="headerlink" title="节点操作"></a>节点操作</h4><p><code>appendChild</code>和<code>insertBefore</code>分别用于在childNodes末尾和某位前插入节点。并返回插入的DOM节点。需要注意的是，<em>如果插入的节点来自于DOM中，则节点会从原来的位置删除</em>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> returnedNode = someNode.<span class="title function_">appendChild</span>(newNode);</span><br><span class="line"><span class="keyword">var</span> anotherNode  = someNode.<span class="title function_">insertBefore</span>(newNode, <span class="literal">null</span>); <span class="comment">// 插入到最后一位</span></span><br><span class="line">anotherNode = someNode.<span class="title function_">insertBefore</span>(newNode, someNode.<span class="property">firstChild</span>); <span class="comment">// 插入到第二位</span></span><br></pre></td></tr></table></figure>
+<p><code>replaceChild</code>用于替换节点，<code>cloneChild</code>用于复制节点，cloneChild方法接受一个布尔值参数，表示是否执行深复制。在参数为true时执行深复制，否则执行浅复制。</p>
+<div class="tip">需要留意的是，`cloneChild`不会复制DOM节点中的JavaScript属性，如事件处理程序。IE则会复制事件处理程序。为了保证一致性，建议在复制前移除事件处理程序。
+</div>
+
+<p>最后，节点的<code>normalize</code>方法可以删除节点后代中的空文本节点，合并相邻的文本节点。</p>
+<h3 id="Document"><a href="#Document" class="headerlink" title="Document"></a>Document</h3><p>JavaScript中用<code>Document</code>类型表示文档，浏览器中的<code>document</code>表示整个页面。它是<code>window</code>对象的一个属性。因此可以作为全局对象来访问。</p>
+<p>它的nodeType为9，nodeName为<code>&quot;#document&quot;</code>，子节点可以是一个DocumentType或Element类型的节点。在HTML中可以通过<code>documentElement</code>属性便捷地得到子节点<code>&lt;html&gt;</code>。所有浏览器都支持这个属性。<code>document.body</code>属性也都被支持。</p>
+<p>除了<code>&lt;html&gt;</code>，另一个可能的子节点是<code>DocumentType</code>，即<code>&lt;!DOCTYPE&gt;</code>标签。浏览器对它的支持差异很大。同样的还有<code>&lt;html&gt;</code>元素外的注释。</p>
+<p>document还有下面4个独特的HTML属性：</p>
+<ul>
+<li><code>title</code>包含网页的标题，属性的修改直接对应<code>&lt;title&gt;</code>元素</li>
+<li><code>URL</code>表示页面的URL，<strong>只读</strong></li>
+<li><code>domain</code>表示页面的域名，可修改</li>
+<li><code>referer</code>保存链接到当前页面的URL，<strong>只读</strong></li>
+</ul>
+<p>其中修改domain可以用来访问同一父级域名下的iframe中的资源。</p>
+<div class="tip">为了保证安全，域名修改只能由“紧绷”变“松散”，而不能反过来。
+</div>
+
+<h4 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h4><p>DOM 1级标准只有<code>getElementById()</code>，<code>getElementsByTagName()</code>和<code>getElementsByName()</code>三种方法。具体功能不必再提。它们返回的是一个<code>HTMLCollection</code>对象。这个对象和<code>NodeList</code>很类似。同样可以通过方括号访问其中的子元素。不过<code>HTMLCollection</code>额外提供<code>namedItem()</code>方法，通过<code>name</code>属性值访问其中的子元素。</p>
+<p>除此以外，<code>document</code>对象还有一个特殊的集合，它们也都是<code>HTMLCollection</code>对象。如<code>document.anchors</code>，<code>document.forms</code>，<code>document.imgs</code>，<code>document.links</code>。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p><code>document.implementation</code>属性用来检测浏览器对DOM实现的程度，它有一个<code>hasFeature()</code>。</p>
+<p><code>write()</code>、<code>writeln()</code>、<code>open()</code>、<code>close()</code>方法可以将输出流写入到网页中。</p>
+<h3 id="Element"><a href="#Element" class="headerlink" title="Element"></a>Element</h3><p>除了<code>document</code>外，Element类型应该是HTML中最常用的类型了。它的nodeType为1，nodeName为元素的标签名，<code>tagName</code>属性也可以用来访问元素标签名。</p>
+<p>所有HTML元素都由HTMLElement的子类型表示。所有的HTML元素都具有下面的一些标准特性：</p>
+<ul>
+<li><code>id</code>：元素的唯一标识符</li>
+<li><code>title</code>：有关元素的附加说明信息</li>
+<li><code>lang</code>：元素的语言代码</li>
+<li><code>dir</code>：语言的方向</li>
+<li><code>className</code>：与元素的class对应</li>
+</ul>
+<p>这些都可以通过访问元素的属性得到。如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;myDiv&quot;</span> <span class="attr">class</span>=<span class="string">&quot;foo&quot;</span> <span class="attr">title</span>=<span class="string">&quot;text&quot;</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">dir</span>=<span class="string">&quot;ltr&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>元素的信息可以通过下面的方式得到，同样，这些属性可以直接赋予新值来修改。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> div = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;myDiv&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">id</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">class</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">title</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">lang</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">dir</span>);</span><br></pre></td></tr></table></figure>
+
+<p><em>未完待续</em></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -855,138 +1029,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2016/05/16/binary-tree/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2016/05/16/binary-tree/" class="post-title-link" itemprop="url">优化二叉搜索树的科普</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-05-16 12:36:51" itemprop="dateCreated datePublished" datetime="2016-05-16T12:36:51+08:00">2016-05-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 14:19:34" itemprop="dateModified" datetime="2017-03-01T14:19:34+08:00">2017-03-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2016/05/16/binary-tree/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/16/binary-tree/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文目的在日后再看到这些名词时能有扫盲的作用，所以未做深入探讨。</p>
-<p>二叉搜索树的查询时间复杂度为O(h)，但是h的大小和数据密切相关，随机构建二叉搜索树可以保证期望高度h为O(lgn)，但是我们并不总能随机地构造二叉搜索树。所以就有二叉搜索树的变体来保证基本操作具有好的最坏情况性能，如AVL树，红黑树，treap树，splay树等。它们在二叉搜索树的基础上增加了额外的约束，操作更加复杂，但是保证最坏情况的动态集合操作时间复杂度为O(lgn)。下面按照时间介绍之。</p>
-<h2 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h2><p>AVL树是最早发明的自平衡二叉搜索树，查找、插入、删除在平均和最坏情况下都是O(lgn)，自平衡是通过插入和删除时一次或多次树旋转来完成的。节点的平衡因子是左子树减去右子树的高度，1、0、-1被认为是平衡的，-2或2被认为是不平衡的，需要重新平衡树。平衡因子储存在节点中，或是通过计算算出。</p>
-<p>根据不平衡的情况，AVL分成左左、右右、左右、右左四种情况，分别需要1、1、2、2次旋转调整。图略。</p>
-<p>由于AVL是高度平衡树，所以节点插入、删除后，重新平衡需要的旋转次数较多，但是因此带来的搜索效率更高。</p>
-<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>最常见的平衡二叉树，统计性能最好的二叉搜索树。红黑树是满足下列性质的二叉搜索树：</p>
-<ul>
-<li>每个节点都是黑色或是红色</li>
-<li>根节点是黑色</li>
-<li>每个叶节点都是黑色</li>
-<li>如果一个节点是红色，那么它的两个子节点都是黑色</li>
-<li>对于每个节点，从它到其所有子孙叶节点的路径包含的黑色节点数目相同</li>
-</ul>
-<p>由于没有AVL树对平衡的高度要求，红黑树在节点插入、删除时，只需最多3次旋转操作即可完成。虽然牺牲了查找效率，但是在经常改动的动态数据集合中，红黑树的性能要更好。可以说红黑树在复杂度和旋转次数上有比较好的折中，因此常用作数据结构的设计。</p>
-<h2 id="Treap树"><a href="#Treap树" class="headerlink" title="Treap树"></a>Treap树</h2><p>Treap树得名于搜索树trea和堆reap，是有一个附加域满足堆特征的二叉搜索树，结构相当于随机插入数据的二叉搜索树，相较其他平衡二叉树，特点是实现简单，且能基本实现随机平衡。</p>
-<p>在构成Treap树时，还需要满足堆特征，在插入、删除维护堆性质时，只需要两种旋转，相比Splay，编程复杂度要更小。性能在平衡二叉树和二叉搜索树之间。</p>
-<h2 id="Splay树"><a href="#Splay树" class="headerlink" title="Splay树"></a>Splay树</h2><p>Splay树又叫伸展树，发明于1985年。它是一种自调整形式的二叉搜索树，利用了频繁查找的数据集有限，在二叉搜索树的每次搜索后，将搜索条目通过一系列旋转搬移到离树根更近的地方。它的优势在于不需要记录平衡树的冗余信息，且编程复杂度小很多。</p>
-<p>Splay的操作为旋转，分单旋转、一字型、之字形几种。</p>
-<p>这些树的编码都较为复杂，这里略去。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/24/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/blog/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/26/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1017,7 +1059,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:11</span>
+    <span title="站点阅读时长">28:51</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

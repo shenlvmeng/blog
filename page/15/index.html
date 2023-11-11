@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">147</span>
+          <span class="site-state-item-count">148</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">444</span>
+        <span class="site-state-item-count">453</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,146 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/08/16/git-workflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/08/16/git-workflow/" class="post-title-link" itemprop="url">git工作流最佳实践</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-08-16 23:28:34 / 修改时间：23:29:29" itemprop="dateCreated datePublished" datetime="2018-08-16T23:28:34+08:00">2018-08-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/08/16/git-workflow/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/16/git-workflow/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/xirong/my-git/blob/master/git-workflow-tutorial.md">my-git&#x2F;git-workflow-tutorial.md at master · xirong&#x2F;my-git</a></p>
+</blockquote>
+<p>git工作流有多种使用方法，在实际工作中的不良工作习惯，会造成很让人头大的麻烦。下面距离一些常用的工作流。</p>
+<h3 id="集中式"><a href="#集中式" class="headerlink" title="集中式"></a>集中式</h3><p>类似SVN，集中式工作流以中央仓库作为项目所有修改的单点实体，只用到master这一个分支。<strong>开发者提交功能修改到中央库前，采用<code>rebase</code>的方式“在其基础上添加自己的修改”，得到完美的线性历史；遇到冲突时，通过<code>git status</code>和<code>git add</code>合并冲突</strong>。最后<code>git rebase --continue</code>即可。遇到困难无法进行下去时，<code>git rebase --abort</code>就可以撤回到rebase前的状态。</p>
+<p>在这种工作流下，使用<code>rebase</code>参数比不使用的<code>git pull</code>好处在于，rebase后的提交记录会少一次累赘的“合并提交”。</p>
+<h3 id="功能分支"><a href="#功能分支" class="headerlink" title="功能分支"></a>功能分支</h3><p>git相较SVN强大在分布式的特征。功能分支工作流主要针对新增功能集成到正式项目。功能分支工作流仍然以中央仓库为基础，但不是直接提交本地历史到各自的本地master分支，而是在开发新功能时<strong>创建新的分支，描述新功能</strong>。不同的功能分支相互隔离，同时也保证master分支的代码一定没有问题。一旦功能分支push到master，意味着功能与其他开发者共享。</p>
+<p>合并到master分支的过程通过创建pull request进行，在pull request请求中，让其他开发者有机会先去review变更。Pull request被接受后，剩下的工作就和集中式很像了，拉取master分支代码，合并，提交。</p>
+<p>工作流程上：</p>
+<ol>
+<li>先checkout功能分支</li>
+<li>做本地开发提交，以及<code>push -u</code>推送到远端分支（<code>-u</code>是跟踪远端对应分支的意思）</li>
+<li>完成开发后，提交pull request，请求合并远端功能分支到master，团队其他成员可以进行评论</li>
+<li>在接受前，团队<strong>所有成员</strong>有需要，可以提交自己的修改到该功能分支，也会显示在pull request里</li>
+<li>在pull-request被接受后，在本地master上可以用pull或者<code>pull -r</code>的方式合并功能分支，前者更像功能和原来代码的合并，后者更偏向线型的提交历史</li>
+</ol>
+<h3 id="gitflow"><a href="#gitflow" class="headerlink" title="gitflow"></a>gitflow</h3><p>Gitflow工作流通过为功能开发、发布准备和维护分配独立的分支，让发布迭代过程更流畅。相较功能分支更复杂，但也更健壮。仍然用中央仓库作为所有开发者的交互中心。相对于使用仅有的一个master分支，Gitflow工作流使用两个分支来记录项目的历史。master分支存储了正式发布的历史，而<strong>develop分支作为功能的集成分支。</strong>从而可以在master的<strong>所有提交附上版本号</strong>。</p>
+<p>每个新功能位于一个自己的分支，有着和功能分支一样的开发工作流，唯一不同的是，功能分支不是从master分支上拉出新分支，而是使用develop分支作为父分支。每次合并都位于develop分支。</p>
+<p>一旦develop分支上有了做一次发布（或者说快到了既定的发布日）的足够功能，就<strong>从develop分支上checkout一个发布分支release</strong>。从这个时间点开始之后新的功能不能再加到这个分支上——这个分支只应该做Bug修复、文档生成和其它面向发布任务。在release工作完成后，合并release分支到master，并加上tag。同时，<strong>release上做的修改要合并会develop分支</strong>。最后删除release分支。</p>
+<p>维护分支或说是热修复（hotfix）分支用于给产品发布版本（production releases）快速生成补丁，这是唯一可以直接从master分支fork出来的分支。修改完成后，修改应该立马合并回master和develop。master也应该为合并生成新的tag。</p>
+<h3 id="forking"><a href="#forking" class="headerlink" title="forking"></a>forking</h3><p>Forking工作流是分布式工作流，可以安全可靠地管理大团队的开发者（developer）和不信任贡献者（contributor）的提交。这种工作流不是使用单个服务端仓库作为『中央』代码基线，而让各个开发者都有一个服务端仓库。这意味着各个代码贡献者有2个Git仓库而不是1个：一个本地私有的，另一个服务端公开的。Forking工作流的一个主要优势是，贡献的代码可以被集成，而不需要所有人都能push代码到仅有的中央仓库中。开发者push到自己的服务端仓库，而只有项目维护者才能push到正式仓库。</p>
+<p>新开发者想要在项目上工作时，不是直接从正式仓库克隆，而是fork正式项目在服务器上创建一个拷贝。这个仓库拷贝作为他个人公开仓库 —— 其它开发者不允许push到这个仓库，<strong>但可以pull下来修改</strong>。要提交本地修改时，push提交到自己公开仓库中 —— 而不是正式仓库中。 然后，给正式仓库发起一个pull request，让项目维护者知道有更新已经准备好可以集成了。为了集成功能到正式代码库，<strong>维护者pull贡献者的变更到自己的本地仓库中</strong>，检查变更以确保不会让项目出错， 合并变更到自己本地的master分支， 然后push master分支到服务器的正式仓库中。到此，贡献的提交成为了项目的一部分，其它的开发者应该执行pull操作与正式仓库同步自己本地仓库。</p>
+<p>具体来说，大致有下面几步：</p>
+<ol>
+<li>开发者fork正式仓库</li>
+<li>开发者clone自己的fork出来的仓库，与之前工作流不一样的是，<strong>Forking工作流需要2个远程别名 —— 一个指向正式仓库，另一个指向开发者自己的服务端仓库。</strong>，像下面这样  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add upstream https://bitbucket.org/maintainer/repo</span><br></pre></td></tr></table></figure></li>
+<li>开发者修改都是私有的，如果项目往前走了，可以用git pull获得新的提交</li>
+<li>开发者准备分享新功能时，需要先push到自己的公开仓库中，然后发起pull request通知项目维护者，集成开发者的功能分支</li>
+<li>项目维护者通过GUI岔开pull request或者pull代码到自己的本地仓库，再手动合并。</li>
+<li>开发者通过<code>pull upstream master</code>的方式拉取项目最新进展</li>
+</ol>
+<h3 id="pull-request"><a href="#pull-request" class="headerlink" title="pull request"></a>pull request</h3><p>pull request用于合并不同分支或不同仓库的代码，并在合并前进行一些讨论和代码微调，在上面不同工作流的情况下具体功能体现也不同。</p>
+<p>上面几种工作流范式只是几种标准的建议，正式的项目版本管理中，可以糅合上面的一些特点。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -932,246 +1072,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/05/14/canvas-introduction/" class="post-title-link" itemprop="url">canvas相关介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2018-05-14 21:28:01 / 修改时间：21:32:07" itemprop="dateCreated datePublished" datetime="2018-05-14T21:28:01+08:00">2018-05-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/05/14/canvas-introduction/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/14/canvas-introduction/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和<code>&lt;img&gt;</code>标签很像，但是只有<code>width</code>和<code>height</code>两个属性，在未设置时，为300px和150px。canvas类似<code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code>可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于<code>&lt;img&gt;</code>，它必须要有一个<code>&lt;/canvas&gt;</code>作为闭合标志。</p>
-<p>canvas是一个2D渲染上下文环境（就像webGL是3D渲染上下文环境），在获取到<code>&lt;canvas&gt;</code>元素后，可以通过其<code>getContext</code>方法得到渲染上下文和相关功能，通常传入<code>2d</code>，用来绘制2D图案。</p>
-<h2 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h2><p><code>canvas.getContext(&#39;2d&#39;)</code>得到一个CanvasRenderingContext2D对象。剩下的绘制操作都通过调用对象上的API实现。</p>
-<p>canvas的坐标系系统和svg一样，从左上角开始，向右和向下为正，坐标轴单位为像素。下面列出最常见的绘制图形API。</p>
-<ul>
-<li><code>fillRect(x, y, width, height)</code> 绘制矩形</li>
-<li><code>strokeRect(x, y, width, height)</code> 绘制矩形边框</li>
-<li><code>clearRect(x, y, width, height)</code> 擦除矩形范围</li>
-</ul>
-<p>path被用来绘制通用曲线，注意<strong>path都是封闭的</strong>。绘制路径有4步：</p>
-<ul>
-<li><code>beginPath()</code> 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。</li>
-<li>使用画图命令去画出路径</li>
-<li><code>closePath()</code> 闭合路径</li>
-<li><em>可选</em> <code>fill()</code> 通过填充路径的内容区域生成实心的图形，使用<code>fill()</code>时可以不手动闭合路径</li>
-<li><code>stroke()</code>，为路径添加描边</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 样例</span></span><br><span class="line">ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">ctx.<span class="title function_">moveTo</span>(<span class="number">75</span>,<span class="number">50</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">75</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">25</span>);</span><br><span class="line">ctx.<span class="title function_">fill</span>();</span><br></pre></td></tr></table></figure>
-
-<div class="tip">所有的路径通过`stroke()`和`fill()`才能体现效果。</div>
-
-<p>里面包含了常见的<code>moveTo</code>和<code>lineTo</code>，表示移动画笔&#x2F;画直线到(x,y)处。画曲线时可以选择：</p>
-<ul>
-<li><code>arc(x, y, radius, startAngle, endAngle, anticlockwise)</code><br>画一个以（x,y）为圆心的以radius为半径的圆弧（圆），从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。</li>
-<li><code>arcTo(x1, y1, x2, y2, radius)</code> 根据给定的控制点和半径画一段圆弧，再以直线连接两个控制点。</li>
-<li><code>quadraticCurveTo(cp1x, cp1y, x, y)</code> 绘制二次贝塞尔曲线，cp1x,cp1y为一个控制点，x,y为结束点。</li>
-<li><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</code> 绘制三次贝塞尔曲线，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二，x,y为结束点。</li>
-</ul>
-<p><strong>path2D</strong></p>
-<p>通过<code>new path2D()</code>用path2D声明子路径，允许你保留和重用路径对象。除了CanvasRenderingContext2D对象的API外，还可以用<code>addPath</code>新增路径到path2D对象中，它还支持通过SVG格式的字符串导入为路径。</p>
-<h2 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h2><p>通过修改<code>fillStyle</code>和<code>strokeStyle</code>改变当前填充和描边的默认颜色。支持的颜色格式有</p>
-<ul>
-<li>颜色名</li>
-<li>hex</li>
-<li>rgb</li>
-<li>rgba</li>
-</ul>
-<p>通过<code>globalAlpha</code>修改画布里的所有图形的透明度，取值在0到1之间。</p>
-<p>线型样式选择有：</p>
-<ul>
-<li>lineWidth &#x3D; value 设置线条宽度。</li>
-<li>lineCap &#x3D; type 设置线条末端样式。默认为butt，还有round、square可选。</li>
-<li>lineJoin &#x3D; type 设定线条与线条间接合处的样式。round, bevel 和 miter三种可选，miter时，miterLimit可以限制尖角的高度。</li>
-<li>miterLimit &#x3D; value 限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度</li>
-</ul>
-<p>设置虚线时，<code>setLineDash(segments)</code>设置当前虚线样式。<code>lineDashOffset = value</code>设置虚线样式的起始偏移量。<code>getLineDash()</code>返回一个包含当前虚线样式，长度为非负偶数的数组。</p>
-<p><strong>渐变</strong></p>
-<p>渐变需要先指定类型和覆盖范围：</p>
-<ul>
-<li><code>createLinearGradient(x1, y1, x2, y2)</code> 方法接受4个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。</li>
-<li><code>createRadialGradient(x1, y1, r1, x2, y2, r2)</code> 方法接受6个参数，前三个定义一个以 (x1,y1) 为原点，半径为r1的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为r2的圆。</li>
-</ul>
-<p>创建的渐变通过<code>addColorStop(position, color)</code>添加多个color stop。position参数是一个0.0与1.0之间的数值，表示渐变中颜色所在的相对位置。<strong>渐变是一种样式，通过指定给fillStyle或是strokeStyle发挥作用</strong>。</p>
-<p><strong>模式</strong></p>
-<p>通过<code>createPattern(image, type)</code>创建pattern，Image可以是一个Image对象的引用，或者另一个canvas对象。Type描述重复的格式，是下面的字符串值之一：repeat，repeat-x，repeat-y 和 no-repeat。</p>
-<p>同样，通过指定给<code>fillStyle</code>和<code>strokeStyle</code>使用。</p>
-<p><strong>阴影</strong></p>
-<ul>
-<li>shadowOffsetX &#x3D; float</li>
-<li>shadowOffsetY &#x3D; float<br>shadowOffsetX和shadowOffsetY用来设定阴影在X和Y轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为0。</li>
-<li>shadowBlur &#x3D; float shadowBlur 用于设定阴影的模糊程度，默认为 0。</li>
-<li>shadowColor &#x3D; color，默认为黑色</li>
-</ul>
-<p>canvas有两种填充规则<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Nonzero-rule"><code>non-zero</code></a>和<code>even-odd</code>，默认为前者。</p>
-<h2 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h2><ul>
-<li><code>fillText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置填充指定的文本，绘制的最大宽度是可选的</li>
-<li><code>strokeText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置绘制文本边框，绘制的最大宽度是可选的</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ctx.<span class="property">font</span> = <span class="string">&quot;48px PingFangSC&quot;</span>;</span><br><span class="line">ctx.<span class="title function_">strokeText</span>(<span class="string">&quot;Hello world&quot;</span>, <span class="number">10</span>, <span class="number">50</span>);</span><br></pre></td></tr></table></figure>
-
-<p>除了<code>font</code>（语法和CSS的font相同）外，还有下面的选择：</p>
-<ul>
-<li>textAlign &#x3D; value 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。</li>
-<li>textBaseline &#x3D; value 基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。</li>
-<li>direction &#x3D; value 文本方向</li>
-</ul>
-<p>另外，可以通过<code>measureText()</code>，得到文本绘制的宽度。</p>
-<h2 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h2><p>canvas里可以引入Image对象或其他canvas元素，或者通过URL方式使用图片。</p>
-<ul>
-<li>使用相同页面内的图片，使用正常地获取元素的方式获取即可</li>
-<li>使用其它域名下的图片，在HTMLImageElement上使用<code>crossOrigin</code>属性，可以请求加载其它域名上的图片。若服务器不允许跨域加载，则会污染canvas，即不能导出数据</li>
-<li>使用canvas，按获取元素的方式获取即可</li>
-</ul>
-<p>image可以指定<code>src</code>属性为URL或<code>data:url</code>的形式。甚至引入<code>&lt;video&gt;</code>使用视频帧作为image。绘制图片时，使用：</p>
-<ul>
-<li><code>drawImage(image, x, y)</code> 其中image是image或者canvas对象，x和y是其在目标canvas里的起始坐标。</li>
-<li><code>drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)</code>是包含了缩放和切片后完整的<code>drawImage</code>用法</li>
-</ul>
-<h2 id="变形和裁剪"><a href="#变形和裁剪" class="headerlink" title="变形和裁剪"></a>变形和裁剪</h2><p><strong>save</strong>和<strong>restore</strong>用来保存和恢复canvas状态。每当<code>save()</code>方法被调用后，当前的状态就被推送到栈中保存。状态包括所有变形、样式信息。每次<code>restore</code>时会弹出栈顶的状态。<strong>建议在做变形和裁剪前保存状态</strong>。</p>
-<p>变形用到的属性和CSS很像：</p>
-<ul>
-<li><code>translate(x,y)</code>改变当前原点位置，</li>
-<li><code>rotate(angle)</code>以当前原点为圆心旋转画布，angle为弧度值。</li>
-<li><code>scale(x, y)</code>缩放当前canvas中的图形大小，x和y分别表示两轴上的缩放因子</li>
-<li><code>transform(m11, m12, m21, m22, dx, dy)</code>通过变形矩阵进行变换</li>
-<li><code>setTransform(m11, m12, m21, m22, dx, dy)</code>先还原为单位矩阵，再按入参的矩阵变换</li>
-<li><code>resetTransform</code>重置变形为单位矩阵</li>
-</ul>
-<p><code>globalCompositeOperation</code>定义了图形相互重叠时的处理策略，类似PS中图层的混合模式，默认为<code>darker</code>，还有很多<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">别的选项</a>。</p>
-<p><code>clip()</code>即裁剪方法，和<code>fill</code>以及<code>stroke</code>类似，不过<code>clip</code>将路径对应的部分裁剪出指定区域。</p>
-<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>canvas只是一个画布，画出的东西都会保持原样。制作动画只能采取重绘，逐帧绘制，而每一帧包括下面几步：</p>
-<ul>
-<li>清空canvas，可以使用<code>clearRect</code>方法</li>
-<li><em>可选</em>，保存当前状态</li>
-<li>使用上面提过的种种方法绘制下一帧</li>
-<li><em>可选</em>，恢复状态</li>
-</ul>
-<p>绘制动画通常要结合用户交互以及<code>setTimeout</code>，<code>setInterval</code>，<code>requestAnimationFrame</code>。</p>
-<p>MDN给个一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Advanced_animations">小球的组合动画</a>可以参考。</p>
-<h2 id="像素级操作"><a href="#像素级操作" class="headerlink" title="像素级操作"></a>像素级操作</h2><p><code>ImageData</code>接口描述<code>&lt;canvas&gt;</code>元素的一个包含像素数据的区域。它包含<code>width</code>, <code>height</code>, <code>data</code>单个只读属性。<code>ImageData</code>可以通过<code>ctx.createImageData(width, height)</code>或者从已有对象中创建，除此创建的所有像素都是透明黑。</p>
-<p>可以用<code>getImageData(left, top, width, height)</code>方法获取指定范围的<code>ImageData</code>信息，当<code>width</code>和<code>height</code>都为1时，取得当前像素信息。</p>
-<p>使用<code>putImageData(imageData, dx, dy)</code>可以在当前画布(dx, dy)处绘制imageData像素数据。<code>imageSmoothingEnabled</code>默认开启，关闭后可以在图片缩放时看到清楚颗粒化的细节。</p>
-<h2 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h2><p>主要有三种用法：</p>
-<ul>
-<li><code>canvas.toDataURL(&#39;image/png&#39;)</code>，默认将canvas导出成png文件</li>
-<li><code>canvas.toDataURL(&#39;image/jpeg&#39;, quality)</code>，quality指定在0到1之间，默认为0.92。</li>
-<li><code>canvas.toBlob(callback, type, encoderOptions)</code>，这个创建了一个在画布中的代表图片的Blob对像</li>
-</ul>
-<p><code>toDataURL</code>除了上面两种导出格式还有别的选择。</p>
-<h2 id="交互"><a href="#交互" class="headerlink" title="交互"></a>交互</h2><p><code>&lt;canvas&gt;</code>标签只是一个位图，它并不提供任何已经绘制在上面的对象的信息。canvas的内容不能像语义化的HTML一样暴露给一些协助工具。一般来说，你应该避免在交互型的网站或者App上使用canvas。</p>
-<p><code>addHitRegion(options)</code>可以将添加一个点击区域，options可以参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/addHitRegion">MDN文档</a>，鼠标事件如果触发在点击区域中，会带上region用于定位点击区域。</p>
-<p>另外<code>drawFocusIfNeeded()</code>和<code>scrollPathIntoView()</code>方法还可以绘制焦点圈。</p>
-<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><ul>
-<li>预渲染相似或重复对象</li>
-<li>为了避免抗锯齿带来的额外运算，减少使用浮点数</li>
-<li>在离屏canvas中缓存图片的不同尺寸，不要用<code>drawImage()</code>去缩放它们</li>
-<li>使用多层画布去画一个复杂的场景，比如使用多层画布，描绘不同层级的内容。  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">&quot;stage&quot;</span>&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;ui-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;game-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;background-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
-<li>用CSS画大的背景图</li>
-<li>用CSS transforms特性缩放画布，建议不要将小画布放大，而是去将大画布缩小</li>
-<li>尽可能避免text rendering</li>
-<li>尽可能避免 shadowBlur</li>
-<li><code>window.requestAnimationFrame()</code>性能优于<code>window.setInterval()</code></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/14/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/blog/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/16/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1202,7 +1102,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:11</span>
+    <span title="站点阅读时长">28:51</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
