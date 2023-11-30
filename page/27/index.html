@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-count">149</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">453</span>
+        <span class="site-state-item-count">458</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,181 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2015/11/24/ducktype-reflection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2015/11/24/ducktype-reflection/" class="post-title-link" itemprop="url">鸭子类型和反射——关于编程范式的一点学习</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-24 18:29:21" itemprop="dateCreated datePublished" datetime="2015-11-24T18:29:21+08:00">2015-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-03-01 15:41:16" itemprop="dateModified" datetime="2017-03-01T15:41:16+08:00">2017-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2015/11/24/ducktype-reflection/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/24/ducktype-reflection/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>前言：在北邮人论坛里看到了对多态，继承，多重继承等的讨论，遂对比较陌生的鸭子类型和反射做了些学习。实际上这两个概念属于编程范式的范畴，在语法层面之上。对之的了解，相信对于以后语言的学习，多少也有些触类旁通的帮助。</p>
+<h1 id="鸭子类型"><a href="#鸭子类型" class="headerlink" title="鸭子类型"></a>鸭子类型</h1><h2 id="静态语言和动态语言"><a href="#静态语言和动态语言" class="headerlink" title="静态语言和动态语言"></a>静态语言和动态语言</h2><p>编程语言按照数据类型大体可以分为两类，一类是静态类型语言，另一类是动态类型语言。</p>
+<p>静态类型语言在编译时便已确定变量的类型，而动态类型语言的变量类型要到程序运行的时候，待变量被赋予某个值之后，才会具有某种类型。</p>
+<p>静态类型语言的优点首先是在编译时就能发现类型不匹配的错误，编辑器可以帮助我们提前避免程序在运行期间有可能发生的一些错误。其次，如果在程序中明确地规定了数据类型，编译器还可以针对这些信息对程序进行一些优化工作，提高程序执行速度。</p>
+<p>静态类型语言的缺点首先是迫使程序员依照强契约来编写程序，为每个变量规定数据类型，归根结底只是辅助我们编写可靠性高程序的一种手段，而不是编写程序的目的，毕竟大部分人编写程序的目的是为了完成需求交付生产。其次，类型的声明也会增加更多的代码，在程序编写过程中，这些细节会让程序员的精力从思考业务逻辑上分散开来。</p>
+<p>动态类型语言的优点是编写的代码数量更少，看起来也更加简洁，程序员可以把精力更多地放在业务逻辑上面。虽然不区分类型在某些情况下会让程序变得难以理解，但整体而言，代码量越少，越专注于逻辑表达，对阅读程序是越有帮助的。</p>
+<p>动态类型语言的缺点是无法保证变量的类型，从而在程序的运行期有可能发生跟类型相关的错误。这好像在商店买了一包牛肉辣条，但是要真正吃到嘴里才知道是不是牛肉味。</p>
+<p>如在Ruby，Python，JavaScript等语言中，当我们对一个变量赋值时，显然不需要考虑它的类型，因此，JavaScript是一门典型的动态类型语言。</p>
+<h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>动态类型语言对变量类型的宽容给实际编码带来了很大的灵活性。由于无需进行类型检测，我们可以尝试调用任何对象的任意方法，而无需去考虑它原本是否被设计为拥有该方法。</p>
+<p>这一切都建立在鸭子类型（duck typing）的概念上，鸭子类型的通俗说法是：“如果它走起路来像鸭子，叫起来也是鸭子，那么它就是鸭子。”</p>
+<p>我们可以通过一个小故事来更深刻地了解鸭子类型。</p>
+<p>从前有一个国王，他觉得世界上最美妙的声音就是鸭子的叫声，于是国王召集大臣，要组建一个1000只鸭子组成的合唱团。大臣们找遍了全国，终于找到999只鸭子，但是始终还差一只，最后大臣发现有一只非常特别的鸡，它的叫声跟鸭子一模一样，于是这只鸡就成为了合唱团的最后一员。</p>
+<p>这个故事告诉我们，国王要听的只是鸭子的叫声，这个声音的主人到底是鸡还是鸭并不重要。鸭子类型指导我们只关注对象的行为，而不关注对象本身。</p>
+<p>下面用代码来模拟。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> duck = &#123;</span><br><span class="line">    <span class="attr">duckSinging</span>: <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;嘎嘎嘎&#x27;</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> chicken = &#123;</span><br><span class="line">    <span class="attr">duckSinging</span>: <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;嘎嘎嘎&#x27;</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> choir = [];    <span class="comment">// 合唱团</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> joinChoir = <span class="keyword">function</span>(<span class="params"> animal </span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> ( animal &amp;&amp; <span class="keyword">typeof</span> animal.<span class="property">duckSinging</span> === <span class="string">&#x27;function&#x27;</span> )&#123;</span><br><span class="line">    choir.<span class="title function_">push</span>( animal );</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;恭喜加入合唱团&#x27;</span> )</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&#x27;合唱团已有成员数量:&#x27;</span> + choir.<span class="property">length</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">joinChoir</span>( duck );       <span class="comment">// 恭喜加入合唱团</span></span><br><span class="line"><span class="title function_">joinChoir</span>( chicken );    <span class="comment">// 恭喜加入合唱团</span></span><br></pre></td></tr></table></figure>
+<p>我们看到，对于加入合唱团的动物，大臣们根本无需检查它们的类型，而是只需要保证它们拥有duckSinging方法。</p>
+<p>在动态类型语言的面向对象设计中，鸭子类型的概念至关重要。利用鸭子类型的思想，我们不必借助超类型的帮助，就能轻松地在动态类型语言中实现一个原则：“面向接口编程，而不是面向实现编程”。</p>
+<h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>那么，为什么要有鸭子出现？</p>
+<h3 id="一、组合"><a href="#一、组合" class="headerlink" title="一、组合"></a>一、组合</h3><p>C++等语言实现面向对象的主要方法是继承，而鸭子类型实现面向对象的方式是组合。而我们所熟知的，甚至被奉为面向对象编程原则的”多组合，少继承“的思想也说明了组合要比继承更加灵活方便。</p>
+<p>C++中的多继承特性从一定层面反映了开发这想通过更多的父类获得特性；优先组合的思想也反应出我们希望能够使用更多对象的特性并隐藏细节；接口的出现反映出我们不希望通过多继承这样庞大的机制就能够实现更为复杂的对象关系；这些原本都是继承机制的面向对象思想或原则。</p>
+<p>在日常的面向对象编程过程中，通常会为了做一个相对完美的抽象，关注了更多的类之间的关系，而不能把主要精力集中在业务逻辑代码中。</p>
+<p>鸭子类型提供了大道至简的编程思想和模式</p>
+<h3 id="二、复用"><a href="#二、复用" class="headerlink" title="二、复用"></a>二、复用</h3><p>静态类型中最关键的一点是面向契约编程，即双方定下调用契约，然后你实现，我调用。这避免了许多运行中问题。可是，正因为此，复用被弱化很多。</p>
+<p>这里再次提到C++，多重继承的提出也有复用的目的。因为，人们不满足于只能仅仅复用简单的个体，很希望能够吸取多种对象的功能。这和现实是很相近的。一个业务实体往往能够兼备多种实体的功能。</p>
+<p>尽管后来其他语言都是采用接口的机制取代多重继承，来实现业务实体的多个功能面的契约定义。可是，接口只是解决的契约的定义。另外，对于契约，其实有时候是很不公平的事。微软的认证是一个例子：</p>
+<p>微软的认证是有阶梯约束的。过了初级才能考中级，而不管你是否已经拥有了初级的能力。对于没有参与考试的人，这是件不公平的事。如果有一项任务，必须拥有某种资格认证的人才能做，你是看资质证书呢？还是看能力表现？</p>
+<p>这是个非常有意思的问题。如果是你，你会选择哪个呢？静态语言选择了前者，动态语言选择了后者。鸭子类型就是充分想利用这些没有获得契约的资源。在不改变这些对象的前提下，对之复用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>鸭子类型是一种多态的表现形式，是一些动态语言具有的特征。它能够避免一些类的重写，无需大量复制相同的代码，但是也需要良好的文档支持，和严谨的代码，否则代码调试起来会多处许多麻烦，谁知道你的鸭子是不是我的鹅呢？</p>
+<h1 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h1><p>反射同样是个抽象的、在语法之上的概念，是一些语言具有的特征，它牺牲了语言的封装性来实现代码的重用和灵活性，有利有弊。在Java，Ruby，C++，C#，Scheme诸多语言，甚至C中都有体现。</p>
+<h2 id="是什么-1"><a href="#是什么-1" class="headerlink" title="是什么"></a>是什么</h2><p>从**<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/3169330.htm">元编程</a><strong>（<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Metaprogramming">Metaprogramming</a>）的角度来看，一门语言同时也是自身的元语言的能力称之为<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/3454964.htm"><strong>反射</strong></a>（<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Reflection_(computer_science)">Reflection</a>）。按照 Toby Davies 论文 Homoiconicity, Lazyness and First-Class Macros 的说法，</strong>反射（Reflection）<strong>其实是通过允许在运行时存取程序数据，以改变程序行为的程序设计技术。他认为，反射其实是一种“</strong>语义同像（Semantic Homoiconicity）<strong>”。具有语义同像性的语言必须把程序中的一些内部状态，比如符号表、指令指针，</strong>暴露**给程序员。这样，程序员就可以把这些东西当作 First-Class-Value 而很容易地操作它们。</p>
+<p>提供反射这种特性，无外乎是出于为了提高生产力、提高编程时的灵活性等考量。</p>
+<p>下面以Ruby为例。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">irb&gt; <span class="keyword">require</span> <span class="string">&#x27;what_methods&#x27;</span></span><br><span class="line">=&gt; true irb&gt;[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].what? <span class="number">4</span> </span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].last == <span class="number">4</span>  </span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].pop == <span class="number">4</span> </span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].lenght == <span class="number">4</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].size == <span class="number">4</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].count == <span class="number">4</span></span><br><span class="line">=&gt;[<span class="symbol">:last</span>, <span class="symbol">:pop</span>, <span class="symbol">:length</span>, <span class="symbol">:size</span>, <span class="symbol">:count</span>, <span class="symbol">:max</span>]</span><br></pre></td></tr></table></figure>
+<p>又是一个例子</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> M; <span class="keyword">end</span></span><br><span class="line"><span class="keyword">class</span> A; <span class="keyword">include</span> M; <span class="keyword">end</span></span><br><span class="line"><span class="keyword">class</span> B &lt; A; <span class="keyword">end</span></span><br><span class="line"><span class="keyword">class</span> C &lt; B; <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">b = B.new</span><br><span class="line">b.instance_of? A  <span class="comment">#=&gt; false</span></span><br><span class="line">b.instance_of? B  <span class="comment">#=&gt; true</span></span><br><span class="line">b.instance_of? C  <span class="comment">#=&gt; false</span></span><br><span class="line">b.instance_of? M  <span class="comment">#=&gt; false</span></span><br><span class="line"></span><br><span class="line">b.kind_of? A      <span class="comment">#=&gt; true</span></span><br><span class="line">b.kind_of? B      <span class="comment">#=&gt; true</span></span><br><span class="line">b.kind_of? C      <span class="comment">#=&gt; false</span></span><br><span class="line">b.kind_of? M      <span class="comment">#=&gt; true</span></span><br></pre></td></tr></table></figure>
+<p>Scheme中甚至有指令指针级别的反射。例子略。</p>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><p>解释究竟反射机制能够带来什么好处之前，先来看看具体的Reflection机制，以明白透过常见的Reflection支持，在程序中究竟能做到那些事情。这里以Java为例介绍，目的不在介绍Java完整的Reflection API，而是透过Java，帮助大家了解Reflection的一般性概念。</p>
+<p>在Java中反射机制的源头，就是一个叫“Class”的class(在C#中有一个相似的类别，则叫做Type)。这个类别有点特殊，原因在于此类别的每一个对象都用来表示系统中的每一个类别。</p>
+<p>具体来说，每个Class对象都描述了每个类别的相关信息，也提供你透过它可以进行的一些操作。想要开始Reflection的动作，就必须先取得Class类别的对象。最常被运用到的两个途径，一个便是Object(所有对象皆继承的类别)所提供的getClass()函数，另一个则是Class类别所提供的forName()静态函数。</p>
+<p>前者让你得以取得一个对象(尤其是类型未知的对象)所属的类别，而后者则让你得以指定一个类别的名称后，直接得到该类别对应的Class对象。</p>
+<p>有了Class对象之后，便能“审视”自身的特性，这些特性包括了它隶属于那个Package、类别本身究竟是Public还是Private、继承自那一类别、实作了那些接口等。更重要的是，你可以得知它究竟有那些成员变量以及成员函数(包括建构式)</p>
+<p>透过这个自我审视的过程，程序便能够了解它所要处理的对象(尤其是类型未知的对象)，究竟具备了什么特质。对运用反射机制的程序而言，所了解到的这些特质，便会影响到该程序的运作行为。</p>
+<p>取得了某类别的成员变量后(在Java中是以Field类别的对象表示)，便可以取得该类别对象的成员变量值，也可以设定其值。同样的，取得了某类别的成员函数后(在Java中是以Method类别的对象表示)，便可取得该成员函数的回传类型、传入的自变量列表类型，当然更重要的是，Method类别的对象，可被用以呼叫类别对象的相对应成员函数。</p>
+<p>有了反射，程序代码在撰写及编译的时间点，毋需明白实际在运行时，究竟会涉及那些类别以及它们各自的行为。你所写下的程序代码，可以完全是对要处理的类别一无所知，也可以是对他们有一点基本的假设(例如要处理的类别都具有相同名称的函数，却没有实作相同的接口，或是继承同样的类别)，一切都可以等到执行时期，透过自我审视的能力，了解要面对的对象究竟具备什么特性，再依据相对应的逻辑，动态利用程序代码控制。 当程序毋需将行为写死，便消除了相依性</p>
+<p>有了如此动态的能力，程序代码在撰写时毋需将行为写死，包括要处理的类别、要存取的成员变量、要呼叫的函数等。这大大增加了程序弹性，同时也增加了程序的扩充性。</p>
+<p>举例来说，一个连接数据库的Java系统而言，在编译时期是不需要知道究竟运作时会使用那一个JDBC驱动程序，系统只需要透过某种方式，例如在设定档中指定类别名称，那么程序便可以依据这类别名称，加载相对应的JDBC驱动程序，程序代码中完全可以不涉及具体的JDBC驱动程序究竟为何。</p>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p><strong>本来应该对程序员透明的机制，现在却暴露给了程序员，使得我们有能力去操纵它，让它能够更灵活地完成我们的工作。</strong></p>
+<p>所以说，反射这种东西，<strong>确实破坏了封装的初衷，但他们两者之间并不是绝对的对立。想一想，我们封装、隐藏细节、建立抽象屏障，无外乎都是为了降低程序的复杂度</strong>——这是工程上的折衷。但是在大量的实践中我们发现，我们抽象出来的通用模式并不是银弹，很多问题在它构建的框架之下解决起来就非常麻烦。</p>
+<p>所以有了反射这么一手，把很多难以预测的问题留到运行时，动态地去考虑去解决。这也就使得我们在走投无路时，还可以有一道后门开着让我们大摇大摆地进入。</p>
+<p>同时。</p>
+<p>计算机程序在执行完一系列语句指令后，它知道自己执行的是啥么？它知道它自己是在干什么么？反射，就是试图在语言层面提供一种这样的能力：<strong>让代码有自省能力，让代码知道自己在干什么，尽管目前的实现还很初级、很浅薄</strong>。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>对于编程模式的研究，在我看来有点类似一把砍柴刀，磨刀不误砍柴工，这方面的研究学习在不同的语言和语法实现上，会有着催化剂般的作用。就像数学基础之于计算机算法。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="http://book.51cto.com/art/201505/475153.htm">动态类型语言和鸭子类型</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/xiammy/article/details/1457135">鸭子类型:一切都是为了复用</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/qIBZB36">初识go语言以及鸭子类型</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/jaw-crusher/p/3475868.html">编程语言中的 鸭子模型(duck typing)</a></li>
+<li><a target="_blank" rel="noopener" href="http://developer.51cto.com/art/200910/155798.htm">动态与弹性 细看编程语言的反射机制</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/28570203">为什么语言里要提供“反射”功能？</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/24638392">语言的反射为什么比较慢，反射存在的意义是什么？为什么C++没有反射？</a></li>
+<li><a target="_blank" rel="noopener" href="http://deathking.is-programmer.com/posts/24125">元编程的魅力——反射机制</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -773,219 +948,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2015/03/11/docker-install-onos-environment/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2015/03/11/docker-install-onos-environment/" class="post-title-link" itemprop="url">Docker安装与ONOS实验环境搭建</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2015-03-11 20:57:15" itemprop="dateCreated datePublished" datetime="2015-03-11T20:57:15+08:00">2015-03-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2015/03/11/docker-install-onos-environment/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/11/docker-install-onos-environment/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>8 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><img src="/blog/docker-logo.jpg" alt="Docker"></p>
-<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。总之就是轻便型的虚拟环境。</p>
-<p>考虑到ONOS的实验环境搭建不易，Docker有助于我们移植搭建好的环境。</p>
-<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><p>1、安装软件包apt-transport-https，使APT系统能够被https解析</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install apt-transport-https</span><br></pre></td></tr></table></figure>
-<p>2、添加Docker repository key到本地keychain</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9</span><br></pre></td></tr></table></figure>
-<p>3、添加docker软件仓库到软件源，升级软件源，安装lxc-docker包</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">&quot;echo deb https://get.docker.com/ubuntu docker main &amp;gt; /etc/apt/sources.list.d/docker.list&quot;</span></span><br><span class="line">$ sudo apt - get update</span><br><span class="line">$ sudo apt-get install lxc-docker</span><br></pre></td></tr></table></figure>
-<p>注：上述操作可以使用下面的脚本完成。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -sSL https://get.docker.com/ubuntu/ | sudo sh</span><br></pre></td></tr></table></figure>
-<p>4、验证docker安装完成，可以使用下面命令测试</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -i -t ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
-<p>-i interactive， -t tty， -p port可以多次使用指定多个Port映射， -P端口映射随机分配</p>
-<h2 id="ONOS（Open-Network-Operation-System）"><a href="#ONOS（Open-Network-Operation-System）" class="headerlink" title="ONOS（Open Network Operation System）"></a>ONOS（Open Network Operation System）</h2><p>ONOS是首款开源的SDN网络操作系统，主要面向服务提供商和企业骨干网。ONOS的设计宗旨是满足网络需求实现可靠性强、性能好、灵活度高。此外，ONOS的北向接口抽象层和API支持简单的应用开发，而通过南向接口抽象层和接口则可以管控OpenFlow或者传统设备。总体来说，ONOS将会实现以下功能：</p>
-<ul>
-<li>SDN控制层面实现电信级特征（可靠性强，性能好，灵活度高）；</li>
-<li>提供网络敏捷性强有力保证；</li>
-<li>帮助服务提供商从现有网络迁移到白牌设备；</li>
-<li>减少服务提供商的资本开支和运营开支。<br>下面介绍ONOS安装<strong>（Ubuntu源码安装）</strong></li>
-</ul>
-<h3 id="1-系统要求"><a href="#1-系统要求" class="headerlink" title="1 系统要求"></a>1 系统要求</h3><p>安装ONOS对操作系统有如下要求</p>
-<ul>
-<li>Ubuntu Server 14.04 LTS 64-bit</li>
-<li>2GB or more RAM</li>
-<li>2 or more processors</li>
-</ul>
-<p>需要安装如下软件，如果不用git获取源码，GIT可以不需要安装。</p>
-<ul>
-<li>Java 8 JDK (Oracle Java recommended; OpenJDK is not as thoroughly tested)</li>
-<li>Apache Maven (3.0 and later)</li>
-<li>git</li>
-<li>bash (for packaging &amp; testing)</li>
-<li>Apache Karaf (3.0.2 and later)</li>
-</ul>
-<h3 id="2-安装依赖"><a href="#2-安装依赖" class="headerlink" title="2 安装依赖"></a>2 安装依赖</h3><h4 id="安装apache-karaf和apache-maven"><a href="#安装apache-karaf和apache-maven" class="headerlink" title="安装apache-karaf和apache-maven"></a>安装apache-karaf和apache-maven</h4><p>apache-karaf的版本为3.0.2或以上版本，apache-maven的版本至少为3.0，这里使用版本3.2.2。创建<del>&#x2F;Applications目录。之所以要安装到这个目录，是因为onos源码中已经设置将apache-karaf、apache-maven放到</del>&#x2F;Applications目录。这个目录也可以通过更改~&#x2F;onos&#x2F;tools&#x2F;dev&#x2F;bash_profile修改，但是为了避免不必要的操作，这里按照默认创建文件夹。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span>; <span class="built_in">mkdir</span> Downloads Applications</span><br><span class="line">$ <span class="built_in">cd</span> Downloads</span><br><span class="line">$ wget http://download.nextag.com/apache/karaf/3.0.2/apache-karaf-3.0.2.tar.gz</span><br><span class="line">$ wget http://www.apache.org/dist/maven/binaries/apache-maven-3.2.2-bin.tar.gz</span><br><span class="line">$ tar -zxvf apache-karaf-3.0.2.tar.gz -C ../Applications/</span><br><span class="line">$ tar -zxvf apache-maven-3.2.2-bin.tar.gz -C ../Applications/ </span><br></pre></td></tr></table></figure>
-
-<h4 id="安装java8"><a href="#安装java8" class="headerlink" title="安装java8"></a>安装java8</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install software-properties-common -y</span><br><span class="line">$ sudo add-apt-repository ppa:webupd8team/java -y</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install oracle-java8-installer oracle-java8-set-default -y</span><br></pre></td></tr></table></figure>
-<p>正确安装后，java -version和mvn –version打印的java版本应该一致。</p>
-<h3 id="3-安装-ONOS"><a href="#3-安装-ONOS" class="headerlink" title="3 安装 ONOS"></a>3 安装 ONOS</h3><h4 id="下载ONOS源码"><a href="#下载ONOS源码" class="headerlink" title="下载ONOS源码"></a>下载ONOS源码</h4><p>将ONOS源码下载到合适的目录（笔者放在&#x2F;home目录下），切换到1.0.0分支</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://gerrit.onosproject.org/onos -b 1.0.0</span><br></pre></td></tr></table></figure>
-
-<h4 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h4><p>安装ONOS之前，需要设置ONOS_ROOT和KARAF_ROOT等路径，切换到root权限用户，在&#x2F;etc&#x2F;profile文件的最后添加如下设置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export ONOS_ROOT=/home/onos/onos-onos-1.0</span><br><span class="line">export KARAF_ROOT=/root/Applications/apache-karaf-3.0.2</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export M2_HOME=/usr/local/apache-maven</span><br><span class="line">export PATH=$PATH:$M2_HOME/bin </span><br></pre></td></tr></table></figure>
-<p>保存后执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">source</span> /etc/profile</span><br><span class="line">$ <span class="built_in">source</span> <span class="variable">$ONOS_ROOT</span>/tools/dev/bash_profile</span><br></pre></td></tr></table></figure>
-<p>如果没有报错，则表示执行成功<br>可能的错误有：</p>
-<ul>
-<li>No such file or directory</li>
-<li>No such cell: local</li>
-</ul>
-<h4 id="构建ONOS"><a href="#构建ONOS" class="headerlink" title="构建ONOS"></a>构建ONOS</h4><p>以上的步骤一切顺利后，可以开始构建ONOS，执行下列命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> onos/ //目录可能因人而异</span><br><span class="line">$ mvn clean install</span><br></pre></td></tr></table></figure>
-<p>安装需要5~10分钟不等.</p>
-<h4 id="运行ONOS"><a href="#运行ONOS" class="headerlink" title="运行ONOS"></a>运行ONOS</h4><p>需要编辑$KARAF_ROOT&#x2F;etc&#x2F;org.apache.karaf.features.cfg文件</p>
-<p>添加下面的内容到 featuresRepositories：<br>mvn:org.onosproject&#x2F;onos-features&#x2F;1.0.0&#x2F;xml&#x2F;features</p>
-<p>接着添加下面的内容到featuresBoot：<br>onos-api,onos-core-trivial,onos-cli,onos-openflow,onos-app-fwd,onos-app-mobility,onos-gui</p>
-<p>之后就可以启动ONOS了：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ karaf clean</span><br></pre></td></tr></table></figure>
-<p>启动时间较长，请耐心等待。</p>
-<p>但是，Ubuntu源码安装并不总是能够成功的。在执行ONOS_ROOT&#x2F;tools&#x2F;dev&#x2F;bash_profile和构建ONOS时，很容易出错。Docker在这时能发挥它应有的作用。</p>
-<h2 id="Docker搭建ONOS环境"><a href="#Docker搭建ONOS环境" class="headerlink" title="Docker搭建ONOS环境"></a>Docker搭建ONOS环境</h2><p>声明：建议使用root用户做以下操作，可以省去sudo的麻烦</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -s</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-获取ONOS镜像"><a href="#1-获取ONOS镜像" class="headerlink" title="1 获取ONOS镜像"></a>1 获取ONOS镜像</h3><h4 id="搜索镜像"><a href="#搜索镜像" class="headerlink" title="搜索镜像"></a>搜索镜像</h4><p>执行“docker search onos”来搜索相关的镜像，可以从STARS来确定资源的好坏。因为ONOS刚出来不久，还没有最完美的镜像。这里我们选择“ywang1007&#x2F;onos-buildenv”镜像。</p>
-<h4 id="下载镜像"><a href="#下载镜像" class="headerlink" title="下载镜像"></a>下载镜像</h4><p>下载选择的ONOS镜像到本地机器，这里需要花费一段时间。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker pull ywang1007/onos-buildenv</span></span><br></pre></td></tr></table></figure>
-<p>pull 后面加上 -a可以下载该镜像的所有版本</p>
-<h4 id="查看镜像"><a href="#查看镜像" class="headerlink" title="查看镜像"></a>查看镜像</h4><p>查看已经下载好的镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
-<p>里面已经包含了下载好的镜像</p>
-<h4 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h4><p>为了展开实验，我们需要创建一个容器，进行镜像内的实验。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker run -i -t -p 0.0.0.0:6633:6633  -p 0.0.0.0:8181:8181 --name ONOS ywang1007/onos-buildenv /bin/bash</span></span><br></pre></td></tr></table></figure>
-<p>值得说的是，ONOS有web界面，端口是8181，为了可以页面访问ONOS，要做两个端口绑定。容器的6633端口绑定到主机的6633端口，容器的8181端口绑定到主机的8181端口。之后宿主机器访问“<a target="_blank" rel="noopener" href="http://your/">http://your</a> ip address:8181&#x2F;onos&#x2F;ui&#x2F;index.html”即可查看ONOS状态。</p>
-<p>创建好后，可以使用“docker ps -a”来查看当前容器情况。</p>
-<p>-a 全部 -l 最新<br>和Docker容器相关的命令有</p>
-<ul>
-<li>docker start 启动某个容器</li>
-<li>docker stop 关闭某个容器</li>
-<li>docker attach 连接到某个正在运行的容器</li>
-<li>docker rm 移除某个停止运行的容器</li>
-</ul>
-<p>docker的相关命令可以通过docker –help来得到</p>
-<p>之后的操作类似于上一节介绍的，搭建环境，建构运行ONOS。在宿主机器上运行mininet，使用pingall命令，可以证明onos已经在工作。过程略。</p>
-<p>好不容易搭建好的onos环境最好用新镜像的方式存储起来，方便下次直接使用。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker commit xxx onos-1.0.0 //提交一个新的镜像</span></span><br><span class="line"><span class="comment"># docker save onos-1.0.0 &amp;gt; /home/zinc-fnl/onos-1.0.0.tar //将新镜像保存起来</span></span><br><span class="line"><span class="comment"># docker load &amp;lt; /hoe/zinc-fnl/onos-1.0.0.tar</span></span><br></pre></td></tr></table></figure>
-<p>此时再次查看本机的镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
-<p>就会发现刚才保存的新的镜像。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文主要介绍了docker的安装与简单使用以及ONOS的环境搭建。从中可以看到docker对于快速搭建实验环境有很大帮助，相信未来会有长远的发展。另外，这里对ONOS的性能并未做详细分析，笔者将在日后通过实验对ONOS进行考察。</p>
-<h3 id="副产品"><a href="#副产品" class="headerlink" title="副产品"></a>副产品</h3><p>实验过程中，因为对profile文件做过修改，曾出现过开机无法登陆的情况。orz..</p>
-<p>问题：登录成功后，自动跳转回登陆页面</p>
-<p>解决方法：</p>
-<ol>
-<li>Ctrl+Alt_F1切换到文本模式</li>
-<li>将在profile和bash_profile做过的修改撤销掉</li>
-<li>find Xauthor* 将查到的所有文件要么sudo chmod 777 要么rm掉</li>
-<li>startx切换回来重新登录即可</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/26/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/blog/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/28/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1016,7 +978,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:51</span>
+    <span title="站点阅读时长">28:57</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

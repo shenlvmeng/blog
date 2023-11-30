@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/favicon.png">
+  <link rel="mask-icon" href="/blog/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"shenlvmeng.github.com","root":"/blog/","images":"/blog/images","scheme":"Muse","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"N573WZGUR1","apiKey":"f4b654279103617a4cefb92a132ff0c3","indexName":"blog","hits":{"per_page":10}}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="大纲向  《Code: The Hidden Language of Computer Hardware and Software》书名挺长，但是本好书。要是大学时期的老师按照书里的思路展开计算机专业部分的课程，我也不至于学了两年编程还是囫囵吞枣，只能邯郸学步。书里顺带还涉及了信号系统、数字电路等计算机外的部分内容，简直不能更适合当做信息工程或通信工程专业学生的课外读物。相比国内大学教材">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Code》—— 从手电筒到计算机">
+<meta property="og:url" content="http://shenlvmeng.github.com/blog/2023/11/30/language-hidden-behind-computer/">
+<meta property="og:site_name" content="Shenlvmeng&#39;s Blog">
+<meta property="og:description" content="大纲向  《Code: The Hidden Language of Computer Hardware and Software》书名挺长，但是本好书。要是大学时期的老师按照书里的思路展开计算机专业部分的课程，我也不至于学了两年编程还是囫囵吞枣，只能邯郸学步。书里顺带还涉及了信号系统、数字电路等计算机外的部分内容，简直不能更适合当做信息工程或通信工程专业学生的课外读物。相比国内大学教材">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-30T14:06:46.000Z">
+<meta property="article:modified_time" content="2023-11-30T14:08:44.468Z">
+<meta property="article:author" content="shenlvmeng">
+<meta property="article:tag" content="代码">
+<meta property="article:tag" content="计算机">
+<meta property="article:tag" content="微机原理">
+<meta property="article:tag" content="门">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="数字电路">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://shenlvmeng.github.com/blog/2023/11/30/language-hidden-behind-computer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://shenlvmeng.github.com/blog/2023/11/30/language-hidden-behind-computer/","path":"2023/11/30/language-hidden-behind-computer/","title":"《Code》—— 从手电筒到计算机"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《Code》—— 从手电筒到计算机 | Shenlvmeng's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shenlvmeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E8%80%85%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">作者序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%B3%E4%BA%B2%E5%AF%86%E5%8F%8B"><span class="nav-number">2.</span> <span class="nav-text">至亲密友</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E4%B8%8E%E7%BB%84%E5%90%88"><span class="nav-number">3.</span> <span class="nav-text">编码与组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E8%8E%B1%E5%8F%B6%E7%9B%B2%E6%96%87%E5%92%8C%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">布莱叶盲文和二进制码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E7%94%B5%E7%AD%92%E7%9A%84%E5%89%96%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">手电筒的剖析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E6%8B%90%E8%A7%92%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="nav-number">6.</span> <span class="nav-text">绕过拐角的通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E6%8A%A5%E6%9C%BA%E5%92%8C%E7%BB%A7%E7%94%B5%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text">电报机和继电器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E5%92%8C%E8%AE%A1%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">数字和计数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0"><span class="nav-number">9.</span> <span class="nav-text">二进制数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E4%B8%8E%E5%BC%80%E5%85%B3"><span class="nav-number">10.</span> <span class="nav-text">逻辑与开关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%A8"><span class="nav-number">11.</span> <span class="nav-text">门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8A%A0%E6%B3%95%E5%99%A8"><span class="nav-number">12.</span> <span class="nav-text">二进制加法器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%87%8F%E6%B3%95"><span class="nav-number">13.</span> <span class="nav-text">如何实现减法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E9%A6%88%E4%B8%8E%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-number">14.</span> <span class="nav-text">反馈与触发器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E5%92%8C%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6"><span class="nav-number">15.</span> <span class="nav-text">字节和十六进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%BB%93%E6%9E%84"><span class="nav-number">16.</span> <span class="nav-text">存储器结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">17.</span> <span class="nav-text">自动操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%AE%97%E7%9B%98%E5%88%B0%E8%8A%AF%E7%89%87"><span class="nav-number">18.</span> <span class="nav-text">从算盘到芯片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E5%85%B8%E5%9E%8B%E7%9A%84%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">19.</span> <span class="nav-text">两种典型的微处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ascii%E7%A0%81%E5%92%8C%E5%AD%97%E7%AC%A6%E8%BD%AC%E6%8D%A2"><span class="nav-number">20.</span> <span class="nav-text">ASCII码和字符转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BA%BF"><span class="nav-number">21.</span> <span class="nav-text">总线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">22.</span> <span class="nav-text">操作系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%82%B9%E6%95%B0%E5%92%8C%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="nav-number">23.</span> <span class="nav-text">定点数和浮点数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E4%BD%8E%E7%BA%A7%E8%AF%AD%E8%A8%80"><span class="nav-number">24.</span> <span class="nav-text">高级语言和低级语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%BD%A2%E5%8C%96%E9%9D%A9%E5%91%BD"><span class="nav-number">25.</span> <span class="nav-text">图形化革命</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="shenlvmeng"
+      src="/blog/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">shenlvmeng</p>
+  <div class="site-description" itemprop="description">Be sharp, my friend.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">149</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">458</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shenlvmeng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/shenlvmeng" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;shenlvmeng" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2023/11/30/language-hidden-behind-computer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《Code》—— 从手电筒到计算机 | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Code》—— 从手电筒到计算机
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-30 22:06:46 / 修改时间：22:08:44" itemprop="dateCreated datePublished" datetime="2023-11-30T22:06:46+08:00">2023-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">思考</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2023/11/30/language-hidden-behind-computer/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2023/11/30/language-hidden-behind-computer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>大纲向</p>
+</blockquote>
+<p>《Code: The Hidden Language of Computer Hardware and
+Software》书名挺长，但是本好书。要是大学时期的老师按照书里的思路展开计算机专业部分的课程，我也不至于学了两年编程还是囫囵吞枣，只能邯郸学步。书里顺带还涉及了信号系统、数字电路等计算机外的部分内容，简直不能更适合当做信息工程或通信工程专业学生的课外读物。相比国内大学教材居高临下式的填鸭式讲法，我看到的几本国外教材（<a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2018/05/01/sicp-note/">计算机程序的构造和解释</a>、Gilbert
+Strang的<a
+target="_blank" rel="noopener" href="https://book.douban.com/subject/34820335/">线性代数</a>）由浅入深、循循善诱的展开方式友好了许多。《Code》这本书虽然严格来说不算教材，只是计算机原理入门，但也相当适合和微机原理有缘分的人买来看看。浅显的文笔不会阻碍你深刻认识到计算机工作原理。</p>
+<p>全书1-10章对于计算机相关专业学生来说，很易理解，读起来很快。但从11章起到17章自动操作，内容突然有深度起来，读起来颇有思维体操的感觉。在18章了解芯片历史，短暂歇口气后，从19章到22章，你将完整了解到操作系统是怎么建立起来的。在此基础上，最后3章里介绍编程语言时，就一点也不突兀，很好理解了。</p>
+<h2 id="作者序">作者序</h2>
+<ul>
+<li>内存和外存的区别体现了实际需求和可观性能的矛盾，简单说就是我们目前找不到同时具备两种存储所有优点（既快又持久）的存储媒介</li>
+</ul>
+<h2 id="至亲密友">至亲密友</h2>
+<ul>
+<li>编码就是交流</li>
+<li>2个不同事物通过组合，可以表示所有信息</li>
+</ul>
+<h2 id="编码与组合">编码与组合</h2>
+<ul>
+<li>摩尔斯电码</li>
+</ul>
+<h2 id="布莱叶盲文和二进制码">布莱叶盲文和二进制码</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9B%B2%E6%96%87">布莱叶盲文</a>用6个位置的凸点有无编码表示字符</li>
+</ul>
+<h2 id="手电筒的剖析">手电筒的剖析</h2>
+<ul>
+<li>电压、电流、电阻、欧姆定律、功率</li>
+<li>开关的两种状态</li>
+</ul>
+<h2 id="绕过拐角的通信">绕过拐角的通信</h2>
+<ul>
+<li>电路的串联、并联</li>
+<li>电路的尺寸极限</li>
+</ul>
+<h2 id="电报机和继电器">电报机和继电器</h2>
+<ul>
+<li>利用电磁现象的电报机和继电器</li>
+</ul>
+<h2 id="数字和计数">数字和计数</h2>
+<ul>
+<li>十进制的来源</li>
+<li>其他进制和二进制</li>
+</ul>
+<h2 id="二进制数">二进制数</h2>
+<ul>
+<li>二进制是最简单的数字系统</li>
+<li>利用冗余可以消除信息里噪音的影响</li>
+<li>通用产品代码（条形码）的编码方式
+<ul>
+<li>奇偶校验</li>
+<li>模校验字符</li>
+<li>正反可读</li>
+</ul></li>
+</ul>
+<h2 id="逻辑与开关">逻辑与开关</h2>
+<ul>
+<li>布尔代数的来源</li>
+<li>布尔代数的集合解释</li>
+<li>布尔代数的电路表示</li>
+</ul>
+<h2 id="门">门</h2>
+<blockquote>
+<p>自此章起，终于开始进入数字电路到计算机的领域，<strong>逻辑门是其中最基础的单元</strong></p>
+</blockquote>
+<ul>
+<li>串并联和与或门</li>
+<li>与或非门的继电器表示</li>
+<li>与非门和或非门的继电器表示</li>
+<li>德摩根律</li>
+</ul>
+<h2 id="二进制加法器">二进制加法器</h2>
+<ul>
+<li>二进制表示下的加法
+<ul>
+<li>或门（结果输出）+ 与非门（进位输出）</li>
+</ul></li>
+<li>半加器和全加器（考虑了进位输入的半加器）</li>
+<li>8个全加器构成的<strong>8位加法器</strong></li>
+<li>行波进位</li>
+</ul>
+<h2 id="如何实现减法">如何实现减法</h2>
+<ul>
+<li>补码和反码：用来将减法转化为加法</li>
+<li>有符号数和无符号数
+<ul>
+<li>有符号数首位1表示负数</li>
+</ul></li>
+</ul>
+<h2 id="反馈与触发器">反馈与触发器</h2>
+<ul>
+<li>反馈是更复杂电路的基础</li>
+<li>振荡器：单纯取反后反馈到输入端的电路
+<ul>
+<li>周期和频率</li>
+</ul></li>
+<li>更复杂的反馈可以构成记忆电路状态的<strong>触发器</strong></li>
+<li>RS触发器，可以记忆置位和复位的值</li>
+<li>D型触发器，在保持位为1时，才会保存数据端输入</li>
+<li>D型触发器构成的8位<strong>锁存器</strong></li>
+<li>电平触发和边沿触发</li>
+<li>边沿触发的D型触发器</li>
+<li>分频器和8位行波计数器</li>
+</ul>
+<h2 id="字节和十六进制">字节和十六进制</h2>
+<ul>
+<li>字节的来源
+<ul>
+<li>8位的长度刚好可以表示大多数书面语言的基本字符，对于象形文字，用2个字节也够了</li>
+</ul></li>
+<li>字节的十六进制表示</li>
+<li>十六进制和二进制的转换</li>
+</ul>
+<h2 id="存储器结构">存储器结构</h2>
+<ul>
+<li>8-1选择器和3-8译码器</li>
+<li>8×1RAM：结合了选择器和译码器的8位锁存器
+<ul>
+<li>译码器和选择器的选择信号相同，这个信号也可以叫做<strong>地址</strong></li>
+<li>8×1RAM里各比特相互独立</li>
+</ul></li>
+<li>将2个8×1RAM用共享地址的方式连接到同一个地址/数据/写操作端上，可以得到8×2RAM</li>
+<li>将2个8×1RAM组合1个2-1选择器和一个1-2译码器，可以得到一个16×1RAM</li>
+<li>RAM的存储容量是2<sup>地址输入端个数</sup></li>
+<li>KB、MB、TB、PB、EB</li>
+<li>64K×8RAM需要2个字节表示的地址</li>
+<li>RAM需要恒定的电流来维持数据</li>
+</ul>
+<h2 id="自动操作">自动操作</h2>
+<ul>
+<li>振荡器 + 16位计数器 + 64K×8RAM + 8位加法器构成的自动累加器</li>
+<li>代码和数据的区分
+<ul>
+<li>单独用一块64K×8RAM存储代码，代码指导机器如何操作</li>
+</ul></li>
+<li>操作码和操作数</li>
+<li>第3个字节：操作数的存储地址
+<ul>
+<li>避免了顺序存储的问题</li>
+</ul></li>
+<li>新的寻址方式：Jump指令
+<ul>
+<li>从指定地址开始寻址指令</li>
+</ul></li>
+<li>计算机区分于计算器的基础：条件跳转指令
+<ul>
+<li>零转移/进位转移/非零转移/无进位转移</li>
+</ul></li>
+<li>算术逻辑单元，ALU</li>
+<li>助记符表示下的机器码
+<ul>
+<li>MOV/LOD/STO/ADD/SUB/ADC/SBB/JMP/...</li>
+<li>汇编语言、手动汇编</li>
+</ul></li>
+</ul>
+<h2 id="从算盘到芯片">从算盘到芯片</h2>
+<ul>
+<li>算盘</li>
+<li>对数表、对数尺</li>
+<li>机械计算器</li>
+<li>自动织布机与打孔的金属卡片</li>
+<li>巴贝奇的差分机和解析机</li>
+<li>赫尔曼·霍尔瑞斯的制表机
+<ul>
+<li>再次基础上，他成立了IBM</li>
+</ul></li>
+<li>从MARK I到13000个继电器的MARK II</li>
+<li>Grace Murray Hopper发现的第一个“bug”</li>
+<li>真空管的发明</li>
+<li>图灵的贡献
+<ul>
+<li>图灵机，可计算性</li>
+<li>图灵测试法</li>
+</ul></li>
+<li>ENIAC，此时仍在使用十进制数</li>
+<li>冯诺依曼和他的EDVAC
+<ul>
+<li>二进制数</li>
+<li>存储代码和数据的存储器</li>
+<li>程序计数器寻址</li>
+<li>允许条件跳转</li>
+</ul></li>
+<li>香农和信息论</li>
+<li>维纳和控制论</li>
+<li>UNIVAC</li>
+<li>晶体管的发明和半导体</li>
+<li>NPN晶体管</li>
+<li>集成电路（IC），又叫芯片
+<ul>
+<li>TTL（晶体管-晶体管逻辑，响应快功率高）和CMOS（互补金属氧化物半导体，响应慢功率低）</li>
+</ul></li>
+<li>摩尔定律</li>
+<li>Intel 4004，第一块计算机芯片，或者说微处理器</li>
+<li>Intel 4040，Intel 8008</li>
+</ul>
+<h2 id="两种典型的微处理器">两种典型的微处理器</h2>
+<ul>
+<li>Intel 8008的改进：Intel 8080和Motorola 6800</li>
+<li>Intel 8080
+<ul>
+<li>振动器输入</li>
+<li>电源输出</li>
+<li>接地</li>
+<li>寻址信号</li>
+<li>控制信号</li>
+<li>数据信号</li>
+</ul></li>
+<li>汇编里的助记符只是方便我们使用，处理器只能读取字节</li>
+<li>8080中设置更方便处理器读取信息的寄存器</li>
+<li>直接寻址和间接寻址</li>
+<li>栈和程序计数器</li>
+<li>Call命令和子程序</li>
+<li>内存映像I/O和中断</li>
+<li>Motorola 6800</li>
+<li>little-endian（Intel方式）和big-endian（Motorola方式）
+<ul>
+<li>高低位字节存储方式在Intel和Motorola芯片里不同，Intel是低字节在前，Motorola则是高字节在前</li>
+<li>命名来源于《吉列佛游记》里关于吃鸡蛋前先敲碎哪个头的讨论</li>
+</ul></li>
+<li>8080被应用在第一台家用电脑Altair 8800上</li>
+<li>Apple II应用了6800的MOS技术改进版6502</li>
+<li>IBM在IBM PC(IBM
+5150)里使用了8088芯片，8088芯片的内部结构和8086类似，和8080的操作吗不兼容</li>
+<li>x86系列微处理器包括1982年发布的186和286芯片。之后又发布了32位的386和后续的486以及Intel
+Pentium系列微处理器，尽管指令集不断扩展，但都支持8086起的所有处理器操作码</li>
+<li>Macintosh采用了Motorola的68000微处理器，并从1994年起使用RISC（精简指令集计算机）微处理器体系的PowerPC微处理器</li>
+<li>流水线技术（pipelining）和Cache（高速缓冲存储器）</li>
+</ul>
+<h2 id="ascii码和字符转换">ASCII码和字符转换</h2>
+<ul>
+<li>Baudot码/Murray编码
+<ul>
+<li>转义</li>
+</ul></li>
+<li>ASCII码
+<ul>
+<li>7位编码</li>
+<li>控制字符</li>
+</ul></li>
+<li>BCD编码</li>
+<li>8位的ASCII码</li>
+<li>中日韩字符编码</li>
+<li>2字节的Unicode编码
+<ul>
+<li>支持象形文字</li>
+</ul></li>
+</ul>
+<h2 id="总线">总线</h2>
+<ul>
+<li>总线信号
+<ul>
+<li>地址信号</li>
+<li>数据输入信号</li>
+<li>数据输出信号</li>
+<li>控制信号</li>
+</ul></li>
+<li>MCA总线/PCI总线</li>
+<li>SRAM、DRAM</li>
+<li>电子射线管（CRT）</li>
+<li>水平回归、垂直回归</li>
+<li>隔行扫描</li>
+<li>分辨率</li>
+<li>键盘实现</li>
+<li>磁带</li>
+<li>软盘和磁盘
+<ul>
+<li>磁道和扇区</li>
+<li>直接内存访问技术（DMA）</li>
+</ul></li>
+</ul>
+<h2 id="操作系统">操作系统</h2>
+<ul>
+<li>PROM、EPROM</li>
+<li>文件系统</li>
+<li>CP/M</li>
+<li>引导系统</li>
+<li>API</li>
+<li>QDOS -&gt; MS-DOS
+<ul>
+<li>层次文件系统</li>
+</ul></li>
+<li>UNIX和UNIX思想
+<ul>
+<li>GNU</li>
+</ul></li>
+<li>多任务</li>
+<li>内存管理</li>
+</ul>
+<h2 id="定点数和浮点数">定点数和浮点数</h2>
+<ul>
+<li>定点：小数点的位置总在数的某个特定位置</li>
+<li>浮点：基于科学计数法
+<ul>
+<li>4个字节的单精度</li>
+<li>8个字节的双精度</li>
+<li>IEEE标准浮点数</li>
+<li>精度问题</li>
+</ul></li>
+<li>数字协同处理器</li>
+</ul>
+<h2 id="高级语言和低级语言">高级语言和低级语言</h2>
+<ul>
+<li>第一个编写汇编器的人需要手工对程序汇编。之后新的汇编器可以在已有的计算机上编写，利用已有的汇编器进行汇编，这种方式也叫<strong>交叉汇编</strong>。</li>
+<li>编译器（程序 -&gt; 机器码）</li>
+<li>FORTRAN，科学计算语言</li>
+<li>ALGOL，高级语言的鼻祖
+<ul>
+<li>for循环</li>
+<li>if语句</li>
+<li>块、变量声明</li>
+<li>数组</li>
+</ul></li>
+<li>计算机科学又像工程，又像艺术</li>
+<li>COBOL，第一个成功为商业系统使用的程序设计语言</li>
+<li>BASIC</li>
+<li>解释型语言，边读边执行</li>
+<li>Pascal、Turbo Pascal</li>
+<li>Ada</li>
+<li>C，BCPL（Basic CPL）的后继者</li>
+<li>LISP、APL</li>
+<li>面向对象程序设计语言</li>
+</ul>
+<h2 id="图形化革命">图形化革命</h2>
+<ul>
+<li>用户界面</li>
+<li>SAGE
+<ul>
+<li>光笔</li>
+</ul></li>
+<li>鼠标</li>
+<li>Xerox，PARC，Alto工程</li>
+<li>图形界面和图形对象</li>
+<li>Macintosh和Mac系统</li>
+<li>Windows系统</li>
+<li>面向对象语言
+<ul>
+<li>SmallTalk语言</li>
+<li>C++</li>
+<li>Java</li>
+</ul></li>
+<li>集成开发环境（IDE）</li>
+<li>文本信息编码
+<ul>
+<li>RTF</li>
+<li>PostScript</li>
+</ul></li>
+<li>计算机图形
+<ul>
+<li>矢量 -&gt; CAD（计算机辅助设计）</li>
+<li>光栅 -&gt; 位图</li>
+</ul></li>
+<li>CCD（电荷耦合器）
+<ul>
+<li>光感度不同对应不同的像素值阵列（模拟信号 -&gt; 数字信号）</li>
+<li>数码相机、CD、DVD、VCD</li>
+</ul></li>
+<li>数据压缩
+<ul>
+<li>无损压缩
+<ul>
+<li>游程长度编码（RLE）</li>
+<li>GIF和LZW压缩</li>
+</ul></li>
+<li>有损压缩
+<ul>
+<li>JPEG</li>
+<li>OCR</li>
+</ul></li>
+</ul></li>
+<li>脉冲编码调制技术（PCM）
+<ul>
+<li>ADC（模拟数字转换器）和DAC（数字模拟转换器）</li>
+<li>采样率和奈奎斯特采样定律</li>
+</ul></li>
+<li>语言识别</li>
+<li>MIDI合成器</li>
+<li>MPEG</li>
+<li>调制和解调</li>
+<li>Internet
+<ul>
+<li>WWW</li>
+<li>HTTP</li>
+<li>CGI</li>
+<li>JavaScript</li>
+</ul></li>
+</ul>
+<p><em>--END--</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E4%BB%A3%E7%A0%81/" rel="tag"># 代码</a>
+              <a href="/blog/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"># 计算机</a>
+              <a href="/blog/tags/%E5%BE%AE%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag"># 微机原理</a>
+              <a href="/blog/tags/%E9%97%A8/" rel="tag"># 门</a>
+              <a href="/blog/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+              <a href="/blog/tags/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/" rel="tag"># 数字电路</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2023/11/12/history-of-chinese-philosophy/" rel="prev" title="中国哲学简史">
+                  <i class="fa fa-chevron-left"></i> 中国哲学简史
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shenlvmeng</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">1m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">28:57</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.3/algoliasearch-lite.umd.js" integrity="sha256-dyJcbGuYfdzNfifkHxYVd/rzeR6SLLcDFYEidcybldM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.49.2/instantsearch.production.min.js" integrity="sha256-Nu8yqoXoRZEVYyZf4/eY1V4FsenbiCw85RY3gWjN3zQ=" crossorigin="anonymous"></script><script src="/blog/js/third-party/search/algolia-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/blog/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"shenlvmengs-blog","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/blog/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

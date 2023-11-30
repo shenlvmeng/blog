@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-count">149</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">453</span>
+        <span class="site-state-item-count">458</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,250 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/09/08/photogallery-improvement/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/09/08/photogallery-improvement/" class="post-title-link" itemprop="url">PhotoGallery技术改造</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-09-08 19:31:17" itemprop="dateCreated datePublished" datetime="2017-09-08T19:31:17+08:00">2017-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/09/08/photogallery-improvement/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/08/photogallery-improvement/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>13 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><img src="/blog/images/photogallery.png"></p>
+<p>最近离职后除了准备面试，多了许多时间对以往的前端个人项目进行改造。<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/gallery/index.html">PhotoGallery</a>就是其中一个个人很喜欢，但由于技术原因没做到完美的例子。最近准备抽出时间进行完善。</p>
+<p>PhotoGallery是一个使用瀑布流展示电影海报以及花絮（当然都是个人比较心水的）的展示型页面。所有的电影图片也是从大一就开始收集的，一直囤积在人人上。页面的诸多功能是根据个人爱好设计的，如</p>
+<ul>
+<li>根据标签搜索</li>
+<li>相似图片</li>
+<li>基于tag的推荐等</li>
+</ul>
+<p>总体来说，就是一个展示、介绍、推荐电影的地方。内容上还是很不错的。但是，去年寒假码代码时，前端技术还有待提高，很多地方写得并不严谨甚至比较丑陋。功能上也有些影响体验必须解决的痛点。大概有下面这些</p>
+<ul>
+<li><strong>首屏渲染时间糟糕</strong>，这是因为图片过多（个人看的太多），又使用了Vue。同时Vue这种MVVM框架和精细化DOM操作一山不容二虎，因此，结合懒加载，效果依然不理想</li>
+<li><strong>图片的时序排布并不自然</strong>，当时图省事，使用纯CSS方案实现瀑布流，牺牲了图片排序。图片只能从上到下再从左到右排序，和正常的阅读顺序并不一致。同时，最老的图片在最前，也不合理</li>
+<li><strong>新增图片困难</strong>，这是由于github.io的纯静态的限制，当时采用了静态图片+meta存数据的方式来实现，后面看了电影再往里加图步骤繁琐，没有人性化的办法</li>
+<li>样式老气，细节粗糙</li>
+<li><strong>本地调试困难</strong>，只使用了gulp来压缩js，css和json代码（代码少，不需要打包），不是全家桶脚手架，本地调试困难，且不能使用ES6语法</li>
+<li><strong>代码语法和风格上不严谨</strong>，考虑结合在公司的规矩规范</li>
+</ul>
+<p>针对上面大大小小几点，以及实际情况（比如只能使用github.io），考虑像下面这样优化</p>
+<h3 id="瀑布流布局实现方式待优化"><a href="#瀑布流布局实现方式待优化" class="headerlink" title="瀑布流布局实现方式待优化"></a>瀑布流布局实现方式待优化</h3><p>放弃使用column-count的方案。原因有二：</p>
+<ol>
+<li>排布顺序是从上到下，再从左到右，和日常经验相悖。类似地，使用flex的方案也不行</li>
+<li>本身和懒加载的设计兼容性并不好，懒加载的新图片会导致整个页面的布局完全改变。类似地，使用grid的方案也不适合</li>
+</ol>
+<p>因此考虑借鉴<a target="_blank" rel="noopener" href="http://www.zhangxinxu.com/wordpress/2012/03/%E5%A4%9A%E6%A0%8F%E5%88%97%E8%A1%A8%E5%8E%9F%E7%90%86%E4%B8%8B%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80-waterfall-layout/">张鑫旭大神的方案</a>，综合CSS和JS实现懒加载的滚动式瀑布流布局。</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201203/2012-03-23_233114.png"></p>
+<p>首先，根据屏幕宽度设置合理的列数，再逐列插入5张新图片，作为初始情况，同时，使用<code>flex</code>布局，设置<code>flex-grow</code>和<code>justify-content</code>等属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Wall</span> = &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">columns</span>: <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth),</span><br><span class="line">      <span class="attr">lastFlag</span>: <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth) * <span class="number">5</span> - <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">computed</span>: &#123;</span><br><span class="line">    <span class="title function_">items</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">itemsForColumns</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> ret = <span class="title class_">Array</span>.<span class="title function_">apply</span>(<span class="literal">null</span>, <span class="title class_">Array</span>(<span class="variable language_">this</span>.<span class="property">columns</span>)).<span class="title function_">map</span>(<span class="function">() =&gt;</span> []);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">items</span>.<span class="title function_">slice</span>(<span class="number">0</span>, <span class="variable language_">this</span>.<span class="property">lastFlag</span> + <span class="number">1</span>).<span class="title function_">forEach</span>(<span class="function">(<span class="params">item, i</span>) =&gt;</span> &#123;</span><br><span class="line">        ret[i % <span class="variable language_">this</span>.<span class="property">columns</span>].<span class="title function_">push</span>(item);</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="comment">// 每列先只加载5个</span></span><br><span class="line">      <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#photos</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">flex-flow</span>: row wrap;</span><br><span class="line">  <span class="attribute">align-items</span>: flex-start;</span><br><span class="line">  <span class="attribute">justify-content</span>: space-around;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.wall-column</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: inline-block;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">250px</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">8px</span>;</span><br><span class="line">  <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后，监听可能会改变布局的所有情况，在我这个场景下，大概有三种：</p>
+<ul>
+<li>滚动（scroll）事件</li>
+<li>缩放事件（resize）事件</li>
+<li>筛选图片，在改变筛选条件，会导致图片数目的变化</li>
+</ul>
+<p>下面分情况解决之。</p>
+<p><strong>resize时</strong></p>
+<p>监听<code>window</code>的<code>resize</code>事件，当最后一列的位置变化时，意味着布局已经改变，需要触发重排。可以看到上面的<code>itemForColumns</code>中依赖<code>columns</code>和<code>lastFlag</code>两个状态。这里我们利用MVVM框架的优势，维护这两个值，就可以让Vue帮我们完成重排这样的繁琐操作。如下，当<code>columns</code>改变时，才会触发重绘。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;resize&quot;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">columns</span> = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth);</span><br><span class="line">  <span class="comment">// 已经展示过的图片就不要隐藏了</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">lastFlag</span> = <span class="title class_">Math</span>.<span class="title function_">max</span>(<span class="variable language_">this</span>.<span class="property">columns</span> * <span class="number">5</span> - <span class="number">1</span>, <span class="variable language_">this</span>.<span class="property">lastFlag</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>筛选图片时</strong></p>
+<p>同理，通过关键词筛选图片时，改变了传入Wall的prop <code>factor</code>。会同步更新依赖<code>factor</code>的<code>item</code>，触发重排。有一点有注意的是，**<code>lastFlag</code>需要重新开始累加**。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">watch</span>: &#123;</span><br><span class="line">  <span class="title function_">items</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 设置了筛选条件后，lastFlag需要重新开始累加</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">lastFlag</span> = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth) * <span class="number">5</span> - <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>scroll时</strong></p>
+<p>页面滚动时，需要加入新的图片到column中，我们要做的只是更改<code>lastFlag</code>即可，Vue会帮我们自动完成依赖<code>lastFlag</code>的<code>itemForColumns</code>更新。重点在，我们如何知道lastFlag应该增加到多少。</p>
+<p>我们回看下<code>itemForColumns</code>的逻辑，可以发现<strong>新增的图片是循环摆放的</strong>。这里额外说一句，尽管新图片放在最短列是最合理的，但是工程上并不合算（一是Vue下做这么精细的DOM操作不合适，二是获知最短列意味着DOM操作已经发生，即会有频繁的回流和重绘，这会影响渲染时间）。我们循环考虑每一列的最底部位置，如果在视口内，将图片更新到该列，直到所有列底部都在视口外。直到图片加载完毕。</p>
+<p>另外，在实践时还发现一个问题，<code>handleScroll</code>里更改了<code>lastFlag</code>后，Vue本身有batch的优化，会在microtask栈空后，才会进行耗时的DOM操作。循环添加图片时，需要通过setTimeout异步完成，避免误判，在一次递归中加载了所有图片。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">handleScroll</span>(<span class="params">top</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">items</span>.<span class="property">length</span> &lt;= <span class="variable language_">this</span>.<span class="property">lastFlag</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> delta = -<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="variable language_">this</span>.<span class="property">columns</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> col = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">`wall-<span class="subst">$&#123;i&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">if</span> (col &amp;&amp; col.<span class="property">offsetTop</span> + col.<span class="property">clientHeight</span> &lt; top + (<span class="variable language_">window</span>.<span class="property">innerHeight</span> || <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientHeight</span>)) &#123;</span><br><span class="line">      delta = i;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!!++delta) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">lastFlag</span> += delta;</span><br><span class="line">    <span class="comment">// 直到所有列下沿都不在视口内，</span></span><br><span class="line">    <span class="comment">// 同时，设置时延，保证DOM操作完成后再继续handleScroll</span></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;  <span class="variable language_">this</span>.<span class="title function_">handleScroll</span>(top); &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="新增图片困难"><a href="#新增图片困难" class="headerlink" title="新增图片困难"></a>新增图片困难</h3><p><del>由于github.io是纯静态的页面，我并没有后台环境，这个痛点短期内只能缓解不能根除。不过后面考虑将所有图片迁移到图床上，毕竟把图片数据也存在github上感觉还是……有点怪怪的。日后新增图片应该还是通过上传图片，更新<code>meta.json</code>的形式完成。</del></p>
+<p>目前已将所有图片迁移到图床上，图床选择上参考了知乎上的推荐，使用<a target="_blank" rel="noopener" href="https://www.qiniu.com/">七牛云存储</a>，在个人实名认证后，免费部分有每月10G国内和国外下载流量，100万次GET和PUT请求次数，和10G存储空间。同时，它还提供对图片的压缩等管理，尽量减少流量。</p>
+<p>迁移之后，仓库体积大大减小。之后日常更新时，图片单独上传，根据外链固定前缀得到最终路径。</p>
+<p><del><code>meta.json</code>的更新上，考虑自己写一个工具，根据新看的电影生成新的content。</del></p>
+<p>已完成自动生成<code>meta.json</code>的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/meta-maker.html">小工具</a>，原理很简单，就不再介绍了。</p>
+<h3 id="细节美化"><a href="#细节美化" class="headerlink" title="细节美化"></a>细节美化</h3><p>点比较细碎。整体借鉴了<a target="_blank" rel="noopener" href="https://material.io/guidelines/material-design/introduction.html#introduction-goals">material design</a>的思想。</p>
+<p><strong>影片详细信息的遮罩</strong></p>
+<p>考虑使用100%的遮罩，同时禁止背景滚动的形式展示图片的详细信息。起初打算用js去实现，后来发现下面的两点使得方案并不简单</p>
+<ul>
+<li>scroll事件不能被cancel，这意味着不能打断默认的滚动行为</li>
+<li>从Mouse，Keyboard，Touch相关触发scroll事件的事件劫持滚动行为倒是可以，不过要监听的事件太多</li>
+</ul>
+<p>只好作罢，通过纯CSS的方式，弹出浮层时，为body指定<code>noscroll</code>的类名。让浮层的<code>overflow</code>属性为<code>scroll</code>即可，同时设置浮层<code>position</code>属性为<code>fixed</code>即可。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#display</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: fixed;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="comment">/*...*/</span></span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</span><br><span class="line">  <span class="attribute">overflow-y</span>: scroll;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用缓动函数改进回到开头</strong></p>
+<p>这里使用定义域和值域都是<code>[0,1]</code>的<code>easeInOutCubic</code>函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">easeInOutCubic</span> = t =&gt; (t&lt;<span class="number">.5</span> ? <span class="number">4</span>*t*t*t : (t-<span class="number">1</span>)*(<span class="number">2</span>*t-<span class="number">2</span>)*(<span class="number">2</span>*t-<span class="number">2</span>)+<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>有了缓动函数后，使用<code>requestAnimationFrame</code>即可高效率地绘制JS动画。这里封装了一个<code>animate</code>函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">animate</span> = (<span class="params">obj, prop, end, time, ease</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (!obj || !obj[prop] || time &lt; <span class="number">100</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> start = obj[prop],</span><br><span class="line">      k = end - start,</span><br><span class="line">      timer = <span class="literal">null</span>,</span><br><span class="line">      tick = <span class="function"><span class="params">timestamp</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (timer === <span class="literal">null</span>) &#123;</span><br><span class="line">          timer = timestamp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> progress = timestamp - timer;</span><br><span class="line">        obj[prop] = start + <span class="title function_">ease</span>(progress / time) * k;</span><br><span class="line">        <span class="keyword">if</span> (progress &lt; time) &#123;</span><br><span class="line">          <span class="title function_">requestAnimationFrame</span>(tick);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">requestAnimationFrame</span>(tick);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>后面直接使用<code>animate(document.body, &quot;scrollTop&quot;, 0, 1000, easeInOutCubic)</code>就可以圆滑地上移了。</p>
+<p><strong>移动端的优化</strong></p>
+<ul>
+<li>使用媒体查询，在屏幕宽度更改时，隐藏一些元素</li>
+<li>在UA为移动端设备时，给出提醒</li>
+</ul>
+<p><strong>loading样式</strong></p>
+<p>在改变筛选条件时，设置loading样式提升用户体验。通过积累onload的计数和初始加载图片值进行对比，在达到该值时清除遮罩。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="title function_">loadedCount</span>(<span class="params">newCount</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (newCount &gt;= <span class="title class_">Math</span>.<span class="title function_">min</span>(<span class="variable language_">this</span>.<span class="property">lastFlag</span> + <span class="number">1</span>, <span class="variable language_">this</span>.<span class="property">items</span>.<span class="property">length</span>)) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;全部加载完成&quot;</span>);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">isHidden</span> = <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// console.log(&quot;Loading...&quot;);</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>杂项</strong></p>
+<ul>
+<li>导航条交互优化</li>
+<li>导航条部分设置阴影，更改部分字体颜色和背景色</li>
+<li>修改触发分类方式，由<code>click</code>改为<code>mousemove</code></li>
+<li>修改tab的样式</li>
+<li>将vue和lodash的js文件下载到本地，避免CDN失效的问题（之前已经遇到过一次），增加可靠性</li>
+<li>搜索条件不区分大小写</li>
+</ul>
+<h3 id="本地调试困难"><a href="#本地调试困难" class="headerlink" title="本地调试困难"></a>本地调试困难</h3><p>因为代码较少，也只有一个文件，用不着webpack这样的全套解决方案。小巧易用的gulp就够了。针对我们需要的ES6转码，替换minify方案，本地调试等需要，都有对应的gulp插件解决问题。</p>
+<h4 id="gulp-babel"><a href="#gulp-babel" class="headerlink" title="gulp-babel"></a>gulp-babel</h4><p>使用<a target="_blank" rel="noopener" href="https://babeljs.io/">babel</a>来转码，<code>gulp-babel</code>依赖<code>babel-core@6</code>或以上版本，同时设置<code>preset</code>为<code>es2015</code>或ES7相关版本时也需要下载对应module。</p>
+<p>我只需要es2015即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-core gulp-babel babel-preset-es2015</span><br></pre></td></tr></table></figure>
+
+<p>React和ES7的各阶段可以像下面这样选择安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ npm install --save-dev babel-preset-react</span><br><span class="line">$ npm install --save-dev babel-preset-stage-0</span><br><span class="line">$ npm install --save-dev babel-preset-stage-1</span><br><span class="line">$ npm install --save-dev babel-preset-stage-2</span><br><span class="line">$ npm install --save-dev babel-preset-stage-3</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><ul>
+<li>**<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-uglify">gulp-uglify</a>**，压缩代码</li>
+<li><strong>gulp-rename</strong>，为压缩出的js重命名</li>
+<li>**<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-webserver">gulp-webserver</a>**，开启本地服务，方便本地调试</li>
+</ul>
+<p>上面这些插件按照文档操作即可，坑比较少，使用webserver时的<code>gulp.src()</code>入参通常为<code>./</code>，指以当前目录为服务器根目录。</p>
+<p>最后还需要加一个watch，方便在调试时的修改能同步转码压缩。像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;watch&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>, [<span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.css&#x27;</span>, [<span class="string">&#x27;css&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.json&#x27;</span>, [<span class="string">&#x27;json&#x27;</span>]);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>最后整个<code>gulpfile.js</code>是下面的样子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">&#x27;gulp&#x27;</span>),</span><br><span class="line">    babel = <span class="built_in">require</span>(<span class="string">&#x27;gulp-babel&#x27;</span>),</span><br><span class="line">    uglify = <span class="built_in">require</span>(<span class="string">&#x27;gulp-uglify&#x27;</span>),</span><br><span class="line">    rename = <span class="built_in">require</span>(<span class="string">&#x27;gulp-rename&#x27;</span>),</span><br><span class="line">    cleanCSS = <span class="built_in">require</span>(<span class="string">&#x27;gulp-clean-css&#x27;</span>),</span><br><span class="line">    jsonminify = <span class="built_in">require</span>(<span class="string">&#x27;gulp-jsonminify&#x27;</span>),</span><br><span class="line">    webserver = <span class="built_in">require</span>(<span class="string">&#x27;gulp-webserver&#x27;</span>);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;js&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">babel</span>(&#123;</span><br><span class="line">      <span class="attr">presets</span>: [<span class="string">&#x27;es2015&#x27;</span>]</span><br><span class="line">    &#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">uglify</span>())</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">rename</span>(&#123; <span class="attr">suffix</span>: <span class="string">&#x27;.min&#x27;</span> &#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;css&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>([<span class="string">&#x27;assets/src/*.css&#x27;</span>])</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">cleanCSS</span>(&#123;<span class="attr">compatibility</span>: <span class="string">&#x27;ie8&#x27;</span>&#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;json&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>(<span class="string">&#x27;assets/src/meta.json&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">jsonminify</span>())</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>))</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;webserver&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">src</span>(<span class="string">&#x27;./&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">webserver</span>(&#123;</span><br><span class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">open</span>: <span class="literal">true</span></span><br><span class="line">    &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;watch&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>, [<span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.css&#x27;</span>, [<span class="string">&#x27;css&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.json&#x27;</span>, [<span class="string">&#x27;json&#x27;</span>]);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;dev&#x27;</span>, [<span class="string">&#x27;default&#x27;</span>, <span class="string">&#x27;webserver&#x27;</span>, <span class="string">&#x27;watch&#x27;</span>]);</span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&quot;default&quot;</span>, [<span class="string">&#x27;json&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h3><p>从略。HTML和CSS部分参照以往写的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/06/23/HTML-CSS-code-style-guide/">建议</a>即可。除此以外，优化了下面的部分：</p>
+<ul>
+<li>删除了为兼容移动端额外使用的touchend事件，增加viewport的meta标签，消除移动端chrome浏览器点击300ms延时情况</li>
+<li>由于引入了babel，删除了兼容ES6语法的自己写的polyfill部分</li>
+<li>使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>请求json</li>
+<li>优化导航条点击事件处理相关的代码</li>
+<li>减少图片数目和json体积</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000004394726">使用gulp 进行ES6开发</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/seven0404/article/details/51880162">node.js利用gulp 启动webServer服务</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2434602/css-setting-width-height-as-percentage-minus-pixels">CSS: Setting width&#x2F;height as Percentage minus pixels</a></li>
+<li><a target="_blank" rel="noopener" href="http://easings.net/zh-cn">缓动函数速查表</a></li>
+<li><a target="_blank" rel="noopener" href="https://gist.github.com/gre/1650294">Simple Easing Functions in Javascript</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame">window.requestAnimationFrame | MDN</a></li>
+<li><a target="_blank" rel="noopener" href="https://dribbble.com/">dribbble</a></li>
+<li><a target="_blank" rel="noopener" href="https://codepen.io/sdthornton/pen/wBZdXq">Material Design Box Shadows</a></li>
+<li><a target="_blank" rel="noopener" href="http://tobiasahlin.com/spinkit/">SpinKit | Simple CSS Spinners</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21667151">国内有什么方便的图床？</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1253,222 +1497,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/07/10/hacker-and-artist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/07/10/hacker-and-artist/" class="post-title-link" itemprop="url">黑客与画家 —— 关于编程和创业</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-07-10 21:21:02" itemprop="dateCreated datePublished" datetime="2017-07-10T21:21:02+08:00">2017-07-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-11-21 21:29:43" itemprop="dateModified" datetime="2018-11-21T21:29:43+08:00">2018-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">思考</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/07/10/hacker-and-artist/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/10/hacker-and-artist/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>《黑客与画家》是Paul Graham的博文集。出版于2006年。它从一个“黑客”的角度阐述了编程，互联网程序等时兴的概念。深刻新鲜而发人深省。其对工作、语言的认识别具特色，而在学校教育和贫富分化等方面的认识却略显偏颇。</p>
-<p>全书大致分为3部分</p>
-<ul>
-<li>1-4章解释黑客如何成长以及如何看待世界</li>
-<li>5-9章介绍创业、工作的方法论</li>
-<li>10-15章讨论编程语言的特点和使用方法</li>
-</ul>
-<p>下面仅摘出些句子。个人评注已加粗。</p>
-<h2 id="为什么书呆子不受欢迎"><a href="#为什么书呆子不受欢迎" class="headerlink" title="为什么书呆子不受欢迎"></a>为什么书呆子不受欢迎</h2><ul>
-<li>在人产生良知前，折磨是种娱乐。</li>
-<li>学校的真正目的是把儿童都关在一个地方，以便大人们白天可以腾出手来把事情做完（<strong>哈哈哈</strong>）</li>
-</ul>
-<h2 id="黑客与画家"><a href="#黑客与画家" class="headerlink" title="黑客与画家"></a>黑客与画家</h2><ul>
-<li>编程语言是用来帮助思考程序的，而不是用来表达你已经想好的程序</li>
-<li>大多数黑客不是通过大学课程学会编程的，他们从实践中学习，13岁时就已经自己动手写程序了。</li>
-<li>debug对我来说属于轻松的工作</li>
-<li>软件的部分功能就是解释自身，软件的使用方式最好能符合用户的直觉，源代码应该可以自己解释自己</li>
-<li>程序是写出来给人看的，附带能在机器上运行</li>
-</ul>
-<h2 id="不能说的话"><a href="#不能说的话" class="headerlink" title="不能说的话"></a>不能说的话</h2><ul>
-<li>（流行）第一批的接收者总是带有很强的抱负心，他们有自觉的精英意识，想把自己与普通人区分开来</li>
-<li>流行趋势确立以后，第二接收者就加入进来了，他们接受流行，不是因为想要与众不同，而是害怕与众不同</li>
-<li>与笨蛋辩论，你也会变成笨蛋</li>
-</ul>
-<h2 id="良好的坏习惯"><a href="#良好的坏习惯" class="headerlink" title="良好的坏习惯"></a>良好的坏习惯</h2><ul>
-<li>在我看来，一个人们拥有言论自由和行动自由的社会，往往最有可能采纳最优方案（<strong>真的么？</strong>）</li>
-</ul>
-<h2 id="另一条路"><a href="#另一条路" class="headerlink" title="另一条路"></a>另一条路</h2><ul>
-<li>（互联网程序）不需要为新版本付出额外的费用，或者做额外的准备，甚至可能你都不知道软件已经升级了</li>
-<li>互联网软件则完全不同，修改起来很方便。软件的发布过程可以分解成一系列的渐进式修改（<strong>快步小跑</strong>）</li>
-<li>软件应该做到用户认为它可以做到的事情。但是，你不知道用户到底怎么想</li>
-<li>没有盗版是一种“优势”，但也是一个问题。一定数量的盗版对软件公司时有好处的。因为不管你的软件定价多少，有些用户永远不会购买</li>
-<li>要求用户做得越多，你担的风险就越大</li>
-<li>管理企业其实很简单，只要记住两点就可以了：做出用户喜欢的产品，保证开支小于收入</li>
-<li>从制造简洁的产品开始着手，首先要保证你自己愿意使用。然后，迅速作出1.0版，并不断加以改进</li>
-<li><strong>无论如何，你都要使用自己的软件</strong></li>
-</ul>
-<h2 id="如何创造财富"><a href="#如何创造财富" class="headerlink" title="如何创造财富"></a>如何创造财富</h2><div class="tip">注意：标题不等于“如何致富”</div>
-
-<ul>
-<li>从经济学观点看，你可以把创业想象成一个压缩过程</li>
-<li>如果你想赚100万美元，就不得不忍受相当于100万美元的痛苦。创业公司将你所有的压力压缩到三四年</li>
-<li>通过创造有价值的东西而致富，优势不仅在于它合法，还在于它更简单，因为你只需要做出别人需要的东西就可以了</li>
-<li>金钱不是财富，而只是我们用来转移财富所有权的东西</li>
-<li>公司就是许多人聚在一起创造财富的地方，能够制造更多人们需要的东西</li>
-<li>人们需要的东西就是财富</li>
-<li>上班的日子不如上学的日子有趣，但是有人付钱给你，而不是你付钱给学校</li>
-<li>创造财富是大多数公司盈利的手段</li>
-<li>上班的日子为什么会差别这么大？不要搞糊涂了，你现在已经从顾客变成了仆人</li>
-<li>收入和风险是对称的，所以如果有巨大的获利可能，就必然存在巨大的失败可能。如果你有一个令你感到安全的工作，你是不会致富的</li>
-<li>创业的付出和回报虽然总体上是成比例的，但是在个体上是不成比例的</li>
-<li>只有在快速获得巨大利益的激励下，你才会去挑战那些困难的问题，否则你根本不愿意去碰它们</li>
-</ul>
-<h2 id="关注贫富分化"><a href="#关注贫富分化" class="headerlink" title="关注贫富分化"></a>关注贫富分化</h2><ul>
-<li>进入社会以后，你不能总是靠父母养活，如果你需要什么东西，要么你自己做出来，要么做其他东西与需要的人交换金钱，再用金钱去买你想要的东西</li>
-<li>技术肯定加剧了有技术者与无技术者之间的生产效率差异</li>
-<li>技术在加大收入差距的同时，缩小了大部分的其他差距</li>
-</ul>
-<h2 id="防止垃圾邮件的一种方法"><a href="#防止垃圾邮件的一种方法" class="headerlink" title="防止垃圾邮件的一种方法"></a>防止垃圾邮件的一种方法</h2><ul>
-<li>我对贝叶斯方法寄予厚望，因为它的过滤能力可以随着垃圾邮件一起进化</li>
-</ul>
-<h2 id="设计者的品味"><a href="#设计者的品味" class="headerlink" title="设计者的品味"></a>设计者的品味</h2><ul>
-<li>他想要的学生不仅应该技术过硬，还应当能够使用技术做出优美的产品</li>
-<li>你需要的是咬牙向前冲刺的痛苦，而不是脚被钉子扎破的痛苦。解决难题的痛苦对设计师有好处，但是对付挑剔的客户的痛苦或者对付质量低劣的建材的痛苦就是另外一回事了</li>
-<li>在历史的任何时刻都有一些热点项目，一些团体在这些项目上做出伟大的成绩。如果你远离这些中心，几乎不可能单靠自己就取得伟大成果</li>
-</ul>
-<h2 id="编程语言解析"><a href="#编程语言解析" class="headerlink" title="编程语言解析"></a>编程语言解析</h2><ul>
-<li>程序员的时间要比计算机的时间昂贵得多</li>
-<li>长期使用某种语言，你就会慢慢按照这种语言的思维模式进行思考</li>
-<li>有些人认为编程语言应该防止程序员干蠢事，另一些人则认为程序员应该可以用编程语言干一切他们想干的事（<strong>即静态类型语言和动态类型语言</strong>）</li>
-<li>事实上，有两种程度的面向对象编程：某些语言允许你以这种风格编程，另一些语言则强迫你一定要这样编程</li>
-</ul>
-<h2 id="一百年后的编程语言"><a href="#一百年后的编程语言" class="headerlink" title="一百年后的编程语言"></a>一百年后的编程语言</h2><ul>
-<li>当我说Java不会成功时，我的意思是它和Cobol一样，进化之路已经走到了尽头（<strong>哦？</strong>）</li>
-<li>一种语言的内核设计越小、越干净，它的生命力就越顽强</li>
-<li>（<strong>用足够灵活的语言，聪明的程序员能写多好，笨的程序员就能写多烂</strong>）</li>
-<li>一百年后的程序员最需要的编程语言就是可以让你毫不费力写出程序第一版的编程语言</li>
-</ul>
-<h2 id="拒绝平庸"><a href="#拒绝平庸" class="headerlink" title="拒绝平庸"></a>拒绝平庸</h2><ul>
-<li>Lisp很值得学习。你掌握它之后，会感动它给你带来的极大启发</li>
-<li>大概在1960年，Lisp语言引入了垃圾回收机制。……闭包是20世纪60年代Lisp语言引入的功能……宏也是60年代中期Lisp语言引入的，现在还是一片处女地（这里的“宏”为Lisp中的<code>defmacro</code>）</li>
-<li>这里有一个评估竞争对手的妙招——关注他们的招聘职位</li>
-</ul>
-<h2 id="书呆子的复仇"><a href="#书呆子的复仇" class="headerlink" title="书呆子的复仇"></a>书呆子的复仇</h2><ul>
-<li>符号（Symbol）实际上是一种指针，指向存储在散列表中的字符串</li>
-<li>列表是Lisp的基本数据结构</li>
-<li>让客户感到满意才是你的设计方向。只要赢得用户，其他的事情就会接踵而至</li>
-<li>JavaScript的写法比Lisp和Ruby稍微长一点，因为JavaScript依然区分语句和表达式</li>
-<li>所有这些语言都是图灵等价的</li>
-<li>“任何C或Fortran程序复杂到一定程度之后，都会包含一个临时开发的、只有一半功能的、不完全符合规格的、到处都是bug的、运行速度很慢的Common Lisp实现。”</li>
-<li>想解决一个困难的问题，有三条路：1）使用一种强大的语言，2）为这个难题写一个事实上的解释器，3）你自己变成这个难题的人肉编译器（<strong>翻译过来就是语言本身&#x2F;设计模式&#x2F;问题抽象</strong>）</li>
-</ul>
-<h2 id="梦寐以求的编程语言"><a href="#梦寐以求的编程语言" class="headerlink" title="梦寐以求的编程语言"></a>梦寐以求的编程语言</h2><ul>
-<li>优秀的函数库的重要性将超过语言本身</li>
-<li>就算委员会只有两个人，还是会妨碍“再设计”，典型例子就是软件内部的各个接口有不同的人负责。这时除非两个人都同意改变接口，否则接口就无法改变</li>
-</ul>
-<h2 id="设计与研究"><a href="#设计与研究" class="headerlink" title="设计与研究"></a>设计与研究</h2><ul>
-<li>“用户需要的设计”≠“用户要求的设计”</li>
-<li>设计必须以人为本</li>
-<li>在软件领域，贴近用户的设计思想被归纳为“弱即是强”模式。</li>
-<li>一种功能有限但易于使用的软件可能对用户有更大吸引力</li>
-<li>先做出原型，在逐步加工做出成品，这种方式有利于鼓舞士气，因为它使得你随时都可以看到工作的成效</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/blog/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1499,7 +1527,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:51</span>
+    <span title="站点阅读时长">28:57</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-count">149</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">453</span>
+        <span class="site-state-item-count">458</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,217 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/12/11/raven/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/12/11/raven/" class="post-title-link" itemprop="url">Sentry Raven.js学习</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-12-11 23:03:47 / 修改时间：23:05:36" itemprop="dateCreated datePublished" datetime="2017-12-11T23:03:47+08:00">2017-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/12/11/raven/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/11/raven/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>最近看看要不要在网上学习下性能监测和告警的解决方案，加在项目里。已经调研了一下才发现，项目里已经用上Raven.js了。实际上，各大公司也都有自己的实现方式，除了sentry的Raven.js外，还有腾讯的badjs，淘宝的JSTracker，阿里巴巴的FdSafe，支付宝的saijs等。早在几年前，就已经有许多解决方案了。</p>
+<p>异常监测和信息采集的需要实现的主要功能点包括：</p>
+<ul>
+<li>前端SDK实现包括错误拦截和监控，错误信息包装、信息上报、API设计等</li>
+<li>提供一个可视化的管理后台</li>
+<li>可以正确定位错误位置</li>
+<li>可以对上报的日志进行筛选、查询、聚类等操作</li>
+<li>可以用邮件、短信或集成在其他平台中通知开发者</li>
+</ul>
+<p>从一个前端初学者的角度，下面更多聊一下前端SDK的细节。</p>
+<h3 id="前端SDK实现"><a href="#前端SDK实现" class="headerlink" title="前端SDK实现"></a>前端SDK实现</h3><p>前端实现上的技术重点有三：<strong>错误捕获和封装</strong>，<strong>AJAX上报</strong>和<strong>JSON字符串化参数</strong>。</p>
+<p>在raven-js的<code>vendor</code>目录下，引用<code>json-stringify-safe</code>和<code>Tracekit</code>。前者为了避免<code>JSON.stringify</code>中出现的循环引用的情况，下面主要介绍后者。</p>
+<h4 id="Tracekit"><a href="#Tracekit" class="headerlink" title="Tracekit"></a>Tracekit</h4><p>常见的方案就是拦截<code>window.onerror</code>方法，在做完自己的工作后，调用原来的<code>window.onerror</code>。自己的工作里包括对错误信息的同一美化和包装。raven.js在这里是借助Tracekit.js完成的。</p>
+<p>Tracekit主要分为两部分，<code>Tracekit.report()</code>和<code>Tracekit.computeStackTraceWrapper()</code>。前者主要用来绑定和解绑错误监听函数、拦截错误；后者主要用来格式化错误信息。</p>
+<p><strong><code>Tracekit.report()</code></strong></p>
+<p>在<code>report()</code>里，整体的设计和基本的观察者设计模式一样，内部成员<code>handlers</code>保存所有的事件消费者，与事件处理函数相关的有四个：</p>
+<ul>
+<li><code>subscribe()</code>，绑定一个监听错误的函数，并在绑定第一个函数时替换原有的<code>window.onerror</code></li>
+<li><code>unsubscribe()</code>，解绑一个监听错误的函数，需要提供函数的引用</li>
+<li><code>unsubscribeAll()</code>，解绑所有监听错误的函数，还原原有的<code>window.onerror</code></li>
+<li><code>notifyHandlers()</code>，触发错误时，将处理过的错误分发给各handlers</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">notifyHandlers</span>(<span class="params">stack, isWindowError</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> exception = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (isWindowError &amp;&amp; !<span class="title class_">TraceKit</span>.<span class="property">collectWindowErrors</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> handlers) &#123;</span><br><span class="line">        <span class="keyword">if</span> (handlers.<span class="title function_">hasOwnProperty</span>(i)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                handlers[i].<span class="title function_">apply</span>(<span class="literal">null</span>, [stack].<span class="title function_">concat</span>(_slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, <span class="number">2</span>)));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (inner) &#123;</span><br><span class="line">                exception = inner;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (exception) &#123;</span><br><span class="line">        <span class="keyword">throw</span> exception;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，函数<code>installGlobalHandler()</code>和<code>uninstallGlobalHandler()</code>就是上文中用来拦截<code>window.onerror</code>的函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">installGlobalHandler</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (_onErrorHandlerInstalled) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    _oldOnerrorHandler = _window.<span class="property">onerror</span>;</span><br><span class="line">    _window.<span class="property">onerror</span> = traceKitWindowOnError;</span><br><span class="line">    _onErrorHandlerInstalled = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">uninstallGlobalHandler</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_onErrorHandlerInstalled) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    _window.<span class="property">onerror</span> = _oldOnerrorHandler;</span><br><span class="line">    _onErrorHandlerInstalled = <span class="literal">false</span>;</span><br><span class="line">    _oldOnerrorHandler = <span class="literal">undefined</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>report()</code>中最主要的函数是<code>traceKitWindowOnError()</code>。它的工作流程如下：</p>
+<ol>
+<li>查看lastException是否有正在处理的error，如果有则说明是当前错误引起的，使用<code>computeStackTrace.augmentStackTraceWithInitialElement()</code>追加到当前的错误栈前。调用<code>processLastException()</code>，将lastException的信息交给handler处理，并将lastException置空。</li>
+<li>如果lastException为空，且Error为错误对象，使用<code>computeStackTrace()</code>格式化错误信息，再交给错误消费者。</li>
+<li>如果lastException为空，且Error不是错误对象（如字符串），则自行包装错误信息，交给消费者</li>
+<li>使用原来的<code>window.onerror()</code>处理事件</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">traceKitWindowOnError</span>(<span class="params">message, url, lineNo, colNo, ex</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> stack = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (lastExceptionStack) &#123;</span><br><span class="line">        <span class="title class_">TraceKit</span>.<span class="property">computeStackTrace</span>.<span class="title function_">augmentStackTraceWithInitialElement</span>(</span><br><span class="line">            lastExceptionStack,</span><br><span class="line">            url,</span><br><span class="line">            lineNo,</span><br><span class="line">            message</span><br><span class="line">        );</span><br><span class="line">        <span class="title function_">processLastException</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ex &amp;&amp; utils.<span class="title function_">isError</span>(ex)) &#123;</span><br><span class="line">        <span class="comment">// non-string `ex` arg; attempt to extract stack trace</span></span><br><span class="line">        stack = <span class="title class_">TraceKit</span>.<span class="title function_">computeStackTrace</span>(ex);</span><br><span class="line">        <span class="title function_">notifyHandlers</span>(stack, <span class="literal">true</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 自行封装</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="title function_">notifyHandlers</span>(stack, <span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_oldOnerrorHandler) &#123;</span><br><span class="line">        <span class="keyword">return</span> _oldOnerrorHandler.<span class="title function_">apply</span>(<span class="variable language_">this</span>, <span class="variable language_">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tracekit.computeStackTraceWrapper()</strong></p>
+<p>这一部分主要由下面几个函数组成：</p>
+<ul>
+<li><code>computeStackTraceFromStackProp()</code>，处理Chrome和Gecko浏览器下的错误信息格式化</li>
+<li><code>computeStackTraceByWalkingCallerChain()</code>，处理IE和Safari浏览器下的错误信息格式化</li>
+<li><code>augmentStackTraceWithInitialElement()</code>，在当前错误栈底新增新的错误信息，用于<code>computeStackTraceByWalkingCallerChain()</code>和第一部分的<code>processLastException()</code></li>
+<li><code>computeStackTrace()</code>，格式化错误栈信息</li>
+</ul>
+<p>其中<code>computeStackTraceFromStackProp()</code>通过换行符得到stack信息，并通过正则格式化所需要的错误信息，<code>computeStackTraceByWalkingCallerChain()</code>是利用<code>arguments.caller</code>得到错误栈信息并格式化。</p>
+<p><code>computeStackTrace()</code>代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">computeStackTrace</span>(<span class="params">ex, depth</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> stack = <span class="literal">null</span>;</span><br><span class="line">    depth = depth == <span class="literal">null</span> ? <span class="number">0</span> : +depth;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stack = <span class="title function_">computeStackTraceFromStackProp</span>(ex);</span><br><span class="line">        <span class="keyword">if</span> (stack) &#123;</span><br><span class="line">            <span class="keyword">return</span> stack;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">TraceKit</span>.<span class="property">debug</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stack = <span class="title function_">computeStackTraceByWalkingCallerChain</span>(ex, depth + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (stack) &#123;</span><br><span class="line">            <span class="keyword">return</span> stack;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">TraceKit</span>.<span class="property">debug</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">name</span>: ex.<span class="property">name</span>,</span><br><span class="line">        <span class="attr">message</span>: ex.<span class="property">message</span>,</span><br><span class="line">        <span class="attr">url</span>: <span class="title function_">getLocationHref</span>()</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了Tracekit所做的工作外，raven本身也对console的log&#x2F;warning&#x2F;assert&#x2F;error方法，<code>setTimeout</code>，<code>setInterval</code>,<code>requestAnimationFrame()</code>以及各种事件handler进行了拦截。</p>
+<p>这里有个坑，跨域的问题无法拦截错误，解决办法就是对跨域的script标签加入crossorigin属性，并在后台配置<code>Access-Control-Allow-Origin=*</code></p>
+<h4 id="Raven"><a href="#Raven" class="headerlink" title="Raven"></a>Raven</h4><p>实际上，Tracekit本身已经完成对<strong>错误捕获和封装</strong>。Raven为了便于在管理后台展示和管理，进一步提出了DSN、context等设计。raven-js的源码主要在<code>src/raven.js</code>中。剩下两部分也是在其中实现的。下面分部分介绍一些：</p>
+<p><strong>DSN</strong></p>
+<p>DSN（Data Source Name）是Sentry对一个项目的定义。它由协议、端口、用户、密码、后台Sentry服务器地址、项目名组成。通过<code>Raven.config()</code>设置。在<code>config()</code>中通过正则匹配用户输入的DSN字符串，得到后台地址。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">config</span>: <span class="keyword">function</span>(<span class="params">dsn, options</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="variable language_">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> (!dsn) <span class="keyword">return</span> self;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> globalOptions = self.<span class="property">_globalOptions</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置全局参数</span></span><br><span class="line">    <span class="keyword">if</span> (options) &#123;</span><br><span class="line">      <span class="title function_">each</span>(options, <span class="keyword">function</span>(<span class="params">key, value</span>) &#123;</span><br><span class="line">        <span class="comment">// tags and extra are special and need to be put into context</span></span><br><span class="line">        <span class="keyword">if</span> (key === <span class="string">&#x27;tags&#x27;</span> || key === <span class="string">&#x27;extra&#x27;</span> || key === <span class="string">&#x27;user&#x27;</span>) &#123;</span><br><span class="line">          self.<span class="property">_globalContext</span>[key] = value;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          globalOptions[key] = value;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    self.<span class="title function_">setDSN</span>(dsn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 屏蔽跨域的无效错误</span></span><br><span class="line">    globalOptions.<span class="property">ignoreErrors</span>.<span class="title function_">push</span>(<span class="regexp">/^Script error\.?$/</span>);</span><br><span class="line">    globalOptions.<span class="property">ignoreErrors</span>.<span class="title function_">push</span>(<span class="regexp">/^Javascript error: Script error\.? on line 0$/</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// return for chaining</span></span><br><span class="line">    <span class="keyword">return</span> self;</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装和卸载</strong></p>
+<p>在<code>install()</code>和<code>uninstall()</code>函数中完成。</p>
+<p><code>install()</code>中完成了下面的工作：</p>
+<ul>
+<li>借助Tracekit监听了全局的错误事件</li>
+<li>监听try catch和一些浏览器事件过程（如console，click，fetch等）中的信息</li>
+<li>安装插件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">install</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">if</span> (self.<span class="title function_">isSetup</span>() &amp;&amp; !self.<span class="property">_isRavenInstalled</span>) &#123;</span><br><span class="line">        <span class="comment">// 订阅所有错误事件</span></span><br><span class="line">        <span class="title class_">TraceKit</span>.<span class="property">report</span>.<span class="title function_">subscribe</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            self.<span class="property">_handleOnErrorStackInfo</span>.<span class="title function_">apply</span>(self, <span class="variable language_">arguments</span>);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 下方的函数会修改原回调函数</span></span><br><span class="line">        <span class="comment">// 需要修改函数的toString方法</span></span><br><span class="line">        self.<span class="title function_">_patchFunctionToString</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 封装定时器和事件回调函数以提供更好的错误监控</span></span><br><span class="line">        <span class="keyword">if</span> (self.<span class="property">_globalOptions</span>.<span class="property">instrument</span> &amp;&amp; self.<span class="property">_globalOptions</span>.<span class="property">instrument</span>.<span class="property">tryCatch</span>) &#123;</span><br><span class="line">            self.<span class="title function_">_instrumentTryCatch</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 一些浏览器原生方法的封装，以捕获事件</span></span><br><span class="line">        <span class="comment">// 设置里可关闭</span></span><br><span class="line">        <span class="keyword">if</span> (self.<span class="property">_globalOptions</span>.<span class="property">autoBreadcrumbs</span>) self.<span class="title function_">_instrumentBreadcrumbs</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 安装所有插件</span></span><br><span class="line">        self.<span class="title function_">_drainPlugins</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 更新状态</span></span><br><span class="line">        self.<span class="property">_isRavenInstalled</span> = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">Error</span>.<span class="property">stackTraceLimit</span> = self.<span class="property">_globalOptions</span>.<span class="property">stackTraceLimit</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>uninstall</code>中还原了对浏览器原方法的修改，并卸载了Tracekit的report。</p>
+<p><strong>封装函数</strong></p>
+<p>相关函数：<code>context()</code>和<code>wrap()</code>。完成的主要工作是对浏览器原生方法的拦截，使得能更好地捕获其中的错误，在对象内部使用。</p>
+<p><strong>capture相关</strong></p>
+<p>用来捕获事件，有三种用法。</p>
+<ul>
+<li><code>captureException()</code>，最典型的用法，借助Tracekit捕获页面的异常，之后进一步封装成frame后交给<code>_send()</code>发送</li>
+<li><code>captureMessage()</code>，最常用的用法，类似埋点，将信息封装成frame后交给<code>_send()</code>发送</li>
+<li><code>captureBreadcrumb</code>，类似<code>captureMessage()</code>，不过储存信息在<code>this._breadcrumbs</code>，并不交给<code>_send()</code></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">captureException</span>: <span class="keyword">function</span>(<span class="params">ex, options</span>) &#123;</span><br><span class="line">    <span class="comment">// ex不是错误时的处理</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get actual Error from ErrorEvent</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">isErrorEvent</span>(ex)) ex = ex.<span class="property">error</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Store the raw exception object for potential debugging and introspection</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_lastCapturedException</span> = ex;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// TraceKit.report will re-raise any exception passed to it,</span></span><br><span class="line">    <span class="comment">// which means you have to wrap it in try/catch. Instead, we</span></span><br><span class="line">    <span class="comment">// can wrap it here and only re-raise if TraceKit.report</span></span><br><span class="line">    <span class="comment">// raises an exception different from the one we asked to</span></span><br><span class="line">    <span class="comment">// report on.</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> stack = <span class="title class_">TraceKit</span>.<span class="title function_">computeStackTrace</span>(ex);</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">_handleStackInfo</span>(stack, options);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ex1) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ex !== ex1) &#123;</span><br><span class="line">            <span class="keyword">throw</span> ex1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是<code>captureMessage</code>中可以设置rate，使一些消息不上报。白名单、正则过滤也是在这里完成的。<code>captureException</code>则是在<code>_processException</code>中完成的。</p>
+<p><strong>设置context</strong></p>
+<p>context包括三部分：</p>
+<ul>
+<li>tags，用于从不同维度标识错误或信息，使用<code>setTagsContext()</code>全局配置</li>
+<li>users，用于标识错误来源，使用<code>setUsersContext()</code>配置</li>
+<li>extra，用来携带额外的信息，这部分信息不会被索引，使用<code>setExtraContext()</code>配置</li>
+</ul>
+<p>它们都放在<code>Raven._globalContext</code>中。涉及的函数还有<code>clearContext()</code>和<code>getContext()</code>。</p>
+<p>同时<code>environment</code>和<code>release</code>也放在<code>Raven._globalContext</code>中，可以通过<code>setEnvironment</code>和<code>setRelease</code>设置</p>
+<p><strong>BreadCrumb</strong></p>
+<p>这部分功能是在<code>_instrumentTryCatch</code>和<code>_instrumentBreadcrumbs</code>方法里实现的。它们通过重写原方法，捕获其中的错误和事件。在卸载时，通过<code>restoreBuiltin</code>还原。</p>
+<p><strong>发送</strong></p>
+<ul>
+<li>在<code>send()</code>方法中，会使用封装好的数据附加上<code>_globalOptions</code>中的数据，附带浏览器的状态信息（<code>_getHttpdata()</code>中实现）之后交由<code>_sendProcessedPayload()</code>。</li>
+<li>在<code>_sendProcessedPayload()</code>中，会裁剪过长的信息（message, stack, url, referer等）添加请求头，设置发送目标，传入成功和失败回调调用发送函数<code>_makeRequest()</code>。</li>
+<li>在<code>_makeRequest()</code>中，为了跨域发送，会优先尝试fetch，然后尝试带有withCredentials字段的XMLHttpRequest，最后采用XDomainRequest对象发送。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_makeRequest</span>: <span class="keyword">function</span>(<span class="params">opts</span>) &#123;</span><br><span class="line">    <span class="comment">// Auth is intentionally sent as part of query string (NOT as custom HTTP header) to avoid preflight CORS requests</span></span><br><span class="line">    <span class="keyword">var</span> url = opts.<span class="property">url</span> + <span class="string">&#x27;?&#x27;</span> + <span class="title function_">urlencode</span>(opts.<span class="property">auth</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">supportsFetch</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> _window</span><br><span class="line">            .<span class="title function_">fetch</span>(url, &#123;</span><br><span class="line">                <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,</span><br><span class="line">                <span class="attr">body</span>: <span class="title function_">stringify</span>(opts.<span class="property">data</span>)</span><br><span class="line">            &#125;)</span><br><span class="line">            .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">response</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (response.<span class="property">ok</span>) &#123;</span><br><span class="line">                    opts.<span class="property">onSuccess</span> &amp;&amp; opts.<span class="title function_">onSuccess</span>();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// ..</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            [<span class="string">&#x27;catch&#x27;</span>](<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">                opts.<span class="property">onError</span> &amp;&amp;</span><br><span class="line">                    opts.<span class="title function_">onError</span>(<span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Sentry error code: network unavailable&#x27;</span>));</span><br><span class="line">            &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> request = _window.<span class="property">XMLHttpRequest</span> &amp;&amp; <span class="keyword">new</span> _window.<span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">    <span class="keyword">if</span> (!request) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// if browser doesn&#x27;t support CORS (e.g. IE7), we are out of luck</span></span><br><span class="line">    <span class="keyword">var</span> hasCORS = <span class="string">&#x27;withCredentials&#x27;</span> <span class="keyword">in</span> request || <span class="keyword">typeof</span> <span class="title class_">XDomainRequest</span> !== <span class="string">&#x27;undefined&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!hasCORS) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&#x27;withCredentials&#x27;</span> <span class="keyword">in</span> request) &#123;</span><br><span class="line">        request.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (request.<span class="property">readyState</span> !== <span class="number">4</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (request.<span class="property">status</span> === <span class="number">200</span>) &#123;</span><br><span class="line">                opts.<span class="property">onSuccess</span> &amp;&amp; opts.<span class="title function_">onSuccess</span>();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (opts.<span class="property">onError</span>) &#123;</span><br><span class="line">                <span class="keyword">var</span> err = <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Sentry error code: &#x27;</span> + request.<span class="property">status</span>);</span><br><span class="line">                err.<span class="property">request</span> = request;</span><br><span class="line">                opts.<span class="title function_">onError</span>(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        request = <span class="keyword">new</span> <span class="title class_">XDomainRequest</span>();</span><br><span class="line">        <span class="comment">// xdomainrequest cannot go http -&gt; https (or vice versa),</span></span><br><span class="line">        <span class="comment">// so always use protocol relative</span></span><br><span class="line">        url = url.<span class="title function_">replace</span>(<span class="regexp">/^https?:/</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// onreadystatechange not supported by XDomainRequest</span></span><br><span class="line">        <span class="keyword">if</span> (opts.<span class="property">onSuccess</span>) &#123;</span><br><span class="line">            request.<span class="property">onload</span> = opts.<span class="property">onSuccess</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (opts.<span class="property">onError</span>) &#123;</span><br><span class="line">            request.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">                <span class="keyword">var</span> err = <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Sentry error code: XDomainRequest&#x27;</span>);</span><br><span class="line">                err.<span class="property">request</span> = request;</span><br><span class="line">                opts.<span class="title function_">onError</span>(err);</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    request.<span class="title function_">open</span>(<span class="string">&#x27;POST&#x27;</span>, url);</span><br><span class="line">    request.<span class="title function_">send</span>(<span class="title function_">stringify</span>(opts.<span class="property">data</span>));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此，<strong>错误捕获和封装</strong>，<strong>AJAX上报</strong>和<strong>JSON字符串化参数</strong>都已完成。</p>
+<h3 id="可视化后台"><a href="#可视化后台" class="headerlink" title="可视化后台"></a>可视化后台</h3><p>在自己设计异常监控系统时，需要和后台商量好接口的设定。用Express + React&#x2F;Vue等方案快速搭建。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://sentry.io/">sentry.io</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/getsentry/raven-js">getsentry&#x2F;raven-js</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26085642">前端异常监控系统的落地</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1207,250 +1418,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/09/08/photogallery-improvement/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/09/08/photogallery-improvement/" class="post-title-link" itemprop="url">PhotoGallery技术改造</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-09-08 19:31:17" itemprop="dateCreated datePublished" datetime="2017-09-08T19:31:17+08:00">2017-09-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/09/08/photogallery-improvement/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/08/photogallery-improvement/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><img src="/blog/images/photogallery.png"></p>
-<p>最近离职后除了准备面试，多了许多时间对以往的前端个人项目进行改造。<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/gallery/index.html">PhotoGallery</a>就是其中一个个人很喜欢，但由于技术原因没做到完美的例子。最近准备抽出时间进行完善。</p>
-<p>PhotoGallery是一个使用瀑布流展示电影海报以及花絮（当然都是个人比较心水的）的展示型页面。所有的电影图片也是从大一就开始收集的，一直囤积在人人上。页面的诸多功能是根据个人爱好设计的，如</p>
-<ul>
-<li>根据标签搜索</li>
-<li>相似图片</li>
-<li>基于tag的推荐等</li>
-</ul>
-<p>总体来说，就是一个展示、介绍、推荐电影的地方。内容上还是很不错的。但是，去年寒假码代码时，前端技术还有待提高，很多地方写得并不严谨甚至比较丑陋。功能上也有些影响体验必须解决的痛点。大概有下面这些</p>
-<ul>
-<li><strong>首屏渲染时间糟糕</strong>，这是因为图片过多（个人看的太多），又使用了Vue。同时Vue这种MVVM框架和精细化DOM操作一山不容二虎，因此，结合懒加载，效果依然不理想</li>
-<li><strong>图片的时序排布并不自然</strong>，当时图省事，使用纯CSS方案实现瀑布流，牺牲了图片排序。图片只能从上到下再从左到右排序，和正常的阅读顺序并不一致。同时，最老的图片在最前，也不合理</li>
-<li><strong>新增图片困难</strong>，这是由于github.io的纯静态的限制，当时采用了静态图片+meta存数据的方式来实现，后面看了电影再往里加图步骤繁琐，没有人性化的办法</li>
-<li>样式老气，细节粗糙</li>
-<li><strong>本地调试困难</strong>，只使用了gulp来压缩js，css和json代码（代码少，不需要打包），不是全家桶脚手架，本地调试困难，且不能使用ES6语法</li>
-<li><strong>代码语法和风格上不严谨</strong>，考虑结合在公司的规矩规范</li>
-</ul>
-<p>针对上面大大小小几点，以及实际情况（比如只能使用github.io），考虑像下面这样优化</p>
-<h3 id="瀑布流布局实现方式待优化"><a href="#瀑布流布局实现方式待优化" class="headerlink" title="瀑布流布局实现方式待优化"></a>瀑布流布局实现方式待优化</h3><p>放弃使用column-count的方案。原因有二：</p>
-<ol>
-<li>排布顺序是从上到下，再从左到右，和日常经验相悖。类似地，使用flex的方案也不行</li>
-<li>本身和懒加载的设计兼容性并不好，懒加载的新图片会导致整个页面的布局完全改变。类似地，使用grid的方案也不适合</li>
-</ol>
-<p>因此考虑借鉴<a target="_blank" rel="noopener" href="http://www.zhangxinxu.com/wordpress/2012/03/%E5%A4%9A%E6%A0%8F%E5%88%97%E8%A1%A8%E5%8E%9F%E7%90%86%E4%B8%8B%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80-waterfall-layout/">张鑫旭大神的方案</a>，综合CSS和JS实现懒加载的滚动式瀑布流布局。</p>
-<p><img src="http://image.zhangxinxu.com/image/blog/201203/2012-03-23_233114.png"></p>
-<p>首先，根据屏幕宽度设置合理的列数，再逐列插入5张新图片，作为初始情况，同时，使用<code>flex</code>布局，设置<code>flex-grow</code>和<code>justify-content</code>等属性。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Wall</span> = &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">columns</span>: <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth),</span><br><span class="line">      <span class="attr">lastFlag</span>: <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth) * <span class="number">5</span> - <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">computed</span>: &#123;</span><br><span class="line">    <span class="title function_">items</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">itemsForColumns</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> ret = <span class="title class_">Array</span>.<span class="title function_">apply</span>(<span class="literal">null</span>, <span class="title class_">Array</span>(<span class="variable language_">this</span>.<span class="property">columns</span>)).<span class="title function_">map</span>(<span class="function">() =&gt;</span> []);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">items</span>.<span class="title function_">slice</span>(<span class="number">0</span>, <span class="variable language_">this</span>.<span class="property">lastFlag</span> + <span class="number">1</span>).<span class="title function_">forEach</span>(<span class="function">(<span class="params">item, i</span>) =&gt;</span> &#123;</span><br><span class="line">        ret[i % <span class="variable language_">this</span>.<span class="property">columns</span>].<span class="title function_">push</span>(item);</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="comment">// 每列先只加载5个</span></span><br><span class="line">      <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#photos</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">flex-flow</span>: row wrap;</span><br><span class="line">  <span class="attribute">align-items</span>: flex-start;</span><br><span class="line">  <span class="attribute">justify-content</span>: space-around;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.wall-column</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: inline-block;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">250px</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">8px</span>;</span><br><span class="line">  <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后，监听可能会改变布局的所有情况，在我这个场景下，大概有三种：</p>
-<ul>
-<li>滚动（scroll）事件</li>
-<li>缩放事件（resize）事件</li>
-<li>筛选图片，在改变筛选条件，会导致图片数目的变化</li>
-</ul>
-<p>下面分情况解决之。</p>
-<p><strong>resize时</strong></p>
-<p>监听<code>window</code>的<code>resize</code>事件，当最后一列的位置变化时，意味着布局已经改变，需要触发重排。可以看到上面的<code>itemForColumns</code>中依赖<code>columns</code>和<code>lastFlag</code>两个状态。这里我们利用MVVM框架的优势，维护这两个值，就可以让Vue帮我们完成重排这样的繁琐操作。如下，当<code>columns</code>改变时，才会触发重绘。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;resize&quot;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">columns</span> = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth);</span><br><span class="line">  <span class="comment">// 已经展示过的图片就不要隐藏了</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">lastFlag</span> = <span class="title class_">Math</span>.<span class="title function_">max</span>(<span class="variable language_">this</span>.<span class="property">columns</span> * <span class="number">5</span> - <span class="number">1</span>, <span class="variable language_">this</span>.<span class="property">lastFlag</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p><strong>筛选图片时</strong></p>
-<p>同理，通过关键词筛选图片时，改变了传入Wall的prop <code>factor</code>。会同步更新依赖<code>factor</code>的<code>item</code>，触发重排。有一点有注意的是，**<code>lastFlag</code>需要重新开始累加**。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">watch</span>: &#123;</span><br><span class="line">  <span class="title function_">items</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 设置了筛选条件后，lastFlag需要重新开始累加</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">lastFlag</span> = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientWidth</span> / columnWidth) * <span class="number">5</span> - <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>scroll时</strong></p>
-<p>页面滚动时，需要加入新的图片到column中，我们要做的只是更改<code>lastFlag</code>即可，Vue会帮我们自动完成依赖<code>lastFlag</code>的<code>itemForColumns</code>更新。重点在，我们如何知道lastFlag应该增加到多少。</p>
-<p>我们回看下<code>itemForColumns</code>的逻辑，可以发现<strong>新增的图片是循环摆放的</strong>。这里额外说一句，尽管新图片放在最短列是最合理的，但是工程上并不合算（一是Vue下做这么精细的DOM操作不合适，二是获知最短列意味着DOM操作已经发生，即会有频繁的回流和重绘，这会影响渲染时间）。我们循环考虑每一列的最底部位置，如果在视口内，将图片更新到该列，直到所有列底部都在视口外。直到图片加载完毕。</p>
-<p>另外，在实践时还发现一个问题，<code>handleScroll</code>里更改了<code>lastFlag</code>后，Vue本身有batch的优化，会在microtask栈空后，才会进行耗时的DOM操作。循环添加图片时，需要通过setTimeout异步完成，避免误判，在一次递归中加载了所有图片。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">handleScroll</span>(<span class="params">top</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">items</span>.<span class="property">length</span> &lt;= <span class="variable language_">this</span>.<span class="property">lastFlag</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> delta = -<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="variable language_">this</span>.<span class="property">columns</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> col = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">`wall-<span class="subst">$&#123;i&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">if</span> (col &amp;&amp; col.<span class="property">offsetTop</span> + col.<span class="property">clientHeight</span> &lt; top + (<span class="variable language_">window</span>.<span class="property">innerHeight</span> || <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientHeight</span>)) &#123;</span><br><span class="line">      delta = i;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!!++delta) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">lastFlag</span> += delta;</span><br><span class="line">    <span class="comment">// 直到所有列下沿都不在视口内，</span></span><br><span class="line">    <span class="comment">// 同时，设置时延，保证DOM操作完成后再继续handleScroll</span></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;  <span class="variable language_">this</span>.<span class="title function_">handleScroll</span>(top); &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="新增图片困难"><a href="#新增图片困难" class="headerlink" title="新增图片困难"></a>新增图片困难</h3><p><del>由于github.io是纯静态的页面，我并没有后台环境，这个痛点短期内只能缓解不能根除。不过后面考虑将所有图片迁移到图床上，毕竟把图片数据也存在github上感觉还是……有点怪怪的。日后新增图片应该还是通过上传图片，更新<code>meta.json</code>的形式完成。</del></p>
-<p>目前已将所有图片迁移到图床上，图床选择上参考了知乎上的推荐，使用<a target="_blank" rel="noopener" href="https://www.qiniu.com/">七牛云存储</a>，在个人实名认证后，免费部分有每月10G国内和国外下载流量，100万次GET和PUT请求次数，和10G存储空间。同时，它还提供对图片的压缩等管理，尽量减少流量。</p>
-<p>迁移之后，仓库体积大大减小。之后日常更新时，图片单独上传，根据外链固定前缀得到最终路径。</p>
-<p><del><code>meta.json</code>的更新上，考虑自己写一个工具，根据新看的电影生成新的content。</del></p>
-<p>已完成自动生成<code>meta.json</code>的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/meta-maker.html">小工具</a>，原理很简单，就不再介绍了。</p>
-<h3 id="细节美化"><a href="#细节美化" class="headerlink" title="细节美化"></a>细节美化</h3><p>点比较细碎。整体借鉴了<a target="_blank" rel="noopener" href="https://material.io/guidelines/material-design/introduction.html#introduction-goals">material design</a>的思想。</p>
-<p><strong>影片详细信息的遮罩</strong></p>
-<p>考虑使用100%的遮罩，同时禁止背景滚动的形式展示图片的详细信息。起初打算用js去实现，后来发现下面的两点使得方案并不简单</p>
-<ul>
-<li>scroll事件不能被cancel，这意味着不能打断默认的滚动行为</li>
-<li>从Mouse，Keyboard，Touch相关触发scroll事件的事件劫持滚动行为倒是可以，不过要监听的事件太多</li>
-</ul>
-<p>只好作罢，通过纯CSS的方式，弹出浮层时，为body指定<code>noscroll</code>的类名。让浮层的<code>overflow</code>属性为<code>scroll</code>即可，同时设置浮层<code>position</code>属性为<code>fixed</code>即可。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#display</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: fixed;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="comment">/*...*/</span></span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</span><br><span class="line">  <span class="attribute">overflow-y</span>: scroll;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>使用缓动函数改进回到开头</strong></p>
-<p>这里使用定义域和值域都是<code>[0,1]</code>的<code>easeInOutCubic</code>函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">easeInOutCubic</span> = t =&gt; (t&lt;<span class="number">.5</span> ? <span class="number">4</span>*t*t*t : (t-<span class="number">1</span>)*(<span class="number">2</span>*t-<span class="number">2</span>)*(<span class="number">2</span>*t-<span class="number">2</span>)+<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<p>有了缓动函数后，使用<code>requestAnimationFrame</code>即可高效率地绘制JS动画。这里封装了一个<code>animate</code>函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">animate</span> = (<span class="params">obj, prop, end, time, ease</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (!obj || !obj[prop] || time &lt; <span class="number">100</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> start = obj[prop],</span><br><span class="line">      k = end - start,</span><br><span class="line">      timer = <span class="literal">null</span>,</span><br><span class="line">      tick = <span class="function"><span class="params">timestamp</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (timer === <span class="literal">null</span>) &#123;</span><br><span class="line">          timer = timestamp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> progress = timestamp - timer;</span><br><span class="line">        obj[prop] = start + <span class="title function_">ease</span>(progress / time) * k;</span><br><span class="line">        <span class="keyword">if</span> (progress &lt; time) &#123;</span><br><span class="line">          <span class="title function_">requestAnimationFrame</span>(tick);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">requestAnimationFrame</span>(tick);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>后面直接使用<code>animate(document.body, &quot;scrollTop&quot;, 0, 1000, easeInOutCubic)</code>就可以圆滑地上移了。</p>
-<p><strong>移动端的优化</strong></p>
-<ul>
-<li>使用媒体查询，在屏幕宽度更改时，隐藏一些元素</li>
-<li>在UA为移动端设备时，给出提醒</li>
-</ul>
-<p><strong>loading样式</strong></p>
-<p>在改变筛选条件时，设置loading样式提升用户体验。通过积累onload的计数和初始加载图片值进行对比，在达到该值时清除遮罩。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="title function_">loadedCount</span>(<span class="params">newCount</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (newCount &gt;= <span class="title class_">Math</span>.<span class="title function_">min</span>(<span class="variable language_">this</span>.<span class="property">lastFlag</span> + <span class="number">1</span>, <span class="variable language_">this</span>.<span class="property">items</span>.<span class="property">length</span>)) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;全部加载完成&quot;</span>);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">isHidden</span> = <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// console.log(&quot;Loading...&quot;);</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>杂项</strong></p>
-<ul>
-<li>导航条交互优化</li>
-<li>导航条部分设置阴影，更改部分字体颜色和背景色</li>
-<li>修改触发分类方式，由<code>click</code>改为<code>mousemove</code></li>
-<li>修改tab的样式</li>
-<li>将vue和lodash的js文件下载到本地，避免CDN失效的问题（之前已经遇到过一次），增加可靠性</li>
-<li>搜索条件不区分大小写</li>
-</ul>
-<h3 id="本地调试困难"><a href="#本地调试困难" class="headerlink" title="本地调试困难"></a>本地调试困难</h3><p>因为代码较少，也只有一个文件，用不着webpack这样的全套解决方案。小巧易用的gulp就够了。针对我们需要的ES6转码，替换minify方案，本地调试等需要，都有对应的gulp插件解决问题。</p>
-<h4 id="gulp-babel"><a href="#gulp-babel" class="headerlink" title="gulp-babel"></a>gulp-babel</h4><p>使用<a target="_blank" rel="noopener" href="https://babeljs.io/">babel</a>来转码，<code>gulp-babel</code>依赖<code>babel-core@6</code>或以上版本，同时设置<code>preset</code>为<code>es2015</code>或ES7相关版本时也需要下载对应module。</p>
-<p>我只需要es2015即可。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-core gulp-babel babel-preset-es2015</span><br></pre></td></tr></table></figure>
-
-<p>React和ES7的各阶段可以像下面这样选择安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ npm install --save-dev babel-preset-react</span><br><span class="line">$ npm install --save-dev babel-preset-stage-0</span><br><span class="line">$ npm install --save-dev babel-preset-stage-1</span><br><span class="line">$ npm install --save-dev babel-preset-stage-2</span><br><span class="line">$ npm install --save-dev babel-preset-stage-3</span><br></pre></td></tr></table></figure>
-
-<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><ul>
-<li>**<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-uglify">gulp-uglify</a>**，压缩代码</li>
-<li><strong>gulp-rename</strong>，为压缩出的js重命名</li>
-<li>**<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-webserver">gulp-webserver</a>**，开启本地服务，方便本地调试</li>
-</ul>
-<p>上面这些插件按照文档操作即可，坑比较少，使用webserver时的<code>gulp.src()</code>入参通常为<code>./</code>，指以当前目录为服务器根目录。</p>
-<p>最后还需要加一个watch，方便在调试时的修改能同步转码压缩。像下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;watch&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>, [<span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.css&#x27;</span>, [<span class="string">&#x27;css&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.json&#x27;</span>, [<span class="string">&#x27;json&#x27;</span>]);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>最后整个<code>gulpfile.js</code>是下面的样子</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">&#x27;gulp&#x27;</span>),</span><br><span class="line">    babel = <span class="built_in">require</span>(<span class="string">&#x27;gulp-babel&#x27;</span>),</span><br><span class="line">    uglify = <span class="built_in">require</span>(<span class="string">&#x27;gulp-uglify&#x27;</span>),</span><br><span class="line">    rename = <span class="built_in">require</span>(<span class="string">&#x27;gulp-rename&#x27;</span>),</span><br><span class="line">    cleanCSS = <span class="built_in">require</span>(<span class="string">&#x27;gulp-clean-css&#x27;</span>),</span><br><span class="line">    jsonminify = <span class="built_in">require</span>(<span class="string">&#x27;gulp-jsonminify&#x27;</span>),</span><br><span class="line">    webserver = <span class="built_in">require</span>(<span class="string">&#x27;gulp-webserver&#x27;</span>);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;js&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">babel</span>(&#123;</span><br><span class="line">      <span class="attr">presets</span>: [<span class="string">&#x27;es2015&#x27;</span>]</span><br><span class="line">    &#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">uglify</span>())</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">rename</span>(&#123; <span class="attr">suffix</span>: <span class="string">&#x27;.min&#x27;</span> &#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;css&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>([<span class="string">&#x27;assets/src/*.css&#x27;</span>])</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">cleanCSS</span>(&#123;<span class="attr">compatibility</span>: <span class="string">&#x27;ie8&#x27;</span>&#125;))</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;json&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> gulp.<span class="title function_">src</span>(<span class="string">&#x27;assets/src/meta.json&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">jsonminify</span>())</span><br><span class="line">    .<span class="title function_">pipe</span>(gulp.<span class="title function_">dest</span>(<span class="string">&#x27;dist&#x27;</span>))</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;webserver&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">src</span>(<span class="string">&#x27;./&#x27;</span>)</span><br><span class="line">    .<span class="title function_">pipe</span>(<span class="title function_">webserver</span>(&#123;</span><br><span class="line">      <span class="attr">livereload</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">directoryListing</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">open</span>: <span class="literal">true</span></span><br><span class="line">    &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;watch&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.js&#x27;</span>, [<span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.css&#x27;</span>, [<span class="string">&#x27;css&#x27;</span>]);</span><br><span class="line">  gulp.<span class="title function_">watch</span>(<span class="string">&#x27;assets/src/*.json&#x27;</span>, [<span class="string">&#x27;json&#x27;</span>]);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&#x27;dev&#x27;</span>, [<span class="string">&#x27;default&#x27;</span>, <span class="string">&#x27;webserver&#x27;</span>, <span class="string">&#x27;watch&#x27;</span>]);</span><br><span class="line">gulp.<span class="title function_">task</span>(<span class="string">&quot;default&quot;</span>, [<span class="string">&#x27;json&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;js&#x27;</span>]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h3><p>从略。HTML和CSS部分参照以往写的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/06/23/HTML-CSS-code-style-guide/">建议</a>即可。除此以外，优化了下面的部分：</p>
-<ul>
-<li>删除了为兼容移动端额外使用的touchend事件，增加viewport的meta标签，消除移动端chrome浏览器点击300ms延时情况</li>
-<li>由于引入了babel，删除了兼容ES6语法的自己写的polyfill部分</li>
-<li>使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>请求json</li>
-<li>优化导航条点击事件处理相关的代码</li>
-<li>减少图片数目和json体积</li>
-</ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000004394726">使用gulp 进行ES6开发</a></li>
-<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/seven0404/article/details/51880162">node.js利用gulp 启动webServer服务</a></li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2434602/css-setting-width-height-as-percentage-minus-pixels">CSS: Setting width&#x2F;height as Percentage minus pixels</a></li>
-<li><a target="_blank" rel="noopener" href="http://easings.net/zh-cn">缓动函数速查表</a></li>
-<li><a target="_blank" rel="noopener" href="https://gist.github.com/gre/1650294">Simple Easing Functions in Javascript</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame">window.requestAnimationFrame | MDN</a></li>
-<li><a target="_blank" rel="noopener" href="https://dribbble.com/">dribbble</a></li>
-<li><a target="_blank" rel="noopener" href="https://codepen.io/sdthornton/pen/wBZdXq">Material Design Box Shadows</a></li>
-<li><a target="_blank" rel="noopener" href="http://tobiasahlin.com/spinkit/">SpinKit | Simple CSS Spinners</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21667151">国内有什么方便的图床？</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/blog/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1481,7 +1448,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:51</span>
+    <span title="站点阅读时长">28:57</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

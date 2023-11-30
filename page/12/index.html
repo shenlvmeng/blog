@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-count">149</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">453</span>
+        <span class="site-state-item-count">458</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,241 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/03/12/indexeddb-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2019/03/12/indexeddb-introduction/" class="post-title-link" itemprop="url">Electron应用数据库选型暨indexedDB扫盲</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-03-12 00:01:59 / 修改时间：00:03:38" itemprop="dateCreated datePublished" datetime="2019-03-12T00:01:59+08:00">2019-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/03/12/indexeddb-introduction/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/12/indexeddb-introduction/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>名谓扫盲，实则扫自己的盲</p>
+</blockquote>
+<h2 id="选型"><a href="#选型" class="headerlink" title="选型"></a>选型</h2><p>要说到最近的一个个人项目<a target="_blank" rel="noopener" href="https://github.com/shenlvmeng/calendone">calendone</a>，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。</p>
+<h3 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h3><ul>
+<li><strong>关系型数据库</strong>，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。</li>
+<li>是node原生模块，需要重新编译，而且有坑</li>
+</ul>
+<h3 id="NeDB"><a href="#NeDB" class="headerlink" title="NeDB"></a>NeDB</h3><ul>
+<li><strong>NoSQL类型数据库</strong>，可以实现本地存储，也可以作为内存存储</li>
+<li><strong>API是MongoDB的一个子集</strong></li>
+<li>纯js实现，一个文件对应一张表</li>
+</ul>
+<h3 id="Leveldb"><a href="#Leveldb" class="headerlink" title="Leveldb"></a>Leveldb</h3><ul>
+<li><strong>NoSQL类型数据库</strong>，支持内存和持久化存储</li>
+<li><strong>没有事务机制</strong>，默认按key查询，没有索引</li>
+<li>默认保存的不是js对象，而是字符串。如果要保存为对象，可以在level函数第二个参数加入<code>&#123; valueEncoding: &quot;json&quot; &#125;</code>来让保存的js对象以json的形式读取</li>
+</ul>
+<h3 id="Lowdb"><a href="#Lowdb" class="headerlink" title="Lowdb"></a>Lowdb</h3><ul>
+<li>基于Loadsh的<strong>纯JSON文件数据库</strong>，速度较慢</li>
+<li>不支持索引&#x2F;事务&#x2F;批量操作等数据库功能</li>
+</ul>
+<h3 id="indexedDB"><a href="#indexedDB" class="headerlink" title="indexedDB"></a>indexedDB</h3><ul>
+<li><strong>NoSQL数据库</strong>，浏览器自带，可以储存大量数据，容量为250MB以上</li>
+<li>支持事务，有版本号的概念。</li>
+<li>支持较多的字段类型</li>
+</ul>
+<p>综上考虑，最后采用浏览器自带的indexedDB，足够满足要求，漫游接入成本，升级方便，调试方便。</p>
+<h2 id="indexedDB介绍"><a href="#indexedDB介绍" class="headerlink" title="indexedDB介绍"></a>indexedDB介绍</h2><p>indexedDB脱胎于HTML本地存储。</p>
+<h3 id="HTML本地存储"><a href="#HTML本地存储" class="headerlink" title="HTML本地存储"></a>HTML本地存储</h3><p>上古时代中，HTML中持久化数据只有几种方法[1]：</p>
+<ul>
+<li>cookie。cookie的缺点很明显，最多只能存储4KB的数据，且会携带在同域名下每个HTTP请求的头部，明文传输（除非你使用SSL）。</li>
+<li>IE userData。微软在上世纪90年代的浏览器大战时推出的本地存储方案，允许每个页面最多存储64K数据，每个站点最多640K数据，它不是Web标准的一部分</li>
+<li>Flash cookie。它实际上和HTTP cookie并不是一回事，它的名字可能叫做”Flash本地存储”更为合适。考虑到Flash已经是要被淘汰的技术……</li>
+</ul>
+<p>本地存储出现后，有了下面一些标准化的更简单的方法：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage接口</a>，即localStorage和sessionStorage</li>
+<li>Web SQL，这是一个<strong>已经废弃</strong>的规范。就跟它的名字一样，它就是浏览器端的一个SQL数据库，可以执行SQL语句。由于语法和SQLite绑定过紧，后被标准组织废弃</li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API">indexedDB</a>，Web SQL的替代品，也是浏览器端的数据库，但他是No SQL的。有MongoDB使用体验的，对它就不会感到陌生。</li>
+</ul>
+<h3 id="indexedDB-1"><a href="#indexedDB-1" class="headerlink" title="indexedDB"></a>indexedDB</h3><p>indexedDB是浏览器提供的本地数据库，目标是持久化存储大量数据，提供类No SQL的增删改查体验。因此它有以下几点特色：</p>
+<ul>
+<li><strong>键值对存储</strong>，采用对象仓库（object store）存放数据，所有类型的数据都可以直接存入，包括 JavaScript 对象。</li>
+<li><strong>支持索引</strong>，indexedDB没有表列的概念，但可以建立索引，查询数据时使用id或索引搜索</li>
+<li><strong>支持事务</strong>，保证操作的原子性，事务中的任意一步失败，数据库都会回滚到操作事务前的状态</li>
+<li><strong>异步操作</strong>，indexedDB操作都是异步的，在执行数据增删改查时，不会影响界面性能。</li>
+<li><strong>同源限制</strong>，每一个数据库会关联创建它的域名。网页只能访问自身域名下的数据库，不能跨域访问数据库。</li>
+<li><strong>其他</strong>，包括存储空间大、支持二进制存储等…</li>
+</ul>
+<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
+<li><strong>数据库</strong>，IDBDatabase对象类型，每个域名（协议 + 域名 + 端口）可以新建任意多个数据库。</li>
+<li><strong>对象仓库</strong>，IDBObjectStore对象类型，一个数据库包含若干个对象仓库，类似于关系型数据库中的表</li>
+<li><strong>数据记录</strong>，类型于关系型数据库中的行，但是只有主键和数据体两部分。<strong>数据体可以是任意数据类型，不限于对象</strong>。</li>
+<li><strong>索引</strong>，IDBIndex对象类型，数据记录里除了主键以外的搜索参照</li>
+<li><strong>事务</strong>，IDBTransaction数据类型，对数据库的增删改查都需要通过事务进行，执行结果通过<code>error</code>，<code>success</code>，<code>abort</code>事件回调拿到</li>
+</ul>
+<p>indexedDB定义了许多对象接口，即API，除了上面介绍的一些，更完善的接口介绍可以参考MDN的介绍。</p>
+<h4 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h4><p>indexedDB 鼓励使用的基本模式如下所示：</p>
+<ol>
+<li>打开数据库。</li>
+<li>在数据库中创建一个对象仓库（object store）。</li>
+<li>启动一个事务，并发送一个请求来执行一些数据库操作，像增加或提取数据等。</li>
+<li>通过监听正确类型的DOM事件以等待操作完成。</li>
+<li>在操作结果上进行一些操作（可以在request对象中找到）</li>
+</ol>
+<p><strong>打开数据库</strong></p>
+<p>使用 IndexedDB 的第一步是打开数据库，使用indexedDB.open()方法如下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> request = <span class="variable language_">window</span>.<span class="property">indexedDB</span>.<span class="title function_">open</span>(databaseName, version);</span><br></pre></td></tr></table></figure>
+
+<p>其中第一个参数为数据库名，第二个参数是数据库版本号。<code>indexedDB.open()</code>方法返回一个<code>IDBRequest</code>对象。这个对象通过三种事件error、success、upgradeneeded，处理打开数据库的操作结果。</p>
+<p>如果数据库不存在，open操作会创建该数据库，然后<code>onupgradeneeded</code>事件被触发，需要在该事件的处理函数中创建数据库模式。如果数据库已经存在，但指定了一个更高的数据库版本，会直接触发 <code>onupgradeneeded</code>事件，允许你在处理函数中更新数据库模式。</p>
+<p><strong>注意：这里的版本号是一个unsigned long long数字，使用浮点数是会被转化到最近的整数</strong></p>
+<p><strong>绑定处理函数</strong></p>
+<p>几乎所有我们产生的请求我们在处理的时候首先要做的就是添加成功和失败处理函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// Do something with request.errorCode!</span></span><br><span class="line">&#125;;</span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// Do something with request.result!</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果一切顺利的话，相关request的<code>onsuccess()</code>处理函数就会被触发。如果不是所有事情都成功的话，<code>error </code>事件会在request上被触发。</p>
+<p><strong>新建数据库</strong></p>
+<p>新建数据库与打开数据库是同一个操作。不同之处在于，后续的操作主要在<code>upgradeneeded</code>事件的监听函数里面完成。通常新建数据库后，第一件事是新建对象仓库，即下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">onupgradeneeded</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  db = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">var</span> objectStore;</span><br><span class="line">  <span class="keyword">if</span> (!db.<span class="property">objectStoreNames</span>.<span class="title function_">contains</span>(<span class="string">&#x27;person&#x27;</span>)) &#123;</span><br><span class="line">    objectStore = db.<span class="title function_">createObjectStore</span>(<span class="string">&#x27;person&#x27;</span>, &#123; <span class="attr">keyPath</span>: <span class="string">&#x27;id&#x27;</span> &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这段语句使用id作为对象仓库的主键，如果没有合适作为主键的属性，可以让indexedDB自动生成主键。为了便于查询，可以在数据仓库中建立索引。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objectStore = db.<span class="title function_">createObjectStore</span>(</span><br><span class="line">  <span class="string">&#x27;person&#x27;</span>,</span><br><span class="line">  &#123; <span class="attr">autoIncrement</span>: <span class="literal">true</span> &#125;</span><br><span class="line">);</span><br><span class="line">objectStore.<span class="title function_">createIndex</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">objectStore.<span class="title function_">createIndex</span>(<span class="string">&#x27;email&#x27;</span>, <span class="string">&#x27;email&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>增删改查</strong></p>
+<p>增删改查都通过事务进行。事务来自于数据库对象，必须指定你想让这个事务跨越哪些对象仓库。事务中有三种模式，表示你想对数据库进行的操作类型：</p>
+<ul>
+<li><code>readonly</code> <strong>默认</strong>，只读</li>
+<li><code>readwrite</code> 读写操作</li>
+<li><code>versionchange</code> 修改数据库模式或结构</li>
+</ul>
+<p>只在必要时指定 readwrite 事务。你可以同时执行多个readonly事务，哪怕它们的作用域有重叠；但对于在一个对象仓库上只能运行一个readwrite事务。</p>
+<p>增加一条数据的语句如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> transaction = db.<span class="title function_">transaction</span>([<span class="string">&quot;person&quot;</span>], <span class="string">&quot;readwrite&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在所有数据添加完毕后的处理</span></span><br><span class="line">transaction.<span class="property">oncomplete</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;成功&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">transaction.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;失败&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> objectStore = transaction.<span class="title function_">objectStore</span>(<span class="string">&quot;person&quot;</span>);</span><br><span class="line">    .<span class="title function_">add</span>(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;foo&#x27;</span>, <span class="attr">email</span>: <span class="string">&#x27;foo@bar.com&#x27;</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>在有了数据后，可以通过几种方法对它进行提取。首先是简单的 <code>get()</code>，通过键获得值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> transaction = db.<span class="title function_">transaction</span>([<span class="string">&quot;person&quot;</span>]);</span><br><span class="line"><span class="keyword">var</span> objectStore = transaction.<span class="title function_">objectStore</span>(<span class="string">&quot;person&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> request = objectStore.<span class="title function_">get</span>(<span class="number">1</span>);</span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// 对 request.result 做些操作！</span></span><br><span class="line">  <span class="title function_">alert</span>(request.<span class="property">result</span>.<span class="property">name</span>);</span><br><span class="line">&#125;;</span><br><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;出错了&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在很多场景下你并不知道数据的键，这时可以用索引找到你要的数据。例子中的<code>name</code>属性可能并不是唯一的，在这种情况下，你总是得到键值最小的那个。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前提是你已经建立了name索引</span></span><br><span class="line"><span class="keyword">var</span> index = objectStore.<span class="title function_">index</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"></span><br><span class="line">index.<span class="title function_">get</span>(<span class="string">&#x27;foo&#x27;</span>).<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;foo&#x27;s id is &quot;</span> + event.<span class="property">target</span>.<span class="property">result</span>.<span class="property">id</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在需要遍历某一范围的数据集合时，也可以使用<strong>游标</strong>，这里要用到<code>openCursor</code>方法。比如查询整个数据对象存储。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">objectStore.<span class="title function_">openCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(cursor.<span class="property">value</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;遍历结束&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><em>上面的功能也可以通过<code>getAll</code>完成，但是由于数据对象是懒生成的，<code>getAll</code>性能会有消耗。当然你如果想直接拿到整个数据组成的数组，还是<code>getAll</code>好点</em></p>
+<p>结合索引（IDBIndex）和游标（IDBCursor）可以查询指定索引的所有记录，方法<code>openCursor</code>和<code>openKeyCursor</code>分别返回不同的数据结构。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">index.<span class="title function_">openCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="comment">// cursor.key 是一个 name, 就像 &quot;Bill&quot;, 然后 cursor.value 是整个对象。</span></span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Name: &quot;</span> + cursor.<span class="property">key</span> + <span class="string">&quot;, email: &quot;</span> + cursor.<span class="property">value</span>.<span class="property">email</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">index.<span class="title function_">openKeyCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="comment">// cursor.key 是一个 name, 就像 &quot;Bill&quot;, 然后 cursor.value是主键的值。</span></span><br><span class="line">    <span class="comment">// 没办法得到存储对象的其余部分。</span></span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Name: &quot;</span> + cursor.<span class="property">key</span> + <span class="string">&quot;, id: &quot;</span> + cursor.<span class="property">value</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>更多游标设置参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB#%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%A0%87%E7%9A%84%E8%8C%83%E5%9B%B4%E5%92%8C%E6%96%B9%E5%90%91">mdn</a>的介绍。</p>
+<p>更新和删除数据，分别使用<code>put</code>和<code>delete</code>方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> request = db.<span class="title function_">transaction</span>([<span class="string">&#x27;person&#x27;</span>], <span class="string">&#x27;readwrite&#x27;</span>)</span><br><span class="line">  .<span class="title function_">objectStore</span>(<span class="string">&#x27;person&#x27;</span>)</span><br><span class="line">  .<span class="title function_">put</span>(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;李四&#x27;</span>, <span class="attr">age</span>: <span class="number">35</span>, <span class="attr">email</span>: <span class="string">&#x27;lisi@example.com&#x27;</span> &#125;);</span><br><span class="line"></span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据更新成功&#x27;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据更新失败&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> request = db.<span class="title function_">transaction</span>([<span class="string">&#x27;person&#x27;</span>], <span class="string">&#x27;readwrite&#x27;</span>)</span><br><span class="line">  .<span class="title function_">objectStore</span>(<span class="string">&#x27;person&#x27;</span>)</span><br><span class="line">  .<span class="title function_">delete</span>(<span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据删除成功&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中put的数据为全量替换，可以通过get方法拿到数据后，修改特定值再交给put完成增量替换。</p>
+<h2 id="indexedDB封装库"><a href="#indexedDB封装库" class="headerlink" title="indexedDB封装库"></a>indexedDB封装库</h2><p>indexedDB虽然强大，但是有些API对于用户来说还是不够方便，下面是几个indexedDB的封装库：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://localforage.github.io/localForage/">localForage</a>，支持类Storage API语法的客户端数据存储polyfill，支持回退到Storage和Web SQL</li>
+<li><a target="_blank" rel="noopener" href="https://dexie.org/">dexie.js</a>，提供更友好和简单的语法便于快速的编码开发，<strong>有Typescript支持</strong>。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/erikolson186/zangodb">ZangoDB</a>，提供类MongoDB的接口实现，提供了许多MangoDB的特性实现</li>
+<li><a target="_blank" rel="noopener" href="http://jsstore.net/">JsStore</a>，提供基于indexedDB的类SQL的语法实现。</li>
+</ul>
+<p>综上，考虑到dexie.js的语法更加友善，文档页较完善。最终选择它作为客户端存储的实现。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://jiangzhenghua.iteye.com/blog/1225201">HTML5本地存储不完全指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://wangdoc.com/javascript/bom/indexeddb.html">IndexedDB API</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB">使用 IndexedDB - Web API接口参考 | MDN</a></li>
+<li><a target="_blank" rel="noopener" href="https://dexie.org/docs/API-Reference">Dexie.js API Reference</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -916,213 +1151,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/01/01/tour-to-xiamen/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2019/01/01/tour-to-xiamen/" class="post-title-link" itemprop="url">厦门之行 —— 感受一个城市</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2019-01-01 20:50:19" itemprop="dateCreated datePublished" datetime="2019-01-01T20:50:19+08:00">2019-01-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-01-21 00:51:05" itemprop="dateModified" datetime="2019-01-21T00:51:05+08:00">2019-01-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%B8%B8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">游记</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2019/01/01/tour-to-xiamen/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/01/tour-to-xiamen/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>以流水账为主，记念第一次的个人旅行</p>
-</blockquote>
-<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>本来和某凯约好年末一同看看世界。没想到科大讯飞实在无情，断送了他的出游计划。一个人旅行倒也是种全新的感受。从计划制定、机票酒店预订到出行准备，心理负担和激动的情绪并存。这是次不错的尝试，也算是迈出“积极主动”的一步吧。</p>
-<p>本来计划的3天日程比较紧凑地完成了，也算是把厦门岛附近都看一看，顺便感受了下城市生活的气息。</p>
-<p><em>后面的内容以攻略向和个人私念为主</em>。</p>
-<h2 id="Day-1，12月29日"><a href="#Day-1，12月29日" class="headerlink" title="Day 1，12月29日"></a>Day 1，12月29日</h2><p><strong>地点：中山公园、华新路、中山路、曾厝垵</strong><br><strong>关键词：生活节奏、文艺、婚纱照、购物街、奶茶店</strong></p>
-<p>初到厦门，是个晴天。走出T4航站楼，迎面的风潮湿而清新，一点不似北京的冷酷，风里的味道有点唤起关于过去的记忆。空气质量很不错，十几摄氏度的风吹的人很凉爽而舒服。</p>
-<p>第一个目的地是<strong>中山公园</strong>，地铁路上，能听到普通话和英文中间的闽南语报站，魔性的语调现在还在我脑袋里环绕。公交报站时，“开门”的“门”带有儿化音，听上去有亲切感。</p>
-<p>每个像样的城市似乎都有个“人民公园”或是“中山公园”。中山公园有点类似大型的街区小公园感觉。里面有很多老年人，用闽南话聊着天，或是在湖边踱步，或是看着园里的热带植物，很悠闲，节奏很慢。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5do0s.md.jpg" alt="中山公园.jpg"></p>
-<p>从西门出去，走几步就到了<strong>华新路</strong>，华新路其实不像是一条路，它挺窄的，街区里有许多旧别墅区和很有年代的小区建筑。现在还住在这里的人一定很有钱。这里以前有很多很文艺的店，现在大多改造成了幼儿园或是幼教机构。<strong>不在书店</strong>算是仅剩不多的承载着文青理想主义的店了。不同于<strong>中山路</strong>等开发很彻底的地方，这里你能看到比较具有人文气息的场景。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5dznJ.md.jpg" alt="不在书店.jpg"></p>
-<p>不过，厦门拍婚纱照的人真得相当多，除了本地的还有不少来这里旅游结婚顺便拍婚纱照的。华新路就不少，鼓浪屿这种就更多人了。也许拍婚纱照时，能想象自己以后也能在拍照的地方过上如拍照地方文艺般的生活吧。</p>
-<p>从华新路街区出来，稍微走走就到<strong>中山路</strong>了，这里的“中山路”指一大片购物步行街的街区，范围很大，可以类比上海南京路、武汉光谷步行街。稍微有所不同的是，除了<strong>中华城</strong>等几个购物中心，楼的高度和装潢都是固定的，且高度不高，高层还会伸出一间屋的长度，盖在一层步道的头顶，很像之前看台湾姑娘直播时那边的街道感觉。</p>
-<p>中山路这边的饮品店是真得多，这里面我被一家叫“丧茶”（绝不是打广告）的名字吸引，很有挑衅喜茶的感觉XD。它家的饮品单蛮有意思。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wPtx.md.jpg" alt="丧茶.jpg"></p>
-<p>另外，还在无印良品买了个钟，350，嗯有点小心疼。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wA1O.md.jpg" alt="钟.jpg"></p>
-<p>吃饱喝足，在<strong>镇海路口</strong>等29路就可以到<strong>曾厝垵</strong>了。从性价比和到别的旅游景点的方便程度讲，曾厝垵是最好的。7、8点在镇海路口等29路的人非常多，除了游客，还有下课的学生。他们的校服真得挺好看。</p>
-<p>在车上，听他们聊今天布置的作业和经历的新鲜事，口音很像带有台湾腔的普通话，很有趣。可能是台湾也说闽南语的原因吧。</p>
-<h3 id="Bonus：意外"><a href="#Bonus：意外" class="headerlink" title="Bonus：意外"></a>Bonus：意外</h3><p><em>对本人轶事不感兴趣的可以跳过</em></p>
-<p>上飞机前惊讶地发现，充电宝无法给手机充电，无法诊断是哪个环节出了问题。由于时间有限没法解决，上飞机时手机只有不到20%的电量，以我不堪一击5s的尿性，怕是到了厦门就要失联。此时，我还不知道怎么去民宿，怎么去地铁站，身上只有5元零钱和几张百元大钞。其中有1元还是俩5毛组成的（这点很关键）。</p>
-<p>在机上没敢玩手机，通过控制变量法冷静分析得出结论：要么充电宝坏了，要么充电线坏了，要么手机坏了。反正只要不是线坏了，都很蛋疼。</p>
-<p>果不其然，下机刚看了做几路车能到最近地铁站就彻底黑了。是你会怎么做呢？</p>
-<p>咳咳。接着聊传奇经历。</p>
-<p>凭着出色的地理直觉，我找到了符合要求的公交站，花了1元到了一个叫做“殿前”的地铁站。本以为像北京一样，办了公交卡，先往中山公园坐再说，后面几天也省去需要零钱的蛋疼。计划通！</p>
-<p>结果殿前没有人工服务窗口……</p>
-<p>我只能去售票机买票，想着那后面再说吧。结果到中山公园站需要4元，售票机只接受1、5、10元纸币或1元硬币。我身上符合要求的只有3元。我懵逼了。是你会怎么做呢？</p>
-<p>接着说。</p>
-<p>向工作人员询问，最近的能办公交卡的地方是乌石浦站，一看地铁路线图，我倒吸一口气，还好只要3元。</p>
-<p>于是我用了仅剩的3元先坐到了乌石浦，路上没敢乱想。还真看到了办卡的人，坐在墙边，守着一个看起来很山寨的小篷子。将信将疑下，我斥资50买了自带20的卡，强行镇定的先来了计划的第一个目的地——中山公园。此时，我仍不知道民宿在哪儿，怎么去曾厝垵。是你会怎么办？</p>
-<p>我决定全凭直觉，尝试找一家手机店，中山公园处在老城区，这项任务不至于太难。于是我凭直觉选了4出口，在走了100m后，发现了手边的苹果手机店。从招牌山寨的程度来看，应该能修手机。</p>
-<p>进去时，老板正和一帮人打牌，说清楚手机充不进电和我通过控制变量法得出的初步结论后，老板给我了盒新线。</p>
-<p>一插，来电了。</p>
-<p>后面就很顺利了，给了钱，买了线，公交卡也有了。万事俱备，刚好此处离中山公园南门很近，一点没耽误日程计划。</p>
-<h2 id="Day-2，12月30日"><a href="#Day-2，12月30日" class="headerlink" title="Day 2，12月30日"></a>Day 2，12月30日</h2><p><strong>地点：曾厝垵、南普陀寺、沙坡尾、鼓浪屿</strong><br><strong>关键词：爬山、文艺、理想主义、商业化侵蚀</strong></p>
-<p>经我亲身体会，曾厝垵有两个特点：</p>
-<ul>
-<li><strong>曾厝垵不适合路痴</strong>，路很窄，店很小，岔路、小巷极多，不分东西南北，同时里面的店更新比较快，地图并不能保证对应。认路如我都找了半个小时才到民宿，强烈建议姑娘们最好跟个认路的一起进来。</li>
-<li><strong>曾厝垵也会睡觉</strong>，且基本只在一日四餐的时候醒来，尤其是晚饭到宵夜时段，巷内百花齐放，为揽客无所不用其极。但早8点，晚11点，看上去就很虚弱了。</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wEcD.md.jpg" alt="曾厝垵.jpg"></p>
-<p>从曾厝垵到南普陀寺坐公交到厦大南普陀下即可，选择很多。这里补充一句，厦门公交很划算，除了B开头的BRT5元和旅游专线等专线，基本都是1元乘车。厦门地小、路窄、车也不少，还是旅游城市，想维持良好交通秩序真得挺不容易。</p>
-<p><strong>南普陀寺</strong>是个不错的景点，一方面<strong>不要门票</strong>，另一方面<strong>有免费的请香</strong>，真得很赞，如果有空可以来参观参观。寺后有后山，爬山后可以俯瞰城区，也可以直接去往<strong>植物园</strong>，不过我对植物没什么兴致，所以并没有去就下了山。</p>
-<p>考虑到南普陀、厦大附近游客巨多，我是走去的<strong>沙坡尾</strong>，沙坡尾原只是停靠渔船的地方，现在有个艺术西区，值得一看。可惜我去的时候很多地方正在装修，并没有什么策展。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wenH.md.jpg" alt="沙坡尾.jpg"></p>
-<p>沙坡尾里面有个<strong>路灯计划</strong>，组织者开放了一间无人监督的屋子，屋内有免费的水电和一些书籍，还有沙发、长桌等家具，出发点是提供空间给不方便的人。这份理想主义气息值得赞赏。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wmBd.md.jpg" alt="路灯计划.jpg"></p>
-<p>由于下午要去<strong>鼓浪屿</strong>，没有细逛就匆忙就离开了。<strong>鼓浪屿的船票建议提前购买</strong>，可以提前很久，购买网站点<a target="_blank" rel="noopener" href="http://www.xmferry.com/">这里</a>。清晰透明！坐船时，可以不用提前太久，安检效率很高。另外，船票是往返，去时检票，回来不用。</p>
-<p>鼓浪屿商业气息还挺浓厚的，北边要稍好点，能感受到一些残存的人文感，比如内厝澳那部分。游客也少一些。据说十几年前就开始渐渐商业化了，很久前一个淳朴的鼓浪屿小渔村的感觉是什么样呢？我很难想象，真是可惜。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wKAI.jpg" alt="鼓浪屿俯瞰.jpg"></p>
-<p>鼓浪屿景点相当多（毕竟世界遗产），同样<strong>也对路痴很不友好</strong>。要想好好逛逛基本要全程打开百度地图，执着如我大概用了300%不止的电量。鼓浪屿有两个制高点：</p>
-<ul>
-<li>笔架山，一块大石头，没什么游客，能看到鼓浪屿的局部。</li>
-<li>日光岩，不用提了，50元门票超值。能俯瞰全岛和厦门岛海岸线。风很大，注意管好自己的渔夫帽。</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wGjg.jpg" alt="渔夫帽.jpg"></p>
-<p>岛上有个邮局，可以寄明信片。其余的就自己感受吧。晚上到厦鼓码头的最后一班船是5点40，建议坐更晚的航班，这样可以停靠在中山路附近的东渡码头，吃饭更方便。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wBCV.jpg" alt="鼓浪屿邮局.jpg"></p>
-<p>说到吃饭，我尝试了的厦门特色小吃大概有：</p>
-<ul>
-<li>沙茶面</li>
-<li>海蛎煎，就是海蛎子、淀粉、鸡蛋放铁板上煎，再加上葱花。我在中山路莲欢海蛎煎吃的，味道还可以，但不是很惊喜</li>
-<li>土笋冻，原料是一种环节动物——星虫，果冻的形状，口感不错，吃时配上醋、酱油、芥末、香菜。味道还可以，但也不是很惊喜</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5ww40.jpg" alt="海蛎煎.jpg"></p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wdNq.jpg" alt="土笋冻.jpg"></p>
-<p>海鲜什么的，一方面一个人消费不起，另一方面我也不大感冒所以没尝试。除此以外，还有凤梨酥、姜母鸭什么的我没尝试。</p>
-<p>晚上吃饭的那家KFC每周五、六有驻场，碰巧被我赶上了，真是幸运。那家店是距离东渡码头最近的KFC。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wWU1.jpg" alt="KFC.jpg"></p>
-<h2 id="Day-3，12月31日"><a href="#Day-3，12月31日" class="headerlink" title="Day 3，12月31日"></a>Day 3，12月31日</h2><p><strong>地点：厦大、集美学村、环岛路、中山路</strong><br><strong>关键词：惊喜、安静、美食、跨年</strong></p>
-<p><strong>厦大</strong>同样需要<strong>提前预约</strong>。在微信公众号“U厦大”上完成，建议上点心，预约的人还挺多，预约晚了没有名额就要改时间。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wIgO.jpg" alt="上弦场.jpg"></p>
-<p>厦大可谓历史悠久，最初由陈嘉庚先生一手创办，是集美学村教育体系的一部分，后由于分身乏术交由政府所有。现在思明校区里仍存在很大部分20世纪初建校时的建筑。几个推荐地点：</p>
-<ul>
-<li><strong>上弦场</strong>，初建校时就存在，从陈嘉庚纪念馆里的老照片看，和现在变化并不大</li>
-<li><strong>芙蓉隧道</strong>，里面有厦大学生创作的隧道涂鸦，这是第三天的惊喜之一，我本以为就是正常的街道涂鸦，没想到是带有院系、社团组织特征的墙体彩绘，整个隧道长1.1公里，净宽8米，净高4.5米，没有机动车通行。墙面画满了涂鸦，相当有特点。有很多用心的作品，和游客在之上肆意的签画对比，真是云泥之别。</li>
-<li><strong>情人谷</strong>和<strong>水库</strong>，在北侧，有环绕一圈的步道</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5w58K.jpg" alt="芙蓉隧道.jpg"></p>
-<p>由于芙蓉隧道的存在，游览时间超过了预期，坐车去<strong>集美学村</strong>时，已下午1点。<strong>集美学村</strong>是那天第2个惊喜，它本身距市区较远，是陈嘉庚先生（生于集美）早年为振兴集美教育所做的伟大事业。我本以为没什么可逛，1个小时就可以坐车回环岛路。没想到，鼓浪屿中渐渐消失的宁静祥和气氛，我在这里找到了补偿。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5wHDH.jpg" alt="集美学村.jpg"></p>
-<p>集美学村由于距市区较远，游客较少。整个街区干净、平和、自然和谐，可以说是相当宜居了。进入入口稍走一段有家<strong>二姐和饺子</strong>，味道还不错，店也很文艺，推荐。若有人坐在路旁窗边的座位，兴许还能找到我在留言本里写的寄语。</p>
-<p>集美学村可以说是陈嘉庚先生半辈子的心血，因此整个学村也可见他的影响力。想深入了解的，可以去<strong>嘉庚公园</strong>的<strong>陈嘉庚纪念馆</strong>参观，里面有先生详尽的生平介绍。公园本身位于海边，海风吹的人也很舒服。</p>
-<p><strong>环岛路</strong>是绕厦门岛一圈的旅游公路，可以骑行，其中从<strong>厦大白城到黄厝一段</strong>有步行栈道，更是紧贴海边，若时间充足，可以抽出大半个下午和小伙伴边走边聊。我由于那天时间有限，走到曾山就放弃了。</p>
-<p>最后，晚上的朱记港式煲仔饭也是个惊喜。</p>
-<p><img src="https://s2.ax1x.com/2019/01/02/F5w7Ke.jpg" alt="煲仔饭.jpg"></p>
-<h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2><p><img src="https://s2.ax1x.com/2019/01/02/F5wLVA.jpg" alt="落日.jpg"></p>
-<p>跨年的曾厝垵人非常多。就连那些唱歌水平很将就的人也敢拎着音箱秀高音。我坐在海边等着过零点的时刻，并给它赋予了神圣的意义。</p>
-<p>整体来讲，这次旅途还算成功，只丢了一张公交卡，没遇到什么意外，反而有许多惊喜。厦门的车比较有礼貌，我遇到的人也都挺nice的。</p>
-<p>另外，妹子也很多，让我感受到世界原来也挺大的，哈哈。唯一一点对我不大友好的是，情侣也很多，大家都是一对对来的。的确，这里一些景点两个人一起逛可能更有意思。</p>
-<p>游记大概就写到这里了，大多是流水账，还请担待。</p>
-<p><em>–END–</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/11/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/blog/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/13/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1153,7 +1181,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:51</span>
+    <span title="站点阅读时长">28:57</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
