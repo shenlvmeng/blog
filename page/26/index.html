@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">149</span>
+          <span class="site-state-item-count">150</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">458</span>
+        <span class="site-state-item-count">459</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,171 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/02/27/event-loop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/02/27/event-loop/" class="post-title-link" itemprop="url">Javascript事件并发与Event Loop浅析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-02-27 15:12:38" itemprop="dateCreated datePublished" datetime="2017-02-27T15:12:38+08:00">2017-02-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/02/27/event-loop/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/27/event-loop/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>首先我们先来看下面一段代码。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span>);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">8</span>);</span><br><span class="line">        &#125;, <span class="number">0</span>);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    (<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">6</span>);</span><br><span class="line">        &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">7</span>);</span><br><span class="line">        &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    &#125;)();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;result&#x27;</span>;</span><br><span class="line">&#125;());</span><br></pre></td></tr></table></figure>
+
+<p>尽管结构复杂，但是只要对JavaScript的异步和回调有点了解，就能知道它的输出结果是’1 2 3 4 “result” 5 6 7 8’。</p>
+<h2 id="并发模型"><a href="#并发模型" class="headerlink" title="并发模型"></a>并发模型</h2><p>JavaScript中的异步和回调是语言本身的一种特色。包括上文中的setTimeout函数，Promise对象以及node.js的<a target="_blank" rel="noopener" href="https://nodejs.org/api/fs.html#fs_fs_readfile_file_options_callback">fs.readFile</a>等。将耗时的操作非阻塞地完成，可以大大提高程序的执行效率。而这些都和JavaScript的并发模型密切相关。与C++, Java多线程处理方式不同，<b>JavaScript中的并发是基于事件循环（<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/EventLoop">Event Loop</a>）的</b>。</p>
+<blockquote><p>Event loop is a programming construct that waits for and dispatches events or messages in a program.</p>
+</blockquote>
+
+<h3 id="执行图"><a href="#执行图" class="headerlink" title="执行图"></a>执行图</h3><p><img src="/blog/images/event-loop-graph-1.png"></p>
+<h4 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h4><p>函数调用时所用的执行环境栈。当函数被调用时，会进入一个执行环境（execution context）。当在函数内部调用其他函数（或自身调用）时，会进入新的执行环境，并在函数返回时回到原来的执行环境，并将原先的执行环境销毁。根据ECMA定义的概念，代码在执行环境中，还会创建变量对象的作用域链，以确保当前执行环境的有序性。最外层执行环境是全局环境（如<code>window</code>）。具体作用域链和执行环境的介绍，将放在其他文章中进行。</p>
+<p>函数执行过程中的执行环境栈即Stack。如下面的代码中，调用g时，形成第一个堆栈帧，包括参数21和局部变量m等。g调用f后，会创建第二个堆栈帧，置于其上，包含f的参数84和局部变量12等。f返回后，第二层栈帧出栈，g返回后，栈就空了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">f</span>(<span class="params">b</span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">12</span>;</span><br><span class="line">    <span class="keyword">return</span> a+b+<span class="number">35</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">g</span>(<span class="params">x</span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> m = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">f</span>(m*x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">g</span>(<span class="number">21</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="Heap"><a href="#Heap" class="headerlink" title="Heap"></a>Heap</h4><p>存放JS中引用类型的堆，JS的引用类型通过类似于图的形式存储，方便进行垃圾回收。具体介绍可以参考红宝书，这里从略。</p>
+<h4 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h4><p>JavaScript运行时的待处理消息队列，其中的每个消息都与对应的回调函数绑定（未绑定的消息不会进入队列）。当栈空时，会从栈中取出消息进行处理，这个过程包括调用回调函数，形成调用栈等。当栈在此为空时，代表这个消息处理完成。</p>
+<p>首先我们要明确一点，<b>JavaScript的并发是单线程的</b>。在程序中（如浏览器）运行时，JS引擎跑着两个线程。一个负责运行本身的程序，叫做主线程。另一个负责主线程与其他线程的的通信，即Event Loop。当遇到异步的任务时，主线程将交由其他线程处理，并根据情况将对应的消息入队到信息队列（Message Queue）等待处理，如果消息未绑定回调函数，则不入队。</p>
+<p><b>当调用栈清空后，队首消息依次出队，并调用绑定的回调函数，产生函数执行环境和调用栈等。直到消息队列清空为止</b>。以上就是JavaScript中的事件循环。</p>
+<p>不同的web worker或跨域的iframe都有各自的栈、堆以及消息队列。不同的环境通过<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/DOM/window.postMessage">postMessage</a>方法进行通信（需要双方监听message事件）。</p>
+<h3 id="setTimeout和setInterval"><a href="#setTimeout和setInterval" class="headerlink" title="setTimeout和setInterval"></a>setTimeout和setInterval</h3><p>在明白什么是时间循环后，setTimeout和setInterval这两个定时器函数就比较容易理解了。由于JavaScript运行在单线程的环境里，setTimeout和setInterval的定时时机实际上并不能得到保障。</p>
+<p><em>定时器对队列的工作方式是，在在当前时间过去特定的时间后将代码插入，这并不意味着之后会立即执行，而只能保证尽早执行。</em>。如下面的代码中，设定的250ms延时并不代表在onclick事件触发后的250ms立即执行。实际上，如果onclick的事件处理程序执行超过了250ms，定时器的设置将不再有意义（因为匿名函数的执行时机由onclick事件处理程序何时结束决定）。由此可见，setTimeout的时间间隔往往会比设计时长。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> btn = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;my-btn&quot;</span>);</span><br><span class="line">btn.<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;message&quot;</span>).<span class="property">style</span>.<span class="property">visibility</span> = <span class="string">&quot;visible&quot;</span>;</span><br><span class="line">    &#125;, <span class="number">250</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>setInterval道理类似，和setTimeout不同的是，setInterval函数会将回调函数定时地插入消息队列的末端。为了避免定时器代码在执行完成前就有新的相同代码插入，造成严重性能问题，聪明的JavaScript引擎<b>仅在队列中没有其他定时器实例时才会插入新的定时器代码</b>。</p>
+<p>但是这么做却也带来了一个问题，那就是</p>
+<ol>
+<li>某些间隔会被跳过</li>
+<li>多个定时器间的间隔会比预期的要小。</li>
+</ol>
+<p>后者可以通过循环调用setTimeout来避免。</p>
+<p>另外，微软在IE 10中实现了<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate">setImmediate</a>方法，来实现真正的回调函数“立即执行”，而在实际运行中似乎和setTimeout的时间类似。</p>
+<h2 id="Macrotask-和-Microtask"><a href="#Macrotask-和-Microtask" class="headerlink" title="Macrotask 和 Microtask"></a>Macrotask 和 Microtask</h2><p>首先我们还是先来看一段代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">setImmediate</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>);</span><br><span class="line">&#125;,<span class="number">0</span>);</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span>);</span><br><span class="line">&#125;,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">resolve</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="title function_">resolve</span>();</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">4</span>);</span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">6</span>);</span><br><span class="line">process.<span class="title function_">nextTick</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">7</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+
+<p>它的结果是什么呢。这里我们就要知道setTimeout, setImmediate, Promise.then, process.nextTick这些异步操作的优先级了。回答这个问题之前，我们先了解一下<a target="_blank" rel="noopener" href="https://html.spec.whatwg.org/multipage/webappapis.html#task-queue">Macrotask和Microtask两个概念</a>。</p>
+<p>Macrotask又叫task，是消息队列中一个个的message，一次event loop里面可能会有多个task，task有自己的task source，比如说setTimeout来自于timer task source，又或者和用户交互相关的来自user interaction task source。</p>
+<p>Microtask和Macrotask类似，区别在于它更轻量级，并非每次都在task末尾才执行，只要函数栈为空掉，Microtask就会执行。由此可见它的优先级要更高些。</p>
+<p>总结一下，它们的特点如下：</p>
+<ul>
+<li>一个事件循环(event loop)会有一个或多个任务队列(task queue) task queue 就是 macrotask queue</li>
+<li>每一个 event loop 都有一个 microtask queue</li>
+<li>task queue &#x3D;&#x3D; macrotask queue !&#x3D; microtask queue</li>
+<li>一个任务 task 可以放入 macrotask queue 也可以放入 microtask queue 中</li>
+<li>当一个 task 被放入队列 queue(macro或micro) 那这个 task 就可以被立即执行了</li>
+</ul>
+<p>简单点总结事件循环就是</p>
+<ol>
+<li>在 macrotask 队列中执行最早的那个 task ，执行浏览器渲染，然后移出</li>
+<li>执行 microtask 队列中所有可用的任务，然后移出</li>
+<li>下一个循环，执行下一个 macrotask 中的任务 (再跳到第2步，直到没有task和microtask)</li>
+</ol>
+<p>在实现上，macrotask主要有setTimeout setInterval setImmediate I&#x2F;O UI渲染；microtask主要有Promise process.nextTick Object.observe MutationObserver。由于microtask会耽误task的执行，尤其是在较多时甚至无法执行消息队列中的task，包括UI刷新。因此process.nextTick默认上限为1000，避免上述情况的出现。当调用次数过多时，会抛出栈溢出错误。</p>
+<p>所以，上面的执行结果将是<span style="background-color: #333; color: #333;">3 4 6 8 7 5 2 1</span></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -778,205 +943,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2016/02/27/vnm-test-learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2016/02/27/vnm-test-learning/" class="post-title-link" itemprop="url">vnm test学习</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-02-27 21:51:39" itemprop="dateCreated datePublished" datetime="2016-02-27T21:51:39+08:00">2016-02-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 15:38:24" itemprop="dateModified" datetime="2017-03-01T15:38:24+08:00">2017-03-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2016/02/27/vnm-test-learning/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/27/vnm-test-learning/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.9k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>师兄给了一个虚网映射的仿真（cpp），和之前的embed-detail的C语言仿真工具很像，经过一周左右的学习，挖掘出了其中虚网映射部分的内容，在此整理，以作日后学习。鉴于之前embed-detail的学习总结很繁琐，这里的总结只做精要的介绍。</p>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>这一部分在Utility.h中完成，是对映射种种数据容器的整理。</p>
-<h3 id="节点："><a href="#节点：" class="headerlink" title="节点："></a>节点：</h3><p>编号，CPU，带宽和，优先度</p>
-<h3 id="最短路："><a href="#最短路：" class="headerlink" title="最短路："></a>最短路：</h3><p>跳数，带宽，路径列表，下一跳</p>
-<h3 id="映射结果（单节点）："><a href="#映射结果（单节点）：" class="headerlink" title="映射结果（单节点）："></a>映射结果（单节点）：</h3><p>物理节点对象，虚拟节点编号，所属根节点，到根节点跳数，Node_list中序号，Node_list总数</p>
-<h3 id="（类）物理拓扑："><a href="#（类）物理拓扑：" class="headerlink" title="（类）物理拓扑："></a>（类）物理拓扑：</h3><p>节点总数，边总数，资源，节点资源，边资源；</p>
-<p>节点群（一维向量），边群（二维向量），最短路群（二维结构向量）；</p>
-<h4 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h4><ul>
-<li>初始化，</li>
-<li>节点排序算法，</li>
-<li>Floyd算法,</li>
-<li>找到节点序号对应的下标，</li>
-<li>计算网络资源</li>
-</ul>
-<h3 id="（类）虚拟拓扑（继承物理拓扑）："><a href="#（类）虚拟拓扑（继承物理拓扑）：" class="headerlink" title="（类）虚拟拓扑（继承物理拓扑）："></a>（类）虚拟拓扑（继承物理拓扑）：</h3><p>&#x2F;&#x2F;同物理拓扑</p>
-<p>允许最大跳数，分割率，拓扑类型，起始时间，映射时间，存活时间，消耗，节点消耗，链路消耗，收入，收入支出比，是否匹配成功，是否起请求截止，是否delay过，是否失败</p>
-<p>满足约束条件的节点群（二维向量），结果群（结果向量），最短路群（二维链表向量）</p>
-<h4 id="方法：-1"><a href="#方法：-1" class="headerlink" title="方法："></a>方法：</h4><ul>
-<li>读入拓扑，</li>
-<li>初始化，</li>
-<li>计算最短路径和，</li>
-<li>查找结点是否已经映射，</li>
-<li>匹配节点（包含匹配边），</li>
-<li>匹配边，</li>
-<li>匹配过程（包含匹配节点），</li>
-<li>分配或释放资源（匹配过程中完成），</li>
-<li>打印结果，</li>
-<li>计算收入支出，</li>
-<li>计算收入，</li>
-<li>释放虚网的所有资源</li>
-</ul>
-<h2 id="核心方法分析"><a href="#核心方法分析" class="headerlink" title="核心方法分析"></a>核心方法分析</h2><p>这一部分在Utility.cpp中完成，是对映射种种方法的实现。</p>
-<h3 id="（物理网络）"><a href="#（物理网络）" class="headerlink" title="（物理网络）"></a>（物理网络）</h3><p>1. 初始化：开辟最短路群空间，计算链路CPU&#x2F;带宽和&#x2F;PR值</p>
-<p>2. 计算资源：节点，链路资源相加。</p>
-<h3 id="（虚拟网络）"><a href="#（虚拟网络）" class="headerlink" title="（虚拟网络）"></a>（虚拟网络）</h3><p>1. 读入文件：读入节点数，链路数，开始时间，存活时间等。</p>
-<p>2. 初始化：填充Node_list</p>
-<p>3. 查找结点是否已被映射：for 循环遍历暴力查找</p>
-<p>4. 匹配节点：读入物理网络和参照物理网络，当前结点所属根节点，已映射节点数。</p>
-<p>（1）打印</p>
-<p>（2）从可行最短跳（虚拟网络中的跳数）到最大允许跳开始循环</p>
-<p>（2.1）从可行节点（Node_list）中查找满足CPU要求的节点</p>
-<p>（2.2）查找匹配边（Match_Edge），若有打印信息并返回</p>
-<p>（3）打印失败信息返回</p>
-<p>5. 匹配链路：读入物理网络预期参照，当前结点编号和下标，已映射节点数。</p>
-<p>（1）循环寻找所有与该节点关联的节点</p>
-<p>（1.1）若有关联，清空并循环更新最短路向量</p>
-<p>（1.2）循环检测带宽是否满足要求</p>
-<p>（2）循环还原减少的带宽资源</p>
-<p>（3）返回成功标记</p>
-<p>6. 匹配：读入物理拓扑，完成一个虚网的匹配</p>
-<p>（1）建立物理拓扑最短路矩阵</p>
-<p>（2）初始化最短路群，root, chosen_num（已选中节点数）</p>
-<p>（3）初始化根节点result类实例，若无备选节点，返回 0</p>
-<p>（4）循环寻找可行的根节点直到遍历完成</p>
-<p>（4.1）以当前父节点为基础开始匹配子节点，循环</p>
-<p>（4.1.1）循环寻找父节点的关联的子节点</p>
-<p>（4.1.1.1）若某节点无匹配物理节点，循环释放资源，返回 0</p>
-<p>（4.1.1.2）若找到，更新result群向量，调用匹配节点，找到对应物理节点序号</p>
-<p>（4.1.1.2.1）若成功返回，继续更新result，最短路矩阵，更新底层资源</p>
-<p>（4.1.1.2.2）若不成功，回退chosen_num，释放资源，更新root，最短路</p>
-<p>（4.1.2）若未回退到根节点，不用调整根节点，继续从下个父节点开始匹配，直到匹配完成</p>
-<p>（4.2）若匹配未完成，释放根节点和其余资源</p>
-<p>（5）若匹配成功计算收入支出返回回退次数，否则释放资源，返回 0；</p>
-<p>7. 资源管理：通过标记值区分占用或是释放，循环更新节点和链路资源</p>
-<p>8. 打印，计算收入支出</p>
-<p>9. 释放虚网资源：循环释放，返回释放资源值</p>
-<h2 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h2><p>这一部分在VNM.cpp中完成，是时间窗模型下虚网映射的实现。步骤如下：</p>
-<p>1. 初始化临时变量，</p>
-<p>2. 从文件中读入底层物理网络，虚网请求</p>
-<p>3.  打印初始信息，计算物理资源</p>
-<p>4. 循环到所有请求都被处理完成或是有finish标记</p>
-<p>4.1 循环计算该窗口内待映射请求数</p>
-<p>4.2 循环这些请求</p>
-<p>4.2.1 挑出未延迟且未成功的</p>
-<p>4.2.1.1 初始化虚网，打印信息</p>
-<p>4.2.1.2 开始匹配，计算时间</p>
-<p>4.2.1.3 计算收入，更改标记为映射完成或延迟</p>
-<p>4.2.1.4 计算当前物理资源，写入到文件</p>
-<p>4.2.2 挑出匹配成功且到期的请求</p>
-<p>4.2.2.1 更新它们的R&#x2F;S和完成数目</p>
-<p>4.2.2.2 释放它们的资源</p>
-<p>4.2.3 挑出delay过久的请求，置为失败，更新资源和计数器</p>
-<p>4.3 计算该时间窗内的支出，收入等数据，更新finish和计数器</p>
-<p>4.4 打印该时间窗测试数据到文件</p>
-<p>4.5 更新时间窗时间</p>
-<p>5. 关闭文件，打印当前时间</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/25/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/blog/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/27/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1007,7 +973,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:57</span>
+    <span title="站点阅读时长">29:03</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

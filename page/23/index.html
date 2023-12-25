@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">149</span>
+          <span class="site-state-item-count">150</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">458</span>
+        <span class="site-state-item-count">459</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,225 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/18/cors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/04/18/cors/" class="post-title-link" itemprop="url">跨域技法之CORS</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-18 20:44:38" itemprop="dateCreated datePublished" datetime="2017-04-18T20:44:38+08:00">2017-04-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/04/18/cors/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/18/cors/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>说到CORS，要从下面是一段很常见的前端面试对话</p>
+<blockquote>
+<p>问: 之前实践中有遇到过跨域的需求吗？</p>
+</blockquote>
+<blockquote>
+<p>答: 遇到过。</p>
+</blockquote>
+<blockquote>
+<p>问: 那你是怎么解决的呢？</p>
+</blockquote>
+<blockquote>
+<p>答: 跨域吧，大概有8种方法，<del>很平衡</del>，jsonp，CORS，反向代理，Websocket。结合iframe，还有使用document.domain, window.name, location.hash, window.postMessage等方法。</p>
+</blockquote>
+<h3 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h3><p>jsonp是此前最为常用的一种跨域方法，利用了<code>&lt;script&gt;</code>标签的非跨域性，实现起来大概是下面这样的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">jsonp</span>(<span class="params">url, success</span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> ud = <span class="string">&#x27;_&#x27;</span> + +<span class="keyword">new</span> <span class="title class_">Date</span>,</span><br><span class="line">      script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>),</span><br><span class="line">      head = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;head&#x27;</span>)[<span class="number">0</span>] </span><br><span class="line">          || <span class="variable language_">document</span>.<span class="property">documentElement</span>;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">window</span>[ud] = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    head.<span class="title function_">removeChild</span>(script);</span><br><span class="line">    success &amp;&amp; <span class="title function_">success</span>(data);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  script.<span class="property">src</span> = url.<span class="title function_">replace</span>(<span class="string">&#x27;callback=?&#x27;</span>, <span class="string">&#x27;callback=&#x27;</span> + ud);</span><br><span class="line">  head.<span class="title function_">appendChild</span>(script);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">jsonp</span>(<span class="string">&#x27;http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?&#x27;</span>, <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">&#125;); </span><br></pre></td></tr></table></figure>
+
+<h3 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h3><p>CORS（<a target="_blank" rel="noopener" href="https://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a>）是W3C规定的在客户端用来进行跨站通信的标准。随着XMLHttpRequest2的出现，大部分浏览器下，可以像普通同域那样使用xhr对象来发起跨域请求。</p>
+<h4 id="构造一个CORS请求"><a href="#构造一个CORS请求" class="headerlink" title="构造一个CORS请求"></a>构造一个CORS请求</h4><p>CORS被下列浏览器<a target="_blank" rel="noopener" href="http://caniuse.com/#search=cors">支持</a></p>
+<ul>
+<li>Chrome 3+</li>
+<li>Firefox 3.5+</li>
+<li>Opera 12+</li>
+<li>Safari 4+</li>
+<li>Internet Explorer 8+</li>
+</ul>
+<p>其中Chrome，FF，Opera，Safari都通过<a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/file/xhr2/">XMLHttpRequest2</a>对象来实现CORS。不一般的IE通过XDomainRequest对象实现，不过工作方式和xhr对象大同小异。Nicolas Zakas（《JavaScript高级程序设计》的作者）写了一个<a target="_blank" rel="noopener" href="http://www.nczonline.net/blog/2010/05/25/cross-domain-ajax-with-cross-origin-resource-sharing/">helper函数</a>，保证了浏览器兼容性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createCORSRequest</span>(<span class="params">method, url</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">  <span class="keyword">if</span> (<span class="string">&quot;withCredentials&quot;</span> <span class="keyword">in</span> xhr) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check if the XMLHttpRequest object has a &quot;withCredentials&quot; property.</span></span><br><span class="line">    <span class="comment">// &quot;withCredentials&quot; only exists on XMLHTTPRequest2 objects.</span></span><br><span class="line">    xhr.<span class="title function_">open</span>(method, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="title class_">XDomainRequest</span> != <span class="string">&quot;undefined&quot;</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Otherwise, check if XDomainRequest.</span></span><br><span class="line">    <span class="comment">// XDomainRequest only exists in IE, and is IE&#x27;s way of making CORS requests.</span></span><br><span class="line">    xhr = <span class="keyword">new</span> <span class="title class_">XDomainRequest</span>();</span><br><span class="line">    xhr.<span class="title function_">open</span>(method, url);</span><br><span class="line"></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Otherwise, CORS is not supported by the browser.</span></span><br><span class="line">    xhr = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> xhr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="title function_">createCORSRequest</span>(<span class="string">&#x27;GET&#x27;</span>, url);</span><br><span class="line"><span class="keyword">if</span> (!xhr) &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;CORS not supported&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="withCredentials"><a href="#withCredentials" class="headerlink" title="withCredentials"></a>withCredentials</h4><p>标准的CORS请求默认不携带cookie，如果需要在请求中携带cookie信息，需要在为xhr对象指定<code>withCredentials</code>属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xhr.<span class="property">withCredentials</span> = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>同时，服务器端也要在响应头上设置<code>Access-Control-Allow-Credentials</code>字段为<code>true</code>。像下面这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Credentials: true</span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，cookie同样遵守同源法则，即你的JS代码无法获取和设置远端的cookie。</p>
+<h4 id="发起CORS请求"><a href="#发起CORS请求" class="headerlink" title="发起CORS请求"></a>发起CORS请求</h4><p>CORS请求发起方式和xhr没有什么区别，调用<code>xhr.send()</code>即可。综合来看，一个End to End的例子像下面这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create the XHR object.</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">createCORSRequest</span>(<span class="params">method, url</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">  <span class="keyword">if</span> (<span class="string">&quot;withCredentials&quot;</span> <span class="keyword">in</span> xhr) &#123;</span><br><span class="line">    <span class="comment">// XHR for Chrome/Firefox/Opera/Safari.</span></span><br><span class="line">    xhr.<span class="title function_">open</span>(method, url, <span class="literal">true</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="title class_">XDomainRequest</span> != <span class="string">&quot;undefined&quot;</span>) &#123;</span><br><span class="line">    <span class="comment">// XDomainRequest for IE.</span></span><br><span class="line">    xhr = <span class="keyword">new</span> <span class="title class_">XDomainRequest</span>();</span><br><span class="line">    xhr.<span class="title function_">open</span>(method, url);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// CORS not supported.</span></span><br><span class="line">    xhr = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> xhr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Helper method to parse the title tag from the response.</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getTitle</span>(<span class="params">text</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> text.<span class="title function_">match</span>(<span class="string">&#x27;&lt;title&gt;(.*)?&lt;/title&gt;&#x27;</span>)[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Make the actual CORS request.</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">makeCorsRequest</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// This is a sample server that supports CORS.</span></span><br><span class="line">  <span class="keyword">var</span> url = <span class="string">&#x27;http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="title function_">createCORSRequest</span>(<span class="string">&#x27;GET&#x27;</span>, url);</span><br><span class="line">  <span class="keyword">if</span> (!xhr) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;CORS not supported&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Response handlers.</span></span><br><span class="line">  xhr.<span class="property">onload</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> text = xhr.<span class="property">responseText</span>;</span><br><span class="line">    <span class="keyword">var</span> title = <span class="title function_">getTitle</span>(text);</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;Response from CORS request to &#x27;</span> + url + <span class="string">&#x27;: &#x27;</span> + title);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  xhr.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;Woops, there was an error making the request.&#x27;</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  xhr.<span class="title function_">send</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="背后"><a href="#背后" class="headerlink" title="背后"></a>背后</h4><p><img src="/blog/images/cors_flow.png"></p>
+<p>CORS背后的脏活累活包括额外的包头以及额外的报文，这些由浏览器帮我们代劳了。CORS请求分为“<em>简单的请求</em>”和“<em>没那么简单的请求</em>”。简单的请求包含下列特征：</p>
+<ul>
+<li>HTTP方法名是<code>GET</code>, <code>POST</code>, <code>HEAD</code>之一</li>
+<li>HTTP包头包括<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type为<code>application/x-www-form-urlencoded</code>或<code>multipart/form-data</code>或<code>text/plain</code></li>
+</ul>
+</li>
+</ul>
+<p>这种普通的CORS请求可以不必选择CORS，而可以通过jsonp或表单提交的方式解决。剩下的不那么简单的请求则需要浏览器和服务器进行额外的报文交换（prelight request）。</p>
+<p>我们先从一个简单的请求开始，利用上面封装好的函数，写出下面的一段代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> url = <span class="string">&quot;http://api.foo.com/cors&quot;</span>,</span><br><span class="line">    xhr = <span class="title function_">createCORSRequest</span>(<span class="string">&#x27;GET&#x27;</span>, url);</span><br><span class="line">xhr.<span class="title function_">send</span>();</span><br></pre></td></tr></table></figure>
+
+<p>在它的背后的HTTP包头像下面这样，请注意其中的Origin字段。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GET /cors HTTP/1.1</span><br><span class="line">Origin: http://api.bar.com</span><br><span class="line">Host: api.foo.com</span><br><span class="line">Accept-Language: en-US</span><br><span class="line">Connection: keep-alive</span><br><span class="line">User-Agent: Mozilla/5.0 ...</span><br></pre></td></tr></table></figure>
+
+<p>一个合理的CORS请求<strong>必须</strong>包含一个<strong>Origin</strong>包头。这个包头由浏览器添加，用户不可自行修改。这部分由协议，域名和端口三部分组成。三者任意一个与<strong>Host</strong>不一致就算做跨域。非跨域时，不同浏览器对这个字段的处理方式不同，如FF会省去Origin字段，Chrome和Safari会在POST&#x2F;DELETE&#x2F;PUT时包括这个字段。</p>
+<p>幸运的是，在跨域时一定会带上这个字段。支持CORS会根据客户端的Origin是否在allow list中做出回应。下面是一个样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Origin: http://appi.bob.com</span><br><span class="line">Access-Control-Allow-Credentials: true</span><br><span class="line">Access-Control-Expose-Headers: FooBar</span><br><span class="line">Content-Type: text/html; charset=utf-8</span><br></pre></td></tr></table></figure>
+<p>其中前三个以<code>Access-Control-</code>开头的字段和CORS相关。</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须)，这个字段必须附加在合法的CORS响应中，像上面例子所写的那样，或是设置为<code>*</code>表示允许任意源的请求（不过一般不会这样设置）</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选)，默认情况下，cookie不被包含在CORS请求中，设置此字段为<code>true</code>表示包含cookie在请求中。这个字段需要和XMLHttpRequest2中的<code>withCredentials</code>属性配合保证成功。</li>
+<li><code>Access-Control-Expose-Headers</code>(可选)，XMLHttpRequest2的<code>getResponseHeader()</code>方法可以获取下面这些属性<ul>
+<li>Cache-Control</li>
+<li>Content-Language</li>
+<li>Content-Type</li>
+<li>Expires</li>
+<li>Last-Modified</li>
+<li>Pragma<br>如果想访问其他属性时，需要设置这个字段，属性间用逗号隔开。</li>
+</ul>
+</li>
+</ul>
+<p>当请求“没那么简单”时，比如徐需要使用PUT或DELETE，或是需要支持JSON的返回资源类型时，浏览器需要先发起一次<strong>prelight request</strong>。在收到服务器允许的回复后，真实的请求再发出。不过这个过程对于用户是透明的。下面是一个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> url = <span class="string">&quot;http://api.foo.com&quot;</span>,</span><br><span class="line">    xhr = <span class="title function_">createCORSRequest</span>(<span class="string">&#x27;PUT&#x27;</span>, url);</span><br><span class="line">xhr.<span class="title function_">setRequestHeader</span>(<span class="string">&#x27;X-Custom-Header&#x27;</span>, <span class="string">&#x27;value&#x27;</span>);</span><br><span class="line">xhr.<span class="title function_">send</span>();</span><br></pre></td></tr></table></figure>
+<p><code>Prelight request</code>如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OPTIONS /cors HTTP/1.1</span><br><span class="line">Origin: http://api.bar.com</span><br><span class="line">Access-Control-Request-Method: PUT</span><br><span class="line">Access-Control-Request-Headers: X-Custom-Header</span><br><span class="line">Host: api.foo.com</span><br><span class="line">Accept-Language: en-US</span><br><span class="line">Connection: keep-alive</span><br><span class="line">User-Agent: Mozilla/5.0 ...</span><br></pre></td></tr></table></figure>
+
+<p>除了我们上面已经提过的<code>Origin</code>字段外，又新增了两个字段</p>
+<ul>
+<li><code>Access-Control-Request-Method</code> 真实的HTTP请求方法。是始终包含在包头的</li>
+<li><code>Access-Control-Request-Headers</code> 用逗号分隔的真实HTTP请求的包头。</li>
+</ul>
+<p>服务器接收到这些后，会根据方法和包头，结合<code>Origin</code>检验合法性。在验证合法后，返回<code>Prelight Response</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Origin: http://api.bob.com</span><br><span class="line">Access-Control-Allow-Methods: GET, POST, PUT</span><br><span class="line">Access-Control-Allow-Headers: X-Custom-Header</span><br><span class="line">Content-Type: text/html; charset=utf-8</span><br></pre></td></tr></table></figure>
+
+<p>它们的含义从名字中就可以推出一二</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>(必须) 略</li>
+<li><code>Access-Control-Allow-Methods</code>(必须)，用逗号分隔的支持的HTTP方法列表。尽管可能请求中只写了一种方法。这么做避免了多次请求</li>
+<li><code>Access-Control-Allow-Headers</code> (若客户端填写对应的头部则为必须)，逗号分割的支持的所有头部类型</li>
+<li><code>Access-Control-Allow-Credentials</code>(可选) 略</li>
+<li><code>Access-Control-Max-Age</code>(可选)，<code>prelight response</code>的缓存时间，以秒为单位。</li>
+</ul>
+<p>在<code>Prelight request</code>和<code>Prelight response</code>交换完成后，就是真正的请求和响应。此时的请求头部可以带上之前商议中所允许的字段，大致像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PUT /cors HTTP/1.1</span><br><span class="line">Origin: http://api.bob.com</span><br><span class="line">Host: api.alice.com</span><br><span class="line">X-Custom-Header: value</span><br><span class="line">Accept-Language: en-US</span><br><span class="line">Connection: keep-alive</span><br><span class="line">User-Agent: Mozilla/5.0...</span><br></pre></td></tr></table></figure>
+
+<p>当请求成功发出时，可以在响应头部看到CORS相关的字段，如<code>Access-Control-Allow-Origin</code>。请求失败时，会在console上报错，但不会给出具体信息。</p>
+<h3 id="CORS-from-jQuery"><a href="#CORS-from-jQuery" class="headerlink" title="CORS from jQuery"></a>CORS from jQuery</h3><p>关于使用jQuery发起CORS请求，可以参加后文<a href="#refer">参考</a>的第一条或jQuery相关文档。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span id="refer"></span></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.html5rocks.com/en/tutorials/cors/">Using CORS</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/file/xhr2/">XMLHttpRequest2 新技巧</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1042,229 +1261,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/05/vue-reactive-sourcecode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/04/05/vue-reactive-sourcecode/" class="post-title-link" itemprop="url">Vue2.0的响应式设计原理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-04-05 15:12:20" itemprop="dateCreated datePublished" datetime="2017-04-05T15:12:20+08:00">2017-04-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/04/05/vue-reactive-sourcecode/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/05/vue-reactive-sourcecode/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>11k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>18 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上周抽空看了看Vue的源码，设计的精巧让我这个鶸一时吸收不来。如果想写篇既大又全的文章，一劳永逸地介绍Vue2.0的源码，以我的水平显然是做不到的。于是就只取一瓢饮地，简单记录下Vue2.0在响应式原理上的设计。其他的部分等我功力深厚了（其实就是懒）再做总结吧。</p>
-<h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><p>这一部分是Vue响应式原理的基础。包含Observer类，Watcher类，Dep类，事件订阅模式，还有最关键的<code>Object.defineProperty</code>方法。</p>
-<h4 id="Object-defineProperty"><a href="#Object-defineProperty" class="headerlink" title="Object.defineProperty"></a>Object.defineProperty</h4><p>Vue实现数据绑定的方式和其他的MVVM同侪不同，React和backbone（这货不是MVVM）采用的是典型的发布订阅模式，Angular则采用的脏值检测。</p>
-<p>Vue使用了更为隐蔽和magical的<code>Object.defineProperty</code>设置对象访问器属性（这也意味着Vue只支持到IE9+）。</p>
-<blockquote><p>把一个普通 Javascript 对象传给 Vue 实例的 data 选项，Vue 将遍历此对象所有的属性，并使用 Object.defineProperty 把这些属性全部转为 getter&#x2F;setter。Object.defineProperty 是仅 ES5 支持，且无法 shim 的特性，这也就是为什么 Vue 不支持 IE8 以及更低版本浏览器的原因。</p>
-</blockquote>
-
-<p><code>Object.defineProperty()</code>可以定义对象的访问器属性，关于访问器属性的更多介绍可以看<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/13/js-object/">这里</a>。其中<code>get</code>和<code>set</code>方法分别用来指定属性的getter和setter。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">  <span class="attr">_name</span>: <span class="string">&#x27;&#x27;</span>,  <span class="comment">//`_`表示只能通过方法访问</span></span><br><span class="line">  <span class="attr">nickname</span>: <span class="string">&#x27;酱&#x27;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(person, <span class="string">&#x27;name&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">_name</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="keyword">function</span> (<span class="params">newValue</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">nickname</span> = newValue + <span class="string">&#x27;酱&#x27;</span>;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_name</span> = newValue;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>通过getter和setter实现数据劫持是Vue数据绑定的基础。</p>
-<h4 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h4><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F">发布订阅</a>是JavaScript中事件机制的实现方式，也是<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/">JavaScript异步编程</a>的实现方式之一。</p>
-<p>发布订阅模式中的角色主要有发布者、事件对象、订阅者。发布者和事件对象是一对多的关系，事件对象和订阅者又是一对多的关系。当发布者的状态改变触发事件对象时，相关的订阅者就会收到通知。实现起来就像下面这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventUtil</span> = &#123;</span><br><span class="line">  <span class="comment">// 全局事件管理</span></span><br><span class="line">  <span class="keyword">var</span> events = &#123;&#125;,</span><br><span class="line">  <span class="comment">// 注册事件</span></span><br><span class="line">    on = <span class="keyword">function</span> (<span class="params">type, handler</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (events[type]) &#123;</span><br><span class="line">        events[type].<span class="title function_">push</span>(handler);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        events[type] = [handler];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 触发事件</span></span><br><span class="line">    emit = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          events[type][i];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>Vue实现视图自动更新的原理也是如此，当然细节上就复杂多了。</p>
-<h4 id="Observer，Watcher，Dep"><a href="#Observer，Watcher，Dep" class="headerlink" title="Observer，Watcher，Dep"></a>Observer，Watcher，Dep</h4><p>这三个是相辅相成实现Vue数据绑定的组件。</p>
-<h5 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h5><p>Vue在组件(Component)初始化过程中，会将数据对象封装为Observer对象，便于监听数据的改变，并绑定依赖在上面。我们来看下<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L39-L53">源码</a>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">constructor</span> (<span class="attr">value</span>: any) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">value</span> = value</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">dep</span> = <span class="keyword">new</span> <span class="title class_">Dep</span>()  <span class="comment">//一个 Dep对象实例，Watcher 和 Observer 之间的纽带</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">vmCount</span> = <span class="number">0</span></span><br><span class="line">  <span class="title function_">def</span>(value, <span class="string">&#x27;__ob__&#x27;</span>, <span class="variable language_">this</span>)  <span class="comment">//把自身 this 添加到 value 的 __ob__ 属性上</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(value)) &#123; <span class="comment">//对 value 的类型进行判断</span></span><br><span class="line">    <span class="keyword">const</span> augment = hasProto</span><br><span class="line">      ? protoAugment</span><br><span class="line">      : copyAugment</span><br><span class="line">    <span class="title function_">augment</span>(value, arrayMethods, arrayKeys) <span class="comment">// 数组增强方法</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">observeArray</span>(value) <span class="comment">//如果是数组则观察数组</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">walk</span>(value) <span class="comment">//否则观察单个元素。</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Observer对象储存在 <strong>ob</strong> 这个属性，这个属性保存了 Observer 对象自己本身。对象在转化为 Observer 对象的过程中是一个递归的过程，对象的子元素如果是对象或数组的话，也会转化为 Observer 对象。</p>
-<p>由于JavaScript本身的原因，Vue不能监测数组的变化，Vue采用的折中方法是增强数组的原生方法<code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>, <code>sort</code>, <code>reverse</code>，以及建议使用者通过Vue.set的方式显示调用。通过其他方式对数组进行的修改将无法被监听到。</p>
-<h5 id="Watcher"><a href="#Watcher" class="headerlink" title="Watcher"></a>Watcher</h5><p>Vue中，Watcher和模板渲染紧密相连，它将Observer发生的改变反映到模板内容上。它关键部分的<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/watcher.js#L39-L85">源码</a>是这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">constructor</span> (</span><br><span class="line">  <span class="attr">vm</span>: <span class="title class_">Component</span>,</span><br><span class="line">  <span class="attr">expOrFn</span>: string | <span class="title class_">Function</span>,</span><br><span class="line">  <span class="attr">cb</span>: <span class="title class_">Function</span>,</span><br><span class="line">  options?: <span class="title class_">Object</span></span><br><span class="line">) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">vm</span> = vm</span><br><span class="line">  vm.<span class="property">_watchers</span>.<span class="title function_">push</span>(<span class="variable language_">this</span>)<span class="comment">// 将当前 Watcher 类推送到对应的 Vue 实例中</span></span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// parse expression for getter</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果是函数，相当于指定了当前订阅者获取数据的方法，每次订阅者通过这个方法获取数据然后与之前的值进行对比</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">getter</span> = expOrFn</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">getter</span> = <span class="title function_">parsePath</span>(expOrFn)<span class="comment">// 否则的话将表达式解析为可执行的函数</span></span><br><span class="line">    ......</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">value</span> = <span class="variable language_">this</span>.<span class="property">lazy</span></span><br><span class="line">    ? <span class="literal">undefined</span></span><br><span class="line">    : <span class="variable language_">this</span>.<span class="title function_">get</span>()   <span class="comment">//如果 lazy 不为 true，则执行 get 函数进行依赖收集</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中输入参数<code>vm</code>是监听的组件，<code>expOrFn</code>最终将交给<code>getter</code>属性，<code>cb</code>是更新时的回调函数。最后一句中的<code>this.get()</code>完成了依赖的收集工作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Evaluate the getter, and re-collect dependencies.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">get () &#123;</span><br><span class="line">  <span class="title function_">pushTarget</span>(<span class="variable language_">this</span>)  <span class="comment">// 设置全局变量 Dep.target，将 Watcher 保存在这个全局变量中</span></span><br><span class="line">  <span class="keyword">const</span> value = <span class="variable language_">this</span>.<span class="property">getter</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>.<span class="property">vm</span>, <span class="variable language_">this</span>.<span class="property">vm</span>) <span class="comment">// 调用 getter 函数，进入 get 方法进行依赖收集操作</span></span><br><span class="line">  <span class="comment">// &quot;touch&quot; every property so they are all tracked as</span></span><br><span class="line">  <span class="comment">// dependencies for deep watching</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">deep</span>) &#123;</span><br><span class="line">    <span class="title function_">traverse</span>(value)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">popTarget</span>()  <span class="comment">// 将全局变量 Dep.target 置为 null</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">cleanupDeps</span>()</span><br><span class="line">  <span class="keyword">return</span> value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第一句的<code>pushTarget(this)</code>设置了<code>Dep.target</code>，getter函数正是通过<code>Dep.target</code>是否为<code>null</code>，判断当前处于依赖收集阶段还是普通数据读取。后面的两句去<code>touch``expOrFn</code>涉及到的每个数据项。从而将<code>expOrFn</code>的依赖收集起来。最后将dep中的内容清空，为下次收集依赖做准备。</p>
-<h5 id="Dep"><a href="#Dep" class="headerlink" title="Dep"></a>Dep</h5><p>Dep类用于连接Watcher类和Observer类，每个Observer对象中都有一个Dep实例，其中存储了订阅者Watcher。<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/dep.js#L17-L20">源码</a>如下: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//...</span></span><br><span class="line">  <span class="title function_">constructor</span> () &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">id</span> = uid++</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">subs</span> = [] <span class="comment">//存储 Watcher 实例的数组</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">  depend () &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Dep</span>.<span class="property">target</span>) &#123;</span><br><span class="line">      <span class="title class_">Dep</span>.<span class="property">target</span>.<span class="title function_">addDep</span>(<span class="variable language_">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  notify () &#123;</span><br><span class="line">    <span class="comment">// stablize the subscriber list first</span></span><br><span class="line">    <span class="keyword">const</span> subs = <span class="variable language_">this</span>.<span class="property">subs</span>.<span class="title function_">slice</span>()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.<span class="property">length</span>; i &lt; l; i++) &#123;   <span class="comment">//遍历 Watcher 列表，调用 update 方法进行更新操作</span></span><br><span class="line">      subs[i].<span class="title function_">update</span>()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<p>Dep类比较简单，主要是一个存储Watcher实例的数组<code>this.subs</code>。<code>depend()</code>方法用于向Watcher对象中添加这个Dep。<code>notify()</code>方法将遍历Watcher列表，通知订阅者更新视图。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>下面从源码角度上看看Vue实现数据绑定的设计。</p>
-<h4 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h4><p>Vue核心部分的代码放在<code>src</code>目录。路径下还有下面这些子文件夹：</p>
-<ul>
-<li><code>entries</code> 入口文件，根据编译环境的不同，更改一些配置</li>
-<li><code>compiler</code> 编译模板，<code>render</code>函数的实现</li>
-<li><code>core</code> 关键部分代码</li>
-<li><code>core/observer</code> 响应式设计中的Observer对象实现</li>
-<li><code>core/vdom</code> 虚拟DOM，diff算法，patch函数实现</li>
-<li><code>core/instance</code> 组件实例生命周期实现，组件初始化入口</li>
-<li><code>core/components</code> 全局组件</li>
-<li><code>core/global-api</code> 全局API</li>
-<li><code>server</code> 服务端渲染</li>
-<li><code>platform</code> 平台特定代码，分为<code>web</code>和<code>weex</code></li>
-<li><code>sfc</code> 处理单文件组件 解析.vue文件</li>
-<li><code>share</code> 工具函数</li>
-</ul>
-<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p>关于Vue的<a target="_blank" rel="noopener" href="https://vuejs.org/v2/guide/instance.html#Lifecycle-Diagram">生命周期</a>，这里假设你已经熟悉，就不做介绍了。了解它也将帮助你了解Vue的工作流程。</p>
-<p>源码的入口从下面一行<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/index.js#L8-L14">代码</a>开始：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Vue</span> (options) &#123;</span><br><span class="line">  <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;production&#x27;</span> &amp;&amp;</span><br><span class="line">    !(<span class="variable language_">this</span> <span class="keyword">instanceof</span> <span class="title class_">Vue</span>)) &#123;</span><br><span class="line">    <span class="title function_">warn</span>(<span class="string">&#x27;Vue is a constructor and should be called with the `new` keyword&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">_init</span>(options) <span class="comment">//开始初始化步骤</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">initMixin</span>(<span class="title class_">Vue</span>) <span class="comment">//插入初始化代码</span></span><br><span class="line"><span class="title function_">stateMixin</span>(<span class="title class_">Vue</span>) <span class="comment">//插入数据绑定代码</span></span><br><span class="line"><span class="title function_">eventsMixin</span>(<span class="title class_">Vue</span>) <span class="comment">//插入事件相关代码</span></span><br><span class="line"><span class="title function_">lifecycleMixin</span>(<span class="title class_">Vue</span>) <span class="comment">//插入生命周期代码</span></span><br><span class="line"><span class="title function_">renderMixin</span>(<span class="title class_">Vue</span>) <span class="comment">//插入模板渲染代码</span></span><br></pre></td></tr></table></figure>
-
-<p>文件为<code>src/core/instance/index.js</code>，关键在于最后一句，通过调用<code>init.js</code>中定义的<code>_init(options)</code>方法初始化Vue实例。这个方法是在下面的<code>initMixin(Vue)</code>中导入的。这种mixin的方式不同于Vue1.x版本，更具模块化适合拓展（同时也增加了寻找代码的难度）。</p>
-<p>初始化相关的主要<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/init.js#L40-L48">代码</a>如下；</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">initMixin</span> (<span class="title class_">Vue</span>: <span class="title class_">Class</span>&lt;<span class="title class_">Component</span>&gt;) &#123;</span><br><span class="line">  <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_init</span> = <span class="keyword">function</span> (<span class="params">options?: <span class="built_in">Object</span></span>) &#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">    <span class="title function_">initLifecycle</span>(vm)   <span class="comment">//vm 的生命周期相关变量初始化</span></span><br><span class="line">    <span class="title function_">initEvents</span>(vm)    <span class="comment">// vm 的事件监控初始化</span></span><br><span class="line">    <span class="title function_">initRender</span>(vm)  <span class="comment">// 模板解析</span></span><br><span class="line">    <span class="title function_">callHook</span>(vm, <span class="string">&#x27;beforeCreate&#x27;</span>)</span><br><span class="line">    <span class="title function_">initState</span>(vm) <span class="comment">//vm 的状态初始化，prop/data/computed/method/watch 都在这里完成初始化</span></span><br><span class="line">    <span class="title function_">callHook</span>(vm, <span class="string">&#x27;created&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> (vm.<span class="property">$options</span>.<span class="property">el</span>) &#123;</span><br><span class="line">	  vm.$mount(vm.<span class="property">$options</span>.<span class="property">el</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>initLifecycle</code>主要是初始化vm实例上的一些参数；<code>initEvents</code>是事件监控的初始化；<code>initRender</code>是模板解析，2.0的版本中这一块有很大的改动，1.0的版本中Vue使用的是<code>DocumentFragment</code>来进行模板解析，而 2.0 中作者采用的John Resig的HTML Parser将模板解析成可直接执行的<code>render</code>函数。<code>initState</code>是数据绑定的主战场，我们下一节会详细讲到。<code>callHook</code>执行生命周期的钩子函数。</p>
-<h4 id="initState"><a href="#initState" class="headerlink" title="initState"></a>initState</h4><p>在初始化中，<code>initState</code>函数承担了数据绑定中的最主要的脏活累活。它的<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/state.js#L24-L36">源码</a>像下面这样:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">initState</span> (<span class="attr">vm</span>: <span class="title class_">Component</span>) &#123;</span><br><span class="line">  vm.<span class="property">_watchers</span> = []  <span class="comment">//新建一个订阅者列表</span></span><br><span class="line">  <span class="keyword">const</span> opts = vm.<span class="property">$options</span></span><br><span class="line">  <span class="keyword">if</span> (opts.<span class="property">props</span>) <span class="title function_">initProps</span>(vm, opts.<span class="property">props</span>)  <span class="comment">// 初始化 Props，与 initData 差不多</span></span><br><span class="line">  <span class="keyword">if</span> (opts.<span class="property">methods</span>) <span class="title function_">initMethods</span>(vm, opts.<span class="property">methods</span>)  <span class="comment">// 初始化 Methods，Methods 的初始化比较简单，就是作用域的重新绑定。</span></span><br><span class="line">  <span class="keyword">if</span> (opts.<span class="property">data</span>) &#123;</span><br><span class="line">    <span class="title function_">initData</span>(vm) <span class="comment">// 初始化 Data，响应式关键步</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_">observe</span>(vm.<span class="property">_data</span> = &#123;&#125;, <span class="literal">true</span> <span class="comment">/* asRootData */</span>) <span class="comment">//如果没有 data，则观察一个空对象</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (opts.<span class="property">computed</span>) <span class="title function_">initComputed</span>(vm, opts.<span class="property">computed</span>)<span class="comment">// 初始化 computed，这部分会涉及 Watcher 类以及依赖收集，computed 其实本身也是一种特殊的 Watcher</span></span><br><span class="line">  <span class="keyword">if</span> (opts.<span class="property">watch</span>) <span class="title function_">initWatch</span>(vm, opts.<span class="property">watch</span>)<span class="comment">// 初始化 watch，这部分会涉及 Watcher 类以及依赖收集</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，<code>initState</code>将工作拆解成观察<code>props</code>, <code>data</code>, <code>methods</code>, <code>computed</code>, <code>watch</code>几个关键部分。</p>
-<h4 id="initData"><a href="#initData" class="headerlink" title="initData"></a>initData</h4><p>以<code>initData</code>方法为例，它是如何使用上面提到的Observer, Dep, Watcher类的呢，我们看看<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/instance/state.js#L74-L104">源码</a>: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">initData</span> (<span class="attr">vm</span>: <span class="title class_">Component</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> data = vm.<span class="property">$options</span>.<span class="property">data</span></span><br><span class="line">  data = vm.<span class="property">_data</span> = <span class="keyword">typeof</span> data === <span class="string">&#x27;function&#x27;</span></span><br><span class="line">    ? data.<span class="title function_">call</span>(vm)</span><br><span class="line">    : data || &#123;&#125;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isPlainObject</span>(data)) &#123;<span class="comment">// 保证data必须为纯对象</span></span><br><span class="line">    ......</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// proxy data on instance</span></span><br><span class="line">  <span class="keyword">const</span> keys = <span class="title class_">Object</span>.<span class="title function_">keys</span>(data)</span><br><span class="line">  <span class="keyword">const</span> props = vm.<span class="property">$options</span>.<span class="property">props</span></span><br><span class="line">  <span class="keyword">let</span> i = keys.<span class="property">length</span></span><br><span class="line">  <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">    <span class="keyword">if</span> (props &amp;&amp; <span class="title function_">hasOwn</span>(props, keys[i])) &#123;<span class="comment">// 是props，则不代理</span></span><br><span class="line">      ...... <span class="comment">//如果和 props 里面的变量重了，则抛出 Warning</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">// 否则将属性代理的 vm 上，这样就可以通过 vm.xx 访问到 vm._data.xx</span></span><br><span class="line">      <span class="title function_">proxy</span>(vm, keys[i]) <span class="comment">//proxy方法遍历 data 的 key，把 data 上的属性代理到 vm 实例上</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// observe data</span></span><br><span class="line">  <span class="title function_">observe</span>(data, <span class="literal">true</span> <span class="comment">/* asRootData */</span>)  <span class="comment">//关键一步，observe(data, this)方法来对 data 做监控</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，这个函数做了下面的工作：</p>
-<ul>
-<li>保证data为纯对象</li>
-<li>检查是否与<code>props</code>中属性有重复</li>
-<li>进行数据代理，便于我们直接通过vm.xxx的形式访问原本位于vm._data.xxx的属性。</li>
-<li>调用<code>observe</code>方法对<code>data</code>进行包装，使之具有响应式的特点。</li>
-</ul>
-<p>那我们看看<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L101-L126">observe</a>方法是怎么写的吧</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Attempt to create an observer instance for a value,</span></span><br><span class="line"><span class="comment"> * returns the new observer if successfully observed,</span></span><br><span class="line"><span class="comment"> * or the existing observer if the value already has one.</span></span><br><span class="line"><span class="comment"> * 返回一个 Observer 对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">observe</span> (<span class="attr">value</span>: any, <span class="attr">asRootData</span>: ?boolean): <span class="title class_">Observer</span> | <span class="keyword">void</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isObject</span>(value)) &#123;  <span class="comment">//如果不是对象和数组则不监控，直接返回</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> <span class="attr">ob</span>: <span class="title class_">Observer</span> | <span class="keyword">void</span></span><br><span class="line">  <span class="comment">//判断 value 是否已经添加了 __ob__ 属性，并且属性值是 Observer 对象的实例。避免重复引用导致的死循环</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">hasOwn</span>(value, <span class="string">&#x27;__ob__&#x27;</span>) &amp;&amp; value.<span class="property">__ob__</span> <span class="keyword">instanceof</span> <span class="title class_">Observer</span>) &#123;    <span class="comment">//如果是就直接用</span></span><br><span class="line">    ob = value.<span class="property">__ob__</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (</span><br><span class="line">    observerState.<span class="property">shouldConvert</span> &amp;&amp; <span class="comment">//只有 root instance props 需要创建 Observer 对象</span></span><br><span class="line">    !<span class="title function_">isServerRendering</span>() &amp;&amp; <span class="comment">//不是服务端渲染</span></span><br><span class="line">    (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(value) || <span class="title function_">isPlainObject</span>(value)) &amp;&amp; <span class="comment">//数组或者普通对象</span></span><br><span class="line">    <span class="title class_">Object</span>.<span class="title function_">isExtensible</span>(value) &amp;&amp; <span class="comment">//可扩展对象</span></span><br><span class="line">    !value.<span class="property">_isVue</span> <span class="comment">// 非 Vue 组件</span></span><br><span class="line">  ) &#123;</span><br><span class="line">    ob = <span class="keyword">new</span> <span class="title class_">Observer</span>(value)  <span class="comment">//关键步！在 value 满足上述条件的情况下创建一个 Observer 对象</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (asRootData &amp;&amp; ob) &#123;</span><br><span class="line">    ob.<span class="property">vmCount</span>++</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ob <span class="comment">// 返回一个 Observer 对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>observe方法主要就是判断value是否满足一些预设条件，并将这个对象转化为Observer对象。</p>
-<p>关于Observer类我们上面已经提到，它的构造函数做了下面几个工作：</p>
-<ul>
-<li>首先创建了一个Dep对象实例；</li>
-<li>然后把自身this添加到value的<code>__ob__</code>属性上；</li>
-<li>最后对value的类型进行判断，如果是数组则观察数组，否则观察单个元素（要理解这一步是个递归过程，即value的元素如果符合条件也需要转化为Observer对象）。</li>
-</ul>
-<p>不论是基础类型还是数组或对象，最终都会走入到<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L55-L65">walk</a>方法，方法定义在<code>src/core/observer/index.js</code>中。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">walk (<span class="attr">obj</span>: <span class="title class_">Object</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> keys = <span class="title class_">Object</span>.<span class="title function_">keys</span>(obj)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; keys.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="title function_">defineReactive</span>(obj, keys[i], obj[keys[i]]) <span class="comment">//遍历对象，结合defineReactive方法地柜将属性转化为getter和setter</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="defineReactive"><a href="#defineReactive" class="headerlink" title="defineReactive"></a>defineReactive</h4><p>在经过一系列的准备工作和铺垫后，终于可以接触到数据绑定最核心部分的<code>defineReactive</code>函数。方法也定义在<code>src/core/observer/index.js</code>中，<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/index.js#L128-L184">源码</a>如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Define a reactive property on an Object.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">defineReactive</span> (</span><br><span class="line">  <span class="attr">obj</span>: <span class="title class_">Object</span>,</span><br><span class="line">  <span class="attr">key</span>: string,</span><br><span class="line">  <span class="attr">val</span>: any,</span><br><span class="line">  customSetter?: <span class="title class_">Function</span></span><br><span class="line">) &#123;</span><br><span class="line">  <span class="keyword">const</span> dep = <span class="keyword">new</span> <span class="title class_">Dep</span>()  <span class="comment">//每个对象都会有一个 Dep 实例，用来保存依赖 (Watcher 对象)</span></span><br><span class="line">  ......</span><br><span class="line">  <span class="keyword">let</span> childOb = <span class="title function_">observe</span>(val)   <span class="comment">//结合 observe 函数进行将对象的对象也变成监控对象</span></span><br><span class="line">  <span class="comment">// 最重点、基石、核心的部分：通过调用 Object.defineProperty 给 data 的每个属性添加 getter 和 setter 方法。</span></span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="keyword">function</span> <span class="title function_">reactiveGetter</span> () &#123;</span><br><span class="line">      <span class="keyword">const</span> value = getter ? getter.<span class="title function_">call</span>(obj) : val</span><br><span class="line">      <span class="comment">// 依赖收集的重要步骤</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="title class_">Dep</span>.<span class="property">target</span>) &#123;<span class="comment">//如果存在Dep.target这个全局变量不为空，表示是在新建Watcher的时候调用的，代码已经保证</span></span><br><span class="line">        dep.<span class="title function_">depend</span>()    <span class="comment">// 依赖收集</span></span><br><span class="line">        <span class="keyword">if</span> (childOb) &#123;</span><br><span class="line">          childOb.<span class="property">dep</span>.<span class="title function_">depend</span>() <span class="comment">// 处理好子元素的依赖 watcher</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(value)) &#123; <span class="comment">// 如果是数组，进一步处理</span></span><br><span class="line">          <span class="title function_">dependArray</span>(value)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="keyword">function</span> <span class="title function_">reactiveSetter</span> (newVal) &#123;</span><br><span class="line">      <span class="keyword">const</span> value = getter ? getter.<span class="title function_">call</span>(obj) : val</span><br><span class="line">      ......</span><br><span class="line">      childOb = <span class="title function_">observe</span>(newVal)    <span class="comment">// 对新数据重新 observe，更新数据的依赖关系</span></span><br><span class="line">      dep.<span class="title function_">notify</span>()   <span class="comment">// 通知dep进行数据更新，这个方法在前面的 Dep 类中讲过</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>defineReactive是对Object.defineProperty方法的包装，结合observe方法对数据项进行深入遍历，最终将所有的属性就转化为getter和setter。其中对于Dep的处理用于收集依赖<code>data</code>的Watcher对象。</p>
-<h4 id="依赖收集"><a href="#依赖收集" class="headerlink" title="依赖收集"></a>依赖收集</h4><p><img src="/blog/images/vue-reactive.jpg"></p>
-<p><code>data</code>的依赖收集是在getter函数中完成的。Observer和Dep是一对一的关系，Dep用来存储依赖Observer的Watcher。Dep和Watcher是多对多的关系，一个Dep中存储了若干Watcher，一个Watcher可能同时依赖于多个Observer。</p>
-<p>可以看到Dep是连接Observer（生产者）和Watcher（消费者）的关键纽带。Watcher通过getter函数建立起和Observer中Dep的关联。在Observer的setter函数中会触发<code>dep.notify()</code>方法，根据上文对该方法的讲解，它实际上对数组中每个Watcher执行了<code>update</code>方法。在方法中根据是否同步去执行<code>run</code>方法，这个方法中通过<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/v2.1.10/src/core/observer/watcher.js#L157-#L191">源码</a>可以看到实际上正是通过<code>const value = this.get()</code>获取最新的value。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">update () &#123;</span><br><span class="line">  <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">lazy</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">dirty</span> = <span class="literal">true</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">sync</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">run</span>()</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_">queueWatcher</span>(<span class="variable language_">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<ol>
-<li>模板编译过程中的指令和数据绑定都会生成 Watcher实例，watch函数中的对象也会生成 Watcher实例，在实例化的过程中，会调用watcher.js中的get函数touch这个Watcher的表达式或函数涉及的所有属性；</li>
-<li>touch开始之前Watcher会设置Dep的静态属性Dep.target指向其自身，然后开始依赖收集；</li>
-<li>touch属性的过程中，属性的getter函数会被访问；</li>
-<li>属性gette 函数中会判断Dep.target（target中保存的是第2步中设置的Watcher实例）是否存在，若存在则将 getter函数所在的Observer 实例的Dep实例保存到Watcher的列表中，并在此Dep实例中添加Watcher为订阅者；</li>
-<li>重复上述过程直至Watcher的表达式或函数涉及的所有属性均touch结束（即表达式或函数中所有的数据的getter函数都已被触发），Dep.target被置为null，依赖收集完成；</li>
-</ol>
-</blockquote>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>上面尝试从源码角度对Vue2.0的响应式设计做了浅析。总结一下就是下面几点：</p>
-<ul>
-<li>在生命周期的initState方法中对<code>data</code>, <code>prop</code>, <code>method</code>, <code>computed</code>, <code>watch</code>方法中的数据进行劫持，通过<code>defineReactive</code>和<code>observe</code>将之转换为Observer对象</li>
-<li><code>initRender</code>函数中解析模板，新建Watcher对象通过Dep对象和对应数据建立了依赖关系，通过<code>Dep.target</code>这个全局对象判断是否是依赖收集阶段。</li>
-<li>数据变化时，通过<code>setter</code>函数中的<code>dep.notify</code>方法执行Watcher的<code>update</code>方法更新视图</li>
-</ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.zybuluo.com/zhouweicsu/note/682813">Vue2.0 源码阅读：响应式原理</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/22/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/blog/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/24/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1295,7 +1291,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">28:57</span>
+    <span title="站点阅读时长">29:03</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
