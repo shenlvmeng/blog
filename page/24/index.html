@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">150</span>
+          <span class="site-state-item-count">151</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">459</span>
+        <span class="site-state-item-count">463</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,148 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/06/mobile-uiue-experience/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/04/06/mobile-uiue-experience/" class="post-title-link" itemprop="url">移动端页面切图自适应方案和体验优化经验</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-06 22:16:00" itemprop="dateCreated datePublished" datetime="2017-04-06T22:16:00+08:00">2017-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-04-02 22:36:37" itemprop="dateModified" datetime="2018-04-02T22:36:37+08:00">2018-04-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/04/06/mobile-uiue-experience/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/06/mobile-uiue-experience/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>最近在做活动页切图时，遇到了针对不同尺寸移动设备屏幕适配的问题。相信这个问题是有移动端前端开发经验的攻城狮们都遇到过的。再加上一些优化体验，这里简单写一些经验。</p>
+<h3 id="像素完美"><a href="#像素完美" class="headerlink" title="像素完美"></a>像素完美</h3><p>像素完美是UI设计师的终极目标之一（其余的还有分辨率无关，多平台体验一致等）。但是切图中不可避免地会使用到类似<code>background-image</code>这样设置背景CSS样式的属性，之后再将一些交互元素通过绝对定位或是其他方式放在它视觉上应该出现的位置。在移动端设备宽度不一时，交互元素的位置如何保值像素完美的一致呢。</p>
+<p>最容易想到的方法是<strong>百分比布局</strong>，保证设计师设计的美美的UI界面可以自适应地等比扩充到整个页面。不过这样会让交互元素的位置摆放很难办，难以保证设备兼容性。<strong>flex布局</strong>也是种常见的解决方案，但距离像素完美还有距离。</p>
+<p>于是，我在上一次实践中，采用了<strong>固定宽度</strong>的处理方式（这并不是一种好的实践），CSS样式写起来大概是下面这样的。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">414px</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.bkg</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">&#x27;./bkg.png&#x27;</span>);</span><br><span class="line">  <span class="attribute">background-size</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-repeat</span>: repeat-y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>margin: 0 auto</code>是为了保证PC端居中的兼容性。这么写可以让交互元素定位时没有了设备宽度不同的后顾之忧。不过，在页面打开后，宽度较大使得页面出现横向滚动条，在绝大多数的移动端页面都不是种好的体验。的确，可以在<code>meta</code>标签中，设置<code>user-scalable=yes</code>来实现宽度上的自适应。但是，放开了页面缩放的限制也不是好的实践方式。</p>
+<p>这次活动页参考的使用<strong>rem</strong>的方式（淘宝最早实践的）是一种明显更好的方法。<code>rem</code>是CSS3中出现的新属性，它是root em的缩写。和<code>em</code>不同的是，<code>rem</code>使用整个html的<code>font-size</code>作为尺寸的参考。只需要改变html的<code>font-size</code>，所有使用了<code>rem</code>属性的元素大小都会等比例地变化。于是，下面的一段代码轻松地实现了<strong>移动端</strong>的自适应方案。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span>(<span class="params">win, doc</span>)&#123;</span><br><span class="line">  <span class="keyword">var</span> docEl = doc.<span class="property">documentElement</span>,</span><br><span class="line">    resizeEvt = <span class="string">&#x27;onorientationchange&#x27;</span> <span class="keyword">in</span> <span class="variable language_">window</span> ? <span class="string">&#x27;orientationchange&#x27;</span> : <span class="string">&#x27;resize&#x27;</span>,</span><br><span class="line">    recalc = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> clientWidth = docEl.<span class="property">clientWidth</span>;</span><br><span class="line">      <span class="keyword">if</span> (!clientWidth) <span class="keyword">return</span>;</span><br><span class="line">      <span class="keyword">if</span> (clientWidth &gt;= <span class="number">750</span>) &#123;</span><br><span class="line">       docEl.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="string">&#x27;100px&#x27;</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        docEl.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="number">100</span> * (clientWidth / <span class="number">750</span>) + <span class="string">&#x27;px&#x27;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  <span class="comment">//省去addEventListener兼容性处理</span></span><br><span class="line">  win.<span class="title function_">addEventListener</span>(resizeEvt, recalc, <span class="literal">false</span>);</span><br><span class="line">  doc.<span class="title function_">addEventListener</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>, recalc, <span class="literal">false</span>);</span><br><span class="line">&#125;)(<span class="variable language_">window</span>, <span class="variable language_">document</span>);</span><br></pre></td></tr></table></figure>
+
+<p>代码里假设UI设计稿原始宽度为750px。大意是：</p>
+<ul>
+<li>页面宽度超过750px时，<code>document</code>的字体大小恒为100px，此时页面中涉及尺寸的CSS样式部分统统用<code>&#123;像素值&#125; / 100 rem</code>书写。之所以使用100px正是为了换算时方便</li>
+<li>页面宽度小于750px时，<code>document</code>等比缩小字体大小，页面中使用<code>rem</code>的元素都会等比缩小。从而保证交互元素不错位。</li>
+</ul>
+<p>效果类似<a target="_blank" rel="noopener" href="https://m.taobao.com/#index">淘宝手机站</a>。使用<code>rem</code>布局需要注意:</p>
+<ul>
+<li>在<code>&lt;head&gt;</code>中放置这段代码，保证在页面元素渲染前确定<code>font-size</code>大小，避免<em>闪屏</em>现象出现影响体验。</li>
+<li>PC端可以使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries">媒体查询</a>，<code>rem</code>在移动端使用较多</li>
+<li><code>rem</code>方案可以使用在页面的一部分，在宽度固定的元素中使用flex这样的方案</li>
+</ul>
+<h3 id="用户体验"><a href="#用户体验" class="headerlink" title="用户体验"></a>用户体验</h3><p>上个活动页中遇到了一些优化体验的小地方，列在下面。</p>
+<ul>
+<li>禁止用户选中页面元素。这么做可以避免长按屏幕的选中，很明显地提升体验。<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  -moz-user-select: none;</span><br><span class="line">  -webkit-user-select: none;</span><br><span class="line">  -ms-user-select: none;</span><br><span class="line">  -khtml-user-select: none;</span><br><span class="line">  user-select: none;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>禁止一些手机上为手机号码和邮箱地址进行的特殊处理<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;format-detection&quot;</span> <span class="attr">content</span>=<span class="string">&quot;telephone=no&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;format-detection&quot;</span> <span class="attr">content</span>=<span class="string">&quot;email=no&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>禁止页面缩放，很常见的需求<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>为二维码单独切图，可以解决长按二维码无法识别的问题</li>
+<li>输入框获得焦点时自动上移。可以通过<code>document.scrollTop</code>或设置输入框部分<code>position:fixed</code>实现</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -943,175 +1085,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/18/how-to-construct-css/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/03/18/how-to-construct-css/" class="post-title-link" itemprop="url">BEM和CSS方法论</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2017-03-18 16:49:06 / 修改时间：18:23:58" itemprop="dateCreated datePublished" datetime="2017-03-18T16:49:06+08:00">2017-03-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/03/18/how-to-construct-css/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/18/how-to-construct-css/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.1k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>CSS是一种“奇怪”的编程语言，用来描述网页的样式。使用起来很简单，却由于自身的缺陷（只有全局作用域、没有模块化）使得它很难像真正的编程语言那样，有软件工程的办法适用。</p>
-<h2 id="BEM"><a href="#BEM" class="headerlink" title="BEM"></a>BEM</h2><p><a target="_blank" rel="noopener" href="https://en.bem.info/">BEM</a>是一个方法论，是一套使用CSS的惯例和约定，用于写出更具有维护性和重用性的CSS代码。BEM由<a target="_blank" rel="noopener" href="https://yandex.com/company/">Yandex</a>公司提出，目前已被广泛采用。它和其他的CSS的规范如<a target="_blank" rel="noopener" href="http://oocss.org/">OOCSS</a>，<a target="_blank" rel="noopener" href="http://smacss.com/">SMACSS</a>并不冲突。它们都用来提高CSS文件的可维护性。</p>
-<h3 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h3><p><strong>BEM</strong>的三个字母分别代表块（<strong>block</strong>）、元素（<strong>element</strong>）、修饰符（<strong>modifier</strong>）。根据<a target="_blank" rel="noopener" href="http://getbem.com/introduction/">官网</a>的介绍：</p>
-<ul>
-<li><code>Block</code>代表一个独立的抽象的组件</li>
-<li><code>Element</code>代表依附于<code>Block</code>的后代，用来形成一个完整的<code>block</code></li>
-<li><code>Modifier</code>代表<code>Block</code>或是<code>Element</code>的不同状态或版本，用来改变默认样式</li>
-</ul>
-<p>另外：</p>
-<ul>
-<li><strong>不要使用文档的层级结构</strong></li>
-<li><strong>在标签嵌套时，只使用一层嵌套</strong>，通过class名标注标签</li>
-</ul>
-<p>其中<code>Element</code>命名时在<code>Block</code>后添加两个短横线<code>--</code>，<code>Modifier</code>在<code>Block</code>后添加两个下划线<code>__</code>。<strong>所有的CSS均绑定到标签的class上</strong>，确保样式的重用性。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.block</span>&#123;&#125;</span><br><span class="line"><span class="selector-class">.block__element</span>&#123;&#125;</span><br><span class="line"><span class="selector-class">.block--modifier</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之所以采用两个短划线和下划线，是为了让用户自定义的块命名中可以含有单个短划线和下划线。</p>
-<p>下面是官网的样例：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span>=<span class="string">&quot;form form--theme-xmas form--simple&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;form__input&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">&quot;form__submit form__submit--disabled&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.form</span> &#123; &#125;</span><br><span class="line"><span class="selector-class">.form--theme-xmas</span> &#123; &#125;</span><br><span class="line"><span class="selector-class">.form--simple</span> &#123; &#125;</span><br><span class="line"><span class="selector-class">.form__input</span> &#123; &#125;</span><br><span class="line"><span class="selector-class">.form__submit</span> &#123; &#125;</span><br><span class="line"><span class="selector-class">.form__submit--disabled</span> &#123; &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h3><p>BEM正如上面介绍的那样，只是一套规范。在使用的时候会感觉类名有些冗长和奇怪。不过它带来的好处是很有价值的。</p>
-<p>另外，<strong>没有必要在每个地方都使用BEM规范</strong>。对于独立的一条CSS样式，写成BEM格式的写法并没有必要。对于考虑使用BEM的人来讲，可能最重要的是从哪里到哪里使用BEM。</p>
-<h2 id="OOCSS"><a href="#OOCSS" class="headerlink" title="OOCSS"></a>OOCSS</h2><p>写CSS代码很简单，但是写出可维护的CSS代码比其他语言就要更难了。因此，大牛们提出了OOCSS、SMACSS这样的<strong>设计模式</strong>来让事情更容易。OOCSS（Object Oriented CSS）即面向对象的CSS，它的关键在于创建在页面中创建模块化可重用的对象（HTML和CSS的结合体）。</p>
-<p>根据OOCSS之父Nicole Sullivan的说法，OOCSS重点在于：</p>
-<ol>
-<li>独立文档结构与样式</li>
-<li>独立文档容器和内容</li>
-</ol>
-<p>使用容易理解的话来说，就是从HTML结构上解脱出来，增加CSS class的重复利用。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">nav</span> <span class="attr">class</span>=<span class="string">&quot;nav--main&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>.........<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">nav</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>上面的例子里，业务代码经常会将CSS选择器写成<code>nav ul li a</code>这样的写法。这么做过渡依赖原有的HTML文档结构。原有的文档结构改变时，CSS就必须跟着重构。因此，建议直接给<code>a</code>标签绑定class，或写成<code>nav--main a</code>的写法。</p>
-<p>第二，减少使用id<strong>作为CSS的选择器</strong>。尽量使用class，类似<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a>中的概念，抽出重复的部分，定义在一个class中。像下面这样，定义基本的类<code>button</code>，并通过<code>button-default</code>和<code>button-primary</code>来拓展基本类。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;button button-default&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;button button-primary&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>总结一下，OOCSS的优势在于它可以减少CSS的代码减少加载时间（当然的），<strong>语义化的类名</strong>增强逻辑性和SEO，CSS样式可以轻松拓展，</p>
-<p>缺点在于它适合大型网站的开发，在小型项目中似乎用不到这种<em>40米的长刀</em>，同时没有巧妙地使用，创建的组件会适得其反增加，增加维护难度。</p>
-<h2 id="SMACSS"><a href="#SMACSS" class="headerlink" title="SMACSS"></a>SMACSS</h2><p><a target="_blank" rel="noopener" href="https://smacss.com/">SMACSS</a>(读作”smacks”)全称为Scalable and Modular Architecture for CSS。它也是CSS的框架规范之一，目标是让”<strong>keep CSS more organized and more structured, leading to code that is easier to build and easier to maintain（作者Jonathan Snook语）</strong>“</p>
-<p>SMACSS使用了一套5个类别来划分CSS，这种组织和结构规范了CSS写法，提高了CSS使用效率。</p>
-<ul>
-<li><strong>Base rules</strong> 类似与<code>reset.css</code>和<code>normalize.css</code>的效果，为文档的标签设置默认样式，<strong>应该只包含单独的标签选择器</strong></li>
-<li><strong>Layout rules</strong> 将文档分成诸如header，article，footer这样的各个部分，为布局中的每个部分设置样式</li>
-<li><strong>Module rules</strong> 页面中可重用部分的样式，在layout中出现多次，使用时避免出现标签选择器</li>
-<li><strong>State rules</strong> 用于描述element的不同状态，和基本规则组合使用。</li>
-<li><strong>Theme rules</strong> 类似与“皮肤”的概念，更改整个网站的主题。</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><a target="_blank" rel="noopener" href="https://github.com/css-modules/css-modules">CSS Modules</a>和上面的思路要来的不大一样。它着眼于解决作用域和模块依赖的问题，采取的做法是重写class名。在React，Vue中每个组件中的CSS样式就做了这样的处理，保证的模块间的CSS文件不相冲突。</p>
-<p>在通过JavaScript绑定到特定class的标签上时，也造成了CSS维护的不变。必要的时候可以为HTML标签赋予专为JavaScript使用的类名。如：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;nav--main__item js-nav--main__item&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span>&gt;</span>whatever<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CSS是一门看起来很简单的语言，但是它的简单性也提升了工程中的使用难度。为了增强它的可用性。许多名为”xxxCSS”的方法论和机制等被发明，类似Sass，SCSS，Compass，Less，stylus，BEM，SMACSS，OOCSS，ACSS，CCSS等。在使用CSS时，可以尝试使用上面的规范，遵守一些<a target="_blank" rel="noopener" href="http://cssguidelin.es/">法则</a>，以写出更pure的代码。</p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
-<li><a target="_blank" rel="noopener" href="http://getbem.com/">BEM</a></li>
-<li><a target="_blank" rel="noopener" href="https://smacss.com/book">SMACSS Book</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.w3cplus.com/css/oocss-concept">OOCSS——概念篇</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.w3cplus.com/css/css-sass-scss-compass-less-bem-smacss-oocss-acss-ccss-wtfss.html">CSS, Sass, SCSS, Compass, Less,BEM, SMACSS, OOCSS, ACSS, CCSS, WTFSS?</a></li>
-<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000000388784">编写可维护的CSS</a>(翻译自<a target="_blank" rel="noopener" href="http://cssguidelin.es/">CSS Guildelines</a>)</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/css-modules/css-modules">CSS Modules</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/23/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/blog/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/25/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/23/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/blog/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/25/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1134,13 +1109,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">1m</span>
+    <span title="站点总字数">1.1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:03</span>
+    <span title="站点阅读时长">29:27</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

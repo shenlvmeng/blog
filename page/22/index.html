@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">150</span>
+          <span class="site-state-item-count">151</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">459</span>
+        <span class="site-state-item-count">463</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,206 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/06/20/functional-programming-brief/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/06/20/functional-programming-brief/" class="post-title-link" itemprop="url">函数式编程扫盲</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-06-20 19:45:44 / 修改时间：19:48:50" itemprop="dateCreated datePublished" datetime="2017-06-20T19:45:44+08:00">2017-06-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/06/20/functional-programming-brief/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/20/functional-programming-brief/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>名谓扫盲，实则是为自己扫盲。前些日子通过Elm的学习接触到了函数式编程的概念，发现语言风格和以C为代表的命令式编程大不相同，接触不同的编程思维还是很有助于自我提升的。在回顾的同时，这里走马观花地带过一些函数式编程的“热门词汇”。</p>
+<h2 id="历史故事"><a href="#历史故事" class="headerlink" title="历史故事"></a><a target="_blank" rel="noopener" href="http://www.defmacro.org/ramblings/fp.html">历史故事</a></h2><p>什么是函数式编程（Functional Programming，FP）？它从何而来？可以吃吗？这得从20世纪30年代开始讲起：</p>
+<blockquote>
+<p>新建成的哥特式办公楼给普林斯顿大学带来一种天堂般的安全感。来自世界各地的逻辑学者应邀来到普林斯顿，他们将组建一个新的学部。正当大部分美国人还在为找不到一片面包做晚餐而发愁的时候，在普林斯顿却是这样一番景象：高高的天花板和木雕包覆的墙，每天品茶论道，漫步丛林。 一个名叫<a target="_blank" rel="noopener" href="http://zh.wikipedia.org/zh/%E9%98%BF%E9%9A%86%E4%BD%90%C2%B7%E9%82%B1%E5%A5%87">阿隆佐·邱奇</a>(Alonzo Church)的年轻数学家就过着这样优越的生活。阿隆佐本科毕业于普林斯顿后被留在研究院。他觉得这样的生活完全没有必要，于是他鲜少出现在那些数学茶会中也不喜欢到树林里散心。阿隆佐更喜欢独处：自己一个人的时候他的工作效率更高。尽管如此他还是和普林斯顿学者保持着联系，这些人当中有<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh/%E8%89%BE%E4%BC%A6%C2%B7%E5%9B%BE%E7%81%B5">艾伦·图灵</a>、<a target="_blank" rel="noopener" href="http://zh.wikipedia.org/zh/%E7%BA%A6%E7%BF%B0%C2%B7%E5%86%AF%C2%B7%E8%AF%BA%E4%BC%8A%E6%9B%BC">约翰·冯·诺伊曼</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hant/%E5%BA%93%E5%B0%94%E7%89%B9%C2%B7%E5%93%A5%E5%BE%B7%E5%B0%94">库尔特·哥德尔</a>。</p>
+</blockquote>
+<p>在与这些人的合作下，阿隆佐设计了一个名为<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda演算</a>的形式系统。在这种语言里面，函数的参数是函数，返回值也是函数。篇幅和本人能力限制，不对lambda演算做更多讲解。</p>
+<p>除了阿隆佐·邱奇，艾伦·图灵也在进行类似的研究。他设计了一种完全不同的系统（后来被称为图灵机），并用这种系统得出了和阿隆佐相似的答案。到了后来人们证明了图灵机和lambda演算的能力是一样的。</p>
+<p>到了50年代末，一个叫John McCarthy的MIT教授（他也是普林斯顿的硕士）对阿隆佐的成果产生了兴趣。1958年他发明了一种列表处理语言（Lisp），这种语言是一种阿隆佐lambda演算在现实世界的实现，而且它能在冯·诺伊曼计算机上运行！而后的诸多函数式编程语言（如Haskell，ML等）也多少收到Lisp的影响。</p>
+<h2 id="法则"><a href="#法则" class="headerlink" title="法则"></a><a target="_blank" rel="noopener" href="https://www.byvoid.com/upload/fl/images/FP/FP.pdf">法则</a></h2><p>函数式编程的思想来源Lambda演算在最初设计时就是用来解决计算相关问题，它是一种相对于“命令式编程”完全不同的编程范式，后者告诉计算机怎么做，前者着眼在从数学角度描述问题。它的特点也很明显：</p>
+<ul>
+<li><strong>变量不可变</strong>，即默认带上<code>const</code>或是<code>final</code>（当然函数式编程里压根没有<code>const</code>和<code>final</code>的概念）。这么来看，叫它为“符号”似乎更合适</li>
+<li><strong>惰性求值</strong>，变量直到使用时才会真正计算它的值，因为这个特点，Haskell甚至允许无限列表的出现。同时，这也意味着语句的出现顺序和执行顺序并不相关。</li>
+<li><strong>高阶函数</strong>，函数可以作为入参或是返回值，这个也被很多不那么OOP的语言借鉴去了</li>
+<li><strong>无副作用</strong>，<strong>函数只负责映射数据</strong>，更像是个管道，绝不改变外部状态，同样的输入在任何时候会得到同样的输出（测试人员笑开了花）。这一点使得函数式编程语言天生支持并发执行。</li>
+<li><strong>一切皆函数</strong>，函数是第一公民</li>
+</ul>
+<p>λ演算用来描述一种形式系统，它的语法只有三条：</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>术语</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>变量</td>
+<td>一个代表参数或数字&#x2F;逻辑值的符号或字符串</td>
+</tr>
+<tr>
+<td>(λx.M)</td>
+<td>定义</td>
+<td>函数定义，<code>.</code>前面的标识符<code>x</code>为入参，M为表达式</td>
+</tr>
+<tr>
+<td>(M N)</td>
+<td>调用</td>
+<td>应用函数到一个入参</td>
+</tr>
+</tbody></table>
+<p>例如：<code>((λ x y. x + y) 1 2)</code>表示1和2相加。</p>
+<p>λ演算公理只有两个：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(λx.M[x]) → (λy.M[y])</td>
+<td>α变换</td>
+<td>改变入参名不影响结果</td>
+</tr>
+<tr>
+<td>((λx.M) E) → (M[x:&#x3D;E])</td>
+<td>β规约</td>
+<td>将入参传入λ意味着对它做演算</td>
+</tr>
+</tbody></table>
+<p>还以上面的相加为例，α变换就是<code>λ x y. x + y → λ a b. a + b</code>；β规约就是<code>(λ x y. x + y) a b → a + b</code>。是不是很好理解。</p>
+<p>通过这两个基本的公理，结合基本变量类型可以构造各种函数。如not函数，and函数，or函数，甚至if函数。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">let</span> and =</span><br><span class="line"><span class="title">true</span> value  -&gt;  value</span><br><span class="line"><span class="title">false</span> value -&gt;  false</span><br><span class="line"><span class="title">value</span> true  -&gt;  value</span><br><span class="line"><span class="title">value</span> false -&gt;  false</span><br><span class="line"></span><br><span class="line"><span class="title">let</span> <span class="keyword">if</span> =</span><br><span class="line">λ cond tvalue fvalue. (cond and tvalue) or (not cond  and fvalue)</span><br></pre></td></tr></table></figure>
+
+<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>高阶函数意味着，我们可以把函数直接作为入参传入，或作为返回值返回。这早已不是函数式编程语言的专利，Python，JavaScript等也吸收了这个设计理念。</p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Currying">函数柯里化</a>即部分求值，就利用了高阶函数的特点提出的技术，它使得函数可以一个一个接受入参，返回相同的计算结果。类似于下面的感觉：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">pow</span>(<span class="params">i, j</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> i^j;</span><br><span class="line">&#125;</span><br><span class="line">funtion <span class="title function_">square</span>(<span class="params">j</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">pow</span>(i, <span class="number">2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>square</code>函数返回的函数需要指定<code>i</code>才可执行。柯里的名字来自于第一次提出这个技巧的逻辑学家<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Haskell_Curry">Haskell Curry</a>。</p>
+<p>另外，值得注意的是，在函数式编程下，高阶函数通过将函数作为参数惰性求值实现。那命令式编程下呢，答案是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">闭包</a>（lexical closure）。</p>
+<h2 id="递归？"><a href="#递归？" class="headerlink" title="递归？"></a>递归？</h2><p>函数式编程里没有状态变量（可以用其他方式实现），因此自然没有循环结构。实际上，函数式编程中的循环都是通过递归实现的。比如，斐波那契数列函数像下面这样：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">let</span> fact = λ n. <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="number">1</span> (n * fact n-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>这里<code>fact</code>函数引用了自身，虽然编译器可以识别这种写法，但是显然它并不符合严格的数学公理。</p>
+<p>重新审视这个变换，我们可以通过传入自身的方式来让它“数学化”。<code>let P = λ self n. if (n == 0) 1 (n * self(self n-1))</code>，然后在令<code>let fact n = P (P n)</code>。如此这般：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fact 4</span><br><span class="line">-&gt; P (P 4)</span><br><span class="line">-&gt; if (4 == 0) (1) (4 * P(P 3))</span><br><span class="line">-&gt; 4 * P(P 3)</span><br><span class="line">-&gt; 4 * 3 * P(P 2)</span><br><span class="line">-&gt; 4 * 3 * 2 * P(P 1)</span><br><span class="line">-&gt; 4 * 3 * 2 * 1</span><br></pre></td></tr></table></figure>
+
+<p>可是，这个函数看上去并不自然，不像一个真正的递归函数，且λ演算的公理里并没有这样一条公理可以让你在定义函数的时候引用本身。还好，已经有人做了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fixed-point_combinator">研究</a>，借助Y组合子的帮助，可以实现真正的递归函数。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">let</span> <span class="type">Y</span> = λ <span class="type">F</span>. <span class="type">G</span>(<span class="type">G</span>)</span><br><span class="line"><span class="type">G</span> = λ self. <span class="type">F</span>(self(self))</span><br></pre></td></tr></table></figure>
+
+<p>这相当于我们在λ演算公理体系中添加了一条“可以在函数调用时引用自身”。这也是证明λ演算图灵等价的关键一步。这意味着它的计算能力和计算机是一致的，能通过λ演算描述的函数一定可以由计算机计算。</p>
+<h2 id="Haskell"><a href="#Haskell" class="headerlink" title="Haskell"></a>Haskell</h2><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27355585">Haskell</a>是一个纯函数式编程语言，它得名于上面提到过的Haskell Curry。Y组合子也是他发现的。</p>
+<p>Haskell中一切都是函数，甚至没有指令式编程中变量的概念，它的变量全部都是只允许一次赋值，不可改变。</p>
+<p>Haskell还没有一般意义上的控制流结构，如for循环，取而代之的是递归。同样，Haskell还有两个重要的特性，即无副作用和惰<br>性求值。偏数学的问题，用Haskell解决通常代码量都很小。下面是一个列表去重例子</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">cut</span> cond  []  = []</span><br><span class="line"><span class="title">cut</span> cond  (elem:rest) = <span class="keyword">if</span>  cond elem <span class="keyword">then</span></span><br><span class="line"><span class="title">cut</span> cond  rest  <span class="keyword">else</span>  elem:rest</span><br><span class="line"><span class="title">compress</span>  []  = []</span><br><span class="line"><span class="title">compress</span>  (elem:rest) = elem  : compress</span><br><span class="line">(cut  (== elem) rest)</span><br></pre></td></tr></table></figure>
+<p>还有一个快排（不过借助了filter函数）的例子，也是短得不行</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">qsort</span> (elem:rest) = (qsort lesser) ++ [elem] ++ (qsort greater)</span><br><span class="line">  <span class="keyword">where</span></span><br><span class="line">    lesser = filter (&lt; elem) rest</span><br><span class="line">    greater = filter (&gt;= elem) rest</span><br></pre></td></tr></table></figure>
+<p>Haskell中还可以定义无穷列表，如[1..]表示所有正整数。这也是惰性求值特性带来的。<code>[1,3..] !! 42</code>将会返回85。</p>
+<h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><blockquote>
+<p>Monad其实就是自函子范畴上的一个幺半群而已</p>
+</blockquote>
+<p>这节将展示一个图文并茂的说明但并不致力于解释清楚monad到底是个什么（因为我自己也不明白）。这篇对比<a target="_blank" rel="noopener" href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">functor，applicatives，monad</a>的文章写得很透彻易懂，尽管这可能并不能描述一个100%的monad。要更深刻了解monad还是需要学习范畴论的内容。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.byvoid.com/upload/fl/images/FP/FP.pdf">函数式编程.pdf</a><br><a target="_blank" rel="noopener" href="http://www.defmacro.org/ramblings/fp.html">Functional Programming For The Rest of Us</a><br><a target="_blank" rel="noopener" href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Functors, Applicatives, And Monads In Pictures</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1456,309 +1656,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/23/express-js/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/04/23/express-js/" class="post-title-link" itemprop="url">Express源码阅读</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-04-23 14:13:35" itemprop="dateCreated datePublished" datetime="2017-04-23T14:13:35+08:00">2017-04-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-01-21 00:43:43" itemprop="dateModified" datetime="2019-01-21T00:43:43+08:00">2019-01-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/04/23/express-js/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/23/express-js/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>17k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>28 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>本文基于<a target="_blank" rel="noopener" href="https://github.com/shenlvmeng/express/tree/4.15.2">Express 4.15.2</a></p>
-</blockquote>
-<blockquote>
-<p>我之前的Express学习笔记还在<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/book.html#express">这里</a></p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="https://expressjs.com/">Express</a>常被用来进行Node.js后台的快速搭建。它仅仅对Node.js进行了简单的封装，结合中间件等很自然和好用的概念，很容易上手和学习。Express的API主要包括Application，Request，Response，Router几个部分,这是Express代码主要实现的部分。在我看来，Express贵在它的中间件，它提供了足够自由的空间但也做出规范，提供<code>req</code>, <code>res</code>, <code>next</code>, <code>err</code>给中间件操作。它的生态系统也是围绕这个展开的。</p>
-<h2 id="创建服务器"><a href="#创建服务器" class="headerlink" title="创建服务器"></a>创建服务器</h2><p>让我们从头回忆，用Express创建一个简单的服务器。像下面这样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="keyword">function</span> (<span class="params">req, res</span>) &#123;</span><br><span class="line">  res.<span class="title function_">send</span>(<span class="string">&#x27;Hello World!&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">3000</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello world!&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>先通过构造函数创建一个Express应用（Application）。接着为它指定路由规则。最后通过<code>app.listen()</code>的方式启动服务器。对比下Node.js原生的写法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http.<span class="title function_">createServer</span>(<span class="keyword">function</span>(<span class="params">request, response</span>) &#123;</span><br><span class="line">  res.<span class="title function_">write</span>(<span class="string">&#x27;Hello world&#x27;</span>);</span><br><span class="line">  res.<span class="title function_">end</span>();</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
-
-<p>那么Express的app究竟是什么，路由中间件又是如何绑定上去的。这些问题需要通过源码来解答。</p>
-<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p>Express代码整体设计并不复杂（相对于<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/05/vue-reactive-sourcecode/">Vue这样的复杂设计</a>），比较容易看懂，一些常见的功能已经事先写成依赖包抽取出来，如<a target="_blank" rel="noopener" href="https://github.com/visionmedia/debug">debug</a>（打印debug信息）和<a target="_blank" rel="noopener" href="https://github.com/dougwilson/nodejs-depd">deprecate</a>（显示API已废弃）等。Express的源码部分位于<code>lib/</code>路径下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">- lib/</span><br><span class="line">  - middleware/</span><br><span class="line">    - init.js</span><br><span class="line">    - query.js</span><br><span class="line">  - router/</span><br><span class="line">    - index.js</span><br><span class="line">    - layer.js</span><br><span class="line">    - route.js</span><br><span class="line">  - application.js</span><br><span class="line">  - express.js</span><br><span class="line">  - request.js</span><br><span class="line">  - response.js</span><br><span class="line">  - utils.js</span><br><span class="line">  - view.js</span><br><span class="line">...</span><br><span class="line">- index.js</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="built_in">require</span>(<span class="string">&#x27;./lib/express&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>根目录下的<code>index.js</code>是整个项目的入口，所做的工作只是引入<code>lib/</code>中的<code>express.js</code>。<code>lib/</code>目录下<code>middleware</code>目录下放置了内置的中间件，<code>router</code>中放置中间件的功能实现。下面的几个文件中</p>
-<ul>
-<li>application.js 应用的定义，app对象的API</li>
-<li>express.js，对app，router等功能的封装</li>
-<li>request.js和response.js是对http中res以及req的封装和增强</li>
-<li>utils.js 常用工具函数的封装</li>
-<li>view.js 建立拓展名和渲染引擎的联系</li>
-</ul>
-<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p><code>express.js</code>和<code>Application.js</code>大致告诉我们了<code>express</code>和<code>app</code>究竟为何物。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//express.js</span></span><br><span class="line"><span class="built_in">exports</span> = <span class="variable language_">module</span>.<span class="property">exports</span> = createApplication;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">createApplication</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 创建一个app</span></span><br><span class="line">  <span class="keyword">var</span> app = <span class="keyword">function</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">    app.<span class="title function_">handle</span>(req, res, next);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//继承EventEmitter和Application.js中定义的app对象</span></span><br><span class="line">  <span class="title function_">mixin</span>(app, <span class="title class_">EventEmitter</span>.<span class="property"><span class="keyword">prototype</span></span>, <span class="literal">false</span>);</span><br><span class="line">  <span class="title function_">mixin</span>(app, proto, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 初始化app</span></span><br><span class="line">  app.<span class="title function_">init</span>();</span><br><span class="line">  <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 一些暴露公用接口的操作</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 告知一些方法已废弃</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>上面的<code>mixin</code>引入自<a target="_blank" rel="noopener" href="https://github.com/component/merge-descriptors">merge-description</a>，功能非常简单——通过描述符融合两个对象并返回，源码也很简单，主要由<code>getOwnPropertyDescriptor</code>及<code>defineProperty</code>方法实现，感兴趣的可以一看。</p>
-<p>app通过<code>mixin</code>继承了两个预定义对象，其中<a target="_blank" rel="noopener" href="https://nodejs.org/docs/latest-v5.x/api/events.html#events_class_eventemitter">EventEmitter</a>来自Node.js的API，继承后app将获得事件发布订阅功能。<code>proto</code>由<code>Application.js</code>导出定义。其中定义了<code>app.listen()</code>方法。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">listen</span> = <span class="keyword">function</span> <span class="title function_">listen</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> server = http.<span class="title function_">createServer</span>(<span class="variable language_">this</span>);</span><br><span class="line">  <span class="keyword">return</span> server.<span class="property">listen</span>.<span class="title function_">apply</span>(server, <span class="variable language_">arguments</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>综上就很明白了</p>
-<ul>
-<li>首先，<code>express()</code>返回的<code>app</code>其实是一个函数，可以接受<code>req</code>, <code>res</code>以及定义在Express中的next</li>
-<li>之后，<code>app.listen()</code>方法实际上执行了<code>http.createServer(app).listen()</code></li>
-</ul>
-<p>总结，**<code>express()</code>是个工厂函数，负责生产作为<code>http.createServer(app)</code>的参数**。之后，让我们继续深入看看<code>Application.js</code>中的代码。</p>
-<p>app的工作主要是在<code>Application.js</code>中进行的。下面介绍一些它的属性和相关方法</p>
-<ul>
-<li><code>cache</code> ，<code>Object</code>，缓存视图信息</li>
-<li><code>engine</code>，<code>Object</code>，视图渲染引擎<ul>
-<li><code>engine(ext, fn)</code>，绑定拓展名和渲染方法，返回app自身用于链式调用</li>
-</ul>
-</li>
-<li><code>settings</code>，app的设置信息，可以通过<code>set</code>，<code>get</code>方法设置和获取。<ul>
-<li><code>get(setting)</code>(或<code>set(setting)</code>)获取配置值，这里是完整的<a target="_blank" rel="noopener" href="https://expressjs.com/en/4x/api.html#app.settings.table">配置表</a></li>
-<li><code>set(setting, value)</code>设置配置值</li>
-<li><code>enabled(setting)</code>和<code>disabled(setting)</code>语法糖，获取Boolean类型配置值</li>
-<li><code>enable(setting)</code>和<code>disable(setting)</code>语法糖，设置Boolean类型配置值</li>
-</ul>
-</li>
-<li><code>locals</code>在app生命周期内存储用户信息</li>
-<li><code>mountpath</code> 顶级app挂载路径<ul>
-<li><code>path()</code>返回app的挂载路径</li>
-<li><code>use(fn)</code>挂载中间件时可以指定第一个参数为挂载路径</li>
-</ul>
-</li>
-<li><code>router</code> 该路由中间件属性在4.x中已废弃，由<code>route(path)</code>方法替代</li>
-<li><code>_router</code> 在<code>lazyrouter</code>内部方法中加载，Router对象，中间件的容器。详细介绍在下文的<a href="#router">Router</a>一节中。</li>
-</ul>
-<p>除了这些属性外，还有一些常见或内部使用的方法</p>
-<ul>
-<li><code>defaultConfiguration</code>初始化默认配置</li>
-<li><code>lazyrouter</code>自身路由的懒加载，原因写在了<a target="_blank" rel="noopener" href="https://github.com/expressjs/express/blob/master/lib/application.js#L132-L133">源码注释</a>里</li>
-<li><code>handle(req, res, cb)</code>最关键的app方法，用于分发请求完成路由功能。但它实际上只是对<code>router.handle</code>做了简单的封装。并在最后通过finalhandler来做兜底。finalhandler是个很轻量级的依赖包，用于生成404页面和记录错误。详细文档见<a target="_blank" rel="noopener" href="https://github.com/pillarjs/finalhandler">github</a>.</li>
-<li><code>use(fn)</code>最关键的app方法，用于添加中间件，主要逻辑是将<code>arguments</code>中的<code>path</code>和<code>fn</code>列表拆开来，再调用router的<code>use</code>方法注册</li>
-<li><code>route(path)</code>调用router的<code>route</code>方法注册一个路由中间件</li>
-<li><code>param(name, fn)</code>在自身的router对象中注册参数匹配回调</li>
-<li><code>VERB(path, fn)</code>为HTTP动词绑定路径和处理函数，主要功能也是由router代劳。有意思的是，HTTP动词是通过<a target="_blank" rel="noopener" href="https://github.com/jshttp/methods/">methods</a>这个依赖包来返回的，这个包原理也非常简单——<code>http.METHODS</code>。</li>
-<li><code>all(path)</code>用来匹配任意一个HTTP动词，其余功能和上面相同，实现上即将该路由中间件的所有动词都绑定上处理函数。</li>
-<li><code>del</code> 已废弃</li>
-<li><code>render(name, options, cb)</code>调用渲染引擎渲染模板</li>
-<li><code>listen()</code>即上文提到的方法，对<code>http.listen</code>的封装</li>
-</ul>
-<h2 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h2><p>中间件是Express设计的最精妙的地方，也是工作量最大的地方。之前Express利用了<a target="_blank" rel="noopener" href="https://github.com/senchalabs/connect">Connect</a>来做这项工作。在当前版本中放在了router目录下去实现。整体来看，一个Express应用就是一系列的中间件首尾相接组成的。那么中间件是什么呢？用<a target="_blank" rel="noopener" href="https://expressjs.com/en/guide/writing-middleware.html">官网</a>的话说就是“Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle.”从code的角度来看，就是下面这样</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myMiddleware = <span class="keyword">function</span>(<span class="params">req, res, next</span>)&#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>如果是错误处理的中间件，需要将err传入为第一个参数</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myErrorMiddleware = <span class="keyword">function</span>(<span class="params">req, res, next</span>)&#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>所以，一个请求进入Express后，处理的流程大致是下面这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">       ↓</span><br><span class="line">---------------</span><br><span class="line">| middleware1 |</span><br><span class="line">---------------</span><br><span class="line">       ↓</span><br><span class="line">---------------</span><br><span class="line">| ... ... ... |</span><br><span class="line">---------------</span><br><span class="line">       ↓</span><br><span class="line">---------------</span><br><span class="line">| middlewareN |</span><br><span class="line">---------------</span><br><span class="line">       ↓</span><br></pre></td></tr></table></figure>
-
-<p>其中每个中间件能拿到<code>req</code>和<code>res</code>抑或<code>err</code>，在完成自身工作后调用<code>next()</code>执行下一个中间件。那么这些middleware是怎么放置在这条链上，请求又是如何通过<code>next()</code>一步步向下传递的呢？</p>
-<p>中间件分两种：普通中间件和路由中间件。它们都通过<code>handle</code>方法处理；前者通过<code>use</code>方法注册，后者通过<code>VERB</code>(或<code>all</code>)方法注册。其中</p>
-<ul>
-<li>前者匹配所有以<code>path</code>开始的路径，而后者会精确匹配<code>path</code>路径；</li>
-<li>前者对于请求的方法不做要求，而后者只能处理指定的请求。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="keyword">function</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="keyword">function</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h3 id="app层面"><a href="#app层面" class="headerlink" title="app层面"></a>app层面</h3><p>在app层面，即<code>Application.js</code>中，是由<code>app.use(fn)</code>, <code>app.VERB</code>(或<code>app.all</code>)和<code>app.handle(req, res, cb)</code>完成的。而它们只是router的同名方法的简单封装。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">use</span> = <span class="keyword">function</span> <span class="title function_">use</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> offset = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> path = <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 由于这个API支持多参数，需要先判断第一个参数是否为路径</span></span><br><span class="line">  <span class="comment">// 并通过offset存储结果</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> arg = fn;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(arg) &amp;&amp; arg.<span class="property">length</span> !== <span class="number">0</span>) &#123;</span><br><span class="line">      arg = arg[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// first arg is the path</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> arg !== <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      offset = <span class="number">1</span>;</span><br><span class="line">      path = fn;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 根据offset获取中间件函数</span></span><br><span class="line">  <span class="keyword">var</span> fns = <span class="title function_">flatten</span>(slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, offset));</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 调用lazyrouter</span></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  fns.<span class="title function_">forEach</span>(<span class="keyword">function</span> (<span class="params">fn</span>) &#123;</span><br><span class="line">    <span class="comment">// 原生函数时，调用router.use注册即可</span></span><br><span class="line">    <span class="keyword">if</span> (!fn || !fn.<span class="property">handle</span> || !fn.<span class="property">set</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> router.<span class="title function_">use</span>(path, fn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 中间件为router或app时，handle方法才是我们需要的</span></span><br><span class="line">    <span class="comment">// 储存req和res的app属性到处理它的app</span></span><br><span class="line">    router.<span class="title function_">use</span>(path, <span class="keyword">function</span> <span class="title function_">mounted_app</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> orig = req.<span class="property">app</span>;</span><br><span class="line">      fn.<span class="title function_">handle</span>(req, res, <span class="keyword">function</span> (<span class="params">err</span>) &#123;</span><br><span class="line">        <span class="title function_">setPrototypeOf</span>(req, orig.<span class="property">request</span>)</span><br><span class="line">        <span class="title function_">setPrototypeOf</span>(res, orig.<span class="property">response</span>)</span><br><span class="line">        <span class="title function_">next</span>(err);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">  &#125;, <span class="variable language_">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>其中<a target="_blank" rel="noopener" href="https://github.com/blakeembrey/array-flatten">flatten</a>用于将多层嵌套数组扁平化为1层。可见到，app的<code>use</code>方法在做了预处理工作后，调用router的<code>use</code>完成注册工作。</p>
-<p>需要路由中间件时，我们需要使用动词对应的方法（或<code>all</code>）去注册。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">methods.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">method</span>)&#123;</span><br><span class="line">  <span class="comment">// 根据形参个数避免app.get带来的歧义</span></span><br><span class="line">  app[method] = <span class="keyword">function</span>(<span class="params">path</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">&#x27;get&#x27;</span> &amp;&amp; <span class="variable language_">arguments</span>.<span class="property">length</span> === <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="comment">// app.get(setting)</span></span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">set</span>(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">lazyrouter</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用router的route方法构造一个路由中间件</span></span><br><span class="line">    <span class="keyword">var</span> route = <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">route</span>(path);</span><br><span class="line">    <span class="comment">// 为路由中间件特定方法指定处理函数</span></span><br><span class="line">    route[method].<span class="title function_">apply</span>(route, slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>app的<code>handle</code>方法就比较简单了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">handle</span> = <span class="keyword">function</span> <span class="title function_">handle</span>(<span class="params">req, res, callback</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> router = <span class="variable language_">this</span>.<span class="property">_router</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建兜底的final handler</span></span><br><span class="line">  <span class="keyword">var</span> done = callback || <span class="title function_">finalhandler</span>(req, res, &#123;</span><br><span class="line">    <span class="attr">env</span>: <span class="variable language_">this</span>.<span class="title function_">get</span>(<span class="string">&#x27;env&#x27;</span>),</span><br><span class="line">    <span class="attr">onerror</span>: logerror.<span class="title function_">bind</span>(<span class="variable language_">this</span>)</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 没有路由对象时，就可以结束了</span></span><br><span class="line">  <span class="keyword">if</span> (!router) &#123;</span><br><span class="line">    <span class="title function_">debug</span>(<span class="string">&#x27;no routes defined on app&#x27;</span>);</span><br><span class="line">    <span class="title function_">done</span>();</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 调用router的handle方法</span></span><br><span class="line">  router.<span class="title function_">handle</span>(req, res, done);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Router层面"><a href="#Router层面" class="headerlink" title="Router层面"></a>Router层面</h3><p><span id="router"></span><br>Express里中间件的具体实现在Router对象中。Router包含了Express中最为核心的概念。app中的许多API都是对Router API的简单封装。可以通过<code>app._router</code>来访问app的Router对象。Router的源码位于<code>lib/router/index.js</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> proto = <span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span>(<span class="params">options</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> opts = options || &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//Router本身也是一个函数</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">router</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">    router.<span class="title function_">handle</span>(req, res, next);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 将下文中所写的方法指定为router的prototype</span></span><br><span class="line">  <span class="title function_">setPrototypeOf</span>(router, proto)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Router的属性初始化</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 存储中间件的stack属性</span></span><br><span class="line">  router.<span class="property">stack</span> = [];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> router;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>Router对象有一个关键属性<code>stack</code>，为一个数组，存放着所有的中间件。每一个中间件都是一个Layer对象，如果该中间件是一个路由中间件，则相应的Layer对象的route属性会指向一个Route对象，表示一条路由。</p>
-<h4 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h4><p>每次调用<code>app.use()</code>时，会执行<code>router.use()</code>为<code>stack</code>属性添加一个新的中间件，这个中间件是由Layer对象包装的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">proto.<span class="property">use</span> = <span class="keyword">function</span> <span class="title function_">use</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">  <span class="comment">// 处理输入参数，抽出path和fn</span></span><br><span class="line">  <span class="comment">// 过程同app.use</span></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (callbacks.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Router.use() requires middleware functions&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 循环fn数组，添加中间件</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; callbacks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">var</span> fn = callbacks[i];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 错误检测和打印信息</span></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建Layer对象</span></span><br><span class="line">    <span class="keyword">var</span> layer = <span class="keyword">new</span> <span class="title class_">Layer</span>(path, &#123;</span><br><span class="line">      <span class="attr">sensitive</span>: <span class="variable language_">this</span>.<span class="property">caseSensitive</span>,</span><br><span class="line">      <span class="attr">strict</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">end</span>: <span class="literal">false</span></span><br><span class="line">    &#125;, fn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 指定route属性为undefined，表示是普通中间件</span></span><br><span class="line">    layer.<span class="property">route</span> = <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 入栈</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>对于路由中间件要复杂些，路由中间件是通过<code>router.route()</code>方法注册的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">proto.<span class="property">route</span> = <span class="keyword">function</span> <span class="title function_">route</span>(<span class="params">path</span>) &#123;</span><br><span class="line">  <span class="comment">// 创建新的Route对象</span></span><br><span class="line">  <span class="keyword">var</span> route = <span class="keyword">new</span> <span class="title class_">Route</span>(path);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建Layer对象</span></span><br><span class="line">  <span class="keyword">var</span> layer = <span class="keyword">new</span> <span class="title class_">Layer</span>(path, &#123;</span><br><span class="line">    <span class="attr">sensitive</span>: <span class="variable language_">this</span>.<span class="property">caseSensitive</span>,</span><br><span class="line">    <span class="attr">strict</span>: <span class="variable language_">this</span>.<span class="property">strict</span>,</span><br><span class="line">    <span class="attr">end</span>: <span class="literal">true</span></span><br><span class="line">  &#125;, route.<span class="property">dispatch</span>.<span class="title function_">bind</span>(route)); <span class="comment">// 绑定this为route对象</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 指定layer的route属性为当前的路由组件，表示是路由中间件</span></span><br><span class="line">  layer.<span class="property">route</span> = route;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 入栈</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">  <span class="keyword">return</span> route;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>看来，还需要去<code>route.js</code>中看看这个对象的定义。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Route</span>(<span class="params">path</span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">path</span> = path;</span><br><span class="line">  <span class="comment">// 存放路由处理函数的stack</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">stack</span> = [];</span><br><span class="line"></span><br><span class="line">  <span class="title function_">debug</span>(<span class="string">&#x27;new %o&#x27;</span>, path)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 方法名和对应handler的键值对</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">methods</span> = &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到，Route对象也有一个stack属性，为一个数组，其中的每一项也是一个Layer对象，是对路由处理函数的包装。我们可以把它理解成一个路由中间件对象。每次调用router.route()的时候，实际上是新建了一个layer放在router.stack中；并设置layer.route为新建的Route对象。</p>
-<p>之后，通过<code>route[method].apply(route, slice.call(arguments, 1))</code>为特定方法绑定handler，<code>route[method]</code>定义在<code>route.js</code>中</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">methods.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">method</span>)&#123;</span><br><span class="line">  <span class="title class_">Route</span>.<span class="property"><span class="keyword">prototype</span></span>[method] = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> handles = <span class="title function_">flatten</span>(slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; handles.<span class="property">length</span>; i++) &#123;</span><br><span class="line">      <span class="comment">// handle即用户指定的处理函数数组</span></span><br><span class="line">      <span class="keyword">var</span> handle = handles[i];</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 检测handle合法性</span></span><br><span class="line">      ...</span><br><span class="line">      <span class="comment">// 新建layer对象</span></span><br><span class="line">      <span class="keyword">var</span> layer = <span class="title class_">Layer</span>(<span class="string">&#x27;/&#x27;</span>, &#123;&#125;, handle);</span><br><span class="line">      layer.<span class="property">method</span> = method;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 更新this.methods数组，并将layer入栈</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">methods</span>[method] = <span class="literal">true</span>;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>即，当调用route.VERB()的时候，新建一个layer放在route.stack中。</p>
-<p>通过上面的分析可以发现，Router其实是一个二维的结构。一个可能的router.stack结构如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">----------------</span><br><span class="line">|    layer1    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br><span class="line">---------------- layer2.route.stack  ------------   ------------   ------------</span><br><span class="line">|    layer2    | ------------------&gt; | layer2-1 |--&gt;| layer2-2 |--&gt;| layer2-3 |</span><br><span class="line">----------------                     ------------   ------------   ------------</span><br><span class="line">        ↓</span><br><span class="line">---------------- layer3.route.stack  ------------   ------------</span><br><span class="line">|    layer3    | ------------------&gt; | layer3-1 |--&gt;| layer3-2 |</span><br><span class="line">----------------                     ------------   ------------</span><br><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    ......    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    layerN    |</span><br><span class="line">----------------</span><br></pre></td></tr></table></figure>
-
-<h4 id="Layer"><a href="#Layer" class="headerlink" title="Layer"></a>Layer</h4><p>Layer对象的构造函数如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Layer</span>(<span class="params">path, options, fn</span>) &#123;</span><br><span class="line">  <span class="comment">// 实现函数名前有无new返回相同的效果</span></span><br><span class="line">  <span class="keyword">if</span> (!(<span class="variable language_">this</span> <span class="keyword">instanceof</span> <span class="title class_">Layer</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Layer</span>(path, options, fn);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">debug</span>(<span class="string">&#x27;new %o&#x27;</span>, path)</span><br><span class="line">  <span class="keyword">var</span> opts = options || &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">handle</span> = fn;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = fn.<span class="property">name</span> || <span class="string">&#x27;&lt;anonymous&gt;&#x27;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">params</span> = <span class="literal">undefined</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">path</span> = <span class="literal">undefined</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">regexp</span> = <span class="title function_">pathRegexp</span>(path, <span class="variable language_">this</span>.<span class="property">keys</span> = [], opts);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置特殊情况的快速匹配</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">regexp</span>.<span class="property">fast_star</span> = path === <span class="string">&#x27;*&#x27;</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">regexp</span>.<span class="property">fast_slash</span> = path === <span class="string">&#x27;/&#x27;</span> &amp;&amp; opts.<span class="property">end</span> === <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Layer的属性和一些方法介绍如下</p>
-<ul>
-<li><code>handle</code> 用户指定的中间件函数</li>
-<li><code>name</code> 函数名</li>
-<li><code>params</code> 参数名，在执行<code>match</code>时赋值</li>
-<li><code>path</code> 路径名，在执行<code>match</code>时赋值</li>
-<li><code>regexp</code> 路径的正则表达形式，由<a target="_blank" rel="noopener" href="https://github.com/pillarjs/path-to-regexp">pathRegexp</a>转换完成</li>
-<li><code>keys</code> 路径匹配结果信息</li>
-<li><code>route</code> 路由中间件的Route对象，或<code>undefined</code></li>
-</ul>
-<p>上面看到，普通中间件和路由中间件都通过Layer的形式插入在<code>stack</code>中。尽管它们都有构造函数中声明的哪些属性，这两种Layer还是有所区别：</p>
-<ul>
-<li>Router中的Layer对象具有<code>route</code>属性，如果该属性不为<code>undefined</code>，则表明为一个路由中间件；而Route中的Layer对象没有<code>route</code>属性</li>
-<li>Route中的Layer对象具有<code>method</code>属性，表明该路由函数的HTTP方法；而Router中的Layer对象没有<code>method</code>属性</li>
-<li>Route中的Layer对象的<code>keys</code>属性值均为<code>[]</code>，<code>regexp</code>属性值均为<code>/^\/?$/i</code>，因为在Route模块中创建Layer对象时使用的是<code>Layer(&#39;/&#39;, &#123;&#125;, fn)</code></li>
-</ul>
-<h4 id="请求处理"><a href="#请求处理" class="headerlink" title="请求处理"></a>请求处理</h4><p>在中间件注册完成后，剩下的工作都是由<code>app.handle()</code>或者说<code>router.handle()</code>完成的。这部分<a target="_blank" rel="noopener" href="https://github.com/expressjs/express/blob/master/lib/router/index.js#L136-L320">代码</a>比较复杂。大致结构如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">proto.<span class="property">handle</span> = <span class="keyword">function</span> <span class="title function_">handle</span>(<span class="params">req, res, out</span>) &#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="comment">// middleware and routes</span></span><br><span class="line">  <span class="keyword">var</span> stack = self.<span class="property">stack</span>;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">next</span>(<span class="params">err</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (match !== <span class="literal">true</span> &amp;&amp; idx &lt; stack.<span class="property">length</span>) &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// no match</span></span><br><span class="line">    <span class="keyword">if</span> (match !== <span class="literal">true</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">done</span>(layerError);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">trim_prefix</span>(<span class="params">layer, layerError, layerPath, path</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>在初始化和预处理后，调用了<code>next()</code>函数。在<code>next()</code>函数中，主要的部分是while语句判断是否遍历完成整个<code>stack</code>，完成后执行done()。这部分代码如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (match !== <span class="literal">true</span> &amp;&amp; idx &lt; stack.<span class="property">length</span>) &#123;</span><br><span class="line">  layer = stack[idx++];</span><br><span class="line">  match = <span class="title function_">matchLayer</span>(layer, path);</span><br><span class="line">  route = layer.<span class="property">route</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> match !== <span class="string">&#x27;boolean&#x27;</span>) &#123;</span><br><span class="line">    <span class="comment">// hold on to layerError</span></span><br><span class="line">    layerError = layerError || match;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (match !== <span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!route) &#123;</span><br><span class="line">    <span class="comment">// process non-route handlers normally</span></span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (layerError) &#123;</span><br><span class="line">    <span class="comment">// routes do not match with a pending error</span></span><br><span class="line">    match = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> method = req.<span class="property">method</span>;</span><br><span class="line">  <span class="keyword">var</span> has_method = route.<span class="title function_">_handles_method</span>(method);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// build up automatic options response</span></span><br><span class="line">  <span class="keyword">if</span> (!has_method &amp;&amp; method === <span class="string">&#x27;OPTIONS&#x27;</span>) &#123;</span><br><span class="line">    <span class="title function_">appendMethods</span>(options, route.<span class="title function_">_options</span>());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// don&#x27;t even bother matching route</span></span><br><span class="line">  <span class="keyword">if</span> (!has_method &amp;&amp; method !== <span class="string">&#x27;HEAD&#x27;</span>) &#123;</span><br><span class="line">    match = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中<code>layer</code>表示当前中间件，调用<code>matchLayer</code>方法即<code>layer.match(path)</code>判断是否和当前路径匹配（这个过程会更新<code>layer</code>中的<code>path</code>和<code>params</code>）。之后的逻辑如下：</p>
-<ol>
-<li>如果<code>match</code>不为<code>true</code>，即中间件和路径不匹配，则处理下一个中间件</li>
-<li>如果<code>match</code>为<code>true</code>，<code>route</code>不存在，表示不是一个路由中间件，执行continue，之后跳出循环</li>
-<li>如果<code>match</code>为<code>true</code>，且<code>route</code>存在。说明是需要的中间件。<br>  3.1 如果<code>has_method</code>为<code>false</code>且HTTP方法为<code>OPTIONS</code>，则执行<code>appendMethods(options, route._options())</code>添加支持方法<br>  3.2 如果<code>has_method</code>为<code>false</code>且HTTP方法不为<code>HEAD</code>，则设置<code>match</code>为false，即该路由无法处理该请求，此时由于match依然满足循环条件，因此会对下一个中间件进行判断<br>  3.3 如果<code>has_method</code>为<code>true</code>，则由于<code>match</code>不再满足循环条件，因此会跳出循环</li>
-</ol>
-<p>整体来看，循环的主要作用就是从<strong>当前下标</strong>开始找出第一个能够处理该HTTP请求的中间件。如果是非路由中间件，则只要匹配路径即可；如果是路由中间件，则需要同时匹配路径和HTTP请求方法。</p>
-<p>while语句后，如果<code>match</code>为<code>true</code>，说明遍历完成，直接执行<code>done()</code>。否则将匹配中得到的<code>path</code>和<code>params</code>交给process_params方法作参数预处理。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">self.<span class="title function_">process_params</span>(layer, paramcalled, req, res, <span class="keyword">function</span> (<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">next</span>(layerError || err);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (route) &#123;</span><br><span class="line">    <span class="keyword">return</span> layer.<span class="title function_">handle_request</span>(req, res, next);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">trim_prefix</span>(layer, layerError, layerPath, path);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>从回调函数中可以看到，如果是路由中间件可以直接调用<code>layer.handle_request(req, res, next)</code>执行真正的中间件函数。如果是普通中间件，还需要在<code>trim_prefix</code>中对路径处理后才会调用<code>layer.handle_request(req, res, next)</code>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">trim_prefix</span>(<span class="params">layer, layerError, layerPath, path</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (layerError) &#123;</span><br><span class="line">    layer.<span class="title function_">handle_error</span>(layerError, req, res, next);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    layer.<span class="title function_">handle_request</span>(req, res, next);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在路由中间件中，<code>layer.handle_request(req, res, next)</code>调用的中间函数实际上是<code>route.dispatch</code>方法，在Route对象内容分发请求，它的逻辑相对<code>router.handle</code>要简单</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Route</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">dispatch</span> = <span class="keyword">function</span> <span class="title function_">dispatch</span>(<span class="params">req, res, done</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> idx = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> stack = <span class="variable language_">this</span>.<span class="property">stack</span>;</span><br><span class="line">  <span class="keyword">if</span> (stack.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">done</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> method = req.<span class="property">method</span>.<span class="title function_">toLowerCase</span>();</span><br><span class="line">  <span class="keyword">if</span> (method === <span class="string">&#x27;head&#x27;</span> &amp;&amp; !<span class="variable language_">this</span>.<span class="property">methods</span>[<span class="string">&#x27;head&#x27;</span>]) &#123;</span><br><span class="line">    method = <span class="string">&#x27;get&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  req.<span class="property">route</span> = <span class="variable language_">this</span>;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">next</span>(<span class="params">err</span>) &#123;</span><br><span class="line">    <span class="comment">// signal to exit route</span></span><br><span class="line">    <span class="keyword">if</span> (err &amp;&amp; err === <span class="string">&#x27;route&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">done</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// signal to exit router</span></span><br><span class="line">    <span class="keyword">if</span> (err &amp;&amp; err === <span class="string">&#x27;router&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">done</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> layer = stack[idx++];</span><br><span class="line">    <span class="keyword">if</span> (!layer) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">done</span>(err);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (layer.<span class="property">method</span> &amp;&amp; layer.<span class="property">method</span> !== method) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">next</span>(err);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      layer.<span class="title function_">handle_error</span>(err, req, res, next);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      layer.<span class="title function_">handle_request</span>(req, res, next);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>可以看到，<code>next</code>函数逻辑像下面这样</p>
-<ol>
-<li>如果有错，直接调用<code>done()</code>传递错误</li>
-<li>获取<code>layer</code>，如果不存在，调用<code>done()</code></li>
-<li><code>layer</code>和当前方法不匹配时，跳过当前<code>layer</code>，执行<code>next()</code>，继续下一个route函数</li>
-<li><code>layer</code>和当前方法匹配时，根据有无错误执行<code>layer.handle_error(err, req, res, next)</code>或是<code>layer.handle_request(req, res, next)</code>。</li>
-</ol>
-<p>综上，一个请求到达时，流程顺序像下面这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    layer1    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    layer2    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br><span class="line">---------------- layer3.route.stack  ------------   ------------   ------------</span><br><span class="line">|    layer3    | ------------------&gt; | layer3-1 |--&gt;| layer3-2 |--&gt;| layer3-3 | ---</span><br><span class="line">----------------                     ------------   ------------   ------------   |</span><br><span class="line">                                                                                  |</span><br><span class="line">        ---------------------------------------------------------------------------</span><br><span class="line">        ↓</span><br><span class="line">---------------- layer4.route.stack  ------------   ------------</span><br><span class="line">|    layer4    | ------------------&gt; | layer4-1 |--&gt;| layer4-2 | ---</span><br><span class="line">----------------                     ------------   ------------   |</span><br><span class="line">                                                                   |</span><br><span class="line">        ------------------------------------------------------------</span><br><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    ......    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br><span class="line">----------------</span><br><span class="line">|    layerN    |</span><br><span class="line">----------------</span><br><span class="line">        ↓</span><br></pre></td></tr></table></figure>
-
-<p>每个中间件的处理过程则像下面这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">                ↓</span><br><span class="line">  No  --------------------</span><br><span class="line">------|    path match    |</span><br><span class="line">|     --------------------</span><br><span class="line">|               ↓ Yes</span><br><span class="line">|     --------------------  Yes  ---------------------  No</span><br><span class="line">|     |     has route    |-------| http method match |------</span><br><span class="line">|     --------------------       ---------------------     |</span><br><span class="line">|               ↓ No                       | Yes           |</span><br><span class="line">|     --------------------                 |               |</span><br><span class="line">|     |  process params  |&lt;-----------------               |</span><br><span class="line">|     --------------------                                 |</span><br><span class="line">|               ↓                                          |</span><br><span class="line">|     --------------------                                 |</span><br><span class="line">|     | execute function |                                 |</span><br><span class="line">|     --------------------                                 |</span><br><span class="line">|               ↓                                          |</span><br><span class="line">|     --------------------                                 |</span><br><span class="line">-----&gt;|    next layer    |&lt;---------------------------------</span><br><span class="line">      --------------------</span><br><span class="line">                ↓</span><br></pre></td></tr></table></figure>
-
-<p>在参数处理的过程中，每个参数的处理函数只会执行一次，并将结果保存在缓存中。在处理同一个请求的过程中，如果需要处理某个参数，会首先检查缓存，如果缓存中不存在，才会执行其处理函数。</p>
-<h2 id="内置中间件"><a href="#内置中间件" class="headerlink" title="内置中间件"></a>内置中间件</h2><p>在<code>middleware</code>目录下，放置了两个Express内置中间件，在<code>app.lazyRouter</code>中自动加载。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">lazyrouter</span> = <span class="keyword">function</span> <span class="title function_">lazyrouter</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">_router</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span> = <span class="keyword">new</span> <span class="title class_">Router</span>(&#123;</span><br><span class="line">      <span class="attr">caseSensitive</span>: <span class="variable language_">this</span>.<span class="title function_">enabled</span>(<span class="string">&#x27;case sensitive routing&#x27;</span>),</span><br><span class="line">      <span class="attr">strict</span>: <span class="variable language_">this</span>.<span class="title function_">enabled</span>(<span class="string">&#x27;strict routing&#x27;</span>)</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">use</span>(<span class="title function_">query</span>(<span class="variable language_">this</span>.<span class="title function_">get</span>(<span class="string">&#x27;query parser fn&#x27;</span>)));</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">use</span>(middleware.<span class="title function_">init</span>(<span class="variable language_">this</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>其中第一个的作用是解析URL query，<code>query(this.get(&#39;query parser fn&#39;))</code>用于设置URL query解析器。第二个的作用是将req和res分别暴露给对方，并让它们分别继承自express定义的<code>app.request</code>和<code>app.response</code>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exports</span>.<span class="property">init</span> = <span class="keyword">function</span>(<span class="params">app</span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> <span class="title function_">expressInit</span>(<span class="params">req, res, next</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (app.<span class="title function_">enabled</span>(<span class="string">&#x27;x-powered-by&#x27;</span>)) res.<span class="title function_">setHeader</span>(<span class="string">&#x27;X-Powered-By&#x27;</span>, <span class="string">&#x27;Express&#x27;</span>);</span><br><span class="line">    req.<span class="property">res</span> = res;</span><br><span class="line">    res.<span class="property">req</span> = req;</span><br><span class="line">    req.<span class="property">next</span> = next;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">setPrototypeOf</span>(req, app.<span class="property">request</span>)</span><br><span class="line">    <span class="title function_">setPrototypeOf</span>(res, app.<span class="property">response</span>)</span><br><span class="line"></span><br><span class="line">    res.<span class="property">locals</span> = res.<span class="property">locals</span> || <span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_">next</span>();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>在<code>express.js</code>中，<code>req</code>和<code>res</code>分别继承自了<code>request.js</code>和<code>response.js</code>的导出对象。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createApplication</span>(<span class="params"></span>) &#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="comment">// expose the prototype that will get set on requests</span></span><br><span class="line">  app.<span class="property">request</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(req, &#123;</span><br><span class="line">    <span class="attr">app</span>: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// expose the prototype that will get set on responses</span></span><br><span class="line">  app.<span class="property">response</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(res, &#123;</span><br><span class="line">    <span class="attr">app</span>: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>关于参数处理和视图渲染，我看得不是很仔细，就不再赘述了。有兴趣的可以自行去参考中的链接学习。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://expressjs.com/">Express - Node.js Application Framework</a></li>
-<li><a target="_blank" rel="noopener" href="https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/">Anatomy of an HTTP Transaction | Node.js</a></li>
-<li><a target="_blank" rel="noopener" href="http://div.io/topic/1063">深入理解Express</a></li>
-<li><a target="_blank" rel="noopener" href="http://div.io/topic/1403">Express深入解读</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/syaning/understanding-express/blob/master/express/router/index.md">syaning&#x2F;understanding-express</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/blog/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/23/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/blog/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/23/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1781,13 +1680,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">1m</span>
+    <span title="站点总字数">1.1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:03</span>
+    <span title="站点阅读时长">29:27</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">150</span>
+          <span class="site-state-item-count">151</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">459</span>
+        <span class="site-state-item-count">463</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,170 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/04/25/webrtc-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/04/25/webrtc-practice/" class="post-title-link" itemprop="url">webrtc学习笔记</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-04-25 23:09:06 / 修改时间：23:11:35" itemprop="dateCreated datePublished" datetime="2018-04-25T23:09:06+08:00">2018-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/04/25/webrtc-practice/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/25/webrtc-practice/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>必读：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API">WebRTC API - Web API接口 | MDN</a><br>必读：<a target="_blank" rel="noopener" href="https://blog.coding.net/blog/getting-started-with-webrtc">WebRTC的前世今生</a></p>
+</blockquote>
+<p>Web端用户视频推流使用webRTC方案，使用已有JS SDK（和<a target="_blank" rel="noopener" href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web">这个</a>兼容）。</p>
+<p>WebRTC由Google主推，全称Web Browser Real Time Communication。目标是希望在Web端进行点对点音视频通信。</p>
+<p>整个P2P过程很复杂，但是对于浏览器而言，WebRTC实际上只是提供了三个API：</p>
+<ul>
+<li><strong>MediaStream</strong>, 即getUserMedia（<code>navigator.getUserMedia</code>），获取媒体数据，如来自用户摄像头和麦克风的音视频流</li>
+<li><strong>RTCPeerConnection</strong>，用于peer跟peer之间呼叫和建立连接以便传输音视频数据流；这个不同浏览器的实现不同，官网推荐使用<code>adapter.js</code>进行适配</li>
+<li><strong>RTCDataChannel</strong>，用于peer跟peer之间传输音视频之外的一般数据。</li>
+</ul>
+<h2 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h2><p>参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream">MDN</a>。来自<code>navigator.getUserMedia()</code>，这个方法接收三个参数：</p>
+<ul>
+<li>一个约束对象，如<code>&#123; audio: false, video: true &#125;</code>，除了这两种，其他外设也可以作为输入</li>
+<li>一个成功回调</li>
+<li>一个失败回调</li>
+</ul>
+<p>返回的MediaStream对象有<code>addTrack</code>, <code>getAudioTracks</code>, <code>getVideoTracks</code>等方法。通过这些方法取出的MediaStreamTrack数组代表对应类型的流，可以把取出的这些流导入到<code>&lt;video&gt;</code>等标签输出。在Chrome或Opera中，<code>URL.createObjectURL()</code>方法可以转换一个MediaStream到一个Blob URL，可以被设置作为视频的源。除了这种方法，还可以使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext"><code>AudioContext</code></a>API，对音频做处理后输出。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">gotStream</span>(<span class="params">stream</span>) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">AudioContext</span> = <span class="variable language_">window</span>.<span class="property">AudioContext</span> || <span class="variable language_">window</span>.<span class="property">webkitAudioContext</span>;</span><br><span class="line">    <span class="keyword">var</span> audioContext = <span class="keyword">new</span> <span class="title class_">AudioContext</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create an AudioNode from the stream</span></span><br><span class="line">    <span class="keyword">var</span> mediaStreamSource = audioContext.<span class="title function_">createMediaStreamSource</span>(stream);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Connect it to destination to hear yourself</span></span><br><span class="line">    <span class="comment">// or any other node for processing!</span></span><br><span class="line">    mediaStreamSource.<span class="title function_">connect</span>(audioContext.<span class="property">destination</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">navigator.<span class="title function_">getUserMedia</span>(&#123;<span class="attr">audio</span>:<span class="literal">true</span>&#125;, gotStream);</span><br></pre></td></tr></table></figure>
+
+<p>使用HTTPS请求<code>getUserMedia</code>会向用户给出一次提示。不建议在HTTP环境下使用。</p>
+<p><a target="_blank" rel="noopener" href="https://webrtc.github.io/samples/src/content/getusermedia/gum/">这里</a>是一个demo，打开console，查看全局变量stream就明白MediaStream结构了。</p>
+<p>约束对象中可以商议视频分辨率等信息。它会影响获取到的视频流。</p>
+<h2 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h2><p>WebRTC使用RTCPeerConnection在浏览器间传递数据流，但在之前需要有一个交换信令的过程。这个过程不在WebRTC中定义，开发者可以使用任何想用的消息协议，比如WebSocket或XHR轮询什么的。信令过程需要传递三种信息：</p>
+<ul>
+<li>连接控制信息：初始化或者关闭连接报告错误。</li>
+<li>网络配置：对于外网，我们电脑的 IP 地址和端口？</li>
+<li>多媒体数据：使用什么编码解码器，浏览器可以处理什么信息</li>
+</ul>
+<p>点对点的连接需要ICE（Interactive Connectivity Establishment）的帮助，ICE靠STUN和TURN服务器处理NAT穿透等复杂问题。起初连接建立在UDP之上，STUN服务器让位于NAT中的client获知自己的公网IP和端口。如果UDP建立失败，考虑TCP连接，再考虑HTTP和HTTPS连接。否则使用TURN服务器做中转工作。</p>
+<p>W3C给了RTCPeerConnection的样例，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> signalingChannel = <span class="keyword">new</span> <span class="title class_">SignalingChannel</span>();</span><br><span class="line"><span class="keyword">var</span> configuration = &#123; <span class="string">&quot;iceServers&quot;</span>: [&#123; <span class="string">&quot;url&quot;</span>: <span class="string">&quot;stun:stun.example.org&quot;</span> &#125;] &#125;;</span><br><span class="line"><span class="keyword">var</span> pc;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用start()建立连接</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">  pc = <span class="keyword">new</span> <span class="title class_">RTCPeerConnection</span>(configuration);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 有任何 ICE candidates 可用，</span></span><br><span class="line">  <span class="comment">// 通过signalingChannel传递candidate给对方</span></span><br><span class="line">  pc.<span class="property">onicecandidate</span> = <span class="keyword">function</span> (<span class="params">evt</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (evt.<span class="property">candidate</span>)</span><br><span class="line">      signalingChannel.<span class="title function_">send</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="string">&quot;candidate&quot;</span>: evt.<span class="property">candidate</span> &#125;));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// let the &quot;negotiationneeded&quot; event trigger offer generation</span></span><br><span class="line">  pc.<span class="property">onnegotiationneeded</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    pc.<span class="title function_">createOffer</span>(localDescCreated, logError);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 远端流到达时，在remoteView中做展示</span></span><br><span class="line">  pc.<span class="property">onaddstream</span> = <span class="keyword">function</span> (<span class="params">evt</span>) &#123;</span><br><span class="line">    remoteView.<span class="property">src</span> = <span class="variable constant_">URL</span>.<span class="title function_">createObjectURL</span>(evt.<span class="property">stream</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取本地流，展示并传递</span></span><br><span class="line">  navigator.<span class="title function_">getUserMedia</span>(&#123; <span class="string">&quot;audio&quot;</span>: <span class="literal">true</span>, <span class="string">&quot;video&quot;</span>: <span class="literal">true</span> &#125;, <span class="keyword">function</span> (<span class="params">stream</span>) &#123;</span><br><span class="line">    selfView.<span class="property">src</span> = <span class="variable constant_">URL</span>.<span class="title function_">createObjectURL</span>(stream);</span><br><span class="line">    pc.<span class="title function_">addStream</span>(stream);</span><br><span class="line">  &#125;, logError);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">localDescCreated</span>(<span class="params">desc</span>) &#123;</span><br><span class="line">  pc.<span class="title function_">setLocalDescription</span>(desc, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    signalingChannel.<span class="title function_">send</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="string">&quot;sdp&quot;</span>: pc.<span class="property">localDescription</span> &#125;));</span><br><span class="line">  &#125;, logError);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">signalingChannel.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">evt</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!pc)</span><br><span class="line">    <span class="title function_">start</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> message = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(evt.<span class="property">data</span>);</span><br><span class="line">  <span class="keyword">if</span> (message.<span class="property">sdp</span>) &#123;</span><br><span class="line">    pc.<span class="title function_">setRemoteDescription</span>(<span class="keyword">new</span> <span class="title class_">RTCSessionDescription</span>(message.<span class="property">sdp</span>), <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// 接收到offer时，回应一个answer</span></span><br><span class="line">      <span class="keyword">if</span> (pc.<span class="property">remoteDescription</span>.<span class="property">type</span> == <span class="string">&quot;offer&quot;</span>)</span><br><span class="line">        pc.<span class="title function_">createAnswer</span>(localDescCreated, logError);</span><br><span class="line">    &#125;, logError);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 接收对方candidate并加入自己的RTCPeerConnection</span></span><br><span class="line">    pc.<span class="title function_">addIceCandidate</span>(<span class="keyword">new</span> <span class="title class_">RTCIceCandidate</span>(message.<span class="property">candidate</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">logError</span>(<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="title function_">log</span>(error.<span class="property">name</span> + <span class="string">&quot;: &quot;</span> + error.<span class="property">message</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在开始建立连接时，调用<code>start()</code>，创建<code>RTCPeerConnection</code>对象，接着完成下面步骤：</p>
+<ul>
+<li><strong>交换网络信息</strong>，<code>onicecandidate</code>回调在有任何candidate出现时，将通过SignalChannel（使用额外方法创建，如WebSocket）传递给对方。同样地，在通过SignalChannel接收到对方发来的该信息时，加入这个candidate到RTCPeerConnection中。</li>
+<li><strong>交换多媒体信息</strong>，使用SDP（Session Description Protocol）与对端交换多媒体资讯，在<code>onnegotiationneeded</code>中，调用<code>createOffer</code>通过<code>setLocalDescription</code>创建<code>RTCSessionDecription</code>对象进行本地存储，并传给对方。接收方通过<code>setRemoteDescription</code>方法设定remote description。</li>
+</ul>
+<p>上述过程称为JavaScript Session Establishment Protocol（JSEP）。一旦这个signaling完成了，数据可以直接的在端到端之间进行数据传输。如果失败了，通过中介服务器relay服务进行转发。</p>
+<p>通常RTCPeerConnection的API太复杂，所以有很多在此基础上的库封装出了更加友善的API。</p>
+<h2 id="JS-SDK接入流程"><a href="#JS-SDK接入流程" class="headerlink" title="JS-SDK接入流程"></a>JS-SDK接入流程</h2><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://docs.agora.io/cn/2.1/product/Video/API%20Reference/communication_web_video?platform=Web">Agora：视频通话API</a></p>
+</blockquote>
+<ol>
+<li>准备工作，包括界面绘制等</li>
+<li>向远端注册当前用户，获取token，为后面做准备</li>
+<li>使用<code>createClient()</code>方法创建客户端</li>
+<li>指定回调，包括已订阅流、已添加流、移除、失败等生命周期事件的回调</li>
+<li>初始化客户端，传入appId和成功回调</li>
+<li>初始化成功后，调用join方法根据获取到的token加入指定房间（原理是WebRTC的stream有id）</li>
+<li>指定配置创建本地流（getUserMedia），发布本地流，播放本地流</li>
+</ol>
+<h2 id="RTMP相关"><a href="#RTMP相关" class="headerlink" title="RTMP相关"></a>RTMP相关</h2><blockquote>
+<p>必读：<a target="_blank" rel="noopener" href="https://www.villainhr.com/page/2017/08/05/RTMP%20H5%20%E7%9B%B4%E6%92%AD%E6%B5%81%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90">RTMP H5 直播流技术解析</a></p>
+</blockquote>
+<p>一次RTMP握手的模拟。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 握手协议模拟</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">time, random</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">time</span> = time || <span class="number">0</span>;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">random</span> = random || <span class="title class_">Buffer</span>.<span class="title function_">alloc</span>(<span class="number">0</span>); <span class="comment">// Buffer类型</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">C0</span>() &#123;</span><br><span class="line">        <span class="keyword">const</span> buf = <span class="title class_">Buffer</span>.<span class="title function_">alloc</span>(<span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line">        <span class="keyword">return</span> buf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">C1</span>() &#123;</span><br><span class="line">        <span class="keyword">const</span> buf = <span class="title class_">Buffer</span>.<span class="title function_">alloc</span>(<span class="number">1536</span>);</span><br><span class="line">        <span class="keyword">return</span> buf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * write C2</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">C2</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> buf = <span class="title class_">Buffer</span>.<span class="title function_">alloc</span>(<span class="number">1536</span>);</span><br><span class="line">        buf.<span class="title function_">writeUInt32BE</span>(<span class="variable language_">this</span>.<span class="property">time</span>, <span class="number">4</span>);</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">random</span>.<span class="title function_">copy</span>(buf, <span class="number">8</span>, <span class="number">0</span>, <span class="number">1528</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端</span></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> net.<span class="title function_">socket</span>();</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">RTMP_C</span> = <span class="keyword">new</span> <span class="title function_">C</span>();</span><br><span class="line"></span><br><span class="line">client.<span class="title function_">connect</span>(&#123;</span><br><span class="line">    <span class="attr">port</span>: <span class="number">1935</span>,</span><br><span class="line">    <span class="attr">host</span>: <span class="string">&#x27;example.live.com&#x27;</span>,</span><br><span class="line">    <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;connected&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">client.<span class="title function_">on</span>(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!data) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">warn</span>(<span class="string">&#x27;Empty Buffer.&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable constant_">RTMP_C</span>.<span class="property">S0</span> &amp;&amp; data.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="variable constant_">RTMP_C</span>.<span class="property">S0</span> = data.<span class="title function_">readUInt8</span>(<span class="number">0</span>);</span><br><span class="line">        data = data.<span class="title function_">slice</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable constant_">RTMP_C</span>.<span class="property">S1</span> &amp;&amp; data.<span class="property">length</span> &gt;= <span class="number">1536</span>) &#123;</span><br><span class="line">        <span class="variable constant_">RTMP_C</span>.<span class="property">time</span> = data.<span class="title function_">readUInt32BE</span>(<span class="number">0</span>);</span><br><span class="line">        <span class="variable constant_">RTMP_C</span>.<span class="property">random</span> = data.<span class="title function_">slice</span>(<span class="number">8</span>, <span class="number">1536</span>);</span><br><span class="line">        <span class="variable constant_">RTMP_C</span>.<span class="property">S1</span> = <span class="literal">true</span>;</span><br><span class="line">        data = data.<span class="title function_">slice</span>(<span class="number">1536</span>)</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;send C2&#x27;</span>);</span><br><span class="line">        client.<span class="title function_">write</span>(<span class="variable constant_">RTMP_C</span>.<span class="property">C2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable constant_">RTMP_C</span>.<span class="property">S2</span> &amp;&amp; data.<span class="property">length</span> &gt;= <span class="number">1536</span>) &#123;</span><br><span class="line">        <span class="variable constant_">RTMP_C</span>.<span class="property">S2</span> = <span class="literal">true</span>;</span><br><span class="line">        data = data.<span class="title function_">slice</span>(<span class="number">1536</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -977,216 +1141,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/02/06/my-first-electron-demo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/02/06/my-first-electron-demo/" class="post-title-link" itemprop="url">我的第一个Electron应用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-02-06 15:58:11" itemprop="dateCreated datePublished" datetime="2018-02-06T15:58:11+08:00">2018-02-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-04-07 20:01:49" itemprop="dateModified" datetime="2019-04-07T20:01:49+08:00">2019-04-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/02/06/my-first-electron-demo/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/02/06/my-first-electron-demo/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>9.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>16 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>前一阵突发奇想，想写一个汇总所有骑行数据的网页。又想到最近看了下Electron，干脆写一个能够生产这样网页的工具，造福自己，造福他人。</p>
-</blockquote>
-<p><img src="https://s2.ax1x.com/2019/04/07/Ahbsc6.png" alt="Ahbsc6.png"></p>
-<h2 id="Electron是啥"><a href="#Electron是啥" class="headerlink" title="Electron是啥"></a>Electron是啥</h2><p><a href="(https://electronjs.org/)">Electron</a>一套由Github开发的开源库，基于<a target="_blank" rel="noopener" href="https://www.chromium.org/Home">Chromium</a>和<a target="_blank" rel="noopener" href="https://nodejs.org/en/">Node.js</a>，支持通过HTML、JavaScript、CSS来构建跨平台（Mac、Windows、Linux）应用。Electron起初是为文本编辑器<a target="_blank" rel="noopener" href="https://atom.io/">Atom</a>而开发的一套开发框架，名为Atom Shell。现如今已经为<a target="_blank" rel="noopener" href="https://electronjs.org/apps">众多应用</a>所用。</p>
-<p>从开发者角度看，Electron分为<code>main</code>和<code>renderer</code>两部分。前者运行在主进程中，以创建web页面的方式显示一个GUI；后者是渲染进程，每个Electron的web页面运行在其中。通常的浏览器内，网页通常运行在一个沙盒的环境不能够进行原生操作。 在Electron中，可以在渲染进程使用Node.js的API和Electron提供的众多API（GUI相关除外），和操作系统进行一些低级别的交互。主进程和渲染进程通过<a target="_blank" rel="noopener" href="https://electronjs.org/docs/api/ipc-main"><code>ipcMain</code></a>和<a target="_blank" rel="noopener" href="https://electronjs.org/docs/api/ipc-renderer"><code>ipcRenderer</code></a>相互沟通；也可以通过<a target="_blank" rel="noopener" href="https://electronjs.org/docs/api/remote"><code>remote</code></a>的方式发起，后者要更简洁些。</p>
-<p>在项目结构上，官网并没有限制，<a target="_blank" rel="noopener" href="https://github.com/electron-userland/electron-webpack">electron-webpack</a>的<a target="_blank" rel="noopener" href="https://webpack.electron.build/project-structure">project-structure</a>可以参考，安全性上，可以参考官网的<a target="_blank" rel="noopener" href="https://electronjs.org/docs/tutorial/security">介绍</a>。要想获得对Electron概念的快速认识，可以看看<a target="_blank" rel="noopener" href="https://electronjs.org/docs/tutorial/about">关于Electron</a>和<a target="_blank" rel="noopener" href="https://electronjs.org/docs/tutorial/quick-start">快速入门</a>，再去<a target="_blank" rel="noopener" href="https://www.zhihu.com/topic/20038727/top-answers">知乎Electron精华话题</a>看看，或者看看<a target="_blank" rel="noopener" href="https://github.com/sindresorhus/awesome-electron">awesome list</a>也是极好的。</p>
-<h2 id="调研准备"><a href="#调研准备" class="headerlink" title="调研准备"></a>调研准备</h2><p>地图考虑还是使用百度地图API（因为<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2018/01/27/my-first-pwa-app/">上个小项目</a>用的就是百度地图，好上手），根据<a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/jsdemo.htm#c1_25">demo演示</a>来看，根据数据点画个折线是没什么问题的。地图的part没问题了。</p>
-<p>下面就是数据的part。去确认了下我骑行常用的APP<a target="_blank" rel="noopener" href="https://www.imxingzhe.com/">行者</a>，网页和APP都有导出功能。导出格式为<code>.gpx</code>的gps数据文件。OK，数据的来源也有了。</p>
-<p>至于怎么把这些点连线搁在地图上，就是我要干的活了。</p>
-<h2 id="功能设计"><a href="#功能设计" class="headerlink" title="功能设计"></a>功能设计</h2><p>但是事情没那么简单，既然选择<a target="_blank" rel="noopener" href="https://electronjs.org/">Electron</a>来练手，光做个展示的网页出来就很没意思了。这也不是Electron的用武之地。于是能够想到的就是，做一个<strong>可以生成上面那个网页的工具</strong>，一方面减轻我的负担，让我在日后维护时省心省力；另一方面也能造福他人嘛。</p>
-<p>现在整理一下，我拿在手里的是一堆<code>.gpx</code>的文件，产出是可以画图的网页。稍微分解一下：</p>
-<ul>
-<li>网页是需要独立存在，不需要用户配置的，这些gps数据必须单独存储，可以使用前端友好的JSON文件。这个<strong>转译</strong>过程需要在Electron应用中完成</li>
-<li>网页需要能够配置生成，不需要用户手写，因此在应用里需要填充<strong>HTML模板</strong>，生产HTML文件。</li>
-<li>页面并不复杂，不需要使用Vue、React甚至webpack的加持，作为我的第一个Electron应用，把握整体感受要紧</li>
-</ul>
-<h2 id="开写"><a href="#开写" class="headerlink" title="开写"></a>开写</h2><h3 id="相关环境"><a href="#相关环境" class="headerlink" title="相关环境"></a>相关环境</h3><p>安装Electron过程中，报错node版本过低。只能重新安转新版本的node，windows下只有<a target="_blank" rel="noopener" href="https://github.com/coreybutler/nvm-windows">nvm-windows</a>这个选择。安装完成后，之前全局安装的npm包只能重头再安一遍。先安装<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/nrm">nrm</a>再说。</p>
-<p><strong>注意：安装nvm-windows前，强烈建议卸载已有的Node.js</strong></p>
-<h3 id="boilerplate"><a href="#boilerplate" class="headerlink" title="boilerplate"></a>boilerplate</h3><p>boilerplate即骨架。现在前端的环境里，一门成熟的开源库是一定有一堆boilerplate的，毕竟程序猿懒人多。Electron也不能免俗。可以从<a target="_blank" rel="noopener" href="https://github.com/sindresorhus/awesome-electron#boilerplates">awesome list</a>中挑一个看上眼的。如果项目比较大，可以直接用<a target="_blank" rel="noopener" href="https://github.com/SimulatedGREG/electron-vue">electron-vue</a>这种省心省力，一键式配置，开发打包工具一应齐全。这里我从官网提到的<a target="_blank" rel="noopener" href="https://github.com/electron/electron-quick-start">quick start</a>，除了一些样例代码，啥都没有，正合我意。</p>
-<p><em>（我曾经尝试使用<a target="_blank" rel="noopener" href="https://github.com/electron/electron-quick-start">electron-webpack-quick-start</a>，想着顺便打包了<a target="_blank" rel="noopener" href="https://github.com/electron-userland/electron-builder">electron-builder</a>，还有webpack、热加载，岂不美哉。不过根据<a target="_blank" rel="noopener" href="https://webpack.electron.build/development#use-of-html-webpack-plugin">这里</a>所说，是没有index.html暴露给你的，这几乎就意味着必须要用Vue、React这样的解决方案，但是<a target="_blank" rel="noopener" href="https://github.com/electron-userland/electron-webpack">electron-webpack</a>这个库并没有包括，需要自己add-on，但是按照<a target="_blank" rel="noopener" href="https://webpack.electron.build/add-ons#vuejs">文档</a>所说的操作后，并不能识别<code>.vue</code>文件，而且也没有vue-devtool。这是<strong>坑之一</strong>）</em></p>
-<h3 id="转译"><a href="#转译" class="headerlink" title="转译"></a>转译</h3><p>转译过程是在<code>renderer.js</code>中完成的。实际上，项目里<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/24275216">大多数业务逻辑也是在渲染进程中完成的</a>。核心在把gpx文件里的信息解析出来，除了<code>&lt;desc&gt;&lt;/desc&gt;</code>中的meta信息之外，其余的点结构大致像下面这样;</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">trkpt</span> <span class="attr">lat</span>=<span class="string">&quot;40.106419&quot;</span> <span class="attr">lon</span>=<span class="string">&quot;116.369812&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ele</span>&gt;</span>40.6<span class="tag">&lt;/<span class="name">ele</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">time</span>&gt;</span>2017-03-04T16:52:36Z<span class="tag">&lt;/<span class="name">time</span>&gt;</span><span class="tag">&lt;/<span class="name">trkpt</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">trkpt</span> <span class="attr">lat</span>=<span class="string">&quot;40.106531&quot;</span> <span class="attr">lon</span>=<span class="string">&quot;116.369916&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ele</span>&gt;</span>59.8<span class="tag">&lt;/<span class="name">ele</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">time</span>&gt;</span>2017-03-04T16:52:39Z<span class="tag">&lt;/<span class="name">time</span>&gt;</span><span class="tag">&lt;/<span class="name">trkpt</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>幸运的是，npm上早就有gpx的parser。<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gpx-parse">gpx-parse</a>的功能足够满足我们需要了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gpxParse = <span class="built_in">require</span>(<span class="string">&quot;gpx-parse&quot;</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//from file </span></span><br><span class="line">gpxParse.<span class="title function_">parseGpxFromFile</span>(<span class="string">&quot;/path/to/gpxFile&quot;</span>, <span class="keyword">function</span>(<span class="params">error, data</span>) &#123;</span><br><span class="line">    <span class="comment">//do stuff </span></span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//or from string </span></span><br><span class="line">gpxParse.<span class="title function_">parseGpx</span>(<span class="string">&quot;&lt;gpx&gt;&lt;/gpx&gt;&quot;</span>, <span class="keyword">function</span>(<span class="params">error, data</span>) &#123;</span><br><span class="line">    <span class="comment">//do stuff </span></span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// or an external file via HTTP(S) </span></span><br><span class="line">gpxParse.<span class="title function_">parseRemoteGpxFile</span>(<span class="string">&quot;http://host.tld/my.gpx&quot;</span>, <span class="keyword">function</span>(<span class="params">error, data</span>) &#123;</span><br><span class="line">    <span class="comment">//do stuff </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>顺带写几个input框（包括<code>&lt;input type=&quot;file&quot;&gt;</code>），测试一下，没啥问题（排除掉中间处理<a target="_blank" rel="noopener" href="https://yarnpkg.com/zh-Hans/">yarn</a>和npm冲突问题的话）。观察一下，返回值是一个<code>GpxResult</code>类型，里面有<code>metadata</code>，<code>routes</code>，<code>tracks</code>等字段，只有tracks中记录着点的信息。考虑到<code>tracks</code>和里面<code>segments</code>字段是数组的情况，要进行一下flatten的处理。最后，整个转译过程大概如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">serialize</span>(<span class="params">file, index</span>) &#123;</span><br><span class="line">  gpxParse.<span class="title function_">parseGpxFromFile</span>(file.<span class="property">path</span>, <span class="keyword">function</span>(<span class="params">error, data</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (error || !data.<span class="property">tracks</span>) &#123;</span><br><span class="line">      <span class="title function_">alert</span>(<span class="string">&#x27;文件内容错误&#x27;</span>)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> track = data.<span class="property">tracks</span>;</span><br><span class="line">    <span class="comment">// 扁平化处理</span></span><br><span class="line">    <span class="keyword">const</span> flattenTrack = track.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> (cur.<span class="property">segments</span>.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> acc.<span class="title function_">concat</span>(cur), []).<span class="title function_">concat</span>(acc)), [])</span><br><span class="line">    <span class="keyword">const</span> points = flattenTrack.<span class="title function_">map</span>(<span class="function">(<span class="params">&#123;lat, lon&#125;</span>) =&gt;</span> (&#123;lat, <span class="attr">lng</span>: lon&#125;))</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> jsonData = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(points)</span><br><span class="line">      <span class="keyword">const</span> pathStr = path.<span class="title function_">join</span>(<span class="variable constant_">OUTPUT_PATH</span>, <span class="string">`<span class="subst">$&#123;index&#125;</span>.json`</span>)</span><br><span class="line">      remote.<span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>).<span class="title function_">writeFile</span>(pathStr, jsonData,<span class="string">&#x27;utf8&#x27;</span>, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">warn</span>(e)</span><br><span class="line">      <span class="title function_">alert</span>(<span class="string">&#x27;文件序列化失败&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="写一个示例网页"><a href="#写一个示例网页" class="headerlink" title="写一个示例网页"></a>写一个示例网页</h3><p>既然最后的网页是生成出来的，就有第一个能够成功工作起来的网页作为模子，好抽离范本出来。先搭一个最简单的HTML架子，插入百度地图的script标签。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0, user-scalable=no&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">    <span class="selector-tag">body</span>, <span class="selector-tag">html</span>, <span class="selector-id">#map</span> &#123;<span class="attribute">width</span>: <span class="number">100%</span>; <span class="attribute">height</span>: <span class="number">100%</span>; <span class="attribute">overflow</span>: hidden; <span class="attribute">margin</span>:<span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="language-css">  </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>我的骑行轨迹<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;map&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://api.map.baidu.com/api?v=2.0&amp;ak=你的秘钥&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>下面我们把工作稍微分析一下：</p>
-<ul>
-<li>从本地读取JSON文件，意味着<strong>自己实现一个ajax</strong>，考虑兼容性（毕竟没了<a target="_blank" rel="noopener" href="http://babeljs.io/">babel</a>和webpack）,使用XMLHttpRequest</li>
-<li>读取当然得是<strong>异步</strong>的，JSON文件很有可能很多，需要依次进行</li>
-<li>地图配置和画图就很简单了，参考API就行了</li>
-</ul>
-<p>第一个工作不难：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getJSON</span>(<span class="params">path, callback</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> request = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">  request.<span class="title function_">open</span>(<span class="string">&#x27;GET&#x27;</span>, path, <span class="literal">true</span>);</span><br><span class="line">  request.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (request.<span class="property">readyState</span> === <span class="number">4</span> &amp;&amp; request.<span class="property">status</span> === <span class="number">200</span>) &#123;</span><br><span class="line">      <span class="title function_">callback</span>(request.<span class="property">response</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  request.<span class="title function_">send</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第二个工作也不难，在递归函数的外面设置控制递归的变量就可以了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pool = <span class="title class_">Array</span>.<span class="title function_">apply</span>(<span class="literal">null</span>, <span class="title class_">Array</span>(length)).<span class="title function_">map</span>(<span class="keyword">function</span>(<span class="params">v, i</span>)&#123;<span class="keyword">return</span> i+<span class="string">&#x27;.json&#x27;</span>;&#125;);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">paint</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!pool.<span class="property">length</span>) <span class="keyword">return</span>;</span><br><span class="line">  <span class="title function_">getJSON</span>(pool.<span class="title function_">shift</span>(), <span class="keyword">function</span>(<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res) <span class="title function_">paint</span>();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">var</span> pois = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(res).<span class="title function_">map</span>(<span class="keyword">function</span>(<span class="params">point</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Point</span>(point.<span class="property">lng</span>, point.<span class="property">lat</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="keyword">var</span> polyline = <span class="keyword">new</span> <span class="title class_">BMap</span>.<span class="title class_">Polyline</span>(pois);</span><br><span class="line">      map.<span class="title function_">addOverlay</span>(polyline);</span><br><span class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">warn</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK，大功告成（排除其余逻辑bug之后），赶紧接上<code>renderer.js</code>那边转译好的JSON文件看看骑行轨迹吧！</p>
-<p>你以为事情会这么简单么？</p>
-<p>当然不。</p>
-<h3 id="坐标换算"><a href="#坐标换算" class="headerlink" title="坐标换算"></a>坐标换算</h3><p>图是出来了，但是路线有偏差，发现明显有所平移。这是怎么回事，搜索过后才发现，百度所采用的坐标并不是gps数据中的真实大地坐标，而是在火星坐标基础上再次加密的百度坐标（<a target="_blank" rel="noopener" href="http://blog.csdn.net/flygoa/article/details/69258648">更多</a>）。<a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/jsdemo.htm#a5_3">官网示例</a>上也给出了gps坐标转成百度坐标的API。</p>
-<p>得，那就在转译成JSON数据前多map一段呗。仔细一看，<a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html#a7b49"><code>Convertor</code></a>的介绍里赫然写着<strong>“一次最多10个点”</strong>，居然还限流（其实不只是限流的问题，递归的写法也要变化）。一条路线至少上千个点呢，算了先试试看速度吧。</p>
-<p>两条路线用了30s才显示出来，果然很慢……</p>
-<p>只能自己实现转译过程了，网上倒是有一些例子，都差不多。尝试了一下，发现有点效果，但是路线还是有偏移。试了半个多小时后，总算找到了一个完美的<a target="_blank" rel="noopener" href="http://www.oschina.net/code/snippet_260395_39205">JS转译代码</a>，感谢原作者。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">delta</span>(<span class="params">lat, lon</span>) &#123;</span><br><span class="line">  <span class="comment">// Krasovsky 1940</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// a = 6378245.0, 1/f = 298.3</span></span><br><span class="line">  <span class="comment">// b = a * (1 - f)</span></span><br><span class="line">  <span class="comment">// ee = (a^2 - b^2) / a^2;</span></span><br><span class="line">  <span class="keyword">const</span> a = <span class="number">6378245.0</span>; <span class="comment">//  a: 卫星椭球坐标投影到平面地图坐标系的投影因子。</span></span><br><span class="line">  <span class="keyword">const</span> ee = <span class="number">0.00669342162296594323</span>; <span class="comment">//  ee: 椭球的偏心率。</span></span><br><span class="line">  <span class="keyword">let</span> dLat = <span class="title function_">transformLat</span>(lon - <span class="number">105.0</span>, lat - <span class="number">35.0</span>);</span><br><span class="line">  <span class="keyword">let</span> dLon = <span class="title function_">transformLon</span>(lon - <span class="number">105.0</span>, lat - <span class="number">35.0</span>);</span><br><span class="line">  <span class="keyword">const</span> radLat = lat / <span class="number">180.0</span> * <span class="variable constant_">PI</span>;</span><br><span class="line">  <span class="keyword">let</span> magic = <span class="title class_">Math</span>.<span class="title function_">sin</span>(radLat);</span><br><span class="line">  magic = <span class="number">1</span> - ee * magic * magic;</span><br><span class="line">  <span class="keyword">const</span> sqrtMagic = <span class="title class_">Math</span>.<span class="title function_">sqrt</span>(magic);</span><br><span class="line">  dLat = (dLat * <span class="number">180.0</span>) / ((a * (<span class="number">1</span> - ee)) / (magic * sqrtMagic) * <span class="variable constant_">PI</span>);</span><br><span class="line">  dLon = (dLon * <span class="number">180.0</span>) / (a / sqrtMagic * <span class="title class_">Math</span>.<span class="title function_">cos</span>(radLat) * <span class="variable constant_">PI</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">lat</span>: dLat, <span class="attr">lon</span>: dLon&#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">transformLat</span> (x, y) &#123;</span><br><span class="line">    <span class="keyword">let</span> ret = -<span class="number">100.0</span> + <span class="number">2.0</span> * x + <span class="number">3.0</span> * y + <span class="number">0.2</span> * y * y + <span class="number">0.1</span> * x * y + <span class="number">0.2</span> * <span class="title class_">Math</span>.<span class="title function_">sqrt</span>(<span class="title class_">Math</span>.<span class="title function_">abs</span>(x));</span><br><span class="line">    ret += (<span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(<span class="number">6.0</span> * x * <span class="variable constant_">PI</span>) + <span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(<span class="number">2.0</span> * x * <span class="variable constant_">PI</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    ret += (<span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(y * <span class="variable constant_">PI</span>) + <span class="number">40.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(y / <span class="number">3.0</span> * <span class="variable constant_">PI</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    ret += (<span class="number">160.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(y / <span class="number">12.0</span> * <span class="variable constant_">PI</span>) + <span class="number">320</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(y * <span class="variable constant_">PI</span> / <span class="number">30.0</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">transformLon</span> (x, y) &#123;</span><br><span class="line">    <span class="keyword">let</span> ret = <span class="number">300.0</span> + x + <span class="number">2.0</span> * y + <span class="number">0.1</span> * x * x + <span class="number">0.1</span> * x * y + <span class="number">0.1</span> * <span class="title class_">Math</span>.<span class="title function_">sqrt</span>(<span class="title class_">Math</span>.<span class="title function_">abs</span>(x));</span><br><span class="line">    ret += (<span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(<span class="number">6.0</span> * x * <span class="variable constant_">PI</span>) + <span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(<span class="number">2.0</span> * x * <span class="variable constant_">PI</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    ret += (<span class="number">20.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(x * <span class="variable constant_">PI</span>) + <span class="number">40.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(x / <span class="number">3.0</span> * <span class="variable constant_">PI</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    ret += (<span class="number">150.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(x / <span class="number">12.0</span> * <span class="variable constant_">PI</span>) + <span class="number">300.0</span> * <span class="title class_">Math</span>.<span class="title function_">sin</span>(x / <span class="number">30.0</span> * <span class="variable constant_">PI</span>)) * <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-
-<p>这转译过程，要不是有先行者，我怕是要倒在这里了。</p>
-<h3 id="HTML模板"><a href="#HTML模板" class="headerlink" title="HTML模板"></a>HTML模板</h3><p>示例HTML已经工作起来了，现在就是抽出模子的过程。网页并不复杂，可以用简单的HTML template解决问题。John Resig的方案如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Simple JavaScript Templating</span></span><br><span class="line"><span class="comment">// John Resig - https://johnresig.com/ - MIT Licensed</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">var</span> cache = &#123;&#125;;</span><br><span class="line">   </span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">tmpl</span> = <span class="keyword">function</span> <span class="title function_">tmpl</span>(<span class="params">str, data</span>)&#123;</span><br><span class="line">    <span class="comment">// Figure out if we&#x27;re getting a template, or if we need to</span></span><br><span class="line">    <span class="comment">// load the template - and be sure to cache the result.</span></span><br><span class="line">    <span class="keyword">var</span> fn = !<span class="regexp">/\W/</span>.<span class="title function_">test</span>(str) ?</span><br><span class="line">      cache[str] = cache[str] ||</span><br><span class="line">        <span class="title function_">tmpl</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(str).<span class="property">innerHTML</span>) :</span><br><span class="line">       </span><br><span class="line">      <span class="comment">// Generate a reusable function that will serve as a template</span></span><br><span class="line">      <span class="comment">// generator (and which will be cached).</span></span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">Function</span>(<span class="string">&quot;obj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;var p=[],print=function()&#123;p.push.apply(p,arguments);&#125;;&quot;</span> +</span><br><span class="line">         </span><br><span class="line">        <span class="comment">// Introduce the data as local variables using with()&#123;&#125;</span></span><br><span class="line">        <span class="string">&quot;with(obj)&#123;p.push(&#x27;&quot;</span> +</span><br><span class="line">         </span><br><span class="line">        <span class="comment">// Convert the template into pure JavaScript</span></span><br><span class="line">        str</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="regexp">/[\r\t\n]/g</span>, <span class="string">&quot; &quot;</span>)</span><br><span class="line">          .<span class="title function_">split</span>(<span class="string">&quot;&lt;%&quot;</span>).<span class="title function_">join</span>(<span class="string">&quot;\t&quot;</span>)</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="regexp">/((^|%&gt;)[^\t]*)&#x27;/g</span>, <span class="string">&quot;$1\r&quot;</span>)</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="regexp">/\t=(.*?)%&gt;/g</span>, <span class="string">&quot;&#x27;,$1,&#x27;&quot;</span>)</span><br><span class="line">          .<span class="title function_">split</span>(<span class="string">&quot;\t&quot;</span>).<span class="title function_">join</span>(<span class="string">&quot;&#x27;);&quot;</span>)</span><br><span class="line">          .<span class="title function_">split</span>(<span class="string">&quot;%&gt;&quot;</span>).<span class="title function_">join</span>(<span class="string">&quot;p.push(&#x27;&quot;</span>)</span><br><span class="line">          .<span class="title function_">split</span>(<span class="string">&quot;\r&quot;</span>).<span class="title function_">join</span>(<span class="string">&quot;\\&#x27;&quot;</span>)</span><br><span class="line">      + <span class="string">&quot;&#x27;);&#125;return p.join(&#x27;&#x27;);&quot;</span>);</span><br><span class="line">     </span><br><span class="line">    <span class="comment">// Provide some basic currying to the user</span></span><br><span class="line">    <span class="keyword">return</span> data ? <span class="title function_">fn</span>( data ) : fn;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<p>看上去很眼熟，以前的项目似乎见到过。</p>
-<p>把之前的示例HTML放在<code>index.html</code>的<code>&lt;script type=&quot;text/template&quot;&gt;&lt;/script&gt;</code>中，在渲染进程里加上代码看看？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">tmpl</span>(<span class="string">&#x27;template&#x27;</span>));</span><br></pre></td></tr></table></figure>
-
-<p>嗯……报错了。提示“<code>Missing &#39;)&#39; after argument list </code>”。加断点调试发现是标签里的<code>&quot;</code>打断了<code>new Function</code>的语句。尝试了多种方法无效后，索性使用<code>encodeURIComponent</code>想处理掉麻烦的特殊符号，但是这么做之后就无法匹配<code>&lt;%=%&gt;</code>了。</p>
-<p>于是最后选择<a target="_blank" rel="noopener" href="http://underscorejs.org/">underscore</a>的template方法。再试试……</p>
-<p>没问题了。之后把允许用户填写的部分抽出来，就可以把<code>index.html</code>的生成放在转译代码身旁了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> template = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;template&#x27;</span>).<span class="property">innerHTML</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">remote.<span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>).<span class="title function_">writeFile</span>(path.<span class="title function_">join</span>(<span class="variable constant_">OUTPUT_PATH</span>, <span class="string">&#x27;index.html&#x27;</span>), <span class="title function_">tmpl</span>(template)(data).<span class="title function_">replace</span>(<span class="regexp">/&amp;lt;/g</span>, <span class="string">&#x27;&lt;&#x27;</span>),<span class="string">&#x27;utf8&#x27;</span>, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">    <span class="keyword">else</span> <span class="title function_">alert</span>(<span class="string">&#x27;生成完毕！\n将output文件夹下所有文件上传到服务器即可查看效果！&#x27;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>再次运行，测试生成的网页能否工作？答案当然是可以。</p>
-<h3 id="苦力活"><a href="#苦力活" class="headerlink" title="苦力活"></a>苦力活</h3><p>技术上的问题解决了，现在从用户填写信息到最后生成能用的展示页面也没有问题了。初版下面的问题就是美化了。</p>
-<ul>
-<li>CSS修饰样式</li>
-<li>将模板HTML文件压缩（包括JS和CSS），因为反正用户不会修改内容，不需要考虑可读性</li>
-<li>一些保护性编程和边缘情况兜底</li>
-</ul>
-<p>最后测试结果如下：</p>
-<p><img src="https://s2.ax1x.com/2019/04/07/AhbD91.png" alt="AhbD91.png"></p>
-<p>生成效果如上。</p>
-<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>初版开发已经完成了，只剩发布出来给别人用了，考虑到<a target="_blank" rel="noopener" href="https://electronjs.org/docs/tutorial/application-distribution">官网文档</a>讲得实在不清不楚，不如用一个好工具帮我们完成。</p>
-<p>这里使用<a target="_blank" rel="noopener" href="https://github.com/electron-userland/electron-builder">electron-builder</a>。跟着介绍里一步步完善<code>package.json</code>和项目结构。加上依赖后，执行<code>yarn dist</code>生成可分发的文件。</p>
-<p>嗯……果然失败了。原因很简单，网络错误，Electron镜像文件下载失败。还好淘宝有electron镜像。通过设置ELECTRON_MIRROR环境变量，可以大大加快速度。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/</span><br></pre></td></tr></table></figure>
-
-<p>然后，再次执行<code>yarn dist</code>，在从Github下载其他相关文件的时候，仍然会网络错误。于是我机智的从网页上下载下来，直接放在了目标目录下。再次执行任务，居然不能识别出来。好吧……</p>
-<p>故事的最后，打包还是完成了。不过由于生成文件的目录写成了相对目录，生成的文件得通过搜索才能找到，考虑后面生成在桌面。</p>
-<p><em>–END–</em></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/28bca6529150">在windows下用nvm 安装node</a></li>
-<li><a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html">百度地图JavaScript API v2.0类参考</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/24275216">Electron 应用实战 (架构篇)</a></li>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/GPS_Exchange_Format">GPS Exchange Format</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest">XMLHttpRequest | MDN</a></li>
-<li><a target="_blank" rel="noopener" href="https://skalman.github.io/UglifyJS-online/">UglifyJS 3: Online JavaScript minifier</a></li>
-<li><a target="_blank" rel="noopener" href="https://cssminifier.com/">CSS Minifier</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/pfan123/electron-docs">pfan123&#x2F;electron-docs electron-docs学习文档</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1209,13 +1165,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">1m</span>
+    <span title="站点总字数">1.1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:03</span>
+    <span title="站点阅读时长">29:27</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

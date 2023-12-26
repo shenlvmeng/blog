@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">150</span>
+          <span class="site-state-item-count">151</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">459</span>
+        <span class="site-state-item-count">463</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,376 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/12/15/you-dont-know-js-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/12/15/you-dont-know-js-part2/" class="post-title-link" itemprop="url">《You don't know JS》 下（类型文法&异步&ES6与未来）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-12-15 20:59:38 / 修改时间：21:09:24" itemprop="dateCreated datePublished" datetime="2017-12-15T20:59:38+08:00">2017-12-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/12/15/you-dont-know-js-part2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/15/you-dont-know-js-part2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>22 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>原作：<a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS">You-Dont-Know-JS</a><br>本文的99.9%的内容都来自《You dont know JS》的<a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS/tree/1ed-zh-CN">电子中文版</a></p>
+<p>传送门：<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/12/13/you-dont-know-js-part1/">《You don’t know JS》 上（入门&amp;作用域&amp;对象）</a></p>
+</blockquote>
+<h2 id="类型和文法"><a href="#类型和文法" class="headerlink" title="类型和文法"></a>类型和文法</h2><h3 id="内建类型"><a href="#内建类型" class="headerlink" title="内建类型"></a>内建类型</h3><ul>
+<li>7种类型</li>
+<li>值才有类型，变量没有</li>
+<li><code>undefined</code> ≠ is not defined（undeclared）。<code>undefined</code>表示定义却没有赋值的变量类型。然而<code>typeof</code>一个未声明的变量也会返回<code>undefined</code>，这是<code>typeof</code>的安全机制，它给了我们更多空间检查变量是否可用。</li>
+</ul>
+<h3 id="值"><a href="#值" class="headerlink" title="值"></a>值</h3><p>由于JS里String的只读性，所有String的相关方法都是返回一个新字符串。</p>
+<p>使用二进制浮点数的最出名（臭名昭著）的副作用是（记住，这是对 所有 使用 IEEE 754 的语言都成立的 —— 不是许多人认为&#x2F;假装 仅 在 JavaScript 中存在的问题）：<code>0.1 + 0.2 === 0.3 // false</code>。不过可以用<code>Number.EPSILON</code>做最小误差得到足够精确的近似结果。ES6下已经可以用<code>Number.isInteger()</code>和<code>Number.isSafeInteger()</code>检查数字是不是整数&#x2F;安全整数。</p>
+<h4 id="特殊值"><a href="#特殊值" class="headerlink" title="特殊值"></a>特殊值</h4><p><code>undefined</code>和<code>null</code>是JS里比较特殊的两类值，它们既是类型又是唯一的值。更加不幸的是，在非strict模式下，<code>undefined</code>还可以作为标识符，像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">undefined</span> = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>另外，在特别需要<code>undefined</code>时，<code>void</code>操作符会变得很有用。</p>
+<p>Infinity &#x2F; Infinity &#x3D;&#x3D; undefined。</p>
+<p>针对一些特殊的等价情况（NaN和-0），ES6使用<code>Object.is()</code>判断其相等性。</p>
+<h4 id="值与引用"><a href="#值与引用" class="headerlink" title="值与引用"></a>值与引用</h4><p>在JS中没有指针，只有引用，同时页没有语法上的提示可以控制值和引用的赋值&#x2F;传递。取而代之的是，值的类型用来唯一控制值是通过值拷贝，还是引用拷贝来赋予（复合值）。引用指向的是值本身而不是变量，不能使用一个引用来改变另一个引用所指向的值。</p>
+<p>底层的基本标量值是不可变的（String和Boolean也一样）。比如一个Number对象持有一个基本标量值2，那么这个Number对象就永远不能再持有另一个值；你只能用一个不同的值创建一个全新的Number对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    x = x + <span class="number">1</span>;</span><br><span class="line">    x; <span class="comment">// 3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="title class_">Number</span>( a ); <span class="comment">// 或等价的 `Object(a)`</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">foo</span>( b );</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>( b ); <span class="comment">// 2, 不是 3</span></span><br></pre></td></tr></table></figure>
+
+<p>在其中<code>x = x + 1</code>这一步，包装值内的x被取出+1后，赋值给x，将其从一个引用变成一个基本标量值3。</p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>对于最简单的值，JSON字符串化行为基本上和<code>toString()</code>转换是相同的，在对String字符串化时，结果也会包含<code>&quot;&quot;</code>，如<code>JSON.stringify(&quot;11&quot;) // &quot;&quot;11&quot;&quot;</code>。另外，对于JSON不安全值（即不能移植到消费JSON的语言中），有下面的处理：</p>
+<ul>
+<li>忽略<code>undefined</code>，<code>function</code>，<code>symbol</code></li>
+<li>在<code>Array</code>中遇到这种类型的值，会被替换为null（避免修改位置信息）</li>
+<li>在<code>Object</code>的属性中遇到时，属性会被简单的忽略掉</li>
+<li>带有循环引用时，<code>JSON.stringify()</code>会报错</li>
+</ul>
+<p>另外，对于有<code>toJSON()</code>方法的对象，JSON字符串化会优先使用该方法。<code>JSON.stringify()</code>的第二个参数可以指定Array或Function说明可以编辑的对象属性。第三个参数是填充符，填充在各级开头，用来友好展示结果，最多取入参的前10个字符。</p>
+<p>在对象上使用<code>toNumber</code>和<code>toString</code>方法，首先会找到其原始类型（<code>toPrimitives()</code>），即使用其<code>valueOf()</code>或<code>toString()</code>方法（也会在<code>[[prototype]]</code>上寻找）。</p>
+<h4 id="gt-Number"><a href="#gt-Number" class="headerlink" title="-&gt; Number"></a>-&gt; Number</h4><p>可以用<code>Date.now()</code>代替<code>+new Date()</code>获取更好的语义。</p>
+<p><code>~</code>除了可以用来检查<code>-1</code>这个特殊的值，还可以通过<code>~~</code>对小数取整，因为执行位操作时会先将数字转为Int32类型。</p>
+<p><strong><code>parseInt</code>以及<code>parseFloat</code>和<code>+</code>或<code>Number()</code>强制类型转换存在区别。</strong>它们的作用是，从字符串中解析出一个<code>number</code>出来。两者是不能相互替换的。后者是不能<em>容忍</em>非数字字符的。另外，**请在字符串上使用<code>parseInt</code>和<code>parseFloat</code>**，这也是它们的设计目的。对非字符串类型使用它们可能得到意外的结果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">parseInt</span>( <span class="number">1</span>/<span class="number">0</span>, <span class="number">19</span> ); <span class="comment">// 18，惊不惊喜，意不意外</span></span><br></pre></td></tr></table></figure>
+
+<p>原因是，parseInt会把第一个参数<code>toString</code>（这不能责怪它，因为它本来就是设计对String使用的）。类似的例子还能举出很多：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">parseInt</span>( <span class="number">0.000008</span> );       <span class="comment">// 0   (&quot;0&quot; from &quot;0.000008&quot;)</span></span><br><span class="line"><span class="built_in">parseInt</span>( <span class="number">0.0000008</span> );      <span class="comment">// 8   (&quot;8&quot; from &quot;8e-7&quot;)</span></span><br><span class="line"><span class="built_in">parseInt</span>( <span class="literal">false</span>, <span class="number">16</span> );      <span class="comment">// 250 (&quot;fa&quot; from &quot;false&quot;)</span></span><br><span class="line"><span class="built_in">parseInt</span>( <span class="built_in">parseInt</span>, <span class="number">16</span> );   <span class="comment">// 15  (&quot;f&quot; from &quot;function..&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">parseInt</span>( <span class="string">&quot;0x10&quot;</span> );         <span class="comment">// 16</span></span><br><span class="line"><span class="built_in">parseInt</span>( <span class="string">&quot;103&quot;</span>, <span class="number">2</span> );       <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，<code>parseInt</code>会通过前缀试图猜测数字进制，默认是10进制。以<code>0x</code>开头表示16进制，以<code>0b</code>开头表示2进制，以<code>0o</code>开头表示8进制。</p>
+<h4 id="gt-Boolean"><a href="#gt-Boolean" class="headerlink" title="-&gt; Boolean"></a>-&gt; Boolean</h4><p>使用<code>!!</code>强制转换类型。</p>
+<p><code>&amp;&amp;</code>与<code>||</code>在JS中的逻辑和C++以及Java中的不大一样，它并不一定返回boolean类型的值，而是根据比较的两个数判断返回哪一个。其中<code>&amp;&amp;</code>可以用来进行短路操作。</p>
+<p>另外，对于Symbol来说，只能通过<code>String()</code>的形式转为String类型，却不能转为Boolean类型。</p>
+<h4 id="等价"><a href="#等价" class="headerlink" title="等价"></a>等价</h4><p>等价分为<code>==</code>和<code>===</code>。</p>
+<p>在<code>String</code>和<code>Number</code>进行比较时，会对<code>String</code>使用强制类型转换（类似<code>+</code>和<code>Number()</code>）；</p>
+<p>在和<code>Boolean</code>比较时，<strong>会首先把Boolean类型转为Number类型，再进行比较</strong>。这会产生下面这样比较迷惑的情况：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;42&quot;</span> == <span class="literal">true</span>  <span class="comment">// false</span></span><br><span class="line"><span class="string">&quot;42&quot;</span> == <span class="literal">false</span> <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>Object</code>和非<code>Object</code>比较时，会先对<code>Object</code>进行<code>toPrimtives</code>，即先使用<code>valueOf()</code>看能否转成基本类型，再使用<code>toString()</code>。</p>
+<p>下面有一些疯狂的例子，但却可以由上面的规则解释：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;0&quot;</span> == <span class="literal">false</span>    <span class="comment">// true</span></span><br><span class="line"><span class="literal">false</span> == []     <span class="comment">// true</span></span><br><span class="line"><span class="number">0</span> == []         <span class="comment">// true</span></span><br><span class="line">[] == ![];      <span class="comment">// true</span></span><br><span class="line"><span class="number">2</span> == [<span class="number">2</span>];       <span class="comment">// true</span></span><br><span class="line"><span class="string">&quot;&quot;</span> == []        <span class="comment">// true</span></span><br><span class="line"><span class="string">&quot;&quot;</span> == [<span class="literal">null</span>];   <span class="comment">// true</span></span><br><span class="line"><span class="number">0</span> == <span class="string">&quot;\n&quot;</span>       <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上面的坑可以看到，等号的两边总有<code>[]</code>或<code>&quot;&quot;</code>或<code>false</code>或<code>0</code>。建议在这些情况使用<code>===</code>。</p>
+<p>下面是由Alex Dorey(@dorey on GitHub)制作的一个方便的表格，将各种比较进行了可视化：</p>
+<p><img src="https://github.com/getify/You-Dont-Know-JS/raw/1ed-zh-CN/types%20%26%20grammar/fig1.png"></p>
+<h4 id="大小关系比较"><a href="#大小关系比较" class="headerlink" title="大小关系比较"></a>大小关系比较</h4><p>首先对值进行<code>toPrimitives</code>转换，如果有一个不是String，则使用<code>Number</code>类型比较。见下面的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// toNumber</span></span><br><span class="line"><span class="keyword">var</span> a = [ <span class="number">42</span> ];</span><br><span class="line"><span class="keyword">var</span> b = [ <span class="string">&quot;43&quot;</span> ];</span><br><span class="line"></span><br><span class="line">a &lt; b;  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// toString</span></span><br><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">b</span>: <span class="number">42</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> b = &#123; <span class="attr">b</span>: <span class="number">43</span> &#125;;</span><br><span class="line"></span><br><span class="line">a &lt; b;  <span class="comment">// false</span></span><br><span class="line">a == b; <span class="comment">// false</span></span><br><span class="line">a &gt; b;  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">a &lt;= b; <span class="comment">// true</span></span><br><span class="line">a &gt;= b; <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>在下面的例子里，a和b在比较时，都会转成”[object Object]”。而等价比较上会比较引用是否相同。因此都返回false，而JS中的<code>&lt;=</code>和<code>&gt;=</code>操作会去对应计算<code>&gt;</code>和<code>&lt;</code>的结果再取反，从而会得到两个<code>true</code>。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><h4 id="语句和表达式"><a href="#语句和表达式" class="headerlink" title="语句和表达式"></a>语句和表达式</h4><p>JS中的表达式都有一个隐式的返回值，但是它只会打印在控制台中，并不会真实返回。块语句的返回值是块中最后一个语句的返回值。ES7中可能会引入do语句显式地使用这个返回值。</p>
+<p>JS中的<code>++</code>和C风格类似，表示自增，有前后之分。但是<code>++a++</code>这种用法是不合法的。</p>
+<p>赋值表达式的返回是赋予的值，这在链式赋值时很好用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a, b, c;</span><br><span class="line">a = b = c = <span class="number">42</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里，<code>c = 42</code>被求值得出42（带有将42赋值给c的副作用），然后<code>b = 42</code>被求值得出42（带有将42赋值给b的副作用），而最后<code>a = 42</code>被求值（带有将42赋值给a的副作用）。</p>
+<p>另一种用法是直接将之放在<code>&amp;&amp;</code>和<code>||</code>的前后，检查赋值语句的真值。</p>
+<h4 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h4><p><code>&#123;&#125;</code>包裹的内容作为表达式结果可以直接赋值给变量，但是直接声明时会被当做代码块，但是可能仍然是合法的，如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">foo</span>: <span class="title function_">bar</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为，JS中允许使用语句标签，便于<code>break</code>和<code>continue</code>跳转（JS中没有<code>goto</code>）。而JSON中带有<code>&quot;&quot;</code>的键则不会被这么解释，因为语句标签不允许出现引号。</p>
+<p>我们现在来解决下面的问题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[] + &#123;&#125;; <span class="comment">// &quot;[object Object]&quot;</span></span><br><span class="line">&#123;&#125; + []; <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+
+<p>为什么交换顺序会对<code>+</code>的规则有影响？在第一个式子里一切都是正常的，<code>[]</code>转换成<code>&quot;&quot;</code>，<code>&#123;&#125;</code>转换成<code>[object Object]</code>；在第二个式子里，<code>&#123;&#125;</code>被理解成一个空代码块儿，<code>[]</code>被强制转换为0。</p>
+<h4 id="操作符优先级"><a href="#操作符优先级" class="headerlink" title="操作符优先级"></a>操作符优先级</h4><ul>
+<li><code>&amp;&amp;</code>优先于<code>||</code>。<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence">这里</a>有完整的表格。</li>
+<li><code>&amp;&amp;</code>和<code>||</code>有短接的特点，即当第一个表达式为true或false时直接返回结果。</li>
+<li>赋值表达式和三元表达式<code>? : </code>一样是从右向左结合的</li>
+</ul>
+<h4 id="ASI（自动分号）"><a href="#ASI（自动分号）" class="headerlink" title="ASI（自动分号）"></a>ASI（自动分号）</h4><p>尽量避免ASI，只在确认没有歧义的地方依赖ASI。</p>
+<h4 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h4><ul>
+<li>JS有早期错误一说，即运行前编译期间的错误</li>
+<li><code>let</code>会造成块域内的TDZ（Temporal Dead Zone，时间死区），<code>typeof</code>在此时会报错，而不会返回<code>undefined</code>。TDZ是指变量还没到能使用它的时候，还需要初始化。下面还有一个例子：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> b = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"> a = <span class="number">42</span>, b = a + b + <span class="number">5</span> </span>) &#123;</span><br><span class="line">    <span class="comment">// ..</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>ES6提供了剩余参数来代替原有的<code>arguments</code>对象，这更加安全。</li>
+</ul>
+<p><strong><code>finally</code>子句</strong></p>
+<p><code>try catch</code>在和<code>finally</code>一起使用时，<code>finally</code>的语句一定会被执行，而且一定会在<code>try</code>语句执行完后立即执行，即使<code>try</code>中有<code>return</code>或者<code>throw</code>、<code>continue</code>等控制语句。可以在<code>finally</code>中修改<code>try</code>中的结果，但是最后不要这么做，因为会影响程序可读性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="number">42</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&quot;Hello&quot;</span> );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&quot;never runs&quot;</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="title function_">foo</span>() );</span><br><span class="line"><span class="comment">// Hello</span></span><br><span class="line"><span class="comment">// Uncaught Exception: 42</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="宿主环境"><a href="#宿主环境" class="headerlink" title="宿主环境"></a>宿主环境</h4><p>由于浏览器的遗留行为，使用id属性创建DOM元素会创建同名的全局变量。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;foo&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> foo == <span class="string">&quot;undefined&quot;</span>) &#123;</span><br><span class="line">    foo = <span class="number">42</span>;       <span class="comment">// 永远不会运行</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>( foo ); <span class="comment">// HTML元素</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>永远不要修改内建类型。</li>
+<li>JS的函数和变量声明提升只在同一<code>&lt;script&gt;</code>标签内</li>
+</ul>
+<h4 id="保留字"><a href="#保留字" class="headerlink" title="保留字"></a>保留字</h4><blockquote>
+<p>Let this long package float, Goto private class if short. While protected with debugger case, Continue volatile interface. Instanceof super synchronized throw, Extends final export throws.</p>
+<p>Try import double enum?</p>
+<p>False, boolean, abstract function, Implements typeof transient break! Void static, default do, Switch int native new. Else, delete null public var In return for const, true, char …Finally catch byte.</p>
+</blockquote>
+<p>来自StackOverflow用户“art4theSould”创造性的一首<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/26255/reserved-keywords-in-javascript/12114140#12114140">小诗</a>。</p>
+<p>另外，在ES6+中，可以使用保留字作为对象字面量中的属性名或键。</p>
+<h2 id="异步与性能"><a href="#异步与性能" class="headerlink" title="异步与性能"></a>异步与性能</h2><p>JS引擎对时间没有天生的感觉，只是一个任意JS代码段的按需执行环境。是周围的宿主环境在不停地安排“事件”（JS代码的执行）。举例来说，当你的JS程序发起一个从服务器取得数据的Ajax请求时，你在一个函数（通常称为回调）中建立好“应答”代码，然后JS引擎就会告诉宿主环境，“嘿，我就要暂时停止执行了，但不管你什么时候完成了这个网络请求，而且你还得到一些数据的话，请<em>回来调</em>这个函数。”</p>
+<p>然后浏览器就会为网络的应答设置一个监听器，当它有东西要交给你的时候，它会通过将回调函数插入<strong>事件轮询</strong>来安排它的执行。</p>
+<p>关于事件轮询队列，<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/">之前</a>也有过一些介绍。</p>
+<h3 id="异步概览"><a href="#异步概览" class="headerlink" title="异步概览"></a>异步概览</h3><p>异步≠并行。异步本质上还是串行的。工作依然有先后之分，没有线程、线程池的概念。从而，在JS中的函数都是原子的，即不会与别的函数的代码<strong>相互穿插</strong>（除非使用<code>Generator</code>）。</p>
+<h4 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h4><p>并发是当两个或多个“进程”（或任务）在同一时间段内同时执行，而不管构成它们的每个操作是不是同时进行的。在JS中，单线程事件轮询是并发的一种表达。</p>
+<p><strong>不互动</strong></p>
+<p>当程序中运行多个“进程”（或任务），如果它们之间没有逻辑联系，那么不互动是完全可以接受的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> res = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params">results</span>) &#123;</span><br><span class="line">    res.<span class="property">foo</span> = results;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">bar</span>(<span class="params">results</span>) &#123;</span><br><span class="line">    res.<span class="property">bar</span> = results;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ajax(..) 是某个包中任意的Ajax函数</span></span><br><span class="line"><span class="title function_">ajax</span>( <span class="string">&quot;http://some.url.1&quot;</span>, foo );</span><br><span class="line"><span class="title function_">ajax</span>( <span class="string">&quot;http://some.url.2&quot;</span>, bar );</span><br></pre></td></tr></table></figure>
+
+<p><strong>互动</strong></p>
+<p>相反，如果它们之间有依赖关系，或者前后次序而产生互动时，<code>let it alone</code>就会出事。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> res = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">response</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    res.<span class="title function_">push</span>( data );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ajax(..) 是某个包中任意的Ajax函数</span></span><br><span class="line"><span class="title function_">ajax</span>( <span class="string">&quot;http://some.url.1&quot;</span>, response );</span><br><span class="line"><span class="title function_">ajax</span>( <span class="string">&quot;http://some.url.2&quot;</span>, response );</span><br></pre></td></tr></table></figure>
+
+<h4 id="协调"><a href="#协调" class="headerlink" title="协调"></a>协调</h4><p>跳过使用全局变量等丑陋的协作手段，有一种方法，将长时间处理的任务打断成多个小段的请求外加setTimeout，以便将任务穿插完成。</p>
+<h4 id="Jobs"><a href="#Jobs" class="headerlink" title="Jobs"></a>Jobs</h4><p>ES6在事件轮询队列之上引入了一层新概念，称为“工作队列（Job queue）”。它和轮询队列的关系类似于Macrotask和Microtask。</p>
+<h3 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h3><h4 id="顺序的大脑"><a href="#顺序的大脑" class="headerlink" title="顺序的大脑"></a>顺序的大脑</h4><p>回调不符合正常思维逻辑顺序 &amp; 回调地狱。</p>
+<h4 id="信任问题"><a href="#信任问题" class="headerlink" title="信任问题"></a>信任问题</h4><p><em>（本人并不完全赞同）</em>回调遭受着<em>控制反转</em>的蹂躏，它们隐含地将控制权交给第三方（通常第三方工具不受你控制！）来调用你程序的延续。</p>
+<h3 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h3><p>Promise的<code>then</code>和<code>catch</code>。</p>
+<h4 id="可靠的Promise"><a href="#可靠的Promise" class="headerlink" title="可靠的Promise"></a>可靠的Promise</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p3 = <span class="keyword">new</span> <span class="title class_">Promise</span>( <span class="keyword">function</span>(<span class="params">resolve,reject</span>)&#123;</span><br><span class="line">    <span class="title function_">resolve</span>( <span class="string">&quot;B&quot;</span> );</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> <span class="title class_">Promise</span>( <span class="keyword">function</span>(<span class="params">resolve,reject</span>)&#123;</span><br><span class="line">    <span class="title function_">resolve</span>( p3 );</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> <span class="title class_">Promise</span>( <span class="keyword">function</span>(<span class="params">resolve,reject</span>)&#123;</span><br><span class="line">    <span class="title function_">resolve</span>( <span class="string">&quot;A&quot;</span> );</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line">p1.<span class="title function_">then</span>( <span class="keyword">function</span>(<span class="params">v</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( v );</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line">p2.<span class="title function_">then</span>( <span class="keyword">function</span>(<span class="params">v</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( v );</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="comment">// A B  &lt;-- 不是你可能期望的 B A</span></span><br></pre></td></tr></table></figure>
+
+<p>这是因为p1由p3解析的结果所解析，这个过程是异步地。</p>
+<p>作者认为Promise在很大程度上，解决了下面的问题：</p>
+<ul>
+<li>调的太早&#x2F;太晚（本人并不赞同）</li>
+<li>根本不调回调（勉强成立），Promise通知状态改变是由编程者自己代码控制的，用<code>resolve</code>或<code>reject</code>（用户只能借助外部环境API发起异步操作，resolve一样要么放在传统的回调，要么转交给第三方完成）。</li>
+<li>调太少或太多次（成立），一个Promise一旦resolve或者reject，状态就不再发生变化</li>
+<li>没能传入任何参数&#x2F;环境（勉强成立），原因与第二条相同</li>
+<li>吞掉所有错误和异常（勉强成立），Promise中在catch字句里捕获异常。</li>
+</ul>
+<p><code>Promise.resolve(p)</code>会把thenable的入参<code>p</code>转换为合法的Promise。这里猜测下这个<code>resolve(p)</code>的实现（个人猜想）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="property">resolve</span> = <span class="function"><span class="params">thenable</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// if `thenable` is a promise, just return it</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// if `thenable` is plain, just resolve</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> thenable.<span class="property">then</span> != <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="title function_">resolve</span>(thenable);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        thenable.<span class="title function_">then</span>(resolve, reject);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一个thenable的例子</span></span><br><span class="line"><span class="keyword">const</span> p = &#123;</span><br><span class="line">    <span class="title function_">then</span>(<span class="params">cb, err</span>) &#123;</span><br><span class="line">        <span class="title class_">Math</span>.<span class="property">random</span> &lt; <span class="number">0.5</span> ? <span class="title function_">cb</span>(<span class="number">42</span>) : <span class="title function_">err</span>(<span class="string">&quot;oops! Something bad happens.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h4><p>看看RxJS的<a target="_blank" rel="noopener" href="http://reactivex.io/rxjs/manual/overview.html">Introduction</a>。就可以很轻松地理解Promise的流程和链式过程了。</p>
+<h4 id="Promise模式"><a href="#Promise模式" class="headerlink" title="Promise模式"></a>Promise模式</h4><p><code>Promise.all()</code>和<code>Promise.race()</code>。除了这两个官方钦定的方法外，其他的Promise库还实现了像是<code>any()</code>，<code>none()</code>，<code>first()</code>，<code>last()</code>这样的方法，看看RxJS的<a target="_blank" rel="noopener" href="http://reactivex.io/rxjs/manual/overview.html#categories-of-operators">operators</a>会有更多选择。</p>
+<h4 id="Promise的限制"><a href="#Promise的限制" class="headerlink" title="Promise的限制"></a>Promise的限制</h4><ul>
+<li>顺序的错误处理</li>
+<li>只能传单一的值（其实就是状态改变不可逆）</li>
+<li>单次解析（同上），文章也在<a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS/blob/1ed-zh-CN/async%20%26%20performance/ch3.md#%E6%83%B0%E6%80%A7">惰性</a>的上方提到了观察者模式的RxJS，的确在设计时间概念的领域，RxJS要厉害多了</li>
+<li>惰性（生产生产Promise函数的工厂函数）</li>
+<li>不可反悔（即不能中途撤销）</li>
+<li>性能</li>
+</ul>
+<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><p>使用同步风格书写异步代码的基础在Generator。关于这部分的更详细介绍见本人之前参考阮一峰大神写的<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/">博文</a></p>
+<h4 id="打破运行至完成"><a href="#打破运行至完成" class="headerlink" title="打破运行至完成"></a>打破运行至完成</h4><p>generator（生成器）是一个可以和别的代码穿插执行的非原子的特殊函数。使用<code>new</code>构造generator得到的只是一个迭代器，迭代器在执行到<code>yield</code>时会让出执行权。真正执行这个迭代器需要用调用或者执行器的方式。</p>
+<p>yield和next是generator可以和外部甚至是其他generator双向通信。但是generator只是声明了自己将要以什么样的形式去执行。还需要一个下面这样的帮助函数去推动它执行：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">step</span>(<span class="params">gen</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> it = <span class="title function_">gen</span>();</span><br><span class="line">    <span class="keyword">var</span> last;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">// 不论`yield`出什么，只管在下一次时直接把它塞回去！</span></span><br><span class="line">        last = it.<span class="title function_">next</span>( last ).<span class="property">value</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h4><ul>
+<li>可以把generator像状态机一样使用。</li>
+<li><code>for of</code>需要迭代器的实现</li>
+<li>可以在generator上使用<code>for of</code></li>
+<li>使用<code>return</code>而非<code>next</code>可以终止生成器执行</li>
+</ul>
+<h4 id="在异步流程中使用generator"><a href="#在异步流程中使用generator" class="headerlink" title="在异步流程中使用generator"></a>在异步流程中使用generator</h4><p>generator的yield暂停特性不仅意味着我们可以从异步的函数调用那里得到<em>看起来</em>同步的return值。</p>
+<h4 id="带有promise的generator"><a href="#带有promise的generator" class="headerlink" title="带有promise的generator"></a>带有promise的generator</h4><p>在ES6的世界中最棒的就是将generator（看似同步的异步代码）与Promise（可靠性和可组合性）组合起来。</p>
+<p>co与koa。</p>
+<p><strong>ES7中的await和async</strong></p>
+<p>像下面这样，没有<code>run</code>函数，没有生成器函数的<code>*</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params">x,y</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">request</span>(</span><br><span class="line">        <span class="string">&quot;http://some.url.1/?x=&quot;</span> + x + <span class="string">&quot;&amp;y=&quot;</span> + y</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> text = <span class="keyword">await</span> <span class="title function_">foo</span>( <span class="number">11</span>, <span class="number">31</span> );</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>( text );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>( err );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>();</span><br></pre></td></tr></table></figure>
+
+<h4 id="yield委托"><a href="#yield委托" class="headerlink" title="yield委托"></a>yield委托</h4><p>使用<code>yield * foo</code>可以把其他的生成器函数整合进当前生成器中。除了生成器外，还可以委托一个非generator的iterator。错误可以委托，promise可以委托，委托还可以递归。</p>
+<p>结合yield可以很方便地协调多个generator</p>
+<h4 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h4><p>同步的thunk即包装了所有预设形参的函数执行的函数。异步thunk指需要指定callback的包装所有其他预设形参异步函数的函数。像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 同步thunk</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params">x,y</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fooThunk</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">foo</span>( <span class="number">3</span>, <span class="number">4</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 异步thunk</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params">x,y,cb</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>( <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="title function_">cb</span>( x + y );</span><br><span class="line">    &#125;, <span class="number">1000</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fooThunk</span>(<span class="params">cb</span>) &#123;</span><br><span class="line">    <span class="title function_">foo</span>( <span class="number">3</span>, <span class="number">4</span>, cb );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一旦来说会有一个工具thunkify帮你完成制造函数thunk的工作（放心，总会有人这么做的）。它的用法是下面这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fooThunkory = <span class="title function_">thunkify</span>( foo );</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> fooThunk1 = <span class="title function_">fooThunkory</span>( <span class="number">3</span>, <span class="number">4</span> );</span><br><span class="line"><span class="keyword">var</span> fooThunk2 = <span class="title function_">fooThunkory</span>( <span class="number">5</span>, <span class="number">6</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">// 稍后</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">fooThunk1</span>( <span class="keyword">function</span>(<span class="params">sum</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( sum );     <span class="comment">// 7</span></span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="title function_">fooThunk2</span>( <span class="keyword">function</span>(<span class="params">sum</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( sum );     <span class="comment">// 11</span></span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure>
+
+<p>包装函数生产一个thunkory，之后指定除cb以外的其他参数得到thunk函数。</p>
+<p>thunk和Promise本质上其实是等价的。只不过是回调所在的为之不一样罢了。所以使用Promise.wrap包装得到的promise还是thunkify包装得到的thunk函数其实都可以yield出来。因为，它们都能通过指定回调来让generator进一步推动下去。</p>
+<p>当然了无论是在可组合性还是错误处理上，Promise都有更胜一筹。所以，thunk通常作为替代性的前ES6方案。</p>
+<h4 id="前ES6的Generator"><a href="#前ES6的Generator" class="headerlink" title="前ES6的Generator"></a>前ES6的Generator</h4><p>当然了Generator也是可以通过其他方式<a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS/blob/1ed-zh-CN/async%20%26%20performance/ch4.md#%E5%89%8Des6%E6%97%B6%E4%BB%A3%E7%9A%84generator">实现</a>的。</p>
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><h4 id="Web-Worker"><a href="#Web-Worker" class="headerlink" title="Web Worker"></a>Web Worker</h4><p>近HTML5时代被加入web平台的特性，称为“Web Worker”。这是一个浏览器（也就是宿主环境）特性，而且几乎和JS语言本身没有任何关系。<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/09/04/pwa-and-hybrid-brief/">这里</a>简单说了下它和Service Worker的区别。</p>
+<h4 id="asm-js"><a href="#asm-js" class="headerlink" title="asm.js"></a>asm.js</h4><p>“<a target="_blank" rel="noopener" href="http://asmjs.org/">asm.js</a>”是可以被高度优化的JavaScript语言子集的标志。通过小心地回避那些特定的很难优化的（垃圾回收，强制转换，等等）机制和模式，asm.js风格的代码可以被JS引擎识别，而且用主动地底层优化进行特殊的处理。</p>
+<h3 id="基准分析（BenchMark）和调优"><a href="#基准分析（BenchMark）和调优" class="headerlink" title="基准分析（BenchMark）和调优"></a>基准分析（BenchMark）和调优</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://benchmarkjs.com/">Benchmark.js</a>用统计学的方式避免时间戳测量语句性能时的不准确</li>
+<li><a target="_blank" rel="noopener" href="http://jsperf.com/">jsPerf.com</a>基于Benchmark.js的代码性能测试平台</li>
+</ul>
+<h4 id="编写好的测试"><a href="#编写好的测试" class="headerlink" title="编写好的测试"></a>编写好的测试</h4><ul>
+<li>注意上下文的影响</li>
+<li>“过早的优化是万恶之源”</li>
+<li>尾部调用优化</li>
+</ul>
+<h2 id="ES6与未来"><a href="#ES6与未来" class="headerlink" title="ES6与未来"></a>ES6与未来</h2><h3 id="ES？现在与未来"><a href="#ES？现在与未来" class="headerlink" title="ES？现在与未来"></a>ES？现在与未来</h3><ul>
+<li>polyfill与转译</li>
+</ul>
+<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>尽管ES6算是JS最新的官方特性，下面说的大部分特性已经被很经常地使用了。</p>
+<ul>
+<li>块作用域（之前的部分已经提到过了）</li>
+<li>扩散、剩余，<code>...</code>操作符，用在函数入参，数组和对象中</li>
+<li>函数默认参数值（是不是很神奇），默认参数值可以是合理的表达式甚至是函数调用</li>
+<li>解构赋值，也可以有默认参数值</li>
+<li>对象字面量拓展，简约声明&#x2F;简约方法&#x2F;getter，setter&#x2F;计算型属性名&#x2F;<code>__proto__</code>&#x2F;<code>super</code></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS/blob/1ed-zh-CN/es6%20%26%20beyond/ch2.md#%E6%A8%A1%E6%9D%BF%E5%AD%97%E9%9D%A2%E9%87%8F">模板字面量</a></li>
+<li>箭头函数，词法<code>this</code></li>
+<li><code>for of</code>和iterator</li>
+<li>正则表达式拓展<ul>
+<li>Unicode标识</li>
+<li>粘性标志</li>
+</ul>
+</li>
+<li>数字，八进制</li>
+<li>Unicode<ul>
+<li>合理的string长度，<code>String.prototype.normalize()</code></li>
+<li><code>charCodeAt</code> &#x3D;&gt; <code>codePointAt</code></li>
+<li><code>fromCharCode</code> &#x3D;&gt; <code>fromCodePoint</code></li>
+<li>Unicode标识符名称</li>
+</ul>
+</li>
+<li>Symbol，新的基本类型，它是一个新的包装器对象，可以认为每个<code>EVT_LOGIN</code>持有一个不能被其他任何值所（有意或无意地）重复的值。<ul>
+<li><code>Symbol.for()</code>先查询是否有一个同名的Symbol，如果有就返回，没有就创建一个</li>
+</ul>
+</li>
+</ul>
+<h3 id="组织"><a href="#组织" class="headerlink" title="组织"></a>组织</h3><h4 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h4><p>迭代器<code>Iterator</code>接口有一个必选接口<code>next()</code>，和两个可选接口<code>return()</code>和<code>throw()</code>，它的result被规定为包括属性<code>value</code>和<code>done</code>，下面是一个数组的迭代：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> it = arr[<span class="title class_">Symbol</span>.<span class="property">iterator</span>]();</span><br><span class="line"></span><br><span class="line">it.<span class="title function_">next</span>();      <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line">it.<span class="title function_">next</span>();      <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line">it.<span class="title function_">next</span>();      <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br><span class="line"></span><br><span class="line">it.<span class="title function_">next</span>();      <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>但通常使用<code>for of</code>就足够了。我们可以依照这个接口，定义一个自己的迭代器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">Fib</span> = &#123;</span><br><span class="line">    [<span class="title class_">Symbol</span>.<span class="property">iterator</span>]() &#123;</span><br><span class="line">        <span class="keyword">var</span> n1 = <span class="number">1</span>, n2 = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="comment">// 使迭代器成为一个可迭代对象</span></span><br><span class="line">            [<span class="title class_">Symbol</span>.<span class="property">iterator</span>]() &#123; <span class="keyword">return</span> <span class="variable language_">this</span>; &#125;,</span><br><span class="line"></span><br><span class="line">            <span class="title function_">next</span>(<span class="params"></span>) &#123;</span><br><span class="line">                <span class="keyword">var</span> current = n2;</span><br><span class="line">                n2 = n1;</span><br><span class="line">                n1 = n1 + current;</span><br><span class="line">                <span class="keyword">return</span> &#123; <span class="attr">value</span>: current, <span class="attr">done</span>: <span class="literal">false</span> &#125;;</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span>(v) &#123;</span><br><span class="line">                <span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">                    <span class="string">&quot;Fibonacci sequence abandoned.&quot;</span></span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">return</span> &#123; <span class="attr">value</span>: v, <span class="attr">done</span>: <span class="literal">true</span> &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Generator-1"><a href="#Generator-1" class="headerlink" title="Generator"></a>Generator</h4><p>这个上一章已经提到了。它可以用来：</p>
+<ul>
+<li>生产一系列值，即状态机</li>
+<li>串行执行的任务队列，化<em>异步</em>为<em>同步</em></li>
+</ul>
+<h4 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h4><p><code>import</code>和<code>export</code></p>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><ul>
+<li>ES6引入了元属性的概念，用<code>new.target</code>表示。在任意的构造器中，<code>new.target</code>总是指向<code>new</code>实际直接调用的构造器。</li>
+</ul>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><p><strong>ArrayBuffer</strong></p>
+<p>它表示一组比特位，但是这些比特的实际意义是由结构化数组控制的，由它表示这些比特上的“视图”究竟是8位有符号整数还是字符串。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>( <span class="number">32</span> );</span><br><span class="line">buf.<span class="property">byteLength</span>;                     <span class="comment">// 32字节</span></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="title class_">Uint16Array</span>( buf );</span><br><span class="line">arr.<span class="property">length</span>;                         <span class="comment">// 16</span></span><br></pre></td></tr></table></figure>
+
+<p>一个单独的缓冲可以连接多个视图</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>( <span class="number">2</span> );</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> view8 = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>( buf );</span><br><span class="line"><span class="keyword">var</span> view16 = <span class="keyword">new</span> <span class="title class_">Uint16Array</span>( buf );</span><br><span class="line"></span><br><span class="line">view16[<span class="number">0</span>] = <span class="number">3085</span>;</span><br><span class="line">view8[<span class="number">0</span>];                       <span class="comment">// 13</span></span><br><span class="line">view8[<span class="number">1</span>];                       <span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
+
+<p>在ES6中可以使用下面的类型化数组构造器：</p>
+<ul>
+<li>Int8Array（8位有符号整数），Uint8Array（8位无符号整数）</li>
+<li>Uint8ClampedArray（8位无符号整数，每个值都被卡在0 - 255范围内）</li>
+<li>Int16Array（16位有符号整数），Uint16Array（16位无符号整数）</li>
+<li>Int32Array（32位有符号整数），Uint32Array（32位无符号整数）</li>
+<li>Float32Array（32位浮点数，IEEE-754）</li>
+<li>Float64Array（64位浮点数，IEEE-754）</li>
+</ul>
+<p><strong>Maps</strong></p>
+<p>摆脱对象只能使用字符串做键值的限制。有<code>get</code>、<code>set</code>、<code>delete</code>、<code>has</code>、<code>clear</code>等方法。类似地还有WeakMap，不过它只能使用对象做键。</p>
+<p><strong>Sets</strong></p>
+<p>一个集合。类似Map，不过<code>set</code>换成了<code>add</code>，且没有<code>get</code>。Set和Map都有自己的迭代器。也可以通过<code>keys</code>，<code>values</code>，<code>entries</code>来访问里面的内容。</p>
+<h3 id="新增API-amp-元编程"><a href="#新增API-amp-元编程" class="headerlink" title="新增API &amp; 元编程"></a>新增API &amp; 元编程</h3><p>略，参考<a target="_blank" rel="noopener" href="https://github.com/getify/You-Dont-Know-JS/blob/1ed-zh-CN/es6%20%26%20beyond/ch6.md">原文</a></p>
+<h3 id="ES6以后"><a href="#ES6以后" class="headerlink" title="ES6以后"></a>ES6以后</h3><ul>
+<li>asnyc function</li>
+<li><code>Object.observe</code></li>
+<li>指数运算符<code>**</code></li>
+<li><code>Array#includes</code>替代<code>~Array.indexOf(value)</code></li>
+<li>SIMD（多个数据），用于多个元素的并行数学操作，参考下面<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v1 = <span class="variable constant_">SIMD</span>.<span class="title function_">float32x4</span>( <span class="number">3.14159</span>, <span class="number">21.0</span>, <span class="number">32.3</span>, <span class="number">55.55</span> );</span><br><span class="line"><span class="keyword">var</span> v2 = <span class="variable constant_">SIMD</span>.<span class="title function_">float32x4</span>( <span class="number">2.1</span>, <span class="number">3.2</span>, <span class="number">4.3</span>, <span class="number">5.4</span> );</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">SIMD</span>.<span class="property">float32x4</span>.<span class="title function_">mul</span>( v1, v2 );</span><br><span class="line"><span class="comment">// [ 6.597339, 67.2, 138.89, 299.97 ]</span></span><br></pre></td></tr></table></figure></li>
+<li>WASM（Web Assembly）</li>
+</ul>
+<p><em>-END-</em></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -988,238 +1358,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/10/15/cycle-js-introduction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/10/15/cycle-js-introduction/" class="post-title-link" itemprop="url">cycle.js介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-10-15 15:29:52" itemprop="dateCreated datePublished" datetime="2017-10-15T15:29:52+08:00">2017-10-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-04-02 22:36:11" itemprop="dateModified" datetime="2018-04-02T22:36:11+08:00">2018-04-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">框架</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/10/15/cycle-js-introduction/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/10/15/cycle-js-introduction/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>下面的内容主要来自<a target="_blank" rel="noopener" href="https://egghead.io/courses/cycle-js-fundamentals">作者André Staltz的egghead.io</a></p>
-</blockquote>
-<div style="width: 50%;margin: 0 auto;">![cycle-flow](http://ow5o14n5d.bkt.clouddn.com/blogcycle-flow.svg)</div>
-
-<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>cycle.js设计上有三个特点：</p>
-<ul>
-<li>万物都是Stream（collections + <strong>时间</strong>）</li>
-<li>Logic和Effect分离（借助<code>main</code>和<code>drivers</code>）</li>
-<li>app是纯数据流（data flow）</li>
-</ul>
-<p>第一部分正如<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/08/14/rxjs-brief/">RxJS中介绍</a>的一样，可以用Observable建模。</p>
-<p>第二部分中，logic是数学相关的东西，是抽象的。effects则是影响实际世界的效应（如DOM、HTTP等），是实际的。将两者更好地分离开来是Cycle.js的设计初衷。而logic纯函数的特点优势也是很明显的（无副作用）。</p>
-<p>上面的两部分在Cycle.js中，借助xstream, RxJS等Reactive Programming的库，以main和driver函数来实现。其中<code>main</code>实现逻辑、生产数据，<code>driver</code>订阅消费数据，交由cycle.js制造Effect。<a target="_blank" rel="noopener" href="http://lmatteis.github.io/cyclejs-slides/keynote/assets/player/KeynoteDHTMLPlayer.html#60">这里</a>有一个浅显易懂的例子。</p>
-<p>除了简单的DOM Effect外，还有HTTP请求等。交给不同的drivers完成就行了。这一点上和<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/06/19/elm-introduction/#Effects">Elm设计</a>很像。</p>
-<p>对比流行的React、Angular、Vue，组件化的设计模式当然也涉及到。文档的<a target="_blank" rel="noopener" href="https://cycle.js.org/components.html">Components</a>部分讲得很清楚：</p>
-<blockquote>
-<p>Any Cycle.js app can be reused as a component in a larger Cycle.js app.</p>
-</blockquote>
-<p>即任何一个Cycle.js的应用都可以直接重用成更大应用的一个组件，无需额外的操作。原因很简单，任何一个logic都是在<code>main</code>函数中完成的，这也是开发者唯一需要做的事。而这个函数接收的<code>sources</code>以及返回给Cycle.js的<code>sinks</code>都是一个包含DOM、HTTP等stream的对象，且键值对都一样，可以看下面这张图更好理解：</p>
-<div style="width: 50%;margin: 0 auto;">![cycle.js component](https://cycle.js.org/img/dataflow-component.svg)</div>
-
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>完全可以在main中生产多种数据，作为对象返回，交给不同driver的得到不一样的effects。将main中数据交给driver的过程抽象在run函数中，完成数据生产和订阅的过程。这个过程并不复杂。下面是一个简陋的实现。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">run</span>(<span class="params">mainFn, drivers</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> sinks = <span class="title function_">mainFn</span>();</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">  	<span class="keyword">if</span> (sinks[key]) &#123;</span><br><span class="line">  	  drivers[key](sinks[key]);</span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">run</span>(main, &#123;</span><br><span class="line">  <span class="attr">DOM</span>: domDriver,</span><br><span class="line">  <span class="attr">other</span>: otherDriver</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>上面的实现手法只实现了单向的从逻辑到Effects的映射过程，要完成相反的从实际世界到逻辑的过程，需要读取外界的事件。要这么做，不仅main函数需要可以接受入参<code>sources</code>，生产Effects的drivers也要能够返回main需要的<code>sources</code>。类似地，sources的类型可以是DOM或者其他的合法input。同时，连接两者的<code>run</code>函数会遇到循环的问题，driver的入参和出参正好是main的出参和入参，这也是<strong>Cycle</strong>一词的来源。解决办法是先fake一个的初始数据流，得到Effects后，再用Effects初始化main，最后用main替换fake的数据流即可。</p>
-<p>继续改造<code>run</code>函数，考虑到driver有多种类型，需要事先为所有driver都使用fakeSinks。在构造好drivers后，使用drivers的返回，构造main。最后用<code>imitate</code>替代掉fakeSinks即可。这就是Cycle.js核心部分run的设计思路，实际上，run部分的代码也只有一百余行。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">run</span>(<span class="params">mainFn, drivers</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> fakeSinks = &#123;&#125;;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    fakeSinks[key] = xs.<span class="title function_">create</span>();</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> sources = &#123;&#125;;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(drivers).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    sources[key] = drivers[key](fakeSinks[key]);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> sinks = <span class="title function_">mainFn</span>(sources);</span><br><span class="line"></span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">keys</span>(sinks).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    fakeSinks[key].<span class="title function_">imitate</span>(sinks[key];)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>除了run，drivers也是Cycle.js设计的重要部分。它需要能够根据main逻辑的描述灵活地生成对应的Effects。如DOM，在main逻辑中声明所需的DOM结构，对应地，在domDriver中，根据结构生成实际的DOM元素（不论是使用createElement还是vDOM）。</p>
-<p>不过仅仅在main逻辑中描述DOM结构是不够的，逻辑上还应该包括如何响应Effects的输入。类似地，这部分应该从driver中的hardcode抽离出来，由main声明，driver实现。类似下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> events$ = sources.<span class="property">DOM</span>.<span class="title function_">selectEvents</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;click&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">DOM</span>: events$.<span class="title function_">startWith</span>(<span class="literal">null</span>).<span class="title function_">map</span>(</span><br><span class="line">      xs.<span class="title function_">periodic</span>(<span class="number">1000</span>)</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    ).<span class="title function_">flatten</span>()</span><br><span class="line">    .<span class="title function_">map</span>(<span class="function"><span class="params">i</span> =&gt;</span> (&#123;</span><br><span class="line">      <span class="attr">tagName</span>: <span class="string">&#x27;H1&#x27;</span>,</span><br><span class="line">      <span class="attr">children</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">tagName</span>: <span class="string">&#x27;SPAN&#x27;</span>,</span><br><span class="line">          <span class="attr">children</span>:[<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;))</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面的DOM结构可以进一步抽象函数，便于代码书写。另外，Cycle.js中使用makeDOMDriver的方式是为了显示声明DOM容器名，避免hardcode在driver中。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">h</span>(<span class="params">tagName, children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    tagName,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">h1</span>(<span class="params">children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">tagName</span>: <span class="string">&#x27;H1&#x27;</span>,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">span</span>(<span class="params">children</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">tagName</span>: <span class="string">&#x27;SPAN&#x27;</span>,</span><br><span class="line">    children</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">.<span class="title function_">map</span>(</span><br><span class="line">  <span class="title function_">h1</span>([</span><br><span class="line">    <span class="title function_">span</span>([<span class="string">`Seconds elapsed: <span class="subst">$&#123;i&#125;</span>`</span>])</span><br><span class="line">  ])</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>习惯了上面的思考方式后，可以考虑如何使用Cycle.js的问题了。通常情况下，一个空白的Cycle.js的脚手架像下面这样（使用UMD方案时）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; makeDOMDriver &#125; = <span class="title class_">CycleDOM</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line">  <span class="comment">// TODO</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> drivers = &#123;</span><br><span class="line">  <span class="attr">DOM</span>: <span class="title function_">makeDOMDriver</span>(<span class="string">&#x27;#app&#x27;</span>),</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Cycle</span>.<span class="title function_">run</span>(main, drivers);</span><br></pre></td></tr></table></figure>
-
-<p>结合HTML内容的声明和用户输入事件的读取，可以得到下面的结果：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; div, label, input, hr, h1, makeDOMDriver &#125; = <span class="title class_">CycleDOM</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params">sources</span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// &#x27;&#x27;---------------&gt;</span></span><br><span class="line">  <span class="comment">// div--------------&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> input$ = sources.<span class="property">DOM</span>.<span class="title function_">select</span>(<span class="string">&#x27;.name&#x27;</span>).<span class="title function_">events</span>(<span class="string">&#x27;change&#x27;</span>)；</span><br><span class="line">  <span class="keyword">const</span> name$ = input$.<span class="title function_">map</span>(<span class="function"><span class="params">ev</span> =&gt;</span> ev.<span class="property">target</span>.<span class="property">value</span>).<span class="title function_">startWidth</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">  	<span class="attr">DOM</span>: name$.<span class="title function_">map</span>(<span class="function"><span class="params">name</span> =&gt;</span></span><br><span class="line">  	  <span class="title function_">div</span>([</span><br><span class="line">  	  	<span class="title function_">label</span>([<span class="string">&#x27;Name: &#x27;</span>]),</span><br><span class="line">  	  	<span class="title function_">input</span>(<span class="string">&#x27;.name&#x27;</span>, &#123;<span class="attr">attrs</span>: &#123;<span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>&#125;&#125;),</span><br><span class="line">  	  	<span class="title function_">hr</span>(),</span><br><span class="line">  	  	<span class="title function_">h1</span>(<span class="string">`Hello <span class="subst">$&#123;name&#125;</span>!`</span>)</span><br><span class="line">  	  ])</span><br><span class="line">  	)</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> drivers = &#123;</span><br><span class="line">  <span class="attr">DOM</span>: <span class="title function_">makeDOMDriver</span>(<span class="string">&#x27;#app&#x27;</span>),</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Cycle</span>.<span class="title function_">run</span>(main, drivers);</span><br></pre></td></tr></table></figure>
-
-<p>其中要格外注意的是，<code>name$</code>需要有<code>startWith</code>才能有流的起始数据，从而初始化真实DOM。</p>
-<p>结合灵活的流操作符，如<code>merge</code>, <code>fold</code>等，可以实现更加复杂点的应用，如官网给出的<a target="_blank" rel="noopener" href="https://cycle.js.org/basic-examples.html#basic-examples-increment-a-counter">计数器</a></p>
-<p>除了DOMDriver，HTTPDriver也是很常用的一种Driver，可以借助它实现HTTP的request和response的响应。如官网给的<a target="_blank" rel="noopener" href="https://cycle.js.org/basic-examples.html#basic-examples-http-requests">样例</a></p>
-<h3 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h3><div style="width:70%;margin: 0 auto;">![MVI模型](http://ow5o14n5d.bkt.clouddn.com/cycle-mvi.svg)</div>
-
-<p>MVI（Model-View-Intent）是Cycle.js提出的编程范式，可以将main的内容拆分成三部分，</p>
-<ul>
-<li>第一部分Intent将Effects传递过来的事件转换成Model逻辑可以接受的类型，</li>
-<li>第二部分Model实现具体逻辑，即state的改动</li>
-<li>最终由View部分将逻辑转换成DOMDriver可以接受的数据流传递到最后的vdom。</li>
-</ul>
-<p>使用这种方式拆分后的代码实际上类似<code>view(model(intent(sources.DOM)))</code>。如文档中<a target="_blank" rel="noopener" href="https://cycle.js.org/model-view-intent.html">介绍</a>的那样。</p>
-<p>关于组件拆分和<strong>isolate</strong>，可以参看文档的<a target="_blank" rel="noopener" href="https://cycle.js.org/components.html#components-isolating-multiple-instances">Components</a>部分。另外，在Cycle.js的状态管理工具<a target="_blank" rel="noopener" href="https://github.com/staltz/cycle-onionify">cycle-onionify</a>中也用到了<code>isolate</code>，使用<code>isolate</code>可以保证组件间的stream、状态相互独立。</p>
-<h2 id="xstream"><a href="#xstream" class="headerlink" title="xstream"></a>xstream</h2><p>万物皆Stream的概念是需要额外的库支持的。因此没有接触过RxJS的建议先学习一下这种思路。</p>
-<p>Cycle.js允许使用RxJS等多种Reactive Programming库构造响应式的流结构，不过推荐针对Cycle.js定制的<a target="_blank" rel="noopener" href="https://staltz.com/xstream/">xstream</a>。xstream学习成本简单，API仅有26个，此外文件体积小，速度适中。熟悉RxJS后，学习xstream就更简单了。</p>
-<p>xstream的API分为<strong>Factories</strong>和<strong>Operators</strong>。前者通过Producer或合并等方式生产新的Stream，后者是Stream的相关方法。</p>
-<p>学习xstream了解4个概念就足够了（如果你已经熟悉RxJS的思想后），<strong>Stream</strong>, <strong>Listener</strong>, <strong>Producer</strong>, <strong>MemoryStream</strong>。</p>
-<ul>
-<li><strong>Stream</strong>，类似EventEmitter和RxJS中的Subject，一个Stream可以注册多个Listener，Stream上有event出现时，所有Listener都会收到通知。除此之外，Stream可以通过<strong>operators</strong>生产新的Stream，如<code>fold</code>, <code>map</code>等。可以使用<code>shamefullySend*</code>手动触发event，但是应避免使用这种方式</li>
-<li><strong>Listener</strong>，和RxJS中的Observer类似，是有<code>next</code>, <code>error</code>, <code>complete</code>三种状态的对象，用来处理stream的三种event。通过<code>addListener</code>和<code>removeListener</code>和Stream建立联系。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> listener = &#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;The Stream gave me a value: &#x27;</span>, value);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">error</span>: <span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;The Stream gave me an error: &#x27;</span>, err);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">complete</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;The Stream told me it is done.&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><strong>Producer</strong>，生产Stream所需的event。xstream使用<code>create(producer)</code>等方法生产Stream。一个Producer只能绑定一个Stream。Producer本身拥有<code>start</code>和<code>stop</code>便于在没有Listener监听时停止工作。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">var</span> producer = &#123;</span><br><span class="line">  <span class="attr">start</span>: <span class="keyword">function</span> (<span class="params">listener</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">id</span> = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> listener.<span class="title function_">next</span>(<span class="string">&#x27;yo&#x27;</span>), <span class="number">1000</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">stop</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(<span class="variable language_">this</span>.<span class="property">id</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">id</span>: <span class="number">0</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><strong>MemoryStream</strong>，和Stream不同的是会记录最后一次的event信息。类似RxJS里的BehaviorSubject。</li>
-</ul>
-<p>生产Stream的函数有下面这些：</p>
-<ul>
-<li><code>create(producer)</code>和<code>createWithMemory(producer)</code></li>
-<li><code>never()</code> 生产不产生event的Stream</li>
-<li><code>empty()</code> 生产立即结束的Stream</li>
-<li><code>error(error)</code> 生产立即错误的Stream</li>
-<li><code>from(input)</code> 通过数组、Promise、Observable等生产Stream</li>
-<li><code>of(a1,a2,a3)</code> 生产根据输入产生的一系列event</li>
-<li><code>fromArray(array)</code>, <code>fromPromise(promise)</code>, <code>fromObservable(observable)</code></li>
-<li><code>periodic(period)</code> 周期性产生递增的数</li>
-<li><code>merge(s1, s2)</code> 合并两个流</li>
-<li><code>combine(s1, s2)</code> 合并两个流中的值</li>
-</ul>
-<p>Stream的相关方法有：</p>
-<ul>
-<li><code>addListener(listener)</code>和<code>removeListener(listener)</code></li>
-<li><code>subscribe(listener)</code>注册listener返回remove的函数</li>
-<li><code>map(project)</code>和<code>mapTo(projectedValue)</code> 映射event中的值</li>
-<li><code>filter(passes)</code> 过滤</li>
-<li><code>take(amount)</code> 限制Stream的event数目</li>
-<li><code>drop(amount)</code> 忽略前<code>amount</code>次的event数目</li>
-<li><code>last()</code> 只释放最后一次event</li>
-<li><code>startWith(initialValue)</code> 以给定值开始</li>
-<li><code>endWhen(other)</code> 使用其他Stream决定是否完成当前Stream</li>
-<li><code>fold(accumulate, seed)</code> 以给定值开始累加</li>
-<li><code>replaceError(replace)</code> 取代一个流中的所有error</li>
-<li><code>flatten()</code> 将streams的Stream压缩为一个Stream，输出流中的数据只来自于当前Stream</li>
-<li><code>compose(operator)</code></li>
-<li><code>remember()</code> 缓存最后一个值</li>
-<li><code>debug(labelOrSpy)</code> 不修改流，便于debug</li>
-<li><code>imitate(target)</code> 使用给定流替换原有Stream</li>
-<li><code>shamefullySendNext/Error/Complete</code></li>
-</ul>
-<p>另外一些实用的Stream相关方法，在extra部分中引入，包括如下</p>
-<ul>
-<li><code>buffer(separator)</code> 缓存部分内容一同输出，输出时机由输入的Stream决定</li>
-<li><code>concat(s1, s2, ..., sn)</code> 将Stream按照参数顺序从前到后连接起来</li>
-<li><code>debounce(period)</code>和<code>throttle(period)</code> 防抖和节流</li>
-<li><code>delay(period)</code> 时延</li>
-<li><code>dropRepeats(isEquals)</code> 丢掉邻接的重复数据</li>
-<li><code>dropUntil(other)</code> 根据其他Stream决定该Stream的开始时机</li>
-<li><code>flattenConcurrently()</code> 类似<code>flatten()</code>，不过流中的数据根据时间merge，<code>flattenSequentially()</code>类似，将Stream先后连接</li>
-<li><code>fromDiagram(diagram, options)</code> 通过图表创建Stream</li>
-<li><code>fromEvent(element, eventName, useCapture)</code> 通过DOM事件创建Stream</li>
-<li><code>pairwise()</code> 和上一个值成对组成event的值</li>
-<li><code>sampleCombine(streams)</code> source流和其他发生时间最近的流event相组合</li>
-<li><code>split(separator)</code> 类似<code>buffer</code>，将stream拆分为释放streams的Stream</li>
-<li><code>tween(config)</code> 根据配置创建缓动函数，用于制作动画</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/cyclejs-community/awesome-cyclejs">cyclejs-community&#x2F;awesome-cyclejs: A curated list of awesome Cycle.js resources</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/blog/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/blog/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1242,13 +1382,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">1m</span>
+    <span title="站点总字数">1.1m</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:03</span>
+    <span title="站点阅读时长">29:27</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
