@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-count">152</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">463</span>
+        <span class="site-state-item-count">469</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,214 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/08/16/some-tips-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/08/16/some-tips-3/" class="post-title-link" itemprop="url">工作中的遇到的一些小知识 3</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-08-16 23:11:29 / 修改时间：23:27:31" itemprop="dateCreated datePublished" datetime="2018-08-16T23:11:29+08:00">2018-08-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/08/16/some-tips-3/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/16/some-tips-3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="git-case-sensitive"><a href="#git-case-sensitive" class="headerlink" title="git case sensitive"></a>git case sensitive</h2><p>git本身是大小写敏感的。但在大小写不敏感的系统里，需要用hack方法记录仅修改文件名大小写的改动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">mv</span> file.txt temp.txt</span><br><span class="line">git <span class="built_in">mv</span> temp.txt File.txt</span><br><span class="line">git commit -m <span class="string">&quot;Renamed file.txt to File.txt&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="webpack的一些经验"><a href="#webpack的一些经验" class="headerlink" title="webpack的一些经验"></a>webpack的一些经验</h2><p><strong>DefinePlugin</strong></p>
+<p>允许创建一个在编译时可以配置的全局常量。在构建区分环境的包时很有用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.<span class="title class_">DefinePlugin</span>(&#123;</span><br><span class="line">  <span class="attr">PRODUCTION</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="literal">true</span>),</span><br><span class="line">  <span class="attr">VERSION</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&quot;5fa3b9&quot;</span>),</span><br><span class="line">  <span class="attr">BROWSER_SUPPORTS_HTML5</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">TWO</span>: <span class="string">&quot;1+1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;typeof window&quot;</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&quot;object&quot;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>注意：这个插件直接执行文本替换。因此：</p>
+<ul>
+<li>如果这个值是一个字符串，它会被当作一个代码片段来使用。</li>
+<li>如果这个值不是字符串，它会被转化为字符串(包括函数)。</li>
+<li>如果这个值是一个对象，它所有的 key 会被同样的方式定义。</li>
+<li>如果在一个 key 前面加了 typeof,它会被定义为 typeof 调用</li>
+</ul>
+<p><strong>resolve alias</strong></p>
+<p>创建import或require的别名，来确保模块引入变得更简单。例如，一些位于 src&#x2F; 文件夹下的常用模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">alias</span>: &#123;</span><br><span class="line">    @: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&#x27;src/&#x27;</span>),</span><br><span class="line">    <span class="title class_">Utilities</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&#x27;src/utilities/&#x27;</span>),</span><br><span class="line">    <span class="title class_">Templates</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&#x27;src/templates/&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="z-index可能的坑"><a href="#z-index可能的坑" class="headerlink" title="z-index可能的坑"></a>z-index可能的坑</h2><p><strong>使用前提：z-index只能在position属性值为relative或absolute或fixed的元素上有效。</strong></p>
+<p>z-index值只决定同一父元素中的同级子元素的堆叠顺序。父元素的z-index值（如果有）为子元素定义了堆叠顺序（css版堆叠“拼爹”）。向上追溯找不到含有z-index值的父元素的情况下，则可以视为自由的z-index元素，它可以与父元素的同级兄弟定位元素或其他自由的定位元素来比较z-index的值，决定其堆叠顺序。同级元素的z-index值如果相同，则堆叠顺序由元素在文档中的先后位置决定，后出现的会在上面。</p>
+<h2 id="git-submodule"><a href="#git-submodule" class="headerlink" title="git submodule"></a>git submodule</h2><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://yihui.name/cn/2017/03/git-submodule/">GIT 子模块</a></p>
+</blockquote>
+<p>最新一个项目里要复用已有的一个git库的代码，具体来说就是要将之前在WebView的内容复刻到PC版完成（这个需求貌似应该还挺常见的）。为了保证代码复用性，选择了<code>git submodule</code>的方法。这也是我此前从没用过的一个命令。</p>
+<p>简单来说，是一个 GIT 仓库下面某个文件夹的来源可以跟本库的来源不同，这个文件夹连接着别的库，由别的库负责按本控制和管理。是不是和npm包管理的形式比较像。子模块可以手动添加，也可以在克隆一个主库的时候就直接实体化。具体来说，有四种情况：</p>
+<ul>
+<li>克隆库的时候要初始化子模块 &#x3D;&gt; 加上<code>--recursive</code>参数 <code>git clone --recursive git@github.com:shenlvmeng/trace-maker.git</code></li>
+<li>初始化已有库的子模块 &#x3D;&gt; <code>git submodule update --init --recursive</code></li>
+<li>从子模块的源更新该子模块 &#x3D;&gt; <code>git submodule update --recursive --remote</code></li>
+<li>添加一个新的子模块 &#x3D;&gt; <code>git submodule add &lt;git address&gt; &lt;folder address&gt;</code></li>
+</ul>
+<p>已有有git submodule的库内，<code>.gitmodules</code>是下面的样子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule &quot;wheel&quot;]</span><br><span class="line">    path = wheel</span><br><span class="line">    url = git@github.com:shenlvmeng/wheel.git</span><br></pre></td></tr></table></figure>
+
+<h2 id="npm-install"><a href="#npm-install" class="headerlink" title="npm install"></a>npm install</h2><p>npm install后跟的绝不仅仅只是包名，还可以通过ssh、http的形式引入npm包，唯一的要求是有<code>package.json</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">npm install (with no args, <span class="keyword">in</span> package <span class="built_in">dir</span>)</span><br><span class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;</span><br><span class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;tag&gt;</span><br><span class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version&gt;</span><br><span class="line">npm install [&lt;@scope&gt;/]&lt;name&gt;@&lt;version range&gt;</span><br><span class="line">npm install &lt;git-host&gt;:&lt;git-user&gt;/&lt;repo-name&gt;</span><br><span class="line">npm install &lt;git repo url&gt;</span><br><span class="line">npm install &lt;tarball file&gt;</span><br><span class="line">npm install &lt;tarball url&gt;</span><br><span class="line">npm install &lt;folder&gt;</span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span>: npm i</span><br></pre></td></tr></table></figure>
+
+<p>一个<strong>package</strong>可以是下面的形式：</p>
+<ol>
+<li>包含<code>package.json</code>的工程文件夹</li>
+<li>gzip过的“1”的压缩包</li>
+<li>指向“2”的url</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;registry&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;@&lt;tag&gt;</code>字符串</li>
+<li>发布在npm-registry的<code>&lt;name&gt;</code>字符串(最新版本)</li>
+<li>一个指向“1”的合法git地址</li>
+</ol>
+<h2 id="cleave-js"><a href="#cleave-js" class="headerlink" title="cleave.js"></a>cleave.js</h2><p>一个自动格式化输入框的工具，有npm包、script标签等几种引用形式，还有react的使用方式。</p>
+<p>地址：<a target="_blank" rel="noopener" href="https://nosir.github.io/cleave.js/">Format your &lt;input&#x2F;&gt; content when you are typing</a></p>
+<h2 id="object-fit-amp-object-position"><a href="#object-fit-amp-object-position" class="headerlink" title="object-fit &amp; object-position"></a>object-fit &amp; object-position</h2><p>这两个CSS属性分别用于指定替换元素在其盒模型内的覆盖大小和对齐方式。使用效果很类似<code>background-size</code>和<code>background-position</code>。替换元素即内容不受CSS视觉格式化控制的元素，如image、iframe、video、textarea等。</p>
+<p>这使得本来自己决定模型大小的元素可以受CSS控制决定位置排布和大小。在需要自适应元素大小的场景下很好用，比如用户头像展示等。</p>
+<p>唯一的小小缺憾可能是IE11还不支持这两个属性，以及Edge只支持对<code>&lt;img&gt;</code>使用。</p>
+<h2 id="移动端触摸默认行为优化"><a href="#移动端触摸默认行为优化" class="headerlink" title="移动端触摸默认行为优化"></a>移动端触摸默认行为优化</h2><ul>
+<li><code>user-select: none</code> 禁止用户选择</li>
+<li><code>-webkit-touch-callout: none</code> 防止长按contextmenu弹出。类似的还有<code>contextmenu</code>事件里的<code>e.preventDefault()</code></li>
+<li><code>-webkit-tap-highlight-color: transparent</code> 删除可点击元素默认的黑影</li>
+</ul>
+<h2 id="上传进度条"><a href="#上传进度条" class="headerlink" title="上传进度条"></a>上传进度条</h2><p>利用xhr事件的onprogress事件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">xhr.<span class="property">onprogress</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (e.<span class="property">lengthComputable</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(e.<span class="property">loaded</span>+  <span class="string">&quot; / &quot;</span> + e.<span class="property">total</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">xhr.<span class="property">onloadstart</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;start&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line">xhr.<span class="property">onloadend</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;end&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="不显示滚动条"><a href="#不显示滚动条" class="headerlink" title="不显示滚动条"></a>不显示滚动条</h2><p>基于Webkit的浏览器，可以使用CSS的方式隐藏滚动条。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&amp;::-webkit-scrollbar &#123;</span><br><span class="line">      <span class="attribute">width</span>: <span class="number">0</span>;</span><br><span class="line">      <span class="attribute">height</span>: <span class="number">0</span>;</span><br><span class="line">      <span class="attribute">background</span>: transparent;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="keyup无法prevent-default"><a href="#keyup无法prevent-default" class="headerlink" title="keyup无法prevent default"></a>keyup无法prevent default</h2><blockquote>
+<p>keyup fires after the default action.</p>
+</blockquote>
+<blockquote>
+<p>keydown and keypress are where you can prevent the default.<br>If those aren’t stopped, then the default happens and keyup is fired.</p>
+</blockquote>
+<p>来源：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/16052592/javascript-prevent-default-for-keyup/16052627">jquery - javascript prevent default for keyup - StackOverflow</a></p>
+<h2 id="mixin-in-react"><a href="#mixin-in-react" class="headerlink" title="mixin in react"></a>mixin in react</h2><p>版本16之前，可以用mixin特性。16之后使用高阶组件HOC + ES6 class语法实现。<a target="_blank" rel="noopener" href="https://reactjs.org/docs/higher-order-components.html">参考</a>。</p>
+<h2 id="user-select在Edge浏览器下的适配问题"><a href="#user-select在Edge浏览器下的适配问题" class="headerlink" title="user-select在Edge浏览器下的适配问题"></a><code>user-select</code>在Edge浏览器下的适配问题</h2><p>设置<code>user-select</code>为<code>none</code>在Edge浏览器下会导致input无法输入内容。可以用下面的写法，避免对<code>input</code>标签应用该属性。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*<span class="selector-pseudo">:not</span>(<span class="selector-tag">input</span>) &#123;</span><br><span class="line">  user-select: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/49614065/cant-type-in-input-field-using-microsoft-edge-and-safari">html - Can’t type in input field using Microsoft Edge and Safari - StackOverflow</a></p>
+<h2 id="浏览器跨tab通信"><a href="#浏览器跨tab通信" class="headerlink" title="浏览器跨tab通信"></a>浏览器跨tab通信</h2><p>最近业务遇到了一个需求：同一浏览器上多tab用户信息同步的问题，所有这个域名下的需要强制一样的用户信息，避免困惑。</p>
+<p>跨tab通信主流方案有两种：</p>
+<ul>
+<li>localStorage，利用window的<code>storage</code>事件，传递信息</li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API">BroadcastChannel</a>，新的API，通过<code>postMessage</code>和<code>onMessage</code>完成双向通讯</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bc = <span class="keyword">new</span> <span class="title class_">BroadcastChannel</span>(<span class="string">&#x27;test_channel&#x27;</span>);</span><br><span class="line">bc.<span class="title function_">postMessage</span>(<span class="string">&#x27;This is a test message.&#x27;</span>); <span class="comment">/* send */</span></span><br><span class="line">bc.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">ev</span>) &#123; <span class="variable language_">console</span>.<span class="title function_">log</span>(ev); &#125; <span class="comment">/* receive */</span></span><br></pre></td></tr></table></figure>
+
+<p>后者还未得到广泛支持，需要前者进行polyfill。</p>
+<h2 id="aos"><a href="#aos" class="headerlink" title="aos"></a>aos</h2><p>Animation on scroll。<a target="_blank" rel="noopener" href="https://github.com/michalsnik/aos">michalsnik&#x2F;aos at master · Animate on scroll library</a>.元素滚动至中的CSS动画，适合实现官网、落地页等效果。</p>
+<h2 id="extract-text-webpack-plugin"><a href="#extract-text-webpack-plugin" class="headerlink" title="extract-text-webpack-plugin"></a>extract-text-webpack-plugin</h2><p>抽出CSS&#x2F;Less&#x2F;Sass等样式作为单独文件，用于那些需要提前加载样式的页面。详细用法见<a target="_blank" rel="noopener" href="https://github.com/webpack-contrib/extract-text-webpack-plugin">github</a></p>
+<p>坑：</p>
+<ol>
+<li>不支持webpack4.x，报内部错误（2018&#x2F;07&#x2F;30） &#x3D;&gt; 使用@next下载最新版</li>
+<li>报错<code>Module build failed: ReferenceError: window is not defined</code> &#x3D;&gt; style-loader在extract-text-webpack-plugin中只做fallback项使用，见<a target="_blank" rel="noopener" href="https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/503">issue#503</a></li>
+</ol>
+<h2 id="常见调试技巧"><a href="#常见调试技巧" class="headerlink" title="常见调试技巧"></a>常见调试技巧</h2><ul>
+<li>代码中插入debugger可以在该位置触发断点调试</li>
+<li><code>console.dir</code>可以打印对象结构，大多数情况和<code>console.log</code>表现一致，在document等DOM元素上表现不同</li>
+</ul>
+<h2 id="react组件复用设计思路"><a href="#react组件复用设计思路" class="headerlink" title="react组件复用设计思路"></a>react组件复用设计思路</h2><ul>
+<li>当设计的组件为自闭型时，通过传入数据（<strong>不要传入功能</strong>）props的方式定制组件</li>
+<li>当设计的组件在有些场景下需要外部传入功能才能完整时，使用继承的方式实现</li>
+<li>在可以拆分出原子组件，<strong>且有此必要的时候</strong>，使用原子组件拼装业务组件</li>
+<li>HOC优于mixin</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -964,273 +1172,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/05/01/sicp-note/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/05/01/sicp-note/" class="post-title-link" itemprop="url">SICP大纲</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-05-01 17:18:04" itemprop="dateCreated datePublished" datetime="2018-05-01T17:18:04+08:00">2018-05-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-08-09 00:23:32" itemprop="dateModified" datetime="2018-08-09T00:23:32+08:00">2018-08-09</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/05/01/sicp-note/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/01/sicp-note/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>本文是《计算机程序的构造和解释》的笔记</p>
-</blockquote>
-<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>序中其实也包含了很多睿智的观点，值得细细体会。</p>
-<ul>
-<li>“每一个计算机程序都是现实中的或者精神中的某个过程的一个模型”</li>
-<li>“我们很少能通过自己的程序将这种过程模拟到永远令人满意的程度”</li>
-<li>“不幸的是，随着程序变得更大更复杂（实际上它们几乎总是如此），这种描述本身的适宜性，一致性和正确性也都变得非常值得怀疑了”</li>
-<li>“如何利用一些已经证明和有价值的组织技术，将这些结构组合成更大的结构，这些都是至关重要的”</li>
-<li>“将我们的Lisp程序变换到‘机器’程序的过程本身也是抽象模型，是通过程序设计做出来的。研究和构造它们，能使人更加深刻地理解与任何模型的程序设计有关的程序组织问题”</li>
-<li>“计算机永远都不够大也不够快。硬件技术的每一次突破都带来了更大规模的程序设计事业，新的组织原理，以及更加丰富的抽象模型。每个读者都应该反复问自己‘到哪里才是头儿，到哪里才是头儿’——但是不要问的过于频繁，以免忽略了程序设计的乐趣，使自己陷入一种喜忧参半的呆滞状态中”</li>
-<li>“Pascal是为了建造金字塔——壮丽辉煌，令人震撼，是由各就其位的沉重巨石筑起的静态结构，而Lisp则是为了构造有机体——同样壮丽辉煌并令人震撼，由各就其位但却永不静止的无数简单的有机体片段构成的动态结构”</li>
-<li>“Lisp程序大大抬高了函数库的地位，使其可用性超越了催生它们的那些具体应用”</li>
-<li>“采用100个函数在一种数据结构上操作，远远优于用10个函数在10个数据结构上操作。作为这些情况的必然后果，金字塔矗立在那里千年不变，而有机体则必须演化，否则会死亡”</li>
-<li>“在任何非常大的程序设计工作中，一条有用的组织原则就是通过发明新语言，去控制和隔离作业模块之间的信息流动”</li>
-</ul>
-<h2 id="过程抽象"><a href="#过程抽象" class="headerlink" title="过程抽象"></a>过程抽象</h2><ul>
-<li>应用序和正则序</li>
-<li>递归和迭代在展开式上的区分，以及尾递归</li>
-<li>过程（函数）作为入参、返回值</li>
-<li>匿名函数和高阶函数</li>
-</ul>
-<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><ul>
-<li>构造函数和方法函数</li>
-<li><code>cons</code>和<code>car</code>、<code>cdr</code></li>
-<li>序对和list（层次化数据）</li>
-<li>表操作和表映射</li>
-<li>序列化操作</li>
-<li>符号数据（类似字符串）</li>
-<li>数据的多种表示（类型）与通用操作</li>
-</ul>
-<h2 id="模块化、对象和状态"><a href="#模块化、对象和状态" class="headerlink" title="模块化、对象和状态"></a>模块化、对象和状态</h2><ul>
-<li>面向对象和面向流</li>
-<li>从时间角度理解赋值和局部状态</li>
-<li>赋值的利与弊</li>
-<li>赋值带来的环境模型解释（作用域、作用域链）<ul>
-<li>局部状态</li>
-<li>作用域模型的解释</li>
-</ul>
-</li>
-<li>变动的表<ul>
-<li>区分共享和相等（相同的指针、相同的值）</li>
-<li>队列与键值对</li>
-</ul>
-</li>
-<li>描述约束系统</li>
-<li>并发（交错进行的读写操作）<ul>
-<li>串行化和串行化组</li>
-<li>mutex(mutual exclusion)和实现</li>
-<li>死锁（多共享资源）<ul>
-<li>按顺序获取资源列表</li>
-<li>死锁恢复</li>
-<li>屏障同步</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>流<ul>
-<li>延时求值的表序列</li>
-<li>延时求值的原理</li>
-<li>无穷流的构造</li>
-<li>流操作和组合</li>
-</ul>
-</li>
-</ul>
-<h2 id="元语言设计"><a href="#元语言设计" class="headerlink" title="元语言设计"></a>元语言设计</h2><ul>
-<li>求值器（解释器）的工作与意义<ul>
-<li>在基本过程上提供组合与抽象构建一个语言<ul>
-<li>表达式的嵌套</li>
-<li>变量维护</li>
-<li>过程复合</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>求值器内核<ul>
-<li>eval 过程体解释</li>
-<li>apply 过程求值解释</li>
-<li>表达式规范化和实现 &#x2F; 派生表达式</li>
-<li>环境模型的数据结构</li>
-<li>求值器程序初始化</li>
-</ul>
-</li>
-<li>数据即程序<ul>
-<li>图灵机和停机问题</li>
-</ul>
-</li>
-<li>内部定义<ul>
-<li>内部定义是否应该具有时序</li>
-<li>Y结合子与lambda演算</li>
-</ul>
-</li>
-<li>语法分析与执行分离</li>
-<li>惰性求值<ul>
-<li>thunk化，关联表达式和环境</li>
-<li>惰性的表</li>
-</ul>
-</li>
-<li>非确定性求值（满足约束的所有可行解）<ul>
-<li>amb和自动回溯</li>
-<li>amb实现，成功与失败继续过程</li>
-</ul>
-</li>
-<li>逻辑语言设计<ul>
-<li>类SQL语言基于amb的实现</li>
-</ul>
-</li>
-</ul>
-<h2 id="解释与编译"><a href="#解释与编译" class="headerlink" title="解释与编译"></a>解释与编译</h2><ul>
-<li>机器描述<ul>
-<li>基本指令与子程序（label）</li>
-<li>堆栈实现递归</li>
-</ul>
-</li>
-<li>基本指令的实现<ul>
-<li>类汇编语言</li>
-</ul>
-</li>
-<li>内存管理<ul>
-<li>表与堆栈的实现</li>
-<li>garbage collection机制</li>
-</ul>
-</li>
-<li>解释<ul>
-<li>基础操作实现</li>
-<li>尾递归优化解释</li>
-</ul>
-</li>
-<li>编译<ul>
-<li>与解释有何区别，各自优势</li>
-<li>env&#x2F;argl&#x2F;proc&#x2F;val&#x2F;continue寄存器</li>
-<li>编译器结构<ul>
-<li>语法分派</li>
-<li>入参：target（存储表达式值的寄存器）与linkage（continue寄存器）</li>
-<li>指令序列的结构与构造，分析指令序列，<code>preserving</code>机制避免无谓的堆栈操作</li>
-</ul>
-</li>
-<li>表达式的编译<ul>
-<li>linkage的编译，检查<code>next</code>或<code>return</code>的情况</li>
-<li>简单、条件表达式、表达式序列的编译</li>
-<li>lambda表达式的编译</li>
-</ul>
-</li>
-<li>过程的编译<ul>
-<li>入参的处理</li>
-<li>尾递归</li>
-</ul>
-</li>
-<li>指令序列的组合</li>
-<li>代码编译的实例</li>
-<li>优化变量查找<ul>
-<li>词法地址</li>
-</ul>
-</li>
-<li>解释与编译<ul>
-<li>解释：机器语言 -&gt; 用户程序</li>
-<li>编译：用户程序 -&gt; 机器语言</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>最后吐槽下，书是本好书，就是翻译的不太给力，在有些地方强行提高了理解难度。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/blog/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1244,7 +1185,7 @@
 
 <div class="copyright">
   &copy; 2014 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1261,7 +1202,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:27</span>
+    <span title="站点阅读时长">29:45</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

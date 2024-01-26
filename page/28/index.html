@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-count">152</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">463</span>
+        <span class="site-state-item-count">469</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,160 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2015/11/02/trie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2015/11/02/trie/" class="post-title-link" itemprop="url">海量字符串搜索之一 Trie树</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-02 19:13:54" itemprop="dateCreated datePublished" datetime="2015-11-02T19:13:54+08:00">2015-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2015/11/02/trie/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/02/trie/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>前言：编程第一次大作业，海量字符串检索。C语言，并要求使用trie树结构以及bloomfilter两种技术实现，体会它们的特点。这里对Trie做些学习笔记。</p>
+<h2 id="Trie树"><a href="#Trie树" class="headerlink" title="Trie树"></a>Trie树</h2><p>Trie树，又称单词查找树、字典树，是一种树形结构，是一种哈希树的变种，是一种用于快速检索的多叉树结构。典型应用是用于统计和排序大量的字符串（但不仅限于字符串），所以经常被搜索引擎系统用于文本词频统计。<strong>它的优点是：最大限度地减少无谓的字符串比较，查询效率比哈希表高。</strong></p>
+<p><strong>Trie的核心思想是空间换时间。</strong>利用字符串的公共前缀来降低查询时间的开销以达到提高效率的目的，例如邮箱的公共后缀。</p>
+<p><strong>Trie树也有它的缺点</strong>,Trie树的内存消耗非常大.当然,或许用左儿子右兄弟的方法建树的话,可能会好点.</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ol>
+<li>根节点不包含字符，除根节点外每一个节点都只包含一个字符。</li>
+<li>从根节点到某一节点，路径上经过的字符连接起来，为该节点对应的字符串。</li>
+<li>每个节点的所有子节点包含的字符都不相同<br>例如，给出一组单词：inn, int, at, age, adv, ant, 我们可以得到下面的Trie树</li>
+</ol>
+<p><img src="/blog/images/trie-1.gif"></p>
+<p>可以看出：</p>
+<ul>
+<li>每条边对应一个字母。</li>
+<li>每个节点对应一项前缀。叶节点对应最长前缀，即单词本身。</li>
+<li>单词inn与单词int有共同的前缀“in”, 因此他们共享左边的一条分支，root-&gt;i-&gt;in。同理，ate, age, adv, 和ant共享前缀”a”，所以他们共享从根节点到节点”a”的边。</li>
+</ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="1-插入过程"><a href="#1-插入过程" class="headerlink" title="1. 插入过程"></a>1. 插入过程</h4><p>对于新的单词，从根开始，沿着单词的各个字母所对应的树中的节点分支向下走，直到单词遍历完，将最后的节点做标记，表示该单词已插入trie树。</p>
+<h4 id="2-检索过程"><a href="#2-检索过程" class="headerlink" title="2. 检索过程"></a>2. 检索过程</h4><p>从根开始按照单词的字母顺序向下遍历trie树，一旦发现某个节点标记不存在或者单词遍历完成而最后的节点没有标记，则表示该单词不存在，若最后的节点有标记，表示该单词存在。</p>
+<h4 id="3-删除节点"><a href="#3-删除节点" class="headerlink" title="3. 删除节点"></a>3. 删除节点</h4><p>很少使用，从该节点开始，释放它和所有子节点占用的空间。</p>
+<h4 id="4-代码"><a href="#4-代码" class="headerlink" title="4. 代码"></a>4. 代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TrieNode</span> &#123;</span></span><br><span class="line">	<span class="type">int</span> count; <span class="comment">//statistics</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">TrieNode</span>* <span class="title">next</span>[<span class="title">MAX</span>];</span></span><br><span class="line">&#125;TrieNode;</span><br><span class="line"></span><br><span class="line">TrieNode* <span class="title function_">CreateNode</span><span class="params">()</span>&#123;</span><br><span class="line">	TrieNode* p = (TrieNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(TrieNode));</span><br><span class="line">	p-&gt;count=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">memset</span>(p-&gt;next, <span class="number">0</span>, <span class="keyword">sizeof</span>(p-&gt;next));</span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*Insert new entry*/</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">InsertTrieNode</span><span class="params">(TrieNode* pRoot, <span class="type">char</span> *s, <span class="type">int</span> flag)</span>&#123;</span><br><span class="line">	TrieNode *p = pRoot;</span><br><span class="line">	<span class="type">int</span> i,k;</span><br><span class="line">	i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(s[i])&#123;</span><br><span class="line">		<span class="comment">//confirm branch</span></span><br><span class="line">		<span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; s[i] &lt;= <span class="string">&#x27;9&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;0&#x27;</span> + <span class="number">2</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;@&#x27;</span> &amp;&amp; s[i] &lt;=<span class="string">&#x27;Z&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;@&#x27;</span> + <span class="number">12</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;a&#x27;</span> &amp;&amp; s[i] &lt;= <span class="string">&#x27;z&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;a&#x27;</span> + <span class="number">13</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] == <span class="string">&#x27;.&#x27;</span> || s[i] == <span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;-&#x27;</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] == <span class="string">&#x27;_&#x27;</span>)&#123;</span><br><span class="line"> 			k = <span class="number">39</span>;i++;</span><br><span class="line"> 		&#125;</span><br><span class="line"> 		<span class="keyword">else</span></span><br><span class="line"> 			<span class="keyword">return</span>;</span><br><span class="line"> 		<span class="keyword">if</span>(<span class="literal">NULL</span> == p-&gt;next[k]) </span><br><span class="line">			p-&gt;next[k] = CreateNode();		</span><br><span class="line">		p = p-&gt;next[k];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//mark the trie string</span></span><br><span class="line">	p-&gt;count = flag;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*Match certain string*/</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">SearchTrie</span><span class="params">(TrieNode* pRoot, <span class="type">char</span> *s)</span>&#123;</span><br><span class="line">	TrieNode *p = pRoot;</span><br><span class="line">	<span class="type">int</span> i,k;</span><br><span class="line">	i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(s[i])&#123;</span><br><span class="line">		<span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; s[i] &lt;= <span class="string">&#x27;9&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;0&#x27;</span> + <span class="number">2</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;@&#x27;</span> &amp;&amp; s[i] &lt;=<span class="string">&#x27;Z&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;@&#x27;</span> + <span class="number">12</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] &gt;= <span class="string">&#x27;a&#x27;</span> &amp;&amp; s[i] &lt;= <span class="string">&#x27;z&#x27;</span>) </span><br><span class="line">			k = s[i++] - <span class="string">&#x27;a&#x27;</span> + <span class="number">13</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] == <span class="string">&#x27;.&#x27;</span> || s[i] == <span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"> 			k = s[i++] - <span class="string">&#x27;-&#x27;</span>;</span><br><span class="line"> 		<span class="keyword">else</span> <span class="keyword">if</span>(s[i] == <span class="string">&#x27;_&#x27;</span>)&#123;</span><br><span class="line"> 			k = <span class="number">39</span>;i++;</span><br><span class="line"> 		&#125;</span><br><span class="line"> 		<span class="keyword">else</span></span><br><span class="line"> 			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> 		<span class="keyword">if</span>(p-&gt;next[k] == <span class="literal">NULL</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		p = p-&gt;next[k];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(p-&gt;count &gt; <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">return</span> p-&gt;count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果略。</p>
+<h3 id="查找性能分析"><a href="#查找性能分析" class="headerlink" title="查找性能分析"></a>查找性能分析</h3><p>在trie树中查找一个关键字的时间和树中包含的结点数无关，而取决于组成关键字的字符数。而二叉查找树的查找时间和树中的结点数有关O(log2n)。</p>
+<p>如果要查找的关键字可以分解成字符序列且不是很长，利用trie树查找速度优于二叉查找树。如：若关键字长度最大是5，则利用trie树，利用5次比较可以从26^5＝11881376个可能的关键字中检索出指定的关键字。而利用二叉查找树至少要进行约23.5次比较。</p>
+<h3 id="Trie树的应用"><a href="#Trie树的应用" class="headerlink" title="Trie树的应用"></a>Trie树的应用</h3><ul>
+<li>串的快速检索：<br>给出N个单词组成的熟词表，以及一篇全用小写英文书写的文章，请你按最早出现的顺序写出所有不在熟词表中的生词。<br>在这道题中，我们可以用数组枚举，用哈希，用字典树，先把熟词建一棵树，然后读入文章进行比较，这种方法效率是比较高的。</li>
+<li>串排序：<br>给定N个互不相同的仅由一个单词构成的英文名，让你将他们按字典序从小到大输出。<br>用字典树进行排序，采用数组的方式创建字典树，这棵树的每个结点的所有儿子很显然地按照其字母大小排序。对这棵树进行先序遍历即可。</li>
+<li>最长公共前缀<br>对所有串建立字典树，对于两个串的最长公共前缀的长度即他们所在的结点的公共祖先个数，于是，问题就转化为当时公共祖先问题（以后补上）。</li>
+</ul>
+<h3 id="Patricia-Trie"><a href="#Patricia-Trie" class="headerlink" title="Patricia Trie"></a>Patricia Trie</h3><p>针对，Trie树占用空间较多的缺点。可以对每个trie树节点做压缩工作，从而节省程序占用的内存空间。如果一颗Trie中有很多单词只有一个儿子结点，可以用Patricia Trie（Linux内核中叫做Radix Tree）压缩存储。由于#结束符标记被看作是一个叶子结点，那么一颗Patricia Trie的任何内部结点有2个或以上的孩子结点。</p>
+<p>Linux radix树最广泛的用途是用于内存管理，结构address_space通过radix树跟踪绑定到地址映射上的核心页，该radix树允许内存管理代码快速查找标识为dirty或writeback的页。Linux radix树的API函数在lib&#x2F;radix-tree.c中实现。</p>
+<p>作为Trie树的优化变异，Patricia树也可进行Trie树的操作。实现略。</p>
+<h2 id="Trie树之外"><a href="#Trie树之外" class="headerlink" title="Trie树之外"></a>Trie树之外</h2><p>除了Trie树，最常用的字符串检索有<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm">Knuth-Morris-Pratt</a>算法（最长前缀匹配），以及<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm">Boyer-Moore</a>算法（最长后缀匹配）。关于这两个算法，参考资料的6和7的链接是我见过介绍的最好的，深入浅出易于理解。这里就不再废话了。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/hguisu/article/details/8131559" title="http://blog.csdn.net/hguisu/article/details/8131559">http://blog.csdn.net/hguisu/article/details/8131559</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/sjjbupt/article/details/6758309" title="http://blog.csdn.net/sjjbupt/article/details/6758309">http://blog.csdn.net/sjjbupt/article/details/6758309</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/xmlrpc.php?r=blog/article&uid=28977986&id=3807947" title="http://blog.chinaunix.net/xmlrpc.php?r=blog/article&amp;uid=28977986&amp;id=3807947">http://blog.chinaunix.net/xmlrpc.php?r=blog/article&uid=28977986&id=3807947</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/ljsspace/archive/2011/06/27/2091771.html" title="http://www.cnblogs.com/ljsspace/archive/2011/06/27/2091771.html">http://www.cnblogs.com/ljsspace/archive/2011/06/27/2091771.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-13245160-id-84371.html" title="http://blog.chinaunix.net/uid-13245160-id-84371.html">http://blog.chinaunix.net/uid-13245160-id-84371.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.htm" title="http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html">http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.htm</a>l</li>
+<li><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html" title="http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html">http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -771,163 +925,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2015/01/31/embed-c/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2015/01/31/embed-c/" class="post-title-link" itemprop="url">虚网映射仿真包 embed.c 代码分析</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2015-01-31 13:03:23" itemprop="dateCreated datePublished" datetime="2015-01-31T13:03:23+08:00">2015-01-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-01 15:18:46" itemprop="dateModified" datetime="2017-03-01T15:18:46+08:00">2017-03-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2015/01/31/embed-c/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/01/31/embed-c/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>此次论文仿真中，需要对虚网映射的过程进行改进。在原先只考量CPU和带宽的基础上为链路增加VLAN属性，并在映射过程中分配VLAN、检测VLAN是否用尽。经过三天的阅读，这里把仿真包里embed.c这个主要文件的各函数分析在下面，方便日后修改。</p>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>数据结构存储在embed.h中。</p>
-<ul>
-<li>struct_link 描述物理链路，有from、to、带宽三个属性</li>
-<li>request 虚网请求，有split, node, links, CPU[], bw等多个属性。</li>
-<li>substrate_network 底层物理网络，有nodes, struct_link links等属性</li>
-<li>s2v_node 被映射了虚网的物理节点的状态</li>
-<li>s2v_link 被映射了虚网的物理链路的状态</li>
-<li>path 逻辑链路映射成的多段物理链路</li>
-<li>req2sub 描述虚网映射的实时映射关系</li>
-<li>shortest_path 最短路径，通过Floyd算出（用于链路映射）</li>
-<li>bneck 瓶颈节点</li>
-</ul>
-<h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><h3 id="节点映射"><a href="#节点映射" class="headerlink" title="节点映射"></a>节点映射</h3><h4 id="find-proper-node"><a href="#find-proper-node" class="headerlink" title="find_proper_node"></a>find_proper_node</h4><p><strong>目标</strong>：在当前底层物理网络中寻找rest_cou最适合（rest_cpu和request CPU最近，且大于它）当前虚节点的节点。</p>
-<h4 id="find-MinNeighborResource-node"><a href="#find-MinNeighborResource-node" class="headerlink" title="find_MinNeighborResource_node"></a>find_MinNeighborResource_node</h4><p><strong>目标</strong>：在当前底层物理网络中寻找rest_cpu满足要求，且自资源最不丰富的物理节点</p>
-<p>衡量标准：节点rest_cpu * sum(rest_bw)</p>
-<h4 id="find-MaxNeighborResource-node"><a href="#find-MaxNeighborResource-node" class="headerlink" title="find_MaxNeighborResource_node"></a>find_MaxNeighborResource_node</h4><p><strong>目标</strong>：在当前底层物理网络中寻找除了exclude节点外的rest_cpu满足要求的，且自资源最丰富的物理</p>
-<p>节点</p>
-<p>衡量标准：同上</p>
-<h4 id="find-available-node"><a href="#find-available-node" class="headerlink" title="find_available_node"></a>find_available_node</h4><p><strong>目标</strong>：在当前底层物理网络中，从一随机起点出发，寻找第一个rest_cpu满足要求的物理节点</p>
-<h4 id="map-node-greedy"><a href="#map-node-greedy" class="headerlink" title="map_node_greedy"></a>map_node_greedy</h4><p><strong>目标</strong>：在当前物理网络中，为特定index的虚网映射进行节点映射，哟西按占用资源最丰富的节点，成功则更新物理网络的状态（s2v_node, s2v_link），失败则对已映射的节点进行拆除。</p>
-<h4 id="map-node-star"><a href="#map-node-star" class="headerlink" title="map_node_star"></a>map_node_star</h4><p><strong>目标</strong>：在当前物理网络中，为第一个请求节点分配资源最丰富的节点，其余逻辑节点随机分配，成功则更新物理网络的状态（s2v_node, s2v_link），失败则对已映射的节点进行拆除。</p>
-<h3 id="链路映射"><a href="#链路映射" class="headerlink" title="链路映射"></a>链路映射</h3><p>由于链路映射算法大多很复杂，这里将算法流程也一并列在下方。</p>
-<h4 id="unsplittable-flow"><a href="#unsplittable-flow" class="headerlink" title="unsplittable_flow"></a>unsplittable_flow</h4><p><strong>目标</strong>：为不可分割流进行链路映射</p>
-<p><strong>算法流程</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">0  初始化变量，位置分配内存空间</span><br><span class="line">1  死循环</span><br><span class="line">1.1  找到请求中状态满足要求（完成了节点映射）且收益最大的请求，直到状态全部更新</span><br><span class="line">1.1.1    存储id,改变其标志位</span><br><span class="line">1.2  判断该请求状态，与是否可分割</span><br><span class="line">1.2.1    找到该请求的所有逻辑链路</span><br><span class="line">1.2.1.1      找到它们的起始、终结物理节点</span><br><span class="line">1.2.1.2      判断它们是否已找到之间的最短路，否则继续寻找</span><br><span class="line">1.2.1.2.1        Floyd矩阵找下一跳</span><br><span class="line">1.2.1.2.2        下一跳若不可达，break</span><br><span class="line">1.2.1.2.3        寻找有没有实体链路对应Floyd的下一跳</span><br><span class="line">1.2.1.2.4        如果没有，或者有但是rest_bw不够，break</span><br><span class="line">1.2.1.2.5        吧路过链路的可用带宽减少，将当前链路存入到路径数组中</span><br><span class="line">1.2.1.3      如果上一步失败，给sub1(底层物理网络)划分内存空间，在sub1里删除上步出现问题的链路</span><br><span class="line">1.2.1.4      在sub1里算出Floyd矩阵，并存储在临时变量里</span><br><span class="line">1.2.1.4.1        一个类似于1.2.1.2的循环</span><br><span class="line">1.2.1.4.1.1          若还不行，break到1.2.1.4.2；若可以减少可用带宽，存入到路径</span><br><span class="line">1.2.1.4.2        返回错误物理链路、虚拟链路、虚网请求id</span><br><span class="line">1.2.1.5      存储当前算出的路径，与逻辑链路一一对应</span><br><span class="line">2  将状态标志位全部清零</span><br><span class="line">3  死循环</span><br><span class="line">3.1    找到请求中状态满足要求（完成了节点映射）且收益最大的请求，直到状态全部更新</span><br><span class="line">3.1.1      存储id, 改变标志位</span><br><span class="line">3.2    判断该请求状态，与是否可分割</span><br><span class="line">3.2.1      更新时间与链路状态值</span><br><span class="line">3.2.2      为请求内的spath赋值(len, bw)</span><br><span class="line">3.2.2.1        为spath内的各段物理链路赋值</span><br><span class="line">3.2.2.2        更新物理网络链路状态</span><br><span class="line">4  释放临时变量空间</span><br><span class="line">5  返回-1(虚网请求成功标志)</span><br></pre></td></tr></table></figure>
-
-<h4 id="multicommodity-flow"><a href="#multicommodity-flow" class="headerlink" title="multicommodity_flow"></a>multicommodity_flow</h4><p><strong>目标</strong>：打印基本信息</p>
-<p><strong>算法流程</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1  打开测试文件</span><br><span class="line">2  指定范围内检测有误状态符合条件的请求，</span><br><span class="line">3  若没有，则返回-2并关闭文件</span><br><span class="line">4  打印出满足要求的链路总数</span><br><span class="line">5  打印基本信息到文件</span><br><span class="line">6  打印ARC COSTS到文件</span><br><span class="line">7  打印ARC CAPACITIES到文件</span><br><span class="line">8  打印NODE INJECTIONS到文件</span><br><span class="line">9  打印ARC MUTUAL到文件</span><br><span class="line">10 打印NETWORK TOPOLOGY到文件</span><br><span class="line">11 打印LOWER AND UPPER BOUNDS到文件</span><br><span class="line">12 打印SIDE CONSTRAINTS到文件</span><br><span class="line">13 关闭文件对象</span><br><span class="line">14 运行lintest文件</span><br><span class="line">15 返回 0</span><br></pre></td></tr></table></figure>
-
-<h3 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h3><h4 id="check-flow"><a href="#check-flow" class="headerlink" title="check_flow"></a>check_flow</h4><p><strong>目标</strong>：检查映射情况</p>
-<p><strong>算法流程</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1  打开test文件，初始化变量</span><br><span class="line">2  查找STATUS字段，停在此处</span><br><span class="line">3  若不可执行，且阶段 0，则关闭文件，返回 -3</span><br><span class="line">4  若不可执行，且阶段 1，则继续</span><br><span class="line">4.1    查找VARIABLE字段</span><br><span class="line">4.2    在每条链路上查找已使用过的情况，为s2v_link赋值</span><br><span class="line">4.3    查找SIDE CONSTRAINTS字段</span><br><span class="line">4.3.1      找到过载最严重的链路</span><br><span class="line">4.3.2      找到该链路占用最多贷款的租户ID，及其占用带宽，并确定请求ID和虚拟链路ID</span><br><span class="line">5  其余情况，查找OPTIMAL字段，若找到，则继续</span><br><span class="line">5.1    查找VARAIABLE字段</span><br><span class="line">5.2    在每条链路上查找已使用过的情况，为s2v_link赋值</span><br><span class="line">5.3    为v2s赋值</span><br><span class="line">6  关闭文件，释放内存</span><br><span class="line">7 打印租户ID或-1（成功标志）</span><br></pre></td></tr></table></figure>
-
-<h3 id="资源分配"><a href="#资源分配" class="headerlink" title="资源分配"></a>资源分配</h3><p>同样，算法复杂，将具体流程列在下面</p>
-<h4 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h4><p><strong>目标</strong>：整合节点、链路映射完成虚网映射的核心部分</p>
-<p><strong>算法流程：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">1  为变量s2v_node,s2v_link,v2s划分空间，赋初值</span><br><span class="line">2  为节点数组req_count清零</span><br><span class="line">3  将请求按收入大小排序，找出最大收入者，为它进行节点映射，知道请求的节点映射全部完成</span><br><span class="line">4  若全部未完成节点映射，返回-1</span><br><span class="line">5  初始化链路映射相关变量</span><br><span class="line">6  找到瓶颈节点，并进行链路映射（尝试）</span><br><span class="line">7  若映射成功或链路可分割，用新方法找到瓶颈节点</span><br><span class="line">8  循环：</span><br><span class="line">8.1    如果上一步尝试成功，为s2v_node, s2v_link赋值，跳出循环</span><br><span class="line">8.2    否则，计算这一批次的cost之和</span><br><span class="line">8.3    找出剩余资源最少的节点ID，及其剩余资源</span><br><span class="line">8.4    随机从上面移除一个虚拟节点</span><br><span class="line">8.5    找到这个节点以外资源最丰富的节点，成功则映射到这个新节点；否则映射请求失败</span><br><span class="line">8.6    检查有误未完成链路请求的虚网请求，无则跳出循环</span><br><span class="line">8.7    若时间正忙而无法映射，try=门限+1，找到未完成的请求ID</span><br><span class="line">8.8    cost清零，try+1，打印try次数</span><br><span class="line">8.9    若try &gt; 尝试门限，释放资源，更改状态，还原try</span><br><span class="line">8.10   否则，找到瓶颈链路上的任一节点外的资源最丰富的节点</span><br><span class="line">8.10.1     若找到，则映射；否则这个请求失败</span><br><span class="line">8.11   检查链路映射是否完成，为s2v_node, s2v_link, v2s赋值</span><br><span class="line">9  检查当前瓶颈节点，尝试链路映射</span><br><span class="line">10 为s2v_node, s2v_link等赋值，用cost防止重复操作</span><br><span class="line">11 检查新映射是否cost更低，是则更新</span><br><span class="line">12 #允许迁移则继续向下</span><br><span class="line">13 计算原始cost，释放原始映射资源，进行新的映射</span><br><span class="line">14 新的映射成功则计算新cost，否则返回 0</span><br><span class="line">15 新的cost是否更小，是则迁移，否则不做操作</span><br><span class="line">16 还原s2v_node, ltmp</span><br><span class="line">17 用unsplittable映射计算一次cost，若新的cost更小，则迁移；否则不作操作</span><br><span class="line">18 更新s2v_node, s2v_link v2s</span><br><span class="line">19 返回 0</span><br></pre></td></tr></table></figure>
-
-<h3 id="辅助"><a href="#辅助" class="headerlink" title="辅助"></a>辅助</h3><h4 id="calculate-cost"><a href="#calculate-cost" class="headerlink" title="calculate_cost"></a>calculate_cost</h4><p><strong>目标</strong>：返回指定范围内的虚网请求cost之和。cost算法同上</p>
-<p>筛选标准：完成链路映射</p>
-<h4 id="exist-req"><a href="#exist-req" class="headerlink" title="exist_req"></a>exist_req</h4><p><strong>目标</strong>：查找是否存在完成了节点映射，未完成链路映射的请求。存在，则返回0，否则返回-1。</p>
-<h4 id="主函数-main"><a href="#主函数-main" class="headerlink" title="主函数 main"></a>主函数 main</h4><p><strong>算法流程</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">1  为v2s, s2v_node, s2v_link, sub, req 赋初值</span><br><span class="line">2  打开底层网络文件</span><br><span class="line">3  为sub赋node(sub.s2v_nod(req_count,rest_cpu,cpu),sub.link(from,to,s2v_l,rest_bw))</span><br><span class="line">4  关闭文件</span><br><span class="line">5  循环打各req的文件</span><br><span class="line">5.1   为req的revenue/nodes,links,split,time,duration,topo)赋值</span><br><span class="line">5.2   循环为req的cpu,link.from,link.to,link.bw赋值</span><br><span class="line">5.3   计算出revenue</span><br><span class="line">6  关闭文件</span><br><span class="line">7  为临时变量s2v_node/ltmp2/v2stmp2/spath分配内存空间</span><br><span class="line">8  计算得到spath值</span><br><span class="line">9  初始化临时变量</span><br><span class="line">10 循环：</span><br><span class="line">10.1   循环检测所有完成链路映射的请求，为done_count+1</span><br><span class="line">10.2   更新done,rev,cost,map状态，若映射完成则释放资源</span><br><span class="line">10.3   计算当前req.rev/cost/count</span><br><span class="line">10.4   写入当前数据到文件</span><br><span class="line">11 为当前所有请求进行映射</span><br><span class="line">12 依次次检测所有请求状态，更新未请求成功的状态与错误计数器</span><br><span class="line">13 打开stat文件</span><br><span class="line">14 为成功的虚网请求释放资源</span><br><span class="line">15 计算当前req,dev/cost/count</span><br><span class="line">16 写入当前数据到stat文件/trace文件</span><br><span class="line">17 关闭文件</span><br><span class="line">18 返回 0</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/27/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/blog/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/29/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -941,7 +938,7 @@
 
 <div class="copyright">
   &copy; 2014 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -958,7 +955,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:27</span>
+    <span title="站点阅读时长">29:45</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

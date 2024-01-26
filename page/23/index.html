@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">151</span>
+          <span class="site-state-item-count">152</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">463</span>
+        <span class="site-state-item-count">469</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,334 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/05/12/Frontend-FAQ-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/05/12/Frontend-FAQ-part1/" class="post-title-link" itemprop="url">前端常见面试问题 part 1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-05-12 17:26:22" itemprop="dateCreated datePublished" datetime="2017-05-12T17:26:22+08:00">2017-05-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/05/12/Frontend-FAQ-part1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/12/Frontend-FAQ-part1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>下面的大部分问题来自Github的这个<a target="_blank" rel="noopener" href="https://github.com/h5bp/Front-end-Developer-Interview-Questions">仓库</a>，排名不分先后</p>
+</blockquote>
+<h3 id="1-JS中如何定义自定义事件，实现订阅-x2F-发布模式"><a href="#1-JS中如何定义自定义事件，实现订阅-x2F-发布模式" class="headerlink" title="1. JS中如何定义自定义事件，实现订阅&#x2F;发布模式"></a>1. JS中如何定义自定义事件，实现订阅&#x2F;发布模式</h3><p>明确需求：可以通过<code>on</code>和<code>emit</code>绑定和触发事件。</p>
+<p>方案：创建全局事件管理器<code>events</code>，构建事件名和回调函数数组的键值对。<code>on</code>和<code>emit</code>分别写和读<code>events</code>。大概像下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventUtil</span> = &#123;</span><br><span class="line">    <span class="comment">// 全局事件管理</span></span><br><span class="line">    <span class="keyword">var</span> events = &#123;&#125;,</span><br><span class="line">    <span class="comment">// 注册事件</span></span><br><span class="line">        on = <span class="keyword">function</span> (<span class="params">type, handler</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (events[type]) &#123;</span><br><span class="line">                events[type].<span class="title function_">push</span>(handler);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                events[type] = [handler];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    <span class="comment">// 触发事件</span></span><br><span class="line">        emit = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">                events[type][i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当使用<code>Object.assign</code>实现继承时，会出现<code>events</code>共享的问题。可以通过在第一次调用<code>on</code>时，通过<code>Object.defineProperty</code>的方式创建避免共享。</p>
+<h3 id="2-js中的this"><a href="#2-js中的this" class="headerlink" title="2. js中的this"></a>2. js中的<code>this</code></h3><p>首先，<code>this</code>永远是对象。</p>
+<ul>
+<li>全局上下文内，<code>this</code>为<strong>全局对象</strong></li>
+<li>函数上下文内，根据调用场景分情况讨论<ul>
+<li>直接调用：<strong>全局对象</strong></li>
+<li>通过对象的方法调用：<strong>调用方法的对象</strong></li>
+<li>构造函数中：<strong>即将被创建的对象</strong>，有<code>return</code>语句时，以<code>return</code>的返回值为准</li>
+<li>call和apply：传入的第一个值</li>
+<li>bind方法：永久绑定到第一个参数</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-js跨域问题和解决方案"><a href="#3-js跨域问题和解决方案" class="headerlink" title="3. js跨域问题和解决方案"></a>3. js跨域问题和解决方案</h3><p>跨域（Cross-domain）是网景最初基于安全性考虑提出的策略。意为<strong>不同域名</strong>或<strong>不同协议</strong>或<strong>不同端口</strong>间的Ajax通信是被禁止的。根据使用需求，可以分为跨站请求资源和跨页面共享资源（我自己发明的说法）</p>
+<p>跨站请求资源</p>
+<ul>
+<li>jsonp（json with padding）跨域，利用了<code>&lt;script&gt;</code>标签的可跨域完成，自己写一遍就能搞懂<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getJSONP</span>(<span class="params">url, success</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> ud = <span class="string">&#x27;_&#x27;</span> + +<span class="keyword">new</span> <span class="title class_">Date</span>,</span><br><span class="line">        script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>),</span><br><span class="line">        head = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;head&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">               || <span class="variable language_">document</span>.<span class="property">documentElement</span>;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">window</span>[ud] = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">        head.<span class="title function_">removeChild</span>(script);</span><br><span class="line">        success &amp;&amp; <span class="title function_">success</span>(data);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    script.<span class="property">src</span> = url.<span class="title function_">replace</span>(<span class="string">&#x27;callback=?&#x27;</span>, <span class="string">&#x27;callback=&#x27;</span> + ud);</span><br><span class="line">    head.<span class="title function_">appendChild</span>(script);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>CORS，使用CORS进行跨域请求时，在现代浏览器中已经可以像普通Ajax请求那样使用<code>XMLHttpRequest</code>即可，可以参考<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/18/cors/">这个</a>。需要后台服务器支持</li>
+<li>后台反向代理，需要一台中转的服务器</li>
+<li>建立websocket通信，需要后台服务器支持</li>
+</ul>
+<p>跨页面共享资源，结合<code>&lt;iframe&gt;</code>有以下几种方案</p>
+<ul>
+<li>修改document.domain，使两个页面位于同一域名下，注意只能从精确-&gt;模糊修改域名</li>
+<li>通过window.name传递消息，利用了iframe location变化后，window.name不变的特点</li>
+<li>location.hash</li>
+<li>html5中的postMessage API在不同<code>window</code>间传递消息</li>
+</ul>
+<p>这里附上一个<a target="_blank" rel="noopener" href="http://blog.csdn.net/joyhen/article/details/21631833">链接</a>.</p>
+<h3 id="4-js的作用域链"><a href="#4-js的作用域链" class="headerlink" title="4. js的作用域链"></a>4. js的作用域链</h3><p>这是JavaScript最有特点同时也是最基础的内涵之一。红宝书和犀牛书都做了详尽和透彻的解释。这个问题理解了，什么是闭包就能很好地理解了。</p>
+<blockquote>
+<p>执行环境是JavaScript中最为重要的一个概念。执行环境定义了变量或函数有权访问的其他数据，决定了它们各自的行为。每个执行环境都有一个与之关联的变量对象，环境中定义的所有变量和函数都保存在这个对象中。虽然我们便习得代码无法访问这个对象，但解析器在处理数据时会在后台使用它。</p>
+</blockquote>
+<blockquote>
+<p>全局执行环境是最外围的一个执行环境。…。某个执行环境中的所有代码执行完毕后，该环境被销毁，保存在其中的所有变量和函数定义也随之销毁（全局环境知道应用程序退出时才会销毁）<br>每个函数都有自己的<strong>执行环境</strong>。当执行流进入一个函数时，函数的环境就会被推入一个环境栈中。而在函数执行后，栈将其环境弹出，把控制权返回给之前的执行环境。ECMAScript程序中的执行流正是有这个方便的机制控制着。</p>
+</blockquote>
+<blockquote>
+<p>当代码在一个环境中执行时，会创建变量对象的一个作用域链(scope chain)。作用域链的用途，是保证对执行环境有权访问的所有变量和函数的有序访问。作用域链的前端，时钟都是当前执行的代码所在环境的变量对象。如果这个环境是函数，则将其<strong>活动对象</strong>做为变量对象。活动对象在最开始时只包含一个变量，即<code>arguments</code>对象（这个对象在全局环境中是不存在的）。作用域链中的下一个变量对象来自包含（外部）环境，而在下一个变量对象则来自下一个包含环境。这样，一直延续到全局执行环境；全局执行环境的变量对象始终都是作用域链中最后一个对象。</p>
+</blockquote>
+<h3 id="5-Function-call和Function-apply的区别"><a href="#5-Function-call和Function-apply的区别" class="headerlink" title="5. Function.call和Function.apply的区别"></a>5. <code>Function.call</code>和<code>Function.apply</code>的区别</h3><p><code>call</code>和<code>apply</code>同为改变<code>this</code>的方法，前者一个一个接收输入参数，后者以数组的形式接收。</p>
+<h3 id="6-浏览器渲染页面的原理"><a href="#6-浏览器渲染页面的原理" class="headerlink" title="6. 浏览器渲染页面的原理"></a>6. 浏览器渲染页面的原理</h3><p>可以参考经典的文章<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm">how browsers work</a>，或者<a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/">中译版</a>.</p>
+<h3 id="7-列举一些HTML5的改进"><a href="#7-列举一些HTML5的改进" class="headerlink" title="7. 列举一些HTML5的改进"></a>7. 列举一些HTML5的改进</h3><p>可以参考MDN给出的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/HTML5">summary</a>。比如:</p>
+<ul>
+<li>语义化，语义化标签<code>&lt;header&gt;</code>, <code>&lt;article&gt;</code>，语义化元素<code>&lt;figure&gt;</code>, <code>&lt;time&gt;</code>等和新的多媒体标签<code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code></li>
+<li>网络通信，Websocket，WebRTC</li>
+<li>图像，Canvas和WebGL</li>
+<li>离线存储，Storage接口和IndexDB</li>
+<li>性能，Web Worker，XMLHttpRequest2（支持进度等新特性），History API，Fullscreen，PointerLock，requestAnimationFrame等</li>
+<li>CSS，CSS3的特性，有些甚至演进到了Level 4</li>
+</ul>
+<h3 id="8-HTML5中的定位API"><a href="#8-HTML5中的定位API" class="headerlink" title="8. HTML5中的定位API"></a>8. HTML5中的定位API</h3><p>Geolocation API，新的API，红宝书中有提到。通过<code>navigator.geolocation</code>对象实现，允许用户提供自己的所在地理位置。需要用户确认同意才可使用。最常用的方法是<code>getCurrentPosition()</code>。这个方法接受三个参数——成功回调、可选的失败回调、可选的选项。</p>
+<p>类似的不常见的API还有<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API">Battery API</a>，<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/File">File API</a>，<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/performance">performance</a>等。</p>
+<h3 id="9-一些前端框架的双向绑定原理"><a href="#9-一些前端框架的双向绑定原理" class="headerlink" title="9. 一些前端框架的双向绑定原理"></a>9. 一些前端框架的双向绑定原理</h3><p>不是所有框架都提倡双向绑定。有的框架如Angular使用数据双向绑定，适合于表单很多的站点，React和Vue这样的使用的是<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/31585377">单向绑定</a>。在单向绑定背景下，可以通过<code>addEventListener</code>实现双向绑定。</p>
+<p>实现原理上分为几种：</p>
+<ul>
+<li>发布-订阅模式，显式地绑定事件和监听函数。backbone就是这么做的，显式地通过<code>Model.set</code>修改数据触发<code>change</code>事件来更新视图。React也是通过<code>setState</code>显式地触发虚拟DOM树更新和重新渲染的。</li>
+<li>脏检查（digest cycle），通过特定事件触发脏检查。脏检查即一种不关心你如何以及何时改变的数据，只关心在特定的检查阶段数据是否改变的数据监听技术。过程大致是<code>$update</code>或其他手段触发digest阶段，遍历通过<code>$watch</code>绑定的watcher。对比值是否改变触发更新。优点是无需知道更改数据的方式，可以统一更新view，缺点是watcher较多时会有严重的性能问题。</li>
+<li>数据劫持<code>Object.defineProperty</code>，Vue使用这种方式实现隐式的绑定（当然在<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/05/vue-reactive-sourcecode/">具体实现</a>中复杂了许多）。这么做的问题是版本只支持到IE9+，且在数组更新时有所局限。</li>
+</ul>
+<h3 id="10-webpack的配置文件写法"><a href="#10-webpack的配置文件写法" class="headerlink" title="10. webpack的配置文件写法"></a>10. webpack的配置文件写法</h3><p>除了常用的<code>entry</code>, <code>output</code>, <code>module</code>, <code>plugins</code>外，webpack的使用方法实在太多，建议去<a target="_blank" rel="noopener" href="https://webpack.js.org/configuration/">官网</a>查看完整的配置信息。</p>
+<h3 id="11-node文件和网络API"><a href="#11-node文件和网络API" class="headerlink" title="11. node文件和网络API"></a>11. node文件和网络API</h3><p>文件操作上，常用的有<code>fs.readFileSync</code>，<code>fs.writeFileSync</code>，或通过流的方式使用<code>fs.createReadStream</code>，<code>fs.createWriteStream</code>。还有<code>pipe</code>将流连接在一起。除此之外，<code>path</code>，<code>join</code>和<code>normalize</code>常用在处理文件路径。</p>
+<p>和网络操作相关的包包括<code>http</code>, <code>https</code>, <code>url</code>, <code>querystring</code>, <code>zlib</code>等。其中前两个包更为常用，尤其是<code>http.createServer</code>方法。</p>
+<p>另外，在进程上有<code>process</code>, <code>child_process</code>等包。<a target="_blank" rel="noopener" href="https://nqdeng.github.io/7-days-nodejs">这里</a> 有一篇文章做了比较详细的介绍。当然，有空最好还是去<a target="_blank" rel="noopener" href="https://nodejs.org/docs/latest-v5.x/api/">官方文档</a>.</p>
+<h3 id="12-和-import的区别"><a href="#12-和-import的区别" class="headerlink" title="12. 和@import的区别"></a>12. <link>和@import的区别</h3><p>它们的最常见的使用方式都是引入CSS文件到html中。它们的区别在于</p>
+<ul>
+<li>link是XHTML标签，除了加载CSS外，还可以引入RSS等其他资源；@import属于CSS范畴，只能加载CSS。</li>
+<li>link引用CSS时，在页面载入时同时加载；@import需要页面网页完全载入以后加载。</li>
+<li>link是XHTML标签，无兼容问题；@import是在CSS2.1提出的，低版本的浏览器不支持。</li>
+<li>由于link是标签，可以通过JavaScript控制来改变样式，后者不行。</li>
+</ul>
+<h3 id="13-cookie，localStorage和sessionStorage的区别和联系"><a href="#13-cookie，localStorage和sessionStorage的区别和联系" class="headerlink" title="13. cookie，localStorage和sessionStorage的区别和联系"></a>13. cookie，localStorage和sessionStorage的区别和联系</h3><p>cookie设计的初衷是用来为无状态的http访问添加用户状态消息的。大小4KB以下，会携带在请求头中。大多包含敏感信息，会和服务器端的session配合使用。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Storage">Storage API</a>是HTML5的新API。又可以细分为localStorage和sessionStorage。它们一般只存储在客户端，用来缓存用户非敏感数据，大小因浏览器而异，容量约可达到5MB。sessionStorage在浏览器关闭后清除，localStorage则在超过时限或手动clear后清除。</p>
+<p>cookie中的内容很少变化，且最好秘文储存，并通过HttpOnly添加限制（后台修改set-cookie头）。Storage则很可能会频繁读写。</p>
+<h3 id="14-HTTP状态码"><a href="#14-HTTP状态码" class="headerlink" title="14. HTTP状态码"></a>14. HTTP状态码</h3><p>根据状态码开头的数字确定状态码类型。下面列举一些常用的。</p>
+<p><strong>1xx 信息</strong>：这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应。</p>
+<ul>
+<li>100 继续：客户端应当继续发送请求。</li>
+<li>101 切换协议：将通过Upgrade消息头通知客户端采用不同的协议来完成这个请求。</li>
+</ul>
+<p><strong>2xx 成功</strong>：这一类型的状态码，代表请求已成功被服务器接收、理解、并接受。</p>
+<ul>
+<li>200 OK：请求已成功，请求所希望的响应头或数据体将随此响应返回</li>
+<li>201 已创建：请求已经被实现，而且有一个新的资源已经依据请求的需要而创建，且其URI已经随Location头信息返回</li>
+<li>202 已接受：服务器已接受请求，但尚未处理</li>
+<li>204 No Content：服务器成功处理了请求，但不需要返回任何实体内容，用户浏览器应保留发送了该请求的页面</li>
+<li>205 Reset Content：和204的唯一不同是返回此状态码的响应要求请求者重置文档视图</li>
+<li>206 服务器已经成功处理了部分GET请求。该请求必须包含Range头信息来指示客户端希望得到的内容范围，多用于下载工具</li>
+</ul>
+<p><strong>3xx 重定向</strong>：这类状态码代表需要客户端采取进一步的操作才能完成请求。通常，这些状态码用来重定向，后续的请求地址（重定向目标）在本次响应的Location域中指明。</p>
+<ul>
+<li>300 多选择：被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。用户或浏览器能够自行选择一个首选的地址进行重定向。</li>
+<li>301 永久移动：被请求的资源已永久移动到新位置</li>
+<li>302 临时移动：请求的资源现在临时从不同的URI响应请求</li>
+<li>303 重定向：对应当前请求的响应可以在另一个URI上被找到，而且客户端应当采用GET的方式访问那个资源</li>
+<li>304 如果客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变</li>
+<li>305 使用中介：被请求的资源必须通过指定的代理才能被访问</li>
+</ul>
+<p><strong>4xx 客户端错误</strong>：代表了客户端看起来可能发生了错误，妨碍了服务器的处理</p>
+<ul>
+<li>400 无法理解的请求：由于包含语法错误，当前请求无法被服务器理解</li>
+<li>401 需要验证：当前请求需要用户验证。响应必须包含一个适用于被请求资源的WWW-Authenticate信息头用以询问用户信息。</li>
+<li>403 禁止访问：服务器已经理解请求，但是拒绝执行它</li>
+<li>404 未找到：请求所希望得到的资源未被在服务器上发现</li>
+<li>405 方法不允许：请求行中指定的请求方法不能被用于请求相应的资源，响应中必须返回一个Allow头信息用以表示出当前资源能够接受的请求方法的列表</li>
+<li>406 头部不对：请求的资源的内容特性无法满足请求头中的条件</li>
+<li>408 请求超时：客户端没有在服务器预备等待的时间内完成一个请求的发送</li>
+<li>411 需要指定长度：服务器拒绝在没有定义Content-Length头的情况下接受请求</li>
+<li>413 请求实体太长</li>
+<li>414 URI太长</li>
+</ul>
+<p><strong>5xx 服务器错误</strong>：代表了服务器在处理请求的过程中有错误或者异常状态发生</p>
+<ul>
+<li>500 内部错误：一般来说，这个问题会在服务器的代码出错时出现</li>
+<li>501 未实现：服务器不支持当前请求所需要的某个功能</li>
+<li>502 Bad GateWay：作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应</li>
+<li>503 服务不可达：由于临时的服务器维护或者过载，服务器当前无法处理请求。这个状况是临时的，并且将在一段时间以后恢复。</li>
+<li>504 网关超时：作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器或者辅助服务器收到响应</li>
+<li>505 HTTP协议版本不正确</li>
+</ul>
+<h3 id="15-URL去参数"><a href="#15-URL去参数" class="headerlink" title="15. URL去参数"></a>15. URL去参数</h3><p><code>location.search</code>, <code>location.href</code>, <code>location.origin</code>分别代表url中的querystring，完整url和域名。再结合<code>location.pathname</code>, <code>location.port</code>和<code>location.protocol</code>可以得到任意想要的URL参数。</p>
+<p>另外，新的API<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams">URLSearchParams</a>中有些方法可以对querystring做方便的增删改查的操作。</p>
+<ul>
+<li><code>append</code>增加一个检索参数</li>
+<li><code>delete</code>删除一个检索参数</li>
+<li><code>get</code>获取检索参数的第一个值</li>
+<li><code>getAll</code>获取检索参数的所有值</li>
+<li><code>has</code>检查是否存在某检索参数</li>
+<li><code>set</code>设置一个检索参数的新值，会覆盖原值</li>
+<li><code>keys</code>和<code>values</code>分别返回键和值组成的数组</li>
+</ul>
+<h3 id="16-js中的正则匹配"><a href="#16-js中的正则匹配" class="headerlink" title="16. js中的正则匹配"></a>16. js中的正则匹配</h3><p><span id="regexp"></span></p>
+<p>js中的正则匹配和Perl的正则匹配规则基本类似。在js中，使用一个正则表达式字面量，由包含在斜杠之间的模式组成。正则表达式同时也是RegExp对象。除了简单模式外，考察对<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions">正则表达式</a>的熟悉在它的特殊字符使用上。</p>
+<p>一些常见的特殊字符：</p>
+<ul>
+<li><p><code>\</code> 用于转义</p>
+</li>
+<li><p><code>^</code> 用于匹配开始或表示一个反向字符集（如<code>[^xyz]</code>）</p>
+</li>
+<li><p><code>$</code> 用于匹配结尾</p>
+</li>
+<li><p><code>*</code> 匹配前一个表达式0或多次 &#x3D; <code>&#123;0,&#125;</code></p>
+</li>
+<li><p><code>+</code> 匹配前一个表达式1或多次 &#x3D; <code>&#123;1,&#125;</code></p>
+</li>
+<li><p><code>?</code> 匹配0或1次 &#x3D; <code>&#123;0,1&#125;</code>；紧跟量词后使匹配非贪婪</p>
+</li>
+<li><p><code>.</code> 匹配除换行符外任何单字符</p>
+</li>
+<li><p><code>(x)</code> 捕获匹配，会包括在最后结果中，也可以通过$1, $n来访问</p>
+</li>
+<li><p><code>(?:x)</code> 非捕获分组，匹配但不捕获</p>
+</li>
+<li><p><code>x(?=y)</code> 断言匹配，捕获后跟y的x</p>
+</li>
+<li><p><code>x|y</code> 匹配x或y</p>
+</li>
+<li><p><code>&#123;n&#125;</code> 量词，匹配n次，还有{n,m}和{n,}的用法</p>
+</li>
+<li><p><code>[xyz]</code> 字符集，可以使用<code>-</code>连接，如<code>[x-z]</code></p>
+</li>
+<li><p><code>\d</code> 一个数字</p>
+</li>
+<li><p><code>\D</code> 一个非数字</p>
+</li>
+<li><p><code>\s</code> 一个空白字符，包含空格，制表符，分页符，换行符</p>
+</li>
+<li><p><code>\S</code> 一个非空白字符</p>
+</li>
+<li><p><code>\w</code> 一个单字字符，等价于<code>[A-Za-z0-9_]</code></p>
+</li>
+<li><p><code>\W</code> 一个非单字字符</p>
+</li>
+</ul>
+<p>另外，正则表达式还有几个可选参数辅助搜索类型</p>
+<ul>
+<li>g 全局搜索</li>
+<li>i 不区分大小写</li>
+<li>m 多行搜索</li>
+<li>y 粘性搜索</li>
+</ul>
+<p>有一些方法用于和正则表达式相关</p>
+<ul>
+<li><code>exec</code> 在字符串中执行匹配，返回匹配结果</li>
+<li><code>test</code> 测试是否能匹配RegExp，返回true或false</li>
+<li><code>match</code> 对字符串执行查找匹配的String方法，返回匹配结果</li>
+<li><code>search</code> 在字符串中测试匹配，返回位置索引或-1</li>
+<li><code>replace</code> 在字符串中执行查找匹配，并使用替换字符串替换匹配的子字符串</li>
+<li><code>split</code> 使用一个正则表达式或字符串分割一个字符串，并储存在数组中</li>
+</ul>
+<p>常见的考法有，书写一个邮箱或手机号的正则表达式：</p>
+<ul>
+<li>邮箱 <code>/^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]&#123;2,&#125;))$/</code></li>
+<li>手机号 <code>/^0*(13|15|18|14|17)(\d&#123;9&#125;|\d-\d&#123;3&#125;-\d&#123;5&#125;|\d-\d&#123;4&#125;-\d&#123;4&#125;|\d&#123;2&#125;-\d&#123;3&#125;-\d&#123;4&#125;|\d&#123;2&#125;-\d&#123;4&#125;-\d&#123;3&#125;)$/</code></li>
+</ul>
+<h3 id="17-MVC和MVVM框架"><a href="#17-MVC和MVVM框架" class="headerlink" title="17. MVC和MVVM框架"></a>17. MVC和MVVM框架</h3><p>框架模式不是一门写代码的学问，而是一门管理与组织代码的学问。其本质是一种软件开发的模型。与设计模式不同，设计模式是在解决某类特定问题时总结抽象出的公共方法，是<strong>方法论</strong>的范畴，一种框架模式往往使用了多种设计模式，且和技术栈有耦合的关系。</p>
+<p>视图（View）从本质上讲是数据在图像上的一种体现和映射。用户在操作图像时可以达到操作数据的目的，在数据更改后，需要重新将数据映射到视图上。这实际上就是MVC的出发点。</p>
+<p><img src="/blog/images/mvc.png"></p>
+<ul>
+<li>View: 放置视图相关的代码，原则上里面不应该有任何业务逻辑。</li>
+<li>Controller: 放置视图与模型之间的映射，原则上这里应该很薄，他只放一些事件绑定相关的代码(router)，但并不实现真正的功能，他只是一个桥梁。</li>
+<li>Model: 这里的model不是说实体类，它是主要实现业务逻辑的地方。</li>
+</ul>
+<p>开发流程是先创建视图组件，再将之关联到Model上，通过View修改Model中的值时，Model会触发绑定在之上的所有View的更新。Backbone是个典型的例子。这么做部分分离了视图和逻辑。但是，在情况复杂时，Model的代码量将会大大膨胀。</p>
+<p><img src="/blog/images/mvp.png"></p>
+<p>MVP因此而生，其中Presenter（分发器）代替了原来的Controller，分担了Model的部分功能。针对上面的问题，Presetner隔断了Model和View，当M改变时，会通知P去更新视图。业务逻辑和绑定逻辑从V和M中分离出来到P中。使得MVP三方分工更加鲜明。绝大多数的PHP框架都是MVP类型的。</p>
+<p><img src="/blog/images/mvvm.png"></p>
+<p>MVVM是Model-View-ViewModel的缩写。在MVVM中，View和ViewModel是双向或单向数据绑定的关系。当ViewModel反应了Model中的数据模型，并绑定到视图属性上，反过来，视图属性变化后也会通过ViewModel影响Model。React，Vue这些流行的前端框架都是MVVM类型的。</p>
+<p>不管是MVC还是MVP或MVVM，他们都是<strong>数据驱动</strong>的。核心上基于M推送消息，V或P来订阅这个模型。使用者需要维护的不再是UI树，而是抽象的数据。当UI的状态一旦多起来，这种框架模式的优势就很明显了。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1142,284 +1470,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/10/how-browsers-work-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/04/10/how-browsers-work-1/" class="post-title-link" itemprop="url">浏览器是如何工作的 上 解析与呈现</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-04-10 20:27:40" itemprop="dateCreated datePublished" datetime="2017-04-10T20:27:40+08:00">2017-04-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/04/10/how-browsers-work-1/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/10/how-browsers-work-1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>12k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>20 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>下篇传送门： <a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/11/how-browsers-work-2/">浏览器是如何工作的 下 布局与绘制</a></p>
-</blockquote>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要翻译于Tali Garsiel在2009年10月的一篇介绍Webkit和Gecko内核的经典文章<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm">How browsers work</a>。尽管在面试和工作上用不到这么细节，但是学习浏览器的内部原理将让我们可以更好地理解一些最优开发实践的道理。</p>
-<h3 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h3><p>浏览器可以说是PC和移动设备上最常用的软件应用了。目前的主流浏览器有5个：IE，Firefox，Safari，Chrome和Opera。浏览器的主要功能是协助用户向服务器发起请求，并在窗口中展示请求的网络资源（HTML文档，或图片，或pdf文档，或其他可以被URI指定位置的类型）。</p>
-<p>浏览器解释并展示HTML稳当的方式规定在HTML和CSS规范中。这些规范由<a target="_blank" rel="noopener" href="https://www.w3.org/">W3C</a>组织制订和维护。但是多年来，各浏览器并没有完全遵从这些规范（直到现在也是如此），从而带来兼容性的问题。</p>
-<p>从高层来看，浏览器的用户界面（并没有规范去规定它该如何设计）是类似的，有用来输入URI的地址栏，前进和后退按钮，书签管理选项，刷新和停止刷新按钮，主页按钮等。这些最佳实践是自然发展和相互模仿的结果。它的背后由下面的一些组件组成：</p>
-<ul>
-<li>用户界面和界面后端，即UI</li>
-<li>浏览器引擎，负责在UI和浏览器各组件间传递指令</li>
-<li>渲染引擎，负责渲染请求的内容</li>
-<li>网络，底层的网络调用</li>
-<li>JavaScript引擎</li>
-<li>数据存储，持久化存储浏览器的各种数据</li>
-</ul>
-<p><img src="/blog/images/browser/layers.png"></p>
-<div class="tip">值得注意的是，Chrome的每个标签页分别对应一个渲染引擎实例，且都是一个独立的进程。（知道为什么Chrome那么吃内存了么😂）
-</div>
-
-<h3 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h3><p>渲染引擎的工作是渲染（文章原话），默认情况下，渲染引擎能呈现HTML、XML文档和图片。通过插件还可以展示其他类型内容（如PDF查看器插件显示PDF文档）。文章主要讨论了Firefox的Gecko引擎和Chrome的<a target="_blank" rel="noopener" href="http://webkit.org/">Webkit</a>引擎。</p>
-<p>渲染引擎的主要流程大致是获取并解析HTML文档构建DOM树，之后创建呈现树，呈现树包含有视觉属性（如颜色和尺寸），最后进入布局和绘制阶段。需要指出的是，这是个复杂和渐进的过程，为了更好地用户体验，渲染引擎通常会先将解析完成的部分HTML显示出来。下面是Webkit和Gecko的渲染引擎主流程。</p>
-<p><img src="/blog/images/browser/geckoflow.jpg" alt="Webkit"></p>
-<p><img src="/blog/images/browser/webkitflow.png" alt="Gecko"></p>
-<p>Gecko和Webkit的术语略有不同，整体流程却是相似的。Gecko将视觉格式化元素组成的树称为“框架树”。每个元素都是一个框架。WebKit使用的术语是“呈现树”，它由“呈现对象”组成。对于元素的放置，WebKit 使用的术语是“布局”，而Gecko称之为“重排”。另外，Gecko在HTML和DOM树间还有一个称为“内容槽”的层用于生成DOM元素。</p>
-<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>关于解析HTML文档，<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Parsing_general">原文</a>做了详尽深入的讲解。由于侧重点不同，这里做些精炼。</p>
-<p>解析文档是指将文档转化成为有意义的结构，也就是可让代码理解和使用的结构。解析得到的结果通常是代表了文档结构的节点树，它称作解析树或者语法树。</p>
-<p>解析的过程通常分为<strong>词法分析</strong>和<strong>语法分析</strong>。前者是指将内容拆解成合法标记的过程，由词法分析器完成；后者指应用语言的语法规则，由解析器完成。</p>
-<p><img src="/blog/images/browser/parse.png"></p>
-<p>词汇通常用正则表达式表示。例如，我们的示例语言可以定义如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INTEGER :0|[1-9][0-9]*</span><br><span class="line">PLUS : +</span><br><span class="line">MINUS: - </span><br></pre></td></tr></table></figure>
-
-<p>正如您所看到的，这里用正则表达式给出了整数的定义。语法通常使用一种称为<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a>的格式来定义。我们的示例语言可以定义如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">expression :=  term  operation  term</span><br><span class="line">operation :=  PLUS | MINUS</span><br><span class="line">term := INTEGER | expression</span><br></pre></td></tr></table></figure>
-
-<p>之前我们说过，如果语言的语法是与<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Context-free_grammar">上下文无关</a>的语法，就可以由常规解析器进行解析。与上下文无关的语法的直观定义就是可以完全用BNF格式表达的语法。</p>
-<h5 id="解析器"><a href="#解析器" class="headerlink" title="解析器"></a>解析器</h5><p>有两种基本类型的解析器：<strong>自上而下解析器</strong>和<strong>自下而上解析器</strong>。直观地来说，自上而下的解析器从语法的高层结构出发，尝试从中找到匹配的结构。而自下而上的解析器从低层规则出发，将输入内容逐步转化为语法规则，直至满足高层规则。</p>
-<p>例如，我们要解析一个<code>2 + 3 - 1</code>的表达式，自上而下的解析器会从高层的规则开始：首先将<code>2 + 3</code>标识为一个表达式，然后将<code>2 + 3 - 1</code>标识为一个表达式。自下而上的解析器将扫描输入内容，找到匹配的规则后，将匹配的输入内容替换成规则。如此继续替换，直到输入内容的结尾。部分匹配的表达式保存在解析器的堆栈中。</p>
-<p>有一些工具可以帮助您生成解析器，它们称为解析器生成器。您只要向其提供您所用语言的语法（词汇和语法规则），它就会生成相应的解析器。WebKit使用了两种非常有名的解析器生成器：用于创建词法分析器的Flex以及用于创建解析器的Bison。Flex的输入是包含标记的正则表达式定义的文件。Bison的输入是采用BNF格式的语言语法规则。</p>
-<p>事情到了HTML这里变得麻烦了些。首先，HTML解析器的任务是将HTML标记解析成解析树。HTML词汇和语法在W3C的规范（目前版本是HTML5）中有着定义。但是HTML并不能很容易地用解析器所需的与上下文无关的语法来定义。HTML的正规格式DTD（Document Type Definition）并不是一种上下文无关的语法。</p>
-<p>原因就是HTML并不是XML。HTML最初野蛮生长的日子里，实现方式不一而足，HTML的严格版变体XHTML并没有得到广泛的支持。为了保证兼容性，饶了诸多浏览器一命，包容许多并不合适的使用方式，简化网络开发。DTD中的严格模式下是完全遵守HTML规范的。</p>
-<h4 id="HTML解析"><a href="#HTML解析" class="headerlink" title="HTML解析"></a>HTML解析</h4><p>解析器的输出<em>解析树</em>是由DOM元素和属性节点构成的树结构。DOM是文档对象模型 (Document Object Model) 的缩写。它是HTML文档的对象表示，同时也是JavaScript与HTML元素之间的接口。解析树的根节点是<code>Document</code>对象。DOM与标记tag间几乎是一一对应的关系。</p>
-<p>如上文所说，由于语言的宽容性和原内容的可更改性，HTML无法用常规的自上而下或自下而上的解析器来解析。根据原文的说法，<a target="_blank" rel="noopener" href="https://www.w3.org/TR/html5/syntax.html#html-parser">HTML的解析算法</a>由<strong>标记化</strong>和<strong>树构建</strong>组成。</p>
-<p>标记化是词法分析过程，将输入内容解析成多个标记。HTML标记包括起始标记、结束标记、属性名称和属性值。标记生成器识别标记，传递给树构造器，然后接受下一个字符以识别下一个标记；如此反复直到输入的结束。</p>
-<p><img src="/blog/images/browser/parseflow.png"></p>
-<p>其中<strong>标记化算法</strong>的输出结果是HTML标记。该算法使用状态机来表示。每一个状态接收来自输入信息流的一个或多个字符，并根据这些字符更新下一个状态。当前的标记化状态和树结构状态会影响进入下一状态的决定。算法相当复杂，无法在此详述，下面给出一个简要的示例（来自原文）</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    Hello world</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>初始状态是数据状态。遇到字符<code>&lt;</code>时状态更改为“标记打开状态”。接收一个a-z字符会创建“起始标记”，状态更改为“标记名称状态”。这个状态会一直保持到接收<code>&gt;</code>字符。在此期间接收的每个字符都会附加到新的标记名称上。在本例中，我们创建的标记是<code>html</code>标记。</p>
-<p>遇到<code>&gt;</code>标记时，会发送当前的标记，状态改回“数据状态”。<code>&lt;body&gt;</code>标记也会进行同样的处理。目前<code>html</code>和<code>body</code>标记均已发出。现在我们回到“数据状态”。接收到 <code>Hello world</code>中的<code>H</code>字符时，将创建并发送字符标记，直到接收<code>&lt;/body&gt;</code>中的<code>&lt;</code>。我们将为<code>Hello world</code>中的每个字符都发送一个字符标记。</p>
-<p>现在我们回到“标记打开状态”。接收下一个输入字符<code>/</code>时，会创建<code>end tag token</code>并改为“标记名称状态”。我们会再次保持这个状态，直到接收<code>&gt;</code>。然后将发送新的标记，并回到“数据状态”。<code>&lt;/html&gt;</code>输入也会进行同样的处理。</p>
-<p><img src="/blog/images/browser/tokeniser.png"></p>
-<p>树构造器中运行着<strong>树构造算法</strong>。在创建解析器的同时，也会创建<code>Document</code>对象。在树构建阶段，以<code>Document</code>为根节点的DOM树也会不断进行修改，向其中添加各种元素。标记生成器发送的每个节点都会由树构建器进行处理。规范中定义了每个标记所对应的DOM元素，这些元素会在接收到相应的标记时创建。这些元素不仅会添加到DOM树中，还会添加到开放元素的堆栈中。此堆栈用于纠正嵌套错误和处理未关闭的标记。其算法类似标记化算法，也可以用状态机来描述。</p>
-<p>我们同样以上面的代码为例，树构建阶段的输入是一个来自标记化阶段的标记序列。第一个模式是<strong>initial mode</strong>。接收HTML标记后转为<strong>before html</strong>模式，并在这个模式下重新处理此标记。这样会创建一个<code>HTMLHtmlElement</code>元素，并将其附加到<code>Document</code>根对象上。</p>
-<p>然后状态将改为<strong>before head</strong>。此时我们接收<code>body</code>标记。即使我们的示例中没有<code>head</code>标记，系统也会隐式创建一个<code>HTMLHeadElement</code>，并将其添加到树中。</p>
-<p>现在我们进入了<strong>in head</strong>模式，然后转入<strong>after head</strong>模式。系统对<code>body</code>标记进行重新处理，创建并插入<code>HTMLBodyElement</code>，同时模式转变为<strong>in body</strong>。</p>
-<p>现在，接收由“Hello world”字符串生成的一系列字符标记。接收第一个字符时会创建并插入<code>Text</code>节点，而其他字符也将附加到该节点。</p>
-<p>接收<code>body</code>结束标记会触发<strong>after body</strong>模式。现在我们将接收HTML结束标记，然后进入<code>after after body</code>模式。接收到文件结束标记后，解析过程就此结束。</p>
-<p><img src="/blog/images/browser/treebuilder.gif"></p>
-<h4 id="解析后与容错机制"><a href="#解析后与容错机制" class="headerlink" title="解析后与容错机制"></a>解析后与容错机制</h4><p>在此阶段，浏览器会将文档标注为交互状态，并开始解析那些处于<code>deferred</code>模式的脚本，也就是那些应在文档解析完成后才执行的脚本。然后，文档状态将设置为“完成”，一个<code>load</code>事件随之触发。</p>
-<p>我们在浏览HTML网页时从来不会看到“语法无效”的错误。这是因为浏览器会纠正<strong>任何</strong>无效内容，然后继续工作。不同浏览器的错误处理机制相当一致，但这种机制却并不是HTML当前规范的一部分。和书签管理以及前进&#x2F;后退按钮一样，它也是浏览器在多年发展中的产物。很多网站都普遍存在着一些已知的无效HTML结构，每一种浏览器都会尝试通过和其他浏览器一样的方式来修复这些无效结构。</p>
-<p><a target="_blank" rel="noopener" href="https://whatwg-cn.github.io/html/">HTML5规范</a>定义了一部分这样的要求。WebKit在HTML解析器类的开头注释中对此做了很好的概括。</p>
-<blockquote><p>解析器对标记化输入内容进行解析，以构建文档树。如果文档的格式正确，就直接进行解析。</p>
-<p>遗憾的是，我们不得不处理很多格式错误的 HTML 文档，所以解析器必须具备一定的容错性。</p>
-<p>我们至少要能够处理以下错误情况：</p>
-<ol>
-<li>明显不能在某些外部标记中添加的元素。在此情况下，我们应该关闭所有标记，直到出现禁止添加的元素，然后再加入该元素。</li>
-<li>我们不能直接添加的元素。这很可能是网页作者忘记添加了其中的一些标记（或者其中的标记是可选的）。这些标签可能包括：HTML HEAD BODY TBODY TR TD LI（还有遗漏的吗？）。</li>
-<li>向inline元素内添加block元素。关闭所有inline元素，直到出现下一个较高级的block元素。</li>
-<li>如果这样仍然无效，可关闭所有元素，直到可以添加元素为止，或者忽略该标记。</li>
-</ol>
-</blockquote>
-
-<p><a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Browsers_error_tolerance">错误的情况</a>包括错误使用<code>&lt;br&gt;</code>，离散表格，过于复杂的标记层级结构。错误的html或body结束标记等。Webkit的具体代码展示略。</p>
-<h4 id="CSS解析"><a href="#CSS解析" class="headerlink" title="CSS解析"></a>CSS解析</h4><p>和HTML不同，CSS是上下文无关的语法，可以使用简介中描述的各种解析器进行解析。词法语法（词汇）是针对各个标记用正则表达式定义的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">comment   \/\*[^*]*\*+([^/*][^*]*\*+)*\/</span><br><span class="line">num   [0-9]+|[0-9]*&quot;.&quot;[0-9]+</span><br><span class="line">nonascii  [\200-\377]</span><br><span class="line">nmstart   [_a-z]|&#123;nonascii&#125;|&#123;escape&#125;</span><br><span class="line">nmchar    [_a-z0-9-]|&#123;nonascii&#125;|&#123;escape&#125;</span><br><span class="line">name    &#123;nmchar&#125;+</span><br><span class="line">ident   &#123;nmstart&#125;&#123;nmchar&#125;*</span><br></pre></td></tr></table></figure>
-
-<p>其中<code>ident</code>表示标识符，如类名。<code>name</code>是元素ID。</p>
-<p>语法则是采用 BNF 格式描述的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ruleset</span><br><span class="line">  : selector [ &#x27;,&#x27; S* selector ]*</span><br><span class="line">    &#x27;&#123;&#x27; S* declaration [ &#x27;;&#x27; S* declaration ]* &#x27;&#125;&#x27; S*</span><br><span class="line">  ;</span><br><span class="line">selector</span><br><span class="line">  : simple_selector [ combinator selector | S+ [ combinator? selector ]? ]?</span><br><span class="line">  ;</span><br><span class="line">simple_selector</span><br><span class="line">  : element_name [ HASH | class | attrib | pseudo ]*</span><br><span class="line">  | [ HASH | class | attrib | pseudo ]+</span><br><span class="line">  ;</span><br><span class="line">class</span><br><span class="line">  : &#x27;.&#x27; IDENT</span><br><span class="line">  ;</span><br><span class="line">element_name</span><br><span class="line">  : IDENT | &#x27;*&#x27;</span><br><span class="line">  ;</span><br><span class="line">attrib</span><br><span class="line">  : &#x27;[&#x27; S* IDENT S* [ [ &#x27;=&#x27; | INCLUDES | DASHMATCH ] S*</span><br><span class="line">    [ IDENT | STRING ] S* ] &#x27;]&#x27;</span><br><span class="line">  ;</span><br><span class="line">pseudo</span><br><span class="line">  : &#x27;:&#x27; [ IDENT | FUNCTION S* [IDENT S*] &#x27;)&#x27; ]</span><br><span class="line">  ;</span><br></pre></td></tr></table></figure>
-
-<p>如其中的<code>ruleset</code>表示，这个规则集是一个选择器，或者由逗号和空格（S表示空格）分隔的多个（数量可选）选择器。规则集包含了大括号，以及其中的一个或多个（数量可选）由分号分隔的声明。</p>
-<p>Webkit使用Flex和Bison解析器生成器，通过 CSS 语法文件自动创建解析器。Firefox 使用的是人工编写的自上而下的解析器。这两种解析器都会将CSS文件解析成<code>StyleSheet</code>对象，且每个对象都包含CSS规则。</p>
-<h4 id="JS和CSS的处理"><a href="#JS和CSS的处理" class="headerlink" title="JS和CSS的处理"></a>JS和CSS的处理</h4><blockquote>
-<p>这也是经常的考点</p>
-</blockquote>
-<h5 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h5><p><strong>解析器遇到<code>&lt;script&gt;</code>标记时会立即解析并执行脚本。文档的解析将停止，直到脚本执行完毕</strong>。如果脚本是外部的，那么解析过程会停止，直到从网络同步抓取资源完成后再继续。此模型已经使用了多年，也在HTML4和HTML5规范中进行了指定。</p>
-<p>脚本标注为<strong>defer</strong>时，它不会停止文档解析，而是等到解析结束才执行。HTML5中还增加了一个选项<code>async</code>，可将脚本标记为异步，在资源下载完毕后立即执行。</p>
-<h5 id="预解析"><a href="#预解析" class="headerlink" title="预解析"></a>预解析</h5><p>WebKit和Firefox都进行了这项优化。在执行脚本时，其他线程会解析文档的其余部分，找出并加载需要通过网络加载的其他资源。通过这种方式，资源可以在并行连接上加载，从而提高总体速度。但是，<strong>预解析器不会修改DOM树</strong>，而是将这项工作交由主解析器处理；预解析器只会解析外部资源（例如外部脚本、样式表和图片）的引用。</p>
-<h5 id="样式表"><a href="#样式表" class="headerlink" title="样式表"></a>样式表</h5><p>理论上来说，应用样式表不会更改DOM树，因此似乎没有必要等待样式表并停止文档解析。但这涉及到一个问题，就是脚本在文档解析阶段会请求样式信息。如果当时还没有加载和解析样式，脚本就会获得错误的回复。</p>
-<p>从而，Firefox在样式表加载和解析的过程中，会禁止所有脚本。而对于WebKit而言，仅当脚本尝试访问的样式属性可能受尚未加载的样式表影响时，它才会禁止该脚本。</p>
-<h4 id="呈现树"><a href="#呈现树" class="headerlink" title="呈现树"></a>呈现树</h4><p>在DOM树构建的同时，浏览器还会构建另一个树结构：呈现树（Render Tree）。这是由可视化元素按照其显示顺序而组成的树，也是文档的可视化表示。它的作用是让您按照正确的顺序绘制内容。</p>
-<p>Firefox将呈现树中的元素称为“框架”。WebKit使用的术语是呈现器或呈现对象。呈现器知道如何布局并将自身及其子元素绘制出来。</p>
-<p>每个呈现器都表示一个矩形区域，通常对应于相关节点的CSS框，这一点在CSS2规范中有所描述。它包含诸如宽度、高度和位置等几何信息。框的类型会受到与节点相关的<code>display</code>样式属性的影响。下面是Webkit根据<code>display</code>属性的不同，针对同一个DOM节点创建不同呈现器的例子：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">RenderObject* <span class="title">RenderObject::createObject</span><span class="params">(Node* node, RenderStyle* style)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Document* doc = node-&gt;<span class="built_in">document</span>();</span><br><span class="line">  RenderArena* arena = doc-&gt;<span class="built_in">renderArena</span>();</span><br><span class="line">  ...</span><br><span class="line">  RenderObject* o = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (style-&gt;<span class="built_in">display</span>()) &#123;</span><br><span class="line">    <span class="keyword">case</span> NONE:</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> INLINE:</span><br><span class="line">      o = <span class="built_in">new</span> (arena) <span class="built_in">RenderInline</span>(node);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> BLOCK:</span><br><span class="line">      o = <span class="built_in">new</span> (arena) <span class="built_in">RenderBlock</span>(node);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> INLINE_BLOCK:</span><br><span class="line">      o = <span class="built_in">new</span> (arena) <span class="built_in">RenderBlock</span>(node);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> LIST_ITEM:</span><br><span class="line">      o = <span class="built_in">new</span> (arena) <span class="built_in">RenderListItem</span>(node);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">   ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="和DOM树关系"><a href="#和DOM树关系" class="headerlink" title="和DOM树关系"></a>和DOM树关系</h5><p>呈现器和DOM元素是一一对应的，但是呈现树则不是。<strong>非可视化的DOM元素不会插入在呈现树中</strong>，例如<code>head</code>元素，或是<code>display</code>设为none的元素。同时，还有<strong>一些DOM元素对应着多个可视化对象</strong>，例如<code>select</code>元素。格式无效的HTML元素会根据CSS规范作出调整，如inline元素中同时包裹了block和inline元素（只能包含其中一种）。最后，<strong>有些呈现对象的位置和DOM节点位置不同</strong>，如浮动定位和绝对定位这样脱离文档流的元素。</p>
-<p><img src="/blog/images/browser/rendertree.png"></p>
-<h5 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h5><p>在Firefox中，<strong>展示层被注册为DOM更新的监听器</strong>。在监听到DOM改动后，展示层会把将框架创建工作委派给<code>FrameConstructor</code>，由其构造器解析样式并创建框架。</p>
-<p>在WebKit中，<strong>解析样式和创建呈现器的过程称为attachment</strong>。每个DOM节点都有一个<code>attach</code>方法用于完成此项工作。attach是<strong>同步</strong>进行的，将节点插入DOM树需要调用新的节点<code>attach</code>方法。</p>
-<p>处理<code>html</code>和<code>body</code>标记会构建呈现树根节点。这个根节点呈现对象对应于CSS规范中所说的<em>容器block</em>，这是最上层的 block，包含了其他所有block。它的尺寸就是视口，即浏览器窗口显示区域的尺寸。Firefox称之为<code>ViewPortFrame</code>，而WebKit称之为<code>RenderView</code>。这就是文档所指向的呈现对象。呈现树的其余部分以DOM树节点插入的形式来构建。</p>
-<p>W3C的CSS2.1规范中有提到<a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS21/intro.html#processing-model">解析模型</a>的问题。</p>
-<h5 id="样式计算"><a href="#样式计算" class="headerlink" title="样式计算"></a>样式计算</h5><p>构建呈现树时，需要计算每个呈现对象的可视化属性。这是通过每个元素的样式来完成的。样式包括来自各种来源的样式表、inline样式元素（即style属性）和HTML中的可视化属性（如<code>bgColor</code>, <code>width</code>）。样式表的来源包括浏览器的默认样式表、由网页作者提供的样式表以及由浏览器用户提供的用户样式表等。</p>
-<p>样式计算存在着许多困难：1）样式数据庞大，2）为元素查找匹配规则的过程复杂，3）CSS的层叠规则复杂。针对这些问题，firefox和Webkit有不同的处理方法。</p>
-<p>Webkit会引用样式对象（RenderStyle）。这些对象在某些情况下可被不同同级节点共享，这些节点还有下面的要求：</p>
-<ul>
-<li>鼠标状态相同，如都是<code>:hover</code></li>
-<li>没有元素ID</li>
-<li>tag名应匹配</li>
-<li>class属性应匹配</li>
-<li>链接状态（如<code>:active</code>）和焦点状态（如<code>:focus</code>）相同</li>
-<li>映射属性的集合完全相同</li>
-<li>不应被属性选择器匹配</li>
-<li>不能有任何inline样式属性</li>
-<li>不能使用同级选择器</li>
-</ul>
-<p>Firefox为简化运算，使用了另外两种树，<strong>规则树</strong>和<strong>样式上下文树</strong>，如下图所示。Webkit则通过DOM节点指向样式对象来实现。样式上下文包含端值。要计算出这些值，应按照正确顺序应用所有的匹配规则，并将其从逻辑值转化为具体的值。例如，如果逻辑值是屏幕大小的百分比，则需要换算成绝对的单位。</p>
-<p><img src="/blog/images/browser/firefoxstyletree.png"></p>
-<h6 id="规则树"><a href="#规则树" class="headerlink" title="规则树"></a>规则树</h6><p>规则树的设计将所有匹配规则都存储在树中，它包含了所有匹配规则。路径的路径中的底层节点拥有较高的优先级。规则树包含了所有已知规则匹配的路径。规则的存储是延迟进行的。规则树不会在开始的时候就为所有的节点进行计算，而是只有当某个节点样式需要进行计算时，才会向规则树添加计算的路径。</p>
-<p>原文从两个角度分析了规则树如何减少工作量：<strong>结构划分</strong>和<strong>通过规则树计算样式上下文</strong>。</p>
-<p>样式上下文可分割成多个结构。这些结构体包含了特定类别（如<code>border</code>或<code>color</code>）的样式信息。结构中的属性都是继承的或非继承的。继承属性如果未由元素定义，则继承自其父代。非继承属性（也称为“重置”属性）如果未进行定义，则使用默认值。</p>
-<p>规则树通过缓存整个结构（包含计算出的端值）为我们提供帮助。这一想法假定底层节点没有提供结构的定义，则可使用上层节点中的缓存结构。</p>
-<p>在计算某个特定元素的样式上下文时，我们首先计算规则树中的一条对应路径，或者使用一条现有的路径。然后我们沿此路径应用规则，在这个样式上下文中填充结构。我们从路径中拥有最高优先级的底层节点（通常也是最特殊的选择器）开始，并向上遍历规则树，直到结构填充完毕。</p>
-<p>如果该规则节点对于此结构没有任何规范，那么我们可以实现更好的优化：寻找路径更上层的节点，找到后指定完整的规范并指向相关节点即可。这是最好的优化方法，因为整个结构都能共享。这可以减少端值的计算量并节约内存。 </p>
-<p>如果我们找到了部分定义，就会向上遍历规则树，直到结构填充完毕。如果我们找不到结构的任何定义，那么假如该结构是<strong>继承</strong>类型，我们会在上下文树中指向父代的结构，这样也可以共享结构。如果是<code>reset</code>类型的结构，则会使用默认值。</p>
-<p>如果最特殊的节点确实添加了值，那么我们需要另外进行一些计算，以便将这些值转化成实际值。然后我们将结果缓存在树节点中，供子代使用。如果某个元素与其同级元素都指向同一个树节点，那么它们就可以<strong>共享整个样式上下文</strong>。</p>
-<p>下面用一个例子来讲解上面晦涩的说明：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;err&quot;</span> <span class="attr">id</span>=<span class="string">&quot;div1&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">        this is a <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;big&quot;</span>&gt;</span> big error <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        this is also a</span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;big&quot;</span>&gt;</span> very  big  error<span class="tag">&lt;/<span class="name">span</span>&gt;</span> error</span><br><span class="line">      <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;err&quot;</span> <span class="attr">id</span>=<span class="string">&quot;div2&quot;</span>&gt;</span>another error<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;<span class="attribute">margin</span>:<span class="number">5px</span>;<span class="attribute">color</span>:black&#125;</span><br><span class="line"><span class="selector-class">.err</span> &#123;<span class="attribute">color</span>:red&#125;</span><br><span class="line"><span class="selector-class">.big</span> &#123;<span class="attribute">margin-top</span>:<span class="number">3px</span>&#125;</span><br><span class="line"><span class="selector-tag">div</span> <span class="selector-tag">span</span> &#123;<span class="attribute">margin-bottom</span>:<span class="number">4px</span>&#125;</span><br><span class="line"><span class="selector-id">#div1</span> &#123;<span class="attribute">color</span>:blue&#125;</span><br><span class="line"><span class="selector-id">#div2</span> &#123;<span class="attribute">color</span>:green&#125;</span><br></pre></td></tr></table></figure>
-
-<p>为了简便起见，我们只需要填充两个结构：color 结构和 margin 结构。color 结构只包含一个成员（即“color”），而 margin 结构包含四条边。 形成的规则树如下图所示</p>
-<p><img src="/blog/images/browser/styletree.png"></p>
-<p>假设我们解析 HTML 时遇到了第二个<code>&lt;div&gt;</code>标记，我们需要为此节点创建样式上下文，并填充其样式结构。经过规则匹配，我们发现该<code>&lt;div&gt;</code>的匹配规则是第1、2和6条。这意味着规则树中已有一条路径可供我们的元素使用，我们只需要再为其添加一个节点以匹配第6条规则（规则树中的F节点）。我们将创建样式上下文并将其放入上下文树中。新的样式上下文将指向规则树中的F节点。</p>
-<p>现在我们需要填充样式结构。首先要填充的是<code>margin</code>结构。由于最后的规则节点(F)并没有添加到<code>margin</code>结构，我们需要上溯规则树，直至找到在先前节点插入中计算过的缓存结构，然后使用该结构。我们会在指定<code>margin</code>规则的最上层节点（即B节点）上找到该结构。</p>
-<p>我们已经有了<code>color</code>结构的定义，因此不能使用缓存的结构。由于<code>color</code>有一个属性，我们无需上溯规则树以填充其他属性。我们将计算端值（将字符串转化为RGB等）并在此节点上缓存经过计算的结构。</p>
-<p>第二个<code>&lt;span&gt;</code>元素处理起来更加简单。我们将匹配规则，最终发现它和之前的<code>span</code>一样指向规则G。由于我们找到了指向同一节点的同级，就可以共享整个样式上下文了，只需指向之<code>span</code>的上下文即可。</p>
-<h6 id="处理规则简化匹配"><a href="#处理规则简化匹配" class="headerlink" title="处理规则简化匹配"></a>处理规则简化匹配</h6><p>样式规则来源于外部样式表、inline样式属性、HTML可视化属性。后两者很容易匹配。CSS规则可能会棘手，可以对它进行一些处理，便于访问。</p>
-<p>样式表解析完毕后，系统会根据选择器将CSS规则添加到某个哈希表中。这些哈希表的选择器各不相同，包括ID、类名称、标记名称等，还有一种通用哈希表，适合不属于上述类别的规则。如果选择器是ID，规则就会添加到ID表中；如果选择器是类，规则就会添加到类表中，依此类推。这种处理可以大大简化规则匹配。我们无需查看每一条声明，只要从哈希表中提取元素的相关规则即可。以下面的CSS为例</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span><span class="selector-class">.error</span> &#123;<span class="attribute">color</span>:red&#125;</span><br><span class="line"><span class="selector-id">#messageDiv</span> &#123;<span class="attribute">height</span>:<span class="number">50px</span>&#125;</span><br><span class="line"><span class="selector-tag">div</span> &#123;<span class="attribute">margin</span>:<span class="number">5px</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第一条规则将插入类表，第二条将插入ID表，而第三条将插入标记表。对于下面的HTML代码段：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;error&quot;</span>&gt;</span>an error occurred <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;messageDiv&quot;</span>&gt;</span>this is a message<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>我们首先会为p元素寻找匹配的规则。类表中有一个<code>error</code>键，在下面可以找到<code>p.error</code>的规则。div元素在ID表（键为 ID）和标记表中有相关的规则。剩下的工作就是找出哪些根据键提取的规则是真正匹配的了。</p>
-<h6 id="正确的层叠顺序"><a href="#正确的层叠顺序" class="headerlink" title="正确的层叠顺序"></a>正确的层叠顺序</h6><p>样式对象具有与可视化属性一一对应的属性（均为CSS属性但更为通用）。如果某个属性未由任何匹配规则所定义，那么部分属性可由父代元素样式对象继承。其他属性具有默认值。不过如果定义不止一个，就会出现麻烦，这时需要通过层叠顺序来解决。</p>
-<p>某个样式属性的声明可能会出现在多个样式表中，也可能在同一个样式表中出现多次。<strong>层叠</strong>顺序的重要性正体现在这里。根据CSS2规范，层叠的顺序为（优先级从低到高）：</p>
-<ol>
-<li>Browser declarations</li>
-<li>User normal declarations</li>
-<li>Author normal declarations</li>
-<li>Author important declarations</li>
-<li>User important declarations</li>
-</ol>
-<p>同样顺序的声明则会根据<strong>特异性(specity)<strong>进行排序，然后再是其</strong>指定顺序</strong>。HTML可视化属性会转换成匹配的CSS声明。它们被视为低优先级的Author normal declaration。</p>
-<p>那么特异性是什么意思呢？根据<a target="_blank" rel="noopener" href="https://www.w3.org/TR/selectors/#specificity">CSS3 selectors specificity</a>中的定义（和CSS2.1几乎一样），一个选择器的优先级计算如下：</p>
-<ol>
-<li>如果声明来自于<code>style</code>属性，而不是带有选择器的规则，则记为1，否则记为0 (&#x3D; a)</li>
-<li>记为选择器中ID属性的个数 (&#x3D; b)</li>
-<li>记为选择器中其他属性和伪类的个数 (&#x3D; c)</li>
-<li>记为选择器中元素名称和伪元素的个数 (&#x3D; d)</li>
-</ol>
-<p>将四个数字按a-b-c-d这样连接起来（位于大数进制的数字系统中），构成特异性。所使用的进制取决于上述类别中的最高计数。例如，如果a&#x3D;14，可以使用十六进制。如果a&#x3D;17，那么需要使用十七进制；不过在正常使用中，几乎不会使用到如此深嵌套层级的选择器。规范中给出的例子很好地演示了这种系统的工作方式。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">*             &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=0 -&gt; specificity = 0,0,0,0 */</span></span><br><span class="line"><span class="selector-tag">li</span>            &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=1 -&gt; specificity = 0,0,0,1 */</span></span><br><span class="line"><span class="selector-tag">li</span><span class="selector-pseudo">:first</span>-line &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */</span></span><br><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">li</span>         &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */</span></span><br><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ol</span>+<span class="selector-tag">li</span>      &#123;&#125;  <span class="comment">/* a=0 b=0 c=0 d=3 -&gt; specificity = 0,0,0,3 */</span></span><br><span class="line"><span class="selector-tag">h1</span> + *<span class="selector-attr">[rel=up]</span>&#123;&#125;  <span class="comment">/* a=0 b=0 c=1 d=1 -&gt; specificity = 0,0,1,1 */</span></span><br><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ol</span> <span class="selector-tag">li</span><span class="selector-class">.red</span>  &#123;&#125;  <span class="comment">/* a=0 b=0 c=1 d=3 -&gt; specificity = 0,0,1,3 */</span></span><br><span class="line"><span class="selector-tag">li</span><span class="selector-class">.red</span><span class="selector-class">.level</span>  &#123;&#125;  <span class="comment">/* a=0 b=0 c=2 d=1 -&gt; specificity = 0,0,2,1 */</span></span><br><span class="line"><span class="selector-id">#x34y</span>         &#123;&#125;  <span class="comment">/* a=0 b=1 c=0 d=0 -&gt; specificity = 0,1,0,0 */</span></span><br></pre></td></tr></table></figure>
-
-<p>找到匹配的规则之后，应根据级联顺序将其排序。WebKit对于较小的列表会使用冒泡排序，对较大的列表使用归并排序。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/22/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/blog/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/24/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1433,7 +1483,7 @@
 
 <div class="copyright">
   &copy; 2014 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1450,7 +1500,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:27</span>
+    <span title="站点阅读时长">29:45</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
