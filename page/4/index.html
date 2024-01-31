@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">152</span>
+          <span class="site-state-item-count">153</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">469</span>
+        <span class="site-state-item-count">470</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,218 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2021/12/20/deep-link-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2021/12/20/deep-link-note/" class="post-title-link" itemprop="url">deeplink技术分析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-12-20 22:48:09 / 修改时间：22:50:28" itemprop="dateCreated datePublished" datetime="2021-12-20T22:48:09+08:00">2021-12-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2021/12/20/deep-link-note/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/20/deep-link-note/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Deep_linking">deep link</a>是指可以从任何渠道，包括短信、应用内、网页中直接跳转到应用app内的特定页面的技术。它一定程度上打破了移动端app间“孤岛”的局面，实现了快捷的跳转。根据是否安装app，主要有下面两种行为：</p>
+<ul>
+<li>已安装，唤起app并跳转到特定页面</li>
+<li>未安装，跳转到App Store或下载页面引导用户下载安装，在下载后的第一次打开自动跳转到特定深度页面，这种情况也叫<strong>deferred deep link</strong></li>
+</ul>
+<p><img src="https://support.staffbase.com/hc/article_attachments/115003896431/deeplink_deeplink-browser-app.png" alt="deep-link-info"></p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>deep link可以应用在很多常见的场景下，如</p>
+<ul>
+<li>社交分享</li>
+<li>广告引流</li>
+<li>web和app互通</li>
+<li>裂变活动</li>
+<li>短信、邮件营销</li>
+</ul>
+<p>在web和app互通场景下，可以很方便地实现从外部回流页回到app内特定位置，如：</p>
+<ul>
+<li>电商类app：分享H5跳转到特定商品页</li>
+<li>游戏类app：分享H5跳转到特定房间或任务</li>
+<li>直播类app：分享H5跳转到特定直播间</li>
+</ul>
+<p>deep link缩短了操作路径，减少了用户操作成本，从而降低用户流失率，帮助app拉新和留存。</p>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>常见的实现方式有下面几种</p>
+<ul>
+<li>URL scheme，iOS和Android下的通用方式，打开前会询问是否打开某app</li>
+<li><a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/multidevice/android/intents/">Chrome Intent</a>，Chrome 25+无法通过URL scheme 唤起 App，必须使用Intent</li>
+<li>Universal Link，适用于iOS 9及更高版本，点击http&#x2F;https即跳转，操作丝滑</li>
+<li>App Links，适用于Android 6及更高版本，点击http&#x2F;https即跳转，操作丝滑</li>
+</ul>
+<p>除了上面几种，还有<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/webkit/promoting_apps_with_smart_app_banners">Smart App Banners</a>、剪贴板等方案</p>
+<h3 id="URL-scheme"><a href="#URL-scheme" class="headerlink" title="URL scheme"></a>URL scheme</h3><p>格式形如<code>[scheme:][//authority][path][?query][#fragment]</code>，一般使用在iOS 9和Android 6之前。方法通用，但有以下问题：</p>
+<ul>
+<li>本身没有规范，难以获知要跳转的path或query</li>
+<li>功能不全，app越复杂，scheme就越复杂</li>
+<li>会被拦截，包括浏览器或应用的webview，如微信</li>
+<li>打开app失败后，iOS会有错误弹窗，体验不好<ul>
+<li>提示网页无效</li>
+</ul>
+</li>
+<li>URL scheme可能重复</li>
+</ul>
+<p>常见Scheme URL</p>
+<table>
+<thead>
+<tr>
+<th>微信</th>
+<th>电商</th>
+<th>浏览器</th>
+<th>系统</th>
+<th>其他</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>weixin:&#x2F;&#x2F;dl&#x2F;scan 扫一扫<br />weixin:&#x2F;&#x2F;dl&#x2F;moments 朋友圈<br /> weixin:&#x2F;&#x2F;dl&#x2F;settings 设置</td>
+<td>淘宝：taobao:&#x2F;&#x2F;<br />支付宝：alipay:&#x2F;&#x2F;<br />美团：imeituan:&#x2F;&#x2F;</td>
+<td>Chrome：googlechrome:&#x2F;&#x2F;<br />UC 浏览器：ucbrowser:&#x2F;&#x2F;</td>
+<td>邮箱：mailto:&#x2F;&#x2F;<br />短信：message:&#x2F;&#x2F;<br />App Store：itms-appss:&#x2F;&#x2F;  macappstores:&#x2F;&#x2F;</td>
+<td>飞书：lark:&#x2F;&#x2F;<br />微博：sinaweibo:&#x2F;&#x2F;</td>
+</tr>
+</tbody></table>
+<h3 id="Chrome-Intent"><a href="#Chrome-Intent" class="headerlink" title="Chrome Intent"></a>Chrome Intent</h3><p>Chrome 25+无法通过iframe的src启动Android app。改为构造形如下面的intent锚点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">intent:  </span><br><span class="line">   HOST/URI-path // Optional host  </span><br><span class="line">   #Intent;  </span><br><span class="line">      package=\[string\];  </span><br><span class="line">      action=\[string\];  </span><br><span class="line">      category=\[string\];  </span><br><span class="line">      component=\[string\];  </span><br><span class="line">      scheme=\[string\];  </span><br><span class="line">   end;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>end</code>前添加<code>S.browser_fallback_url=[encoded_full_url]</code>可以指定唤起失败的地址。一个构造好的intent形如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intent://path#Intent;scheme=xxx;package=com. xxx;S.browser_fallback_url=https://xxx;end</span><br></pre></td></tr></table></figure>
+
+<h3 id="Universal-Link"><a href="#Universal-Link" class="headerlink" title="Universal Link"></a>Universal Link</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://developer.apple.com/ios/universal-links/">官方介绍</a></p>
+</blockquote>
+<p>Universal Link，即通用链接，是iOS 9推出的通过HTTPS链接来启动app的特性。既可以打开app，在没有安装时，则打开特定网页。对比URL Scheme优势在于：</p>
+<ul>
+<li>无缝切换，不弹窗确认</li>
+<li>兼容性好，未安装时直接打开网页</li>
+<li>使用通用的HTTP协议，不用担心scheme重复</li>
+<li>通过网站的配置文件和app关联，保证安全</li>
+</ul>
+<p>在网站下根目录或<code>.well-known</code>路径下需要有<code>apple-app-association</code>（无后缀名）JSON文件。例如，知乎的配置文件为<a target="_blank" rel="noopener" href="https://oia.zhihu.com/apple-app-site-association%E3%80%82%E5%9C%A8%E9%85%8D%E7%BD%AE%E6%97%B6%EF%BC%8C">https://oia.zhihu.com/apple-app-site-association。在配置时，</a></p>
+<ul>
+<li>需要保证有一个HTTPS的域名，最好和web网页域名区分开，保证web网页的正常访问</li>
+<li>在开发者中心 ，Identifiers下 AppIDs 找到自己的App ID，编辑打开Associated Domains服务</li>
+<li>打开工程配置中的 Associated Domains ，在其中的 Domains 中填入你想支持的域名，必须以<code>applinks:</code>为前缀</li>
+<li>配置<code>apple-app-site-association</code>文件，不带任何后缀，上传该文件到服务器的根目录或者<code>.well-known</code>目录下</li>
+</ul>
+<p><img src="https://docs-assets.developer.apple.com/published/4cbbb0bb235bdd82277b0f8d294afab8/13300/supporting-associated-domains-1@2x.png"></p>
+<p>在网站下配置好Universal Link后，用户点击网站链接后，即会直接跳转到App，而不需要经过浏览器。当然，微信等app还是会拦截Universal Link的行为，需要在微信注册自己的应用id和Universal Link。</p>
+<h3 id="App-Links"><a href="#App-Links" class="headerlink" title="App Links"></a>App Links</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio/write/app-link-indexing">官方介绍</a></p>
+</blockquote>
+<p>App Links，类似Universal Link，是Android 6（Android M）及以上操作系统中适用的HTTPS路径链接。可以直接将用户带入到Android app内的特定页面中，实现上，网站配置文件名为<code>assetlink</code>，只能放在<code>.well-known</code>目录下。如<a target="_blank" rel="noopener" href="https://vt.tiktok.com/.well-known/assetlinks.json%E3%80%82%E4%B8%8D%E8%BF%87%EF%BC%8C%E5%9B%BD%E4%BA%A7%E7%9A%84%E5%AE%89%E5%8D%93%E7%89%88%E6%9C%AC%E4%BB%A5%E5%8F%8A%E5%BE%AE%E4%BF%A1%E7%AD%89app%E4%BE%9D%E6%97%A7%E4%BC%9A%E6%8B%A6%E6%88%AA%E3%80%82">https://vt.tiktok.com/.well-known/assetlinks.json。不过，国产的安卓版本以及微信等app依旧会拦截。</a></p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>Android webview本身支持唤醒第三方app，但如果设置了自定义WebViewClient则需要自己处理，具体是指在<code>shouldOverrideUrlLoading</code>方法中决定如何处理</li>
+<li>Smart App Banners，在网页里增加一个<code>&lt;meta&gt;</code>标签，可以在打开页面时，检测手机是否安装某个app，并且在页面顶部显示一个Banner显示App的基本信息，安装时显示打开，未安装时显示安装</li>
+</ul>
+<h2 id="相关产品或开源库"><a href="#相关产品或开源库" class="headerlink" title="相关产品或开源库"></a>相关产品或开源库</h2><p>结合点击行为、重定向行为、来源去向分析、落地页等，还可以做很多事情，市面上也有下面一些产品：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.mob.com/mobService/moblink">MobLink</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linkedme.cc/link-page.html">LinkedMe</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.openinstall.io/deeplinking.html">openinstall</a></li>
+</ul>
+<p>另外，也有一些开源库实现web跳转app</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/suanmei/callapp-lib">https://github.com/suanmei/callapp-lib</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jawidx/web-launch-app">https://github.com/jawidx/web-launch-app</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/luojinghui/web-open-app">https://github.com/luojinghui/web-open-app</a></li>
+</ul>
+<p><em>–END–</em></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1810,239 +2022,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2021/10/20/taihu-lark-riding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2021/10/20/taihu-lark-riding/" class="post-title-link" itemprop="url">环太湖骑记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-20 22:30:30 / 修改时间：22:39:53" itemprop="dateCreated datePublished" datetime="2021-10-20T22:30:30+08:00">2021-10-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%B8%B8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">游记</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2021/10/20/taihu-lark-riding/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/10/20/taihu-lark-riding/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>经历就会有惊喜</p>
-</blockquote>
-<h2 id="序：启程"><a href="#序：启程" class="headerlink" title="序：启程"></a>序：启程</h2><p>自上次<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2020/10/06/tour-to-qinghai-lake/">青海湖长途骑行</a>，已经过去1年。这1年里发生了许多计划之外的事情，我优化了旧的喜德盛山地，拥有了新的闪电公路车，追求更佳的骑行体验。我减慢了更博文和读新书的频率，暂停了拉琴训练，腾出时间去追求人生的下一阶段，最后有惊无险最后遇到吕嘉雯，就像是老天对我一直以来坦诚相待的回报。扯远了，说回来，和<a target="_blank" rel="noopener" href="https://feichashao.com/travels/">基友</a>约定的一年一次长途骑行还是继续。我们在7、8月份的骑行中就约定好大致的骑行目的地（江南沿海）和时间（中秋节）。青海湖骑行之后，我们患上了补给不足恐惧症，基友最终选定太湖，也是考虑到环湖下来都是大城市带来的优越体验。事后证明，这种安排让这次骑行带上了更多旅行的感觉。</p>
-<h2 id="Day-1-北京-gt-苏州"><a href="#Day-1-北京-gt-苏州" class="headerlink" title="Day 1 北京 -&gt; 苏州"></a>Day 1 北京 -&gt; 苏州</h2><p>这次出发的时间碰巧赶上双减政策，让骑行得以宽裕地进行。只可惜对象要回乡下老家没能参与。我们选在中秋前最后一个工作日的晚上，做卧铺去苏州。</p>
-<p>火车一大早到达苏州，我们住的酒店在<strong>观前街</strong>地区，算是苏州一个传统的购物步行街。7点多的步行街还没有什么人烟。所谓观前街，在步行街的核心地带有一个玄妙观。我们放下行李，在观旁的M记吃了顿早饭，作为旅途的第一顿餐食。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEa8K.jpg" alt="观旁边的M记"></p>
-<p>从观前街向东走过一个街区，可以到达<strong>平江路</strong>。在没那么商业化的角落，还是能感受到江南水乡的秀气。小桥流水，白墙黛瓦，一叶扁舟，绿柳蓊郁。我们在街巷中随意穿梭，故意做两只无头苍蝇。还无意中捕捉到好几家之前在小红书上看到的网红店。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEBKe.jpg" alt="平江路-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEwvD.jpg" alt="咖啡店"></p>
-<p>我们来的时间也很巧，上午的时候路上人还不多，气温也很适宜。可以很舒服地慢慢散步扯淡。不得不说，小河的水利治理还挺不错，很少见到垃圾，水质也挺不错。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEdgO.jpg" alt="平江路-2"></p>
-<p>逛完城墙博物馆，我们兜了一圈又回到观前街，开启游客打卡模式，尝试了秃油黄面和三虾面，还有特色绿豆汤。面的口感还不错，很契合我喜欢吃细面的偏好。面口味偏淡，一碗100+，还不错但没到惊艳的地步。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEUC6.jpg" alt="秃油黄面"></p>
-<p>绿豆汤着实让人耳目一新，新颖的薄荷味配合冰水的温度让人感觉像是在喝漱口水。整体味道就是糖水口。基友没能坚持喝完，不怪他。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEDDH.jpg" alt="绿豆汤"></p>
-<p>在酒店稍作休整，我们继续启程，前往金鸡湖旁的国际博览园区。出地铁时，刚好赶上看夕阳的最佳时机。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BErbd.jpg" alt="落日"></p>
-<p>入夜后，这边商业区的风景要更为迷人。在诚品书店的屋顶，已近中秋的月亮分外亮眼。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEyVA.jpg" alt="诚品屋顶的月亮"></p>
-<p>当然，之前就有所耳闻的<strong>东方之门</strong>就更要打卡了，站在裤裆底下拍照的感觉还挺好玩。时间有限，<strong>山塘街</strong>我们最终没有去，算是小小的一个遗憾。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEc5t.jpg" alt="东方之门"></p>
-<p>回到酒店，时间大概是9点多，基友回了房间。我去附近一个网鱼网咖坐了会儿，居然发现以前还剩了30多元没用完，居然还有意外之财，真棒！</p>
-<h2 id="Day-2-苏州-gt-无锡"><a href="#Day-2-苏州-gt-无锡" class="headerlink" title="Day 2 苏州 -&gt; 无锡"></a>Day 2 苏州 -&gt; 无锡</h2><blockquote>
-<p>晒伤程度：0%</p>
-</blockquote>
-<p>骑行的起点从湖边的一个国际青年旅社开始，一天100元，只有一种山地车可以选择，不提供驼包和车锁。可以肉眼看出的不专业。奈何太湖这边没找到其他像样的租车行，且湖边本来就离市区较远。我俩也没挑剔太多。付好500元押金，我们从环太湖大道出发。</p>
-<p>天色不是很好，初到湖边还是比较有新鲜感的，微风吹过，吹散了骑行身上的燥热，还挺舒服。没想到，这也是这几天唯一逃过晒伤的一次。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BE6UI.jpg" alt="环太湖大道-1"></p>
-<p>和青海湖边上的环湖东路不同，环太湖大道名不虚传，果然是十分贴近湖面，有些路段甚至直接修在湖面上。搭配着青山小河，景色妙绝。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BE2PP.jpg" alt="环太湖大道-2"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BER8f.jpg" alt="环太湖大道-3"></p>
-<p>简单在太湖湿地公园旁的农家乐吃过午饭，继续出发前往太湖大道，一路依旧在湖边前进。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEfxS.jpg" alt="太湖-1"></p>
-<p>快骑到无锡边界时，还能看到头顶的飞机。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEW28.jpg" alt="无锡的飞机"></p>
-<p>经过一座跨河的桥，我们进入无锡市。远离了太湖，但是再次感受到令人安心的城市气息。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BE5rQ.jpg" alt="市界"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BE4Kg.jpg" alt="夕阳路"></p>
-<p>最终沿着具区路骑行20公里，我们歇脚在<strong>江南大学</strong>旁的宜必思。简单地更换衣物后，正是晚饭时间，我们坐地铁进入城区，化身半日游的游客。在无夕小笼包店里简单地恰了心心念念的蟹粉小笼包和传说中的刀鱼馄饨后，我们来到小红书告诉我们最繁华的<strong>南长街</strong>和<strong>南禅寺</strong>。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEIbj.jpg" alt="蟹粉小笼包 &amp; 刀鱼馄饨"></p>
-<p>类似的河，类似的巷，也许是因为门店的格调问题，或是路面修缮太过人工，我总觉得没有平江路来的那么自然和和谐。宽阔笔直的街道和河流，让它和之前在丽江大研古镇的旅行体验也有差距。当然热闹还是热闹的，也能勉强感受到江南小城的意味。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BETVs.jpg" alt="南长街-1"></p>
-<p>当然，中秋的月亮还是很不错的。在南禅寺大概逛了逛，我们打道回府，无锡的地铁线路相对比较简单，可以乘坐1号线直达。和苏州地铁一样，也许是人口不多，在中秋佳节的黄金时间，地铁里也能轻松找到位置，乘坐体验极佳，推荐地铁出行。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BE7an.jpg" alt="南长街-3"></p>
-<p>回到酒店，烘干好的衣服也好了。对比去年的青海湖骑行，体验好了太多。我们简单收拾下，便带着疲惫睡下。</p>
-<h2 id="Day-3-无锡-gt-宜兴"><a href="#Day-3-无锡-gt-宜兴" class="headerlink" title="Day 3 无锡 -&gt; 宜兴"></a>Day 3 无锡 -&gt; 宜兴</h2><blockquote>
-<p>晒伤程度：80%</p>
-</blockquote>
-<p>第二日天气好了太多，令人心情愉悦，再加上前日的阴天，让我忘记了关键的防晒。为悲剧晒伤埋下了伏笔。我们从江南大学旁的缘溪道出发，沿着高浪西路上山水东路便开始了晒足一天的旅程。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEH5q.jpg" alt="江南大学-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEqP0.jpg" alt="江南大学-2"></p>
-<p>路线擦过无锡城区西南边缘，一路湖水树林，路况不错，风景更棒，尤其在<strong>鼋头渚</strong>附近。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEO2T.jpg" alt="鼋头渚"></p>
-<p>在环湖路锦园路交叉口，沿锦园路骑行可以获得更好的骑行风景。贴着湖边，有一个华东疗养院，附近的有不少钓鱼的人，风景很棒。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BELGV.jpg" alt="锦园路-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEXxU.jpg" alt="锦园路-2"></p>
-<p>回到环太湖大道，骑一小段可以看到十八湾地质公园，省道路况甚好，当然阳光也甚好，骑过十八湾公园，爬一个长坡来到拐角，有一个缓下坡，边放坡边欣赏湖景的体验太棒了！迎面的清风，路面弯曲的美感，湖面的一览无余，踩踏的双腿似乎都已感受到慰藉不再疲惫。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEvMF.jpg" alt="放坡-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BExr4.jpg" alt="放坡-2"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BEzqJ.jpg" alt="放坡-3"></p>
-<p>离开省道进入常州市后，可以选择从雪雅线或者雪马路回到环湖路上，一路穿村而过，最后再太滆村回到湖边。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BV9aR.jpg" alt="雪马路"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BVpZ9.jpg" alt="太滆村"></p>
-<p>晴日下的波光粼粼让太湖看起来更有生气了一点。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BVCI1.jpg" alt="波光粼粼的太湖"></p>
-<p>回到渎边线后，一路平坦笔直，日光毒辣，工业区属实没什么风景好看，一路狂飙后，在宜浦路交叉口朝宜兴城区逼近。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BM5EF.jpg" alt="渎边线"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BViPx.jpg" alt="宜浦路"></p>
-<p>经过范蠡大道交叉口，终于有种进入城区的熟悉感，没想到这是痛苦体验的开始，最后进城的几公里，地势上上下下，爬的坡比过往都还多。甚至于都没骑过平路。每当我以为，爬坡到此为止后。放坡结束又要开始下个煎熬。甚至于还有一个在上坡中间的红绿灯，把我虐够呛。一路折磨，最终来到龙背山——今日的终点。庆幸的是，今日宜必思的旁边又熟悉的沙县小吃，填补了我缺失的午餐。</p>
-<p>宜兴没有很多好逛的地方，我们在八佰伴解决了晚餐后，踱步到东浗市民广场算是作罢。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMH3R.jpg" alt="东浗市民广场"></p>
-<p>结束一天的骑行后，通红的皮肤和洗澡时的刺痛，不时提醒我防晒的重要性。</p>
-<h2 id="Day-4-宜兴-gt-湖州"><a href="#Day-4-宜兴-gt-湖州" class="headerlink" title="Day 4 宜兴 -&gt; 湖州"></a>Day 4 宜兴 -&gt; 湖州</h2><blockquote>
-<p>晒伤程度：150%</p>
-</blockquote>
-<p>这天依旧是一个很棒的晴天，这次我开始考虑防晒的重要性。虽然我带了长袖，但是是黑色的且不透气，所以只能将就做好防晒就出发。今天的路线就更为简单，沿着浗滨大道来到G104国道，路过高铁站一路缓下坡，骑行体验甚好。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMbg1.jpg" alt="浗滨大道"></p>
-<p>在快进入浙江省时，还捕捉到了1314里程碑。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMOu6.jpg" alt="1314"></p>
-<p>快到省界前，是一个漂亮的爬坡，和很棒的湖景。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMqjx.jpg" alt="G104-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BM7C9.jpg" alt="G104-2"></p>
-<p>省界的里程碑也很有意思。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMXDK.jpg" alt="省界"></p>
-<p>在夹浦村岔路口，可以拐到滨湖大道上，让你一路湖景看到够，为了弥补前两天湖景的不足，我和基友不顾日头毒，毅然选择了这条路线。事实证明，我们的选择很正确。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMjHO.jpg" alt="滨湖大道-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQS4H.jpg" alt="滨湖大道-2"></p>
-<p>整条路骑到湖州太湖度假区约20公里，当然一路没有太多树荫，一成不变的湖景看久了，显得稍有些枯燥。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMxED.jpg" alt="滨湖大道-3"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BMzUe.jpg" alt="滨湖大道-4"></p>
-<p>所幸经过太湖旅游度假区后，几乎是一路下坡，骑行体验很棒，和昨日宜兴的进城之路形成了鲜明的对比。由于没有补充午餐，路上险些低血糖，幸好基友的月饼救了一命。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQ9Cd.jpg" alt="太湖度假区"></p>
-<p>一顿跋涉后，最终在下午3点来到银泰城对面的康铂酒店。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQC8A.jpg" alt="银泰城"></p>
-<p>在一顿海底捞弥补宜兴火锅被坑后，我们来<strong>衣裳街</strong>逛了逛，不出所料，是湖州版的南锣鼓巷，果然也有湖南臭豆腐和轰炸大鱿鱼，也不知大鱿鱼犯了什么错，要去轰炸它。也许是工作日，又也许是湖州并不是旅游城市，步行街里的人并不多，贴着市河一侧还稍微有点意境。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQPgI.jpg" alt="衣裳街"></p>
-<p>一日疲惫，我们走到兴尽，打车回府。</p>
-<h2 id="Day-5-湖州-gt-南浔"><a href="#Day-5-湖州-gt-南浔" class="headerlink" title="Day 5 湖州 -&gt; 南浔"></a>Day 5 湖州 -&gt; 南浔</h2><blockquote>
-<p>晒伤程度：180%</p>
-</blockquote>
-<p>南浔是湖州的一个区，所以这一天的路程不算太遥远。姑且作为修整。沿着苕溪东路来到织里镇，可以拐到318国道上一路直行进入南浔。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQivt.jpg" alt="苕溪东路"></p>
-<p>318国道从上海人民广场开始到西藏聂拉木县樟木镇中尼友谊桥。中间从成都到拉萨段也是很出名的骑行、徒步、自驾路线。这块里程碑表示距离上海市区只有136公里，比想象中居然近这么多。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQkKP.jpg" alt="G318-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQEb8.jpg" alt="G318-2"></p>
-<p>由于只有30+km，中午12点多我们就抵达酒店。在一家猪蹄店大快朵颐后，我们回酒店休息到日头没有那么强烈，继续一个游客的使命。我也换上长袖，为过度晒伤盖上一块遮羞布。南浔区<strong>南浔古镇</strong>是较出名的景点，白日有乌镇的感觉，可惜我们来的时候已近饭点。古镇据说5点后不收门票，园内人数尚可，兴许是工作日的原因。南侧部分和平江路、南长街没什么太大的区别，北侧百间楼倒是有别样的韵味。在此处，河道渐宽，游客也比较少，还有一些原住民，有了江南水乡的感觉。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQADf.jpg" alt="南浔古镇-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQZVS.jpg" alt="南浔古镇-2"></p>
-<p>逛完古镇，在基友的期盼下，今天用海底捞画上句号。从海底捞打车会酒店，短短2公里，没想到滴滴也有人接单，看来还是在大城市呆习惯了。需要避免一些惯性思维。</p>
-<h2 id="Day-6-南浔-gt-苏州-gt-上海"><a href="#Day-6-南浔-gt-苏州-gt-上海" class="headerlink" title="Day 6 南浔 -&gt; 苏州 -&gt; 上海"></a>Day 6 南浔 -&gt; 苏州 -&gt; 上海</h2><blockquote>
-<p>晒伤程度：150%</p>
-</blockquote>
-<p>由于湖州那天在滨湖大道上，已经连着看了20公里的湖景，再加上晒伤严重，最后一天我和基友不约而同选择了没那么沿湖的路线。基友率先出发，出了南浔区没多久，很快由回到江苏省境内。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQeUg.jpg" alt="江苏界"></p>
-<p>从318国道拐到258省道后，一路坦途。两侧既没有湖景，也没有树荫。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQm5Q.jpg" alt="258省道-1"></p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQM2n.jpg" alt="258省道-2"></p>
-<p>路过吴江大道后，我们又回到苏州，由于不确定省道能否左拐到东太湖路，我们从吴江区内绕路过湖，顺便做了补给。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQuCj.jpg" alt="江陵西路"></p>
-<p>沿着东太湖路一路向西可以回到环太湖大道，我们并没有向南去东山镇做更多的探索。回到熟悉的环太湖大道，心里的石头也落下了地。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQK8s.jpg" alt="环太湖大道"></p>
-<p>太湖大道上人并不多，我们还了车退了押金，也很轻松地叫了车进城。基友去宜家打卡，我去苏州站坐高铁去上海找对象。</p>
-<p><img src="https://z3.ax1x.com/2021/10/20/5BQQvq.jpg" alt="三虾面"></p>
-<p>这几天我们是幸运的，车和人都没出意外状态，除了身上显眼的晒伤。脖子上明显的色差让我的脑袋像是后来组装在我的身体上。这次骑行过后，基友更坚信了我是他的吉祥物，和我一起来骑车，总能避免下雨和疫情。骑行前做的应急预案也很幸运地都没有用上。对比去年青海湖的受苦，这次骑行的风格明显更养生一点，每天不止能磨练筋骨，愉悦眼球，还能在疲惫过后享受现代科技的便利，无脑进入游客模式。体验可以说不能更好了。</p>
-<p>在观前街分别前，我也祝福他十一环海南的旅途一路顺风。我们明年再见👋。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/blog/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -2073,7 +2052,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:45</span>
+    <span title="站点阅读时长">29:47</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

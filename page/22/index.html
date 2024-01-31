@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">152</span>
+          <span class="site-state-item-count">153</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">469</span>
+        <span class="site-state-item-count">470</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,170 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/06/27/webpage-visit-speed-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/06/27/webpage-visit-speed-guide/" class="post-title-link" itemprop="url">H5页面性能优化方案参考</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-06-27 20:20:35 / 修改时间：20:25:26" itemprop="dateCreated datePublished" datetime="2017-06-27T20:20:35+08:00">2017-06-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/06/27/webpage-visit-speed-guide/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/27/webpage-visit-speed-guide/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>由于开发时间短，迭代速度快的特点，H5页面已大量用在各种移动端App和活动页中。响应时间作为和用户体验的重要部分，如果不能在这上面给用户可靠性和安全感，将会大大影响用户体验，进而影响用户使用产品的积极性。当页面并不复杂时，用户若能在1s内打开页面，看到信息的展示，会感觉速度还行，可以接受。当界面需要5s甚至以上才能显示时，对用户来说时不可接受的。</p>
+<p>下文的标准和建议主要来自钉钉团队的<a target="_blank" rel="noopener" href="http://ddtalk.github.io/blog/2015/09/07/dingding-first/">H5性能优化方案</a></p>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>通常来说首屏（onload）时间即资源加载完成时间建议在600ms内，首字时间时间在150ms内，根据网络类型做相应调整：</p>
+<ul>
+<li>2G，完全加载时间10s内，10s内占比80%</li>
+<li>3G，完全加载时间6s内，6s内占比60%</li>
+<li>4G和WiFi，完全加载时间3s内，3s内占比70%</li>
+</ul>
+<p><em>（标准不是死的，上面只是举个范例）</em></p>
+<p>这个时间可以在Chrome开发者工具里的Network中看到，也可以通过JS的performance API查询到</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">performance.<span class="property">timing</span>.<span class="property">domContentLoadedEventEnd</span> - performance.<span class="property">timing</span>.<span class="property">connectStart</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="优化手段"><a href="#优化手段" class="headerlink" title="优化手段"></a>优化手段</h2><h3 id="资源加载"><a href="#资源加载" class="headerlink" title="资源加载"></a>资源加载</h3><ul>
+<li><strong>按需加载</strong>，减少不必要资源的加载，不过这可能会增加页面的重绘</li>
+<li><strong>Lazyload</strong>，延迟加载，即不影响整体效果的图片展现给用户后再加载</li>
+<li><strong>滚屏加载</strong>，根据字面意义，在下拉滚屏时加载额外数据，减少翻页时的重新加载和渲染</li>
+<li><strong>响应式加载</strong>，即根据用户终端媒介加载不同大小的图片资源</li>
+<li><strong>异步记载</strong>，异步加载第三方资源，防止影响本身的页面性能</li>
+</ul>
+<p>此外，还有一些优化加载体验的方式：</p>
+<ul>
+<li><strong>显示loading进度条</strong>，让用户能明确感知到页面的加载进度</li>
+<li><strong>避免3xx、4xx、5xx的http状态码</strong>，因为3xx的跳转会影响加载时间，4xx和5xx通常是第三方资源的问题，可能会影响整个页面的展示。</li>
+<li><strong>favicon.ico</strong>，需要保证这个图标存在，且尽可能地小，并设置一个较长的缓存时间</li>
+<li>首次加载资源越小越好</li>
+<li>避免使用自定义中文字体（因为体积大）</li>
+</ul>
+<h3 id="图片使用"><a href="#图片使用" class="headerlink" title="图片使用"></a>图片使用</h3><ul>
+<li><strong>格式</strong>，webp，jpg，png24&#x2F;32较常用。jpg较为常用，避免使用png的大图片</li>
+<li><strong>像素</strong>，一般来说不建议宽度超过640px</li>
+<li><strong>合并</strong>，使用CSS Sprites，尤其是基本不变，大小类似的操作类型图标</li>
+<li><strong>避免重设大小</strong>，即展示多大就加载多大的图片</li>
+<li><strong>避免DataURL</strong>，DataURL是用Base64的方式，将图片变成一串文本编码放入代码的方式。尽管它能减少一次http交互的请求，但数据体积通常比二进制图片大1&#x2F;3，且不会被缓存。</li>
+<li><strong>使用替代方案</strong>，如CSS3，SVG或iconfont来完成简单的图片</li>
+</ul>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
+<li><strong>Gzip</strong>，服务端要开启Gzip压缩</li>
+<li><strong>设置合理的缓存时间</strong>，对静态资源，将缓存过期时间设置得长一些</li>
+<li><strong>分域名部署</strong>，将动态资源和静态资源放置在不同的域名下，这样，静态资源请求时，不会带上动态域名中所设置的cookie头信息，从而减少http请求的大小</li>
+<li><strong>减少Cookie</strong>，这部分数据使用的是上行流量，上行带宽更小，所以传输速度更慢，因此要尽量精简其大小。</li>
+<li><strong>CDN加速</strong>，部署CDN服务器，或使用第三方CDN服务，优化不同地域的接入速度。</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><ul>
+<li><strong>JS，CSS合并</strong>，除特殊情况外，所有JS压缩打包成一个文件，所有CSS压缩打包成一个文件，减少请求次数</li>
+<li><strong>外联使用JS，CSS</strong>，有效利用缓存</li>
+<li><strong>压缩HTML，JS，CSS</strong>，压缩代码可以减少大小到原来的1&#x2F;3以下</li>
+<li><strong>使用版本号标注JS、CSS等资源</strong>，让用户及时获取到最新的代码</li>
+<li><strong>位置</strong>，通常CSS在前，JS在后。基础的JS文件，如日志，polyfill可以放在头部</li>
+<li><strong>避免空src地址</strong>，在某些浏览器中可能会导致增加一个无效的http请求</li>
+<li><strong>禁止CSS表达式</strong>，会让页面多次执行计算，造成卡顿等性能问题</li>
+<li><strong>避免空css规则</strong>，降低渲染成本</li>
+<li><strong>避免直接设置元素style</strong>，不利于复用和缓存，不过有些情况下确实是没有办法的办法</li>
+</ul>
+<h3 id="后台接口"><a href="#后台接口" class="headerlink" title="后台接口"></a>后台接口</h3><ul>
+<li><strong>接口合并</strong>，尽量减少http请求次数</li>
+<li><strong>缓存</strong>，在一些数据新旧敏感性不高的场景下，缓存接口数据</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1300,271 +1464,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/05/17/Frontend-FAQ-part2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/05/17/Frontend-FAQ-part2/" class="post-title-link" itemprop="url">前端常见面试问题 part 2</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-05-17 15:16:27" itemprop="dateCreated datePublished" datetime="2017-05-17T15:16:27+08:00">2017-05-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/05/17/Frontend-FAQ-part2/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/17/Frontend-FAQ-part2/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.1k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>下面的大部分问题来自Github的这个<a target="_blank" rel="noopener" href="https://github.com/h5bp/Front-end-Developer-Interview-Questions">仓库</a>，排名不分先后</p>
-</blockquote>
-<h3 id="18-Vue和React框架的对比"><a href="#18-Vue和React框架的对比" class="headerlink" title="18. Vue和React框架的对比"></a>18. Vue和React框架的对比</h3><p>先说相同之处，Vue和React都是优秀的MVVM框架。具有<strong>响应式设计</strong>的种种特点，因此<strong>数据驱动</strong>是使用这两种框架不能忘的出发点。正如上一个问题提到的那样，开发者只需处理好数据，让框架去处理易错的UI。同时，<strong>组件化</strong>前端开发流程也是它们强调的一点，用组件化之名行代码重用之实，通过组件积木去构建整个页面。最后，它们不约而同地使用<strong>虚拟DOM树</strong>（vDOM）（Vue是在2.0引入的）抽象页面的节点，通过优化的diff算法减少频繁的DOM操作，减少交互的响应时间。另外，在最新的版本中，Vue和React的源码分别通过<a target="_blank" rel="noopener" href="https://flow.org/">Flow</a>和<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">TypeScript</a>加入类型约束，增强可读性和健壮性。</p>
-<p>两者同时也有MVVM框架共同的短板，把过多的渲染放在客户端，在页面元素复杂时，会加大交互的延迟。同时会影响首屏时间。</p>
-<p>再说它们的不同之处，不同之处基本都在使用细节上。</p>
-<ul>
-<li>Vue通常把网页模板写在<code>template</code>属性中，默认不支持JSX语法（可以通过插件支持）。React中则是写在render里</li>
-<li>Vue糅合了Angular 1.x的特点，通过一些内置的自定义标签属性减少开发者的代码量。React则更加纯粹，少了这些预设的框架</li>
-<li>Vue使用<code>Object.defineProperty</code>实现数据绑定，React通过<code>setState</code>显式更新依赖。前者更加酷和自然，但是在编程风格不好时，容易出现难以debug的错误。React推荐immutable Object，每次更新时使用新对象更新自身<code>state</code>，出错的概率更低。</li>
-<li>Vue和React在组件生命周期上有些细微的差别。Vue的生命周期更加简明，在create，mount，update，destroy前后设置钩子函数，React在state改变前后也会有钩子函数</li>
-<li>Vue的脚手架使用起来较React更加顺手（个人感觉），单文件.vue的组织方式，内部支持模板语言jade、ejs，预处理语言coffeescript，sass等。React的构建方式则更加自由。</li>
-<li>React的社区较之Vue更为活跃些，流行的库要更多，脚手架中的库更多是爱好者自己开发的。Vue和React生态圈中都有路由和状态管理器的工具，其中Vue的都是官方开发的。</li>
-</ul>
-<h3 id="19-TCP三次握手，四次挥手过程"><a href="#19-TCP三次握手，四次挥手过程" class="headerlink" title="19. TCP三次握手，四次挥手过程"></a>19. TCP三次握手，四次挥手过程</h3><p>过程参考下图。</p>
-<p><img src="/blog/images/tcp.png"></p>
-<p><img src="/blog/images/tcp2.png"></p>
-<p>因为断开连接时数据可能并未传输完成，所以挥手时要多一步。</p>
-<h3 id="20-CSS预处理语言"><a href="#20-CSS预处理语言" class="headerlink" title="20. CSS预处理语言"></a>20. CSS预处理语言</h3><p>Sass和Less。Sass支持变量的定义和使用，有语法控制结构，同时支持<code>@mixin</code>定义mixin和<code>@function</code>定义函数。更多介绍可以看我之前的<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/book.html#sass">一段笔记</a>。</p>
-<p>less语法使用上和Sass相近，采用JavaScript实现。支持本地和在线解析。本人没有用过，更多特性参考<a target="_blank" rel="noopener" href="http://lesscss.org/features/">官网</a>。</p>
-<h3 id="21-JS里的错误和异常处理"><a href="#21-JS里的错误和异常处理" class="headerlink" title="21. JS里的错误和异常处理"></a>21. JS里的错误和异常处理</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/try...catch">try catch</a>语句块捕获错误，catch块接受一个参数作为错误对象。对象的message属性会给出错误的详细信息。catch后还可以接上<code>finally</code>关键字，finally语句块在错误处理后必定执行。throw语句可以抛出错误。</p>
-<h3 id="22-闭包"><a href="#22-闭包" class="headerlink" title="22. 闭包"></a>22. 闭包</h3><p>闭包是JavaScript中比较有特色的概念。它和JS中的作用域链（见问题4）概念密切相关。闭包发生在函数中定义的函数，在外层函数退出后，其作用域环境通过作用域链仍然保存在存活的内部环境中。利用这种特点，可以实现诸如状态保存，封装等特殊性质。</p>
-<p>值得注意的是，内层函数的不合理操作会导致内存泄漏。且大量使用闭包会导致性能问题。不要过度依赖闭包。</p>
-<h3 id="23-列举一些RESTful操作名"><a href="#23-列举一些RESTful操作名" class="headerlink" title="23. 列举一些RESTful操作名"></a>23. 列举一些RESTful操作名</h3><p>GET&#x2F;POST&#x2F;DELETE&#x2F;UPDATE&#x2F;PUT等</p>
-<h3 id="24-列举一些CSS中的长度单位"><a href="#24-列举一些CSS中的长度单位" class="headerlink" title="24. 列举一些CSS中的长度单位"></a>24. 列举一些CSS中的长度单位</h3><p><span id="question24"></span></p>
-<p>固定长度：</p>
-<ul>
-<li>px 像素点</li>
-<li>mm 毫米</li>
-<li>cm 厘米</li>
-<li>in 英寸</li>
-<li>pt 磅（1&#x2F;72英寸）</li>
-<li>pc 活字（1&#x2F;6英寸）</li>
-</ul>
-<p>相对长度：</p>
-<ul>
-<li>em 以字体大小(<code>font-size</code>)为单位</li>
-<li>ex 以小写字母大小为单位</li>
-<li>rem 以根元素（默认为<code>&lt;html&gt;</code>）的字体大小为单位，用于自适应布局</li>
-<li>vh 视口高度的1&#x2F;100</li>
-<li>vw 视口宽度的1&#x2F;100</li>
-<li>vmin 视口宽高较小值的1&#x2F;100</li>
-<li>vmax 视口宽高较大值的1&#x2F;100</li>
-</ul>
-<h3 id="25-前端职责"><a href="#25-前端职责" class="headerlink" title="25. 前端职责"></a>25. 前端职责</h3><p>狭义地来说是实现UI设计师的设计稿和UE、UX的交互细节。宏观来说，是借助浏览器在技术上处理和用户交互的所有环节。近些年来，借助native的帮助，前端还可以实现后台的业务部分。</p>
-<h3 id="26-职业规划"><a href="#26-职业规划" class="headerlink" title="26. 职业规划"></a>26. 职业规划</h3><p>略</p>
-<h3 id="27-获取新鲜资讯的方式"><a href="#27-获取新鲜资讯的方式" class="headerlink" title="27. 获取新鲜资讯的方式"></a>27. 获取新鲜资讯的方式</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://uptodate.frontendrescue.org/zh/">这个</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.echojs.com/">Echo JS</a></li>
-<li><a target="_blank" rel="noopener" href="https://juejin.im/welcome/frontend">掘金</a></li>
-<li>一些awesome的集锦，诸如<a target="_blank" rel="noopener" href="https://github.com/syaning/awesome-frontend">这个</a></li>
-<li>知乎，github等</li>
-</ul>
-<h3 id="28-前端模块化"><a href="#28-前端模块化" class="headerlink" title="28. 前端模块化"></a>28. 前端模块化</h3><p>模块化规范包括CommonJS，CMD（SeaJS），AMD（RequireJS）等。我此前做过一个小型的<a target="_blank" rel="noopener" href="http://shenlvmeng.github.io/book.html#commonjs">笔记</a>。</p>
-<h3 id="29-position类型"><a href="#29-position类型" class="headerlink" title="29. position类型"></a>29. position类型</h3><p>static, relative, absolute, fix四种。</p>
-<ul>
-<li>static 正常文档流</li>
-<li>relative 正常文档流，指定<code>top</code>, <code>left</code>等CSS属性相对原位置移动</li>
-<li>absolute 脱离文档流，相对上一个非static元素定位</li>
-<li>fix 脱离文档流，相对html定位</li>
-</ul>
-<p>通常建议使用正常文档流减少潜在bug。绘制复杂动画时，建议使用脱离文档流的布局。</p>
-<h3 id="30-盒模型"><a href="#30-盒模型" class="headerlink" title="30. 盒模型"></a>30. 盒模型</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Introduction_to_the_CSS_box_model">盒模型</a>意为所有渲染的元素都是一个个的矩形。矩形区域内包含<code>margin</code>, <code>border</code>, <code>padding</code>和<code>content</code>4层。CSS属性中只有<strong>两种</strong>盒模型：<code>border-box</code>和<code>content-box</code>。后者是默认值。可以通过<code>box-sizing</code>属性设置。</p>
-<h3 id="31-使用原生JS发送AJAX"><a href="#31-使用原生JS发送AJAX" class="headerlink" title="31. 使用原生JS发送AJAX"></a>31. 使用原生JS发送AJAX</h3><p>现代浏览器中都通过XMLHttpRquest对象实现Ajax请求。古老的IE浏览器会有不同的实现方法（目前已经很少见了），如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Msxml2.XMLHTTP.6.0&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>通常使用XMLHttpRequest发送GET的方法如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">xhr.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;demo.php?id=1&quot;</span>);</span><br><span class="line">xhr.<span class="title function_">send</span>()</span><br></pre></td></tr></table></figure>
-
-<p>发送POST和其他复杂请求时，需要设置request header，在需要接受AJAX返回时，还可以监听readyState的change事件<br>，大致像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">xhr.<span class="title function_">open</span>(<span class="string">&quot;POST&quot;</span>, <span class="string">&quot;ajax_post.php&quot;</span>);</span><br><span class="line">xhr.<span class="title function_">setRequestHeader</span>(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">xhr.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (xhr.<span class="property">readyState</span> === <span class="number">4</span> &amp;&amp; xhr.<span class="property">status</span> === <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;ok&quot;</span> + xhr.<span class="property">responseText</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>XMLHttpRequest2中又引入了进度，跨域，中止等新特性。</p>
-<p>另外，使用新的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch">Fetch API</a>也可以完成Ajax请求。Fetch提出的目标是提供访问和操纵HTTP的接口，异步的获取网络资源。它和XMLHttpRequst的区别是：</p>
-<ul>
-<li>即使响应是404或500，返回的Promise也会正常解决</li>
-<li>默认情况下，fetch在服务端不会发送或接受任何cookies</li>
-</ul>
-<p>在Ajax需要跨域时，最常用的方法是使用jsonp的形式实现。不过目前通过XMLHttpRequest2或fetch也都能完成跨域请求。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">jsonp</span>(<span class="params">url, success</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> ud = <span class="string">&#x27;_&#x27;</span> + +<span class="keyword">new</span> <span class="title class_">Date</span>,</span><br><span class="line">      script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>),</span><br><span class="line">      head = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;head&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">          || <span class="variable language_">document</span>.<span class="property">documentElement</span>;</span><br><span class="line">  <span class="variable language_">window</span>[ud] = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    head.<span class="title function_">removeChild</span>(script);</span><br><span class="line">    success &amp;&amp; <span class="title function_">success</span>(data);</span><br><span class="line">  &#125;;</span><br><span class="line">  script.<span class="property">src</span> = url.<span class="title function_">replace</span>(<span class="string">&#x27;callback=?&#x27;</span>, <span class="string">&#x27;callback=&#x27;</span> + ud);</span><br><span class="line">  head.<span class="title function_">appendChild</span>(script);</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">jsonp</span>(<span class="string">&#x27;http://soundcloud.com/oembed?url=http%3A//soundcloud.com/forss/flickermood&amp;format=js&amp;callback=?&#x27;</span>, <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h3 id="31-如何加快访问速度"><a href="#31-如何加快访问速度" class="headerlink" title="31. 如何加快访问速度"></a>31. 如何加快访问速度</h3><p>这个问题实际上很大，可以从各个方面去优化</p>
-<ul>
-<li>压缩并打包资源文件</li>
-<li>使用CDN存储资源文件</li>
-<li>设置缓存</li>
-<li>CSS sprites</li>
-<li>图片压缩</li>
-<li>图片懒加载</li>
-<li>合理的DOM层级设置</li>
-<li>为<code>&lt;script&gt;</code>标签设置<code>defer</code>或<code>async</code>或动态异步加载</li>
-<li>一般情况下，CSS在前，JS在后</li>
-<li>使用MVVM框架时，使用服务端渲染或预渲染</li>
-</ul>
-<h3 id="32-前端的未来发展"><a href="#32-前端的未来发展" class="headerlink" title="32. 前端的未来发展"></a>32. 前端的未来发展</h3><p>随着大前端的风吹来，前端工作在横向和纵向都获得了更多的机会。横向上，由PC端到移动端甚至有界面展示的智能终端。不过后两者需要记住native库的帮助。纵向上，在NodeJS的帮助下，后台的部分业务功能抽离出来交由前端完成，前端对界面有完整的控制，数据通过接口的形式向后台索取。现在看来，身为一个前端工程师，不仅要对HTML，CSS，JavaScript老三样了如指掌，对Android或iOS也渐渐有了些要求。</p>
-<h3 id="33-CSS-selector的优先级顺序"><a href="#33-CSS-selector的优先级顺序" class="headerlink" title="33. CSS selector的优先级顺序"></a>33. CSS selector的优先级顺序</h3><p>在<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm#Style_sheets">how browsers work</a>中有介绍。根据<a target="_blank" rel="noopener" href="https://www.w3.org/TR/selectors/#specificity">CSS3 selectors specificity</a>中的定义，一个选择器的优先级计算如下</p>
-<ol>
-<li>如果声明来自于style属性，而不是带有选择器的规则，则记为1，否则记为0 (&#x3D; a)</li>
-<li>记为选择器中ID属性的个数 (&#x3D; b)<br>3.记为选择器中其他属性和伪类的个数 (&#x3D; c)</li>
-<li>记为选择器中元素名称和伪元素的个数 (&#x3D; d)</li>
-</ol>
-<p>将四个数字按a-b-c-d这样连接起来（位于大数进制的数字系统中），构成特异性。所使用的进制取决于上述类别中的最高计数。最终决定优先级顺序。简而言之就是，style &gt; id &gt; class &gt; tag &gt; pseudo class，统计情况下看个数，有<code>!important</code>时，以<code>!important</code>为准。</p>
-<h3 id="34-连等的赋值顺序"><a href="#34-连等的赋值顺序" class="headerlink" title="34. 连等的赋值顺序"></a>34. 连等的赋值顺序</h3><p>问题是，有这样一段代码，问原理是什么：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> bar = foo;</span><br><span class="line">foo.<span class="property">x</span> = foo = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(foo.<span class="property">x</span>); <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-
-<p>我们来细化一下过程，首先我们要明确JavaScript中对象是引用类型：</p>
-<ul>
-<li>第一句里，首先创建了一个字面量对象，并将foo指向之</li>
-<li>第二句里，将foo赋值给bar，即bar也指向<code>&#123; n: 1 &#125;</code>这个对象</li>
-<li>第三句里，又创建了一个<code>&#123; n: 2 &#125;</code>的对象，首先寻找foo指向对象中是否有x属性，没有时则新建一个x属性指向这个字面量对象，接着改变foo存储的地址，指向这个新的对象。</li>
-<li>第四句里，由于新的对象没有x属性，<code>foo.x</code>将返回<code>undefined</code></li>
-</ul>
-<p>这时，如果我们<code>console.log(bar)</code>结果将是{x: {n: 2}, n: 1}&#96;。</p>
-<h3 id="35-JavaScript的hoist行为"><a href="#35-JavaScript的hoist行为" class="headerlink" title="35. JavaScript的hoist行为"></a>35. JavaScript的hoist行为</h3><p><code>hoist</code>特性又叫<strong>变量声明提升</strong>。是JavaScript中比较有特点的特性。意为将作用域中所有变量（包括函数）声明提升到语句的开头。如下面的语句</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fun</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>等同于</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fun</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line">a = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-<p>需要注意的是当通过函数表达式声明函数时，会提示<code>fun</code>未定义。因为，此时的语句等同于</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a;</span><br><span class="line"><span class="keyword">var</span> fun;</span><br><span class="line">a = <span class="number">1</span>;</span><br><span class="line"><span class="title function_">fun</span>(a);</span><br><span class="line"></span><br><span class="line">a = <span class="number">0</span>;</span><br><span class="line">fun = <span class="keyword">function</span>(<span class="params">num</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> num + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后，最佳的风格是所有的变量先声明再使用。这也是JSLint和JSHint等linter工具推荐的。</p>
-<h3 id="36-优雅降级和渐进增强"><a href="#36-优雅降级和渐进增强" class="headerlink" title="36. 优雅降级和渐进增强"></a>36. 优雅降级和渐进增强</h3><p>又名graceful degration和progressive enhancement。是两种开发的思路。前者意为针对最高级的浏览器设计开发，再保证向下兼容；后者意为针对低版本浏览器设计，保证基础性能，再追对现代浏览器追加效果，提高用户体验。</p>
-<h3 id="37-优化网页资源"><a href="#37-优化网页资源" class="headerlink" title="37. 优化网页资源"></a>37. 优化网页资源</h3><ol>
-<li>使用CDN</li>
-<li>分布存放</li>
-<li>CSS sprites</li>
-<li>disable etag</li>
-</ol>
-<h3 id="38-浏览器一次可以从同一domain加载多少资源"><a href="#38-浏览器一次可以从同一domain加载多少资源" class="headerlink" title="38. 浏览器一次可以从同一domain加载多少资源"></a>38. 浏览器一次可以从同一domain加载多少资源</h3><p>2~8，因浏览器而异。<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser/14768266#14768266">这里</a>有个非常全的表。</p>
-<h3 id="39-轮播图设计思路"><a href="#39-轮播图设计思路" class="headerlink" title="39. 轮播图设计思路"></a>39. 轮播图设计思路</h3><p>可以用display实现，配合渐变效果。需要看到幻灯片移动时，可以结合transform和scale实现，配合<code>overflow: hidden</code>。</p>
-<h3 id="40-CSS3的部分新特性"><a href="#40-CSS3的部分新特性" class="headerlink" title="40. CSS3的部分新特性"></a>40. CSS3的部分新特性</h3><ul>
-<li>border: <code>border-radius</code>，<code>border-image</code></li>
-<li>background: <code>background-size</code>，<code>background-origin</code></li>
-<li>text: <code>font-face</code>，<code>text-overflow</code>，<code>text-shadow</code>，<code>word-break</code>，<code>word-wrap</code></li>
-<li>transform: <code>translate</code>，<code>rotate</code>，<code>skew</code>，<code>scale</code></li>
-<li>transition: <code>transition</code>，<code>animation</code></li>
-<li>other: <code>box-shadow</code></li>
-</ul>
-<h3 id="41-ARIA"><a href="#41-ARIA" class="headerlink" title="41. ARIA"></a>41. ARIA</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">ARIA</a>全称Accessible Rich Internet Application。主旨是提升网页易用性，方便有阅读障碍的人使用。比较常用的属性有</p>
-<ul>
-<li><code>role</code> 当前元素的作用，</li>
-<li><code>&lt;label&gt;</code>, <code>aria-label</code> 元素名</li>
-<li><code>aria-hidden</code> 是否隐藏</li>
-</ul>
-<h3 id="42-CSS-animation和JavaScript-animation"><a href="#42-CSS-animation和JavaScript-animation" class="headerlink" title="42. CSS animation和JavaScript animation"></a>42. CSS animation和JavaScript animation</h3><p>前者方便简单，通过keyframe就可以画出动画，且浏览器会做一些优化，因此性能也比较好。后者更加灵活，可以暂停和反转，且支持交互性。更详细的分析参考<a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/design-and-ui/animations/css-vs-javascript?hl=zh-cn">这里</a></p>
-<h3 id="43-doctype是什么"><a href="#43-doctype是什么" class="headerlink" title="43. doctype是什么"></a>43. doctype是什么</h3><p>doctype出现在HTML4.1。用于规范HTML和XML文档格式，在推出时，HTML有3种标准可以选择：strict, transitional, frameset。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/strict.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">HTML</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//W3C//DTD HTML 4.01 Frameset//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/frameset.dtd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在HTML5中，只有一种doctype可以选择，那就是html：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="44-standard-mode和quirks-mode"><a href="#44-standard-mode和quirks-mode" class="headerlink" title="44. standard mode和quirks mode"></a>44. standard mode和quirks mode</h3><p>分别是标准模式和怪异模式。由于历史原因，为了兼容标准建立前就已存在的古老网站，浏览器存在着两种解析网页的模式。在怪异模式下，排版会模拟Navigator 4与Internet Explorer 5的非标准行为。为了支持在网络标准被广泛采用前，就已经建好的网站，这么做是必要的。在标准模式下，行为即（但愿如此）由HTML与CSS的规范描述的行为。在<code>&lt;!DOCTYPE&gt;</code>中指定<code>html</code>将自动启用标准模式。<a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/web/1310_shatao_quirks/">这里</a>有更多介绍。</p>
-<h3 id="45-XHTML和HTML"><a href="#45-XHTML和HTML" class="headerlink" title="45. XHTML和HTML"></a>45. XHTML和HTML</h3><p>XHTML伴随HTML4.01一同提出，使用更加严谨的语法。MIMEtype为<code>application/xhtml+xml</code>，比如：html元素需要有xml相关属性，元素名必须是小写字母，元素属性用<code>&quot;</code>包围不能为空值，在内容里不能有<code>&amp;</code>, 需要转义，包括其他特殊字符<code>&lt;&gt;</code>，空元素以<code>/&gt;</code>结尾。由于语法过于严苛，使用的人不多。未推出的XHTML1.1便被html5取代。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/blog/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/23/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1595,7 +1494,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:45</span>
+    <span title="站点阅读时长">29:47</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

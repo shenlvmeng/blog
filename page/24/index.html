@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">152</span>
+          <span class="site-state-item-count">153</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">469</span>
+        <span class="site-state-item-count">470</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,204 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/04/11/how-browsers-work-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/04/11/how-browsers-work-2/" class="post-title-link" itemprop="url">浏览器是如何工作的 下 布局与绘制</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-11 20:44:04" itemprop="dateCreated datePublished" datetime="2017-04-11T20:44:04+08:00">2017-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-05 15:54:18" itemprop="dateModified" datetime="2023-02-05T15:54:18+08:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/04/11/how-browsers-work-2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/11/how-browsers-work-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>上篇传送门：<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/10/how-browsers-work-1/">浏览器是如何工作的 上 解析与呈现</a></p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要翻译于Tali Garsiel在2009年10月的一篇介绍Webkit和Gecko内核的经典文章<a target="_blank" rel="noopener" href="http://taligarsiel.com/Projects/howbrowserswork1.htm">How browsers work</a>。尽管在面试和工作上用不到这么细节，但是学习浏览器的内部原理将让我们可以更好地理解一些最优开发实践的道理。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>呈现器在创建完成并添加到呈现树时，并不包含位置和大小信息。计算这些值的过程称为布局或重排。</p>
+<p>HTML 采用基于流的布局模型，这意味着大多数情况下只要一次遍历就能计算出几何信息。处于流中靠后位置元素通常不会影响靠前位置元素的几何特征，因此布局可以按从左至右、从上至下的顺序遍历文档。但是也有例外情况，比如<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en/docs/Notes_on_HTML_Reflow">HTML表格的计算</a>就需要不止一次的遍历。</p>
+<p>布局是一个递归的过程。它从根呈现器（对应于HTML文档的<code>&lt;html&gt;</code>元素）开始，然后递归遍历部分或所有的框架层次结构，为每一个需要计算的呈现器计算几何信息。</p>
+<p>根呈现器的位置是0,0，其尺寸为视口（也就是浏览器窗口的可见区域）。所有的呈现器都有一个<code>layout</code>或者<code>reflow</code>方法，每一个呈现器都会调用其需要进行布局的子代的<code>layout</code>方法。</p>
+<h4 id="Dirty-Bit系统"><a href="#Dirty-Bit系统" class="headerlink" title="Dirty Bit系统"></a>Dirty Bit系统</h4><p>为避免对所有细小更改都进行整体布局，浏览器采用了一种<strong>dirty bit</strong>系统。如果某个呈现器发生了更改，或者将自身及其子代标注为dirty，则需要进行布局。</p>
+<p>有两种标记：<code>dirty</code>和<code>children are dirty</code>。<code>children are dirty</code>表示尽管呈现器自身没有变化，但它至少有一个子代需要布局。</p>
+<h4 id="全局与增量布局"><a href="#全局与增量布局" class="headerlink" title="全局与增量布局"></a>全局与增量布局</h4><p>全局布局是指触发了整个呈现树范围的布局，触发原因可能包括：</p>
+<ul>
+<li>影响所有呈现器的全局样式更改，例如字体大小更改（因此<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/04/06/mobile-uiue-experience/">这里</a>提到的自适应JavaScript代码一定要放在<code>body</code>前，否则会有白屏闪动现象出现）。</li>
+<li>屏幕大小调整，即<code>resize</code>事件。</li>
+</ul>
+<p>增量布局是指只对dirty呈现器进行布局（这样可能存在需要进行额外布局的弊端）。当呈现器为 dirty 时，会异步触发增量布局。例如，当来自网络的额外内容添加到 DOM 树之后，新的呈现器附加到了呈现树中。</p>
+<p><img src="/blog/images/browser/reflow.png"></p>
+<p>增量布局是异步执行的。Firefox 将增量布局的”reflow命令”加入队列，而调度程序会触发这些命令的批量执行。WebKit也有用于执行增量布局的计时器：对呈现树进行遍历，并对dirty呈现器进行布局。请求样式信息（例如<code>offsetHeight</code>）的脚本可同步触发增量布局。</p>
+<p>如果布局是由“大小调整”或呈现器的位置（而非大小）改变而触发的，那么可以从缓存中获取呈现器的大小，而无需重新计算。<br>另外，在某些情况下，只有一个子树进行了修改，因此无需从根节点开始布局。这适用于在本地进行更改而不影响周围元素的情况，例如在文本字段中插入文本（否则每次键盘输入都将触发从根节点开始的布局）。</p>
+<h4 id="布局过程"><a href="#布局过程" class="headerlink" title="布局过程"></a>布局过程</h4><p>布局过程通常遵守下面的模式：</p>
+<ol>
+<li>父呈现器确定自己的宽度。</li>
+<li>父呈现器依次处理子呈现器，并且：</li>
+<li>放置子呈现器（设置 x,y 坐标）。</li>
+<li>如果有必要，调用子呈现器的布局（如果子呈现器是dirty的，或者这是全局布局，或出于其他某些原因），这会计算子呈现器的高度。</li>
+<li>父呈现器根据子呈现器的累加高度以及边距和补白的高度来设置自身高度，此值也可供父呈现器的父呈现器使用。</li>
+<li>将其 dirty 位设置为 false。</li>
+</ol>
+<h4 id="宽度和换行"><a href="#宽度和换行" class="headerlink" title="宽度和换行"></a>宽度和换行</h4><p>呈现器宽度是根据容器块的宽度、呈现器样式中的“width”属性以及边距和边框计算得出的。例如，下面有一个<code>div</code>标签：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;width:30%&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Webkit将像下面一样计算它的宽度（<code>RenderBox</code>类的<code>calcWidth</code>方法）：</p>
+<ol>
+<li>容器的宽度取容器的availableWidth和0中的较大值。availableWidth在本例中相当于contentWidth</li>
+<li>元素的宽度是<code>width</code>样式属性。它会根据容器宽度的百分比计算得出一个绝对值。</li>
+<li>然后再加上水平方向的边框和补白。</li>
+</ol>
+<p>现在计算得出的是<strong>preferred width</strong>。然后需要计算最小宽度和最大宽度。如果首选宽度大于最大宽度，那么应使用最大宽度。如果首选宽度小于最小宽度（最小的不可分单位），那么应使用最小宽度。最后，这些值会缓存起来，以用于需要布局而宽度不变的情况。</p>
+<p>如果呈现器在布局过程中需要换行，会立即停止布局，并告知其父代需要换行。父代会创建额外的呈现器，并在其上布局。</p>
+<h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><p>在绘制阶段，系统会遍历呈现树，并调用呈现器的<code>paint</code>方法，将呈现器的内容显示在屏幕上。和布局一样，绘制也分为<strong>全局</strong>（绘制整个呈现树）和<strong>增量</strong>两种。在增量绘制中，部分呈现器发生了更改，但是不会影响整个树。更改后的呈现器将其在屏幕上对应的矩形区域设为无效，这导致 OS 将其视为一块“dirty 区域”，并生成“paint”事件。OS会很巧妙地将多个区域合并成一个。</p>
+<p><a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS21/zindex.html">CSS2.1规范</a>描述了绘制的顺序，这个顺序实际上也是堆栈上下文的顺序。这些堆栈会从后往前绘制，因此这样的顺序会影响绘制。块呈现器的堆栈顺序如下：</p>
+<ol>
+<li>背景颜色</li>
+<li>背景图片</li>
+<li>边框</li>
+<li>子代元素</li>
+<li>轮廓（outline）</li>
+</ol>
+<h4 id="浏览器特点"><a href="#浏览器特点" class="headerlink" title="浏览器特点"></a>浏览器特点</h4><p>Firefox会遍历整个呈现树，为绘制的矩形建立一个显示列表。列表中按照正确的绘制顺序（先是呈现器的背景，然后是边框等等）包含了与矩形相关的呈现器。这样等到重新绘制的时候，只需遍历一次呈现树，而不用多次遍历（绘制所有背景，然后绘制所有图片，再绘制所有边框等等）。同时Firefox对此过程进行了优化，也就是不添加隐藏的元素，例如被不透明元素完全遮挡住的元素。</p>
+<p>Webkit在重新绘制之前，则会将原来的矩形另存为一张位图，然后只绘制新旧矩形之间的差异部分。 </p>
+<h3 id="动态变化"><a href="#动态变化" class="headerlink" title="动态变化"></a>动态变化</h3><p>在发生变化时，<strong>回流</strong>（reflow）和<strong>重绘</strong>（repaint）可能会被触发，浏览器会尽可能做出最小的响应。例如，元素的颜色改变后，只会对该元素进行重绘。元素的位置改变后，只会对该元素及其子元素（可能还有同级元素）进行布局和重绘。添加DOM节点后，会对该节点进行布局和重绘。一些重大变化（例如增大<code>html</code>元素的字体）会导致缓存无效，使得整个呈现树都会进行重新布局和绘制。</p>
+<p>无论是回流还是重绘都会增加浏览器的工作负担，带来响应时间。其中回流的计算代价更大，应该尽量避免。有一些<a target="_blank" rel="noopener" href="https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/">方法</a>可以用来减少回流的出现。</p>
+<h3 id="渲染引擎的线程"><a href="#渲染引擎的线程" class="headerlink" title="渲染引擎的线程"></a>渲染引擎的线程</h3><p>呈现引擎采用了单线程。几乎所有操作（除了网络操作）都是在单线程中进行的。在Firefox和Safari中，该线程就是浏览器的主线程。而在Chrome浏览器中，该线程是标签进程的主线程。</p>
+<p>网络操作可由多个并行线程执行。并行连接数是有限的（通常为2至6个，以Firefox为例是6个）。</p>
+<h4 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h4><p>浏览器的主线程是事件循环（Event Loop）。它是一个无限循环，永远处于接受活动状态，并等待事件（如布局和绘制事件）发生，并进行处理。这是Firefox中关于主事件循环的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (!mExiting)</span><br><span class="line">  <span class="built_in">NS_ProcessNextEvent</span>(thread);</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSS2-1可视化模型"><a href="#CSS2-1可视化模型" class="headerlink" title="CSS2.1可视化模型"></a>CSS2.1可视化模型</h3><blockquote>
+<p>注：<a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS/#css-level-3">CSS3</a>是将CSS2模块化并对其中部分模块进行更新的版本。它仍使用CSS2.1规范作为其核心。改进的模块并不会与CSS2.1相冲突。因此这里原文关于CSS2.1的描述并不算过时</p>
+</blockquote>
+<h4 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h4><p><img src="/blog/images/browser/boxdim.png"></p>
+<p><a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS2/box.html">CSS盒模型</a>描述的是针对文档树中的元素而生成，并根据可视化格式模型进行布局的矩形框。每个框都有一个内容区域（例如文本、图片等），还有可选的周围补白、边框和边距区域。如上图所示。</p>
+<p>每一个节点都会生成 0..n 个这样的框。所有元素都有一个“display”属性，决定了它们所对应生成的框类型。默认值是inline，但是浏览器样式表设置了其他默认值。例如，<code>&lt;div&gt;</code>元素的<code>display</code>属性默认值是<code>block</code>。W3C上有全面的<a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS2/sample.html">默认样式表</a>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">html</span>, <span class="selector-tag">address</span>,</span><br><span class="line"><span class="selector-tag">blockquote</span>,</span><br><span class="line"><span class="selector-tag">body</span>, <span class="selector-tag">dd</span>, <span class="selector-tag">div</span>,</span><br><span class="line"><span class="selector-tag">dl</span>, <span class="selector-tag">dt</span>, <span class="selector-tag">fieldset</span>, <span class="selector-tag">form</span>,</span><br><span class="line">frame, frameset,</span><br><span class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>,</span><br><span class="line"><span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>, noframes,</span><br><span class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">p</span>, <span class="selector-tag">ul</span>, center,</span><br><span class="line">dir, hr, <span class="selector-tag">menu</span>, pre   &#123; <span class="attribute">display</span>: block; <span class="attribute">unicode-bidi</span>: embed &#125;</span><br><span class="line"><span class="selector-tag">li</span>              &#123; <span class="attribute">display</span>: list-item &#125;</span><br><span class="line">head            &#123; <span class="attribute">display</span>: none &#125;</span><br><span class="line"><span class="selector-tag">table</span>           &#123; <span class="attribute">display</span>: table &#125;</span><br><span class="line"><span class="selector-tag">tr</span>              &#123; <span class="attribute">display</span>: table-row &#125;</span><br><span class="line"><span class="selector-tag">thead</span>           &#123; <span class="attribute">display</span>: table-header-group &#125;</span><br><span class="line"><span class="selector-tag">tbody</span>           &#123; <span class="attribute">display</span>: table-row-group &#125;</span><br><span class="line"><span class="selector-tag">tfoot</span>           &#123; <span class="attribute">display</span>: table-footer-group &#125;</span><br><span class="line">col             &#123; <span class="attribute">display</span>: table-column &#125;</span><br><span class="line">colgroup        &#123; <span class="attribute">display</span>: table-column-group &#125;</span><br><span class="line"><span class="selector-tag">td</span>, <span class="selector-tag">th</span>          &#123; <span class="attribute">display</span>: table-cell &#125;</span><br><span class="line"><span class="selector-tag">caption</span>         &#123; <span class="attribute">display</span>: table-caption &#125;</span><br><span class="line"><span class="selector-tag">th</span>              &#123; <span class="attribute">font-weight</span>: bolder; <span class="attribute">text-align</span>: center &#125;</span><br><span class="line"><span class="selector-tag">caption</span>         &#123; <span class="attribute">text-align</span>: center &#125;</span><br><span class="line"><span class="selector-tag">body</span>            &#123; <span class="attribute">margin</span>: <span class="number">8px</span> &#125;</span><br><span class="line"><span class="selector-tag">h1</span>              &#123; <span class="attribute">font-size</span>: <span class="number">2em</span>; <span class="attribute">margin</span>: .<span class="number">67em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h2</span>              &#123; <span class="attribute">font-size</span>: <span class="number">1.5em</span>; <span class="attribute">margin</span>: .<span class="number">75em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h3</span>              &#123; <span class="attribute">font-size</span>: <span class="number">1.17em</span>; <span class="attribute">margin</span>: .<span class="number">83em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h4</span>, <span class="selector-tag">p</span>,</span><br><span class="line"><span class="selector-tag">blockquote</span>, <span class="selector-tag">ul</span>,</span><br><span class="line"><span class="selector-tag">fieldset</span>, <span class="selector-tag">form</span>,</span><br><span class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">dl</span>, dir,</span><br><span class="line"><span class="selector-tag">menu</span>            &#123; <span class="attribute">margin</span>: <span class="number">1.12em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h5</span>              &#123; <span class="attribute">font-size</span>: .<span class="number">83em</span>; <span class="attribute">margin</span>: <span class="number">1.5em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h6</span>              &#123; <span class="attribute">font-size</span>: .<span class="number">75em</span>; <span class="attribute">margin</span>: <span class="number">1.67em</span> <span class="number">0</span> &#125;</span><br><span class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>,</span><br><span class="line"><span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>, <span class="selector-tag">b</span>,</span><br><span class="line"><span class="selector-tag">strong</span>          &#123; <span class="attribute">font-weight</span>: bolder &#125;</span><br><span class="line"><span class="selector-tag">blockquote</span>      &#123; <span class="attribute">margin-left</span>: <span class="number">40px</span>; <span class="attribute">margin-right</span>: <span class="number">40px</span> &#125;</span><br><span class="line"><span class="selector-tag">i</span>, <span class="selector-tag">cite</span>, <span class="selector-tag">em</span>,</span><br><span class="line"><span class="selector-tag">var</span>, <span class="selector-tag">address</span>    &#123; <span class="attribute">font-style</span>: italic &#125;</span><br><span class="line">pre, tt, <span class="selector-tag">code</span>,</span><br><span class="line"><span class="selector-tag">kbd</span>, <span class="selector-tag">samp</span>       &#123; <span class="attribute">font-family</span>: monospace &#125;</span><br><span class="line">pre             &#123; <span class="attribute">white-space</span>: pre &#125;</span><br><span class="line"><span class="selector-tag">button</span>, <span class="selector-tag">textarea</span>,</span><br><span class="line"><span class="selector-tag">input</span>, select   &#123; <span class="attribute">display</span>: inline-block &#125;</span><br><span class="line">big             &#123; <span class="attribute">font-size</span>: <span class="number">1.17em</span> &#125;</span><br><span class="line">small, sub, <span class="selector-tag">sup</span> &#123; <span class="attribute">font-size</span>: .<span class="number">83em</span> &#125;</span><br><span class="line">sub             &#123; <span class="attribute">vertical-align</span>: sub &#125;</span><br><span class="line"><span class="selector-tag">sup</span>             &#123; <span class="attribute">vertical-align</span>: super &#125;</span><br><span class="line"><span class="selector-tag">table</span>           &#123; <span class="attribute">border-spacing</span>: <span class="number">2px</span>; &#125;</span><br><span class="line"><span class="selector-tag">thead</span>, <span class="selector-tag">tbody</span>,</span><br><span class="line"><span class="selector-tag">tfoot</span>           &#123; <span class="attribute">vertical-align</span>: middle &#125;</span><br><span class="line"><span class="selector-tag">td</span>, <span class="selector-tag">th</span>, <span class="selector-tag">tr</span>      &#123; <span class="attribute">vertical-align</span>: inherit &#125;</span><br><span class="line">s, strike, <span class="selector-tag">del</span>  &#123; <span class="attribute">text-decoration</span>: line-through &#125;</span><br><span class="line">hr              &#123; <span class="attribute">border</span>: <span class="number">1px</span> inset &#125;</span><br><span class="line"><span class="selector-tag">ol</span>, <span class="selector-tag">ul</span>, dir,</span><br><span class="line"><span class="selector-tag">menu</span>, <span class="selector-tag">dd</span>        &#123; <span class="attribute">margin-left</span>: <span class="number">40px</span> &#125;</span><br><span class="line"><span class="selector-tag">ol</span>              &#123; <span class="attribute">list-style-type</span>: decimal &#125;</span><br><span class="line"><span class="selector-tag">ol</span> <span class="selector-tag">ul</span>, <span class="selector-tag">ul</span> <span class="selector-tag">ol</span>,</span><br><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">ul</span>, <span class="selector-tag">ol</span> <span class="selector-tag">ol</span>    &#123; <span class="attribute">margin-top</span>: <span class="number">0</span>; <span class="attribute">margin-bottom</span>: <span class="number">0</span> &#125;</span><br><span class="line">u, <span class="selector-tag">ins</span>          &#123; <span class="attribute">text-decoration</span>: underline &#125;</span><br><span class="line">br<span class="selector-pseudo">:before</span>       &#123; <span class="attribute">content</span>: <span class="string">&quot;\A&quot;</span>; <span class="attribute">white-space</span>: pre-line &#125;</span><br><span class="line">center          &#123; <span class="attribute">text-align</span>: center &#125;</span><br><span class="line"><span class="selector-pseudo">:link</span>, <span class="selector-pseudo">:visited</span> &#123; <span class="attribute">text-decoration</span>: underline &#125;</span><br><span class="line"><span class="selector-pseudo">:focus</span>          &#123; <span class="attribute">outline</span>: thin dotted invert &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Begin bidirectionality settings (do not change) */</span></span><br><span class="line">BDO<span class="selector-attr">[DIR=<span class="string">&quot;ltr&quot;</span>]</span>  &#123; <span class="attribute">direction</span>: ltr; <span class="attribute">unicode-bidi</span>: bidi-override &#125;</span><br><span class="line">BDO<span class="selector-attr">[DIR=<span class="string">&quot;rtl&quot;</span>]</span>  &#123; <span class="attribute">direction</span>: rtl; <span class="attribute">unicode-bidi</span>: bidi-override &#125;</span><br><span class="line"></span><br><span class="line">*<span class="selector-attr">[DIR=<span class="string">&quot;ltr&quot;</span>]</span>    &#123; <span class="attribute">direction</span>: ltr; <span class="attribute">unicode-bidi</span>: embed &#125;</span><br><span class="line">*<span class="selector-attr">[DIR=<span class="string">&quot;rtl&quot;</span>]</span>    &#123; <span class="attribute">direction</span>: rtl; <span class="attribute">unicode-bidi</span>: embed &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> print &#123;</span><br><span class="line">  <span class="selector-tag">h1</span>            &#123; <span class="attribute">page-break-before</span>: always &#125;</span><br><span class="line">  <span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>,</span><br><span class="line">  <span class="selector-tag">h4</span>, <span class="selector-tag">h5</span>, <span class="selector-tag">h6</span>    &#123; <span class="attribute">page-break-after</span>: avoid &#125;</span><br><span class="line">  <span class="selector-tag">ul</span>, <span class="selector-tag">ol</span>, <span class="selector-tag">dl</span>    &#123; <span class="attribute">page-break-before</span>: avoid &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="定位方案"><a href="#定位方案" class="headerlink" title="定位方案"></a>定位方案</h4><p>CSS中有三种定位方案：</p>
+<ul>
+<li>普通：根据对象在文档中的位置进行定位，也就是说对象在呈现树中的位置和它在DOM树中的位置相似，并根据其框类型和尺寸进行布局。</li>
+<li>浮动：脱离文档流，对象先按照普通流进行布局，然后尽可能地向左或向右移动。</li>
+<li>绝对：完全脱离文档流，对象在呈现树中的位置和它在DOM树中的位置不同。</li>
+</ul>
+<p>定位方案是由“position”属性和“float”属性设置的。如果值是<code>static</code>和<code>relative</code>，就是普通流，如果值是 <code>absolute</code>和<code>fixed</code>，就是绝对定位。</p>
+<h4 id="盒类型"><a href="#盒类型" class="headerlink" title="盒类型"></a>盒类型</h4><ul>
+<li><code>block</code>：形成一个block，在浏览器窗口中拥有其自己的矩形区域。</li>
+<li><code>inline</code>：没有自己的 block，但是位于容器 block 内。</li>
+</ul>
+<p>block一个接一个地垂直排布，而inline则是水平排布。</p>
+<h4 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h4><ul>
+<li>相对定位：先按照普通方式定位，然后根据所需偏移量进行移动。</li>
+<li>浮动：浮动框会移动到行的左边或右边。有趣的特征在于，其他框会浮动在它的周围。</li>
+<li>绝对定位和固定定位：这种布局是准确定义的，与普通流无关。元素不参与普通流。尺寸是相对于容器而言的。在固定定位中，容器就是可视区域。</li>
+</ul>
+<p>更具体的分析可以参见CSS2.1中对normal flow，float和absolute做的<a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS2/visuren.html#comparison">讲解</a>。</p>
+<h4 id="层级"><a href="#层级" class="headerlink" title="层级"></a>层级</h4><p>这是由<code>z-index</code>属性指定的。它代表了框的第三个维度，也就是沿“z 轴”方向的位置。这些框分散到多个堆栈（称为堆栈上下文）中。在每一个堆栈中，会首先绘制后面的元素，然后在顶部绘制前面的元素，以便更靠近用户。如果出现重叠，新绘制的元素就会覆盖之前的元素。</p>
+<p>堆栈是按照<code>z-index</code>属性进行排序的。具有<code>z-index</code>属性的框形成了本地堆栈。视口具有外部堆栈。更多描述参考<a target="_blank" rel="noopener" href="https://www.w3.org/TR/CSS2/visuren.html#z-index">CSS2.1 z-index</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -973,188 +1171,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/29/javascript-async-programming-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/03/29/javascript-async-programming-2/" class="post-title-link" itemprop="url">JavaScript中的异步编程 下</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2017-03-29 14:28:06 / 修改时间：18:04:44" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">2017-03-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/03/29/javascript-async-programming-2/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/29/javascript-async-programming-2/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.9k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>本文启发于阮一峰老师的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2015/04/generator.html">深入掌握 ECMAScript 6 异步编程</a></p>
-</blockquote>
-<p><span></span></p>
-<blockquote>
-<p>上篇传送门<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-1/">JavaScript中的异步编程 上</a></p>
-</blockquote>
-<p>上篇说到了使用回调的思路解决JavaScript中异步编程的难题。可不论是显式的指定回调函数，通过事件绑定响应还是通过事件订阅、promise.then，都和逃不出回调的思路。写起来仍不够自然，且在批次回调任务时难以解决。</p>
-<p>有没有办法能使我们像平时写同步代码那样，来书写异步代码呢？ES6出现后，Generator对象给了我们这个机会。</p>
-<h3 id="生成器函数"><a href="#生成器函数" class="headerlink" title="生成器函数"></a>生成器函数</h3><p>提到生成器函数前，需要提到<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Coroutine">协程</a>(coroutine)这个概念。协程是轻量级用户态的线程。用户可以手动控制协程的暂停和继续，配合线程实现异步任务。协程间通过<code>yield</code>方式切换执行权，并交换信息。就像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">asyncFunc</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="comment">// 执行someFunc后交出执行权</span></span><br><span class="line">    <span class="keyword">var</span> t = <span class="keyword">yield</span> <span class="title function_">someFunc</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>协程在遇到<code>yield</code>关键字时交出自己的执行权，直到执行权返回。这里<code>someFunc</code>方法可以是一个异步操作。</p>
-<p>ES6中协程体现在Generator函数中。函数在<code>function</code>关键字后添加星号<code>*</code>以示和普通函数的区分。Generator函数是可以通过<code>yield</code>暂停执行的。比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* gen () &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">yield</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>(); </span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// 1</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
-
-<p>Generator函数的调用通过<code>next</code>方法完成。每次调用后会将函数流程移动到下一个yield语句处。yield的返回包含两个属性<code>value</code>和<code>done</code>。前者代表yield的返回值，后者代表生成器函数是否已经执行完毕。</p>
-<p>同时，每次调用<code>next</code>方法时，可以输入参数作为上个异步任务的返回值。调用<code>throw</code>方法可以向生成器函数内抛出错误。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* gen () &#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">yield</span> x;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>(); </span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// 1</span></span><br><span class="line">g.<span class="title function_">next</span>(<span class="number">2</span>); <span class="comment">// 2</span></span><br><span class="line">g.<span class="keyword">throw</span>(<span class="string">&#x27;some error&#x27;</span>) <span class="comment">// &#x27;some error&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>使用Generator函数封装一个异步操作，再通过执行器管理函数内部的异步流程。通过这种方式，在Generator函数中可以很方便地书写异步操作。例如，利用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch API</a>发起一次跨域请求。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">gen</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> text = <span class="keyword">yield</span> <span class="title function_">fetch</span>(<span class="string">&#x27;http://www.example.org/data.json&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(text);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>();</span><br><span class="line">g.<span class="title function_">next</span>().<span class="property">value</span>.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> data.<span class="title function_">json</span>();</span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">    g.<span class="title function_">next</span>(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>fetch API返回一个promise对象，通过为之指定<code>then</code>，处理fetch成功后的返回值。</p>
-<h3 id="co和koa"><a href="#co和koa" class="headerlink" title="co和koa"></a>co和koa</h3><p>我们上面提到了使用Generator还缺少的一样东西——执行器。使用Generator函数在其中通过yield返回Promise，但是外层还是需要在promise的then方法中书写<code>g.next(data)</code>来通知协程继续操作。<a target="_blank" rel="noopener" href="https://github.com/tj/co">co</a>函数库帮助我们<strong>完成了执行器的工作</strong>。</p>
-<p>以回调函数中完成读文件操作为例（注意：其中的readFile先被改写成返回thunk函数的格式，即只接收callback作为唯一的输入参数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> co = <span class="built_in">require</span>(<span class="string">&#x27;co&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">readFile</span>(<span class="params">path</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">callback</span>) &#123;</span><br><span class="line">        fs.<span class="title function_">readFile</span>(path, &#123;<span class="attr">encoding</span>: <span class="string">&#x27;utf-8&#x27;</span>&#125;, cb);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">gen</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file1.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d1);</span><br><span class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file2.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">co</span>(gen);</span><br></pre></td></tr></table></figure>
-<p>上面的代码里，为<code>co</code>函数传入Generator函数，就会自动依次执行其中的异步任务，并在返回一个Promise对象。因此，可以给<code>co</code>函数通过<code>then</code>的方式添加回调函数。</p>
-<h4 id="co"><a href="#co" class="headerlink" title="co"></a>co</h4><p>co的代码并不复杂，核心代码只有数十行。摘录如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">co</span>(<span class="params">gen</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> ctx = <span class="variable language_">this</span>;</span><br><span class="line">  <span class="keyword">var</span> args = slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">resolve, reject</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> gen === <span class="string">&#x27;function&#x27;</span>) gen = gen.<span class="title function_">apply</span>(ctx, args);</span><br><span class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen.<span class="property">next</span> !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">return</span> <span class="title function_">resolve</span>(gen);</span><br><span class="line"></span><br><span class="line">    <span class="title function_">onFulfilled</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">onFulfilled</span>(<span class="params">res</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> ret;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        ret = gen.<span class="title function_">next</span>(res);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">reject</span>(e);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">next</span>(ret);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">onRejected</span>(<span class="params">err</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> ret;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        ret = gen.<span class="keyword">throw</span>(err);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">reject</span>(e);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">next</span>(ret);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">next</span>(<span class="params">ret</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (ret.<span class="property">done</span>) <span class="keyword">return</span> <span class="title function_">resolve</span>(ret.<span class="property">value</span>);</span><br><span class="line">      <span class="keyword">var</span> value = toPromise.<span class="title function_">call</span>(ctx, ret.<span class="property">value</span>);</span><br><span class="line">      <span class="keyword">if</span> (value &amp;&amp; <span class="title function_">isPromise</span>(value)) <span class="keyword">return</span> value.<span class="title function_">then</span>(onFulfilled, onRejected);</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">onRejected</span>(<span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;You may only yield a function, promise, generator, array, or object, &#x27;</span></span><br><span class="line">        + <span class="string">&#x27;but the following object was passed: &quot;&#x27;</span> + <span class="title class_">String</span>(ret.<span class="property">value</span>) + <span class="string">&#x27;&quot;&#x27;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在看co的代码前，我们不妨先想一下它的原理。Generator 函数只是一个异步操作的容器，它的流程和控制是由外部机制完成的。而<strong>thunk函数（这个在下面介绍）和Promise对象恰恰可以方便得在回调函数和then方法中交还执行权给Generator函数</strong>。</p>
-<p>这么来看就简单了，<strong>co函数库针对thunk函数和Promise对象封装了执行器</strong>。以比较好理解的Promise对象为例（co在内部也会将thunk函数转为Promise对象）。</p>
-<p>首先将readFile的thunk函数转为Promise对象。其中ctx绑定到co函数体内。（co函数库的thunkToPromise函数）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> readFile = <span class="keyword">function</span> (<span class="params">path</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> ctx = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span> (<span class="keyword">function</span> (<span class="params">resolve, reject</span>)&#123;</span><br><span class="line">        readFile.<span class="title function_">call</span>(ctx, <span class="keyword">function</span> (<span class="params">err, data</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="title function_">reject</span>(err);</span><br><span class="line">            <span class="title function_">resolve</span>(data);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后同样使用上节中的生成器函数<code>gen()</code>，并手动执行下一步操作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">gen</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> d1 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file1.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d1);</span><br><span class="line">    <span class="keyword">var</span> d2 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file2.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>();</span><br><span class="line"></span><br><span class="line">g.<span class="title function_">next</span>().<span class="property">value</span>.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">    g.<span class="title function_">next</span>(data).<span class="property">value</span>.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">        g.<span class="title function_">next</span>(data);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>发现规律了么？<strong>自动执行器实际上就是在<code>g.done == false</code>时，不断地在then方法中嵌套添加回调函数</strong>。结果呼之欲出。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行器</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">run</span> (gen) &#123;</span><br><span class="line">    <span class="keyword">var</span> g = gen;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">next</span>(<span class="params">data</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> res = g.<span class="title function_">next</span>(data);</span><br><span class="line">        <span class="keyword">if</span> (res.<span class="property">done</span>) <span class="keyword">return</span> res.<span class="property">value</span>;</span><br><span class="line">        res.<span class="property">value</span>.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">            <span class="title function_">next</span>(data);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">next</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">run</span>(gen);</span><br></pre></td></tr></table></figure>
-
-<p>每执行一次next，检查<code>done</code>的状态，若未结束则在then方法继续指定next方法，等待下一次返回结果。这也是co函数库的基本原理。</p>
-<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><p>理解了原理后，回头看co的源码，就比较好理解了。前6行对传入的<code>gen</code>检测是否为Generator类型。<code>onFulfilled</code>函数和<code>onRejected</code>函数对Generator函数原有的<code>next</code>和<code>throw</code>函数进行了封装，便于错误捕获和处理。</p>
-<p>在<code>next</code>方法中，主要做了下面的4步微小的工作：</p>
-<ol>
-<li>查是否已经到Generator函数的最后一步，如果是则返回</li>
-<li>确保每次<code>yield</code>返回值都是Promise对象</li>
-<li>通过<code>then</code>方法，为返回值添加回调函数，并在回调中再次调用自身</li>
-<li>对于类型不合适的<code>gen</code>，将状态修改为<code>rejected</code></li>
-</ol>
-<p>co能接收的yield返回值类型是有限的（尽管Generator函数中的yield后不限制返回值类型），有thunk函数，array，object，Promise对象。其中array和object使co可以胜任并发的操作，即可以在yield中返回多个异步操作任务。</p>
-<h4 id="koa"><a href="#koa" class="headerlink" title="koa"></a>koa</h4><p>koa是建立在generator和co之上的中间件框架，由Express开发人员打造。它通过组合不同的生成器函数，避免了繁杂易出错的回调函数嵌套。koa中没有绑定任何中间件，仅仅提供了一个轻量级函数库。</p>
-<blockquote>
-<p>Koa 中间件以一种更加传统的方式级联起来, 跟你在其他系统或工具中碰到的方式非常相似。 然而在以往的 Node 开发中, 级联是通过回调实现的, 想要开发用户友好的代码是非常困难的, Koa 借助 generators 实现了真正的中间件架构, 与 Connect 实现中间件的方法相对比，Koa 的做法不是简单的将控制权依次移交给一个又一个的方法直到某个结束，Koa 执行代码的方式有点像回形针，用户请求通过中间件，遇到 yield next 关键字时，会被传递到下游中间件（downstream），在 yield next 捕获不到下一个中间件时，逆序返回继续执行代码（upstream）。</p>
-</blockquote>
-<h3 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h3><p>上文中提到的thunk函数实际上由来已久，它是函数传名调用的一种实现方式，不同于函数的传值调用。就像下面的例子一样。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行器</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">f</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">f</span>(x * <span class="number">3</span> + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以写成下面这样</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">thunk</span> () &#123;</span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">3</span> + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">f</span>(<span class="params">thunk, <span class="number">1</span></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">thunk</span>() + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>JavaScript中的thunk函数有着另外的意思，它替换的不是一个输入参数，而是<strong>将多参数的函数替换成单参数的版本，且只接受回调函数作为输入参数</strong>，正如之前写到的例子一样。</p>
-<p>一个简单的thunk函数转换器写起来并不复杂，像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> thunk = <span class="keyword">function</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> args = <span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">slice</span>.<span class="title function_">call</span>(<span class="variable language_">arguments</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">done</span>) &#123;</span><br><span class="line">            args.<span class="title function_">push</span>(done);</span><br><span class="line">            fn.<span class="title function_">apply</span>(<span class="variable language_">this</span>, args);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://github.com/tj/node-thunkify">node-thunkify</a>模块对此又多了一些监测，如在最内层的function添加called变量确保回调函数只执行一次。Thunkify的源码相比co就更短了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">thunkify</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">    <span class="title function_">assert</span>(<span class="string">&#x27;function&#x27;</span> == <span class="keyword">typeof</span> fn, <span class="string">&#x27;function required&#x27;</span>);</span><br><span class="line">    <span class="comment">// 返回一个包含thunk函数的函数，返回的thunk函数用于执行yield，而外围这个函数用于给thunk函数传递参数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> args = <span class="keyword">new</span> <span class="title class_">Array</span>(<span class="variable language_">arguments</span>.<span class="property">length</span>);</span><br><span class="line">        <span class="comment">// 缓存当前上下文环境，给fn提供执行环境</span></span><br><span class="line">        <span class="keyword">var</span> ctx = <span class="variable language_">this</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 将参数类数组转化为数组（实现方式略显臃肿，可直接用Array.prototype.slice.call(arguments)实现）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; args.<span class="property">length</span>; ++i) &#123;</span><br><span class="line">            args[i] = <span class="variable language_">arguments</span>[i];</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 真正的thunk函数（有且只有一个参数是callback的函数，且callback的第一个参数为error）</span></span><br><span class="line">        <span class="comment">// 类似于：</span></span><br><span class="line">        <span class="comment">// function(cb) &#123;fs.readFile(path, &#123;encoding: &#x27;utf8&#125;, cb)&#125;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params">done</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> called;</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 将回调函数再包裹一层，避免重复调用；同时，将包裹了的真正的回调函数push进参数数组</span></span><br><span class="line">            args.<span class="title function_">push</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (called) <span class="keyword">return</span>;</span><br><span class="line">                called = <span class="literal">true</span>;</span><br><span class="line">                done.<span class="title function_">apply</span>(<span class="literal">null</span>, <span class="variable language_">arguments</span>);</span><br><span class="line">            &#125;);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 在ctx上下文执行fn（一般是异步函数，如：fs.readFile）</span></span><br><span class="line">                <span class="comment">// 并将执行thunkify之后返回的函数的参数（含done回调）传入，类似于执行：</span></span><br><span class="line">                <span class="comment">// fs.readFile(path, &#123;encoding: &#x27;utf8&#125;, done)</span></span><br><span class="line">                <span class="comment">// 关于done是做什么用，则是在co库内</span></span><br><span class="line">                fn.<span class="title function_">apply</span>(ctx, args);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">                <span class="title function_">done</span>(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>thunk函数的特点和Promise对象类似，就是将回调函数的绑定单独抽离出来，thunk函数结合Generator函数实现自动流程管理方法和Promise一样。</p>
-<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><p>从Promise对象到Generator函数，JavaScript中的异步编程越来越简单，但是还是有戴着镣铐跳舞的感觉，async函数的提出即将把这个镣铐摘掉。</p>
-<p>async函数的使用和Generator函数很像，我们改写之前的那个读取文件函数如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">readFile</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> d1 = <span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file1.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d1);</span><br><span class="line">    <span class="keyword">var</span> d2 = <span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="string">&#x27;file2.js&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(d2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>虽然和Generator函数很像，但是它有着更清晰易懂的语法，更广的适用性（<code>await</code>后可以跟任何类型，在原始类型时等同于同步操作）。最关键的是，<strong>async函数自带执行器！！！</strong></p>
-<p>在实现上，async函数和Generator函数是一样的，不过是将执行器放在自身内部而已。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fn</span>(<span class="params">args</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">spawn</span>(<span class="keyword">function</span>* () &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">spawn</span> (genF, self) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span> (<span class="params">resolve, reject</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> gen = genF.<span class="title function_">call</span>(self);</span><br><span class="line">    <span class="title function_">step</span>(<span class="function">() =&gt;</span> gen.<span class="title function_">next</span>(<span class="literal">undefined</span>));</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">step</span> (nextF) &#123;</span><br><span class="line">      <span class="keyword">var</span> next;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        next = <span class="title function_">nextF</span>();</span><br><span class="line">      &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">        <span class="comment">// finished with failure, reject the promise</span></span><br><span class="line">        <span class="title function_">reject</span>(e);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (next.<span class="property">done</span>) &#123;</span><br><span class="line">        <span class="comment">// finished with success, resolve the promise</span></span><br><span class="line">        <span class="title function_">resolve</span>(next.<span class="property">value</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// not finished, chain off the yielded promise and `step` again</span></span><br><span class="line">      <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(next.<span class="property">value</span>).<span class="title function_">then</span>(</span><br><span class="line">        <span class="function"><span class="params">v</span> =&gt;</span> <span class="title function_">step</span>(<span class="function">() =&gt;</span> gen.<span class="title function_">next</span>(v)),</span><br><span class="line">        <span class="function"><span class="params">e</span> =&gt;</span> <span class="title function_">step</span>(<span class="function">() =&gt;</span> gen.<span class="keyword">throw</span>(e))</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在使用上，async函数返回一个Promise对象。可以使用then方法添加回调函数。当遇到<code>await</code>时先返回，等待异步操作完成后再执行函数体后的语句。<code>await</code>只能用在async函数中，在普通函数中使用会报错。同时，async函数目前是ES7的标准，需要通过Babel转码使用。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/">This API is so Fetching!</a><br><a target="_blank" rel="noopener" href="https://github.com/tj/co">co</a><br><a target="_blank" rel="noopener" href="https://nswbmw.github.io/N-club/1/1.3.html">co和koa</a><br><a target="_blank" rel="noopener" href="https://ponyfoo.com/articles/understanding-javascript-async-await">Understanding JavaScript’s async await</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/23/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/blog/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/25/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1185,7 +1201,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:45</span>
+    <span title="站点阅读时长">29:47</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

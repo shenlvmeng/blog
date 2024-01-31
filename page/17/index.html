@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">152</span>
+          <span class="site-state-item-count">153</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">469</span>
+        <span class="site-state-item-count">470</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,246 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/05/14/canvas-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/05/14/canvas-introduction/" class="post-title-link" itemprop="url">canvas相关介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-05-14 21:28:01 / 修改时间：21:32:07" itemprop="dateCreated datePublished" datetime="2018-05-14T21:28:01+08:00">2018-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/05/14/canvas-introduction/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/14/canvas-introduction/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>canvas由Apple首先提出，现在已经有非常好的浏览器支持度。它和<code>&lt;img&gt;</code>标签很像，但是只有<code>width</code>和<code>height</code>两个属性，在未设置时，为300px和150px。canvas类似<code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code>可以设置替换内容，应对标签本身不被支持的情况。另外，canvas不同于<code>&lt;img&gt;</code>，它必须要有一个<code>&lt;/canvas&gt;</code>作为闭合标志。</p>
+<p>canvas是一个2D渲染上下文环境（就像webGL是3D渲染上下文环境），在获取到<code>&lt;canvas&gt;</code>元素后，可以通过其<code>getContext</code>方法得到渲染上下文和相关功能，通常传入<code>2d</code>，用来绘制2D图案。</p>
+<h2 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h2><p><code>canvas.getContext(&#39;2d&#39;)</code>得到一个CanvasRenderingContext2D对象。剩下的绘制操作都通过调用对象上的API实现。</p>
+<p>canvas的坐标系系统和svg一样，从左上角开始，向右和向下为正，坐标轴单位为像素。下面列出最常见的绘制图形API。</p>
+<ul>
+<li><code>fillRect(x, y, width, height)</code> 绘制矩形</li>
+<li><code>strokeRect(x, y, width, height)</code> 绘制矩形边框</li>
+<li><code>clearRect(x, y, width, height)</code> 擦除矩形范围</li>
+</ul>
+<p>path被用来绘制通用曲线，注意<strong>path都是封闭的</strong>。绘制路径有4步：</p>
+<ul>
+<li><code>beginPath()</code> 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。</li>
+<li>使用画图命令去画出路径</li>
+<li><code>closePath()</code> 闭合路径</li>
+<li><em>可选</em> <code>fill()</code> 通过填充路径的内容区域生成实心的图形，使用<code>fill()</code>时可以不手动闭合路径</li>
+<li><code>stroke()</code>，为路径添加描边</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 样例</span></span><br><span class="line">ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">ctx.<span class="title function_">moveTo</span>(<span class="number">75</span>,<span class="number">50</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">75</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">100</span>,<span class="number">25</span>);</span><br><span class="line">ctx.<span class="title function_">fill</span>();</span><br></pre></td></tr></table></figure>
+
+<div class="tip">所有的路径通过`stroke()`和`fill()`才能体现效果。</div>
+
+<p>里面包含了常见的<code>moveTo</code>和<code>lineTo</code>，表示移动画笔&#x2F;画直线到(x,y)处。画曲线时可以选择：</p>
+<ul>
+<li><code>arc(x, y, radius, startAngle, endAngle, anticlockwise)</code><br>画一个以（x,y）为圆心的以radius为半径的圆弧（圆），从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。</li>
+<li><code>arcTo(x1, y1, x2, y2, radius)</code> 根据给定的控制点和半径画一段圆弧，再以直线连接两个控制点。</li>
+<li><code>quadraticCurveTo(cp1x, cp1y, x, y)</code> 绘制二次贝塞尔曲线，cp1x,cp1y为一个控制点，x,y为结束点。</li>
+<li><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</code> 绘制三次贝塞尔曲线，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二，x,y为结束点。</li>
+</ul>
+<p><strong>path2D</strong></p>
+<p>通过<code>new path2D()</code>用path2D声明子路径，允许你保留和重用路径对象。除了CanvasRenderingContext2D对象的API外，还可以用<code>addPath</code>新增路径到path2D对象中，它还支持通过SVG格式的字符串导入为路径。</p>
+<h2 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h2><p>通过修改<code>fillStyle</code>和<code>strokeStyle</code>改变当前填充和描边的默认颜色。支持的颜色格式有</p>
+<ul>
+<li>颜色名</li>
+<li>hex</li>
+<li>rgb</li>
+<li>rgba</li>
+</ul>
+<p>通过<code>globalAlpha</code>修改画布里的所有图形的透明度，取值在0到1之间。</p>
+<p>线型样式选择有：</p>
+<ul>
+<li>lineWidth &#x3D; value 设置线条宽度。</li>
+<li>lineCap &#x3D; type 设置线条末端样式。默认为butt，还有round、square可选。</li>
+<li>lineJoin &#x3D; type 设定线条与线条间接合处的样式。round, bevel 和 miter三种可选，miter时，miterLimit可以限制尖角的高度。</li>
+<li>miterLimit &#x3D; value 限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度</li>
+</ul>
+<p>设置虚线时，<code>setLineDash(segments)</code>设置当前虚线样式。<code>lineDashOffset = value</code>设置虚线样式的起始偏移量。<code>getLineDash()</code>返回一个包含当前虚线样式，长度为非负偶数的数组。</p>
+<p><strong>渐变</strong></p>
+<p>渐变需要先指定类型和覆盖范围：</p>
+<ul>
+<li><code>createLinearGradient(x1, y1, x2, y2)</code> 方法接受4个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。</li>
+<li><code>createRadialGradient(x1, y1, r1, x2, y2, r2)</code> 方法接受6个参数，前三个定义一个以 (x1,y1) 为原点，半径为r1的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为r2的圆。</li>
+</ul>
+<p>创建的渐变通过<code>addColorStop(position, color)</code>添加多个color stop。position参数是一个0.0与1.0之间的数值，表示渐变中颜色所在的相对位置。<strong>渐变是一种样式，通过指定给fillStyle或是strokeStyle发挥作用</strong>。</p>
+<p><strong>模式</strong></p>
+<p>通过<code>createPattern(image, type)</code>创建pattern，Image可以是一个Image对象的引用，或者另一个canvas对象。Type描述重复的格式，是下面的字符串值之一：repeat，repeat-x，repeat-y 和 no-repeat。</p>
+<p>同样，通过指定给<code>fillStyle</code>和<code>strokeStyle</code>使用。</p>
+<p><strong>阴影</strong></p>
+<ul>
+<li>shadowOffsetX &#x3D; float</li>
+<li>shadowOffsetY &#x3D; float<br>shadowOffsetX和shadowOffsetY用来设定阴影在X和Y轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为0。</li>
+<li>shadowBlur &#x3D; float shadowBlur 用于设定阴影的模糊程度，默认为 0。</li>
+<li>shadowColor &#x3D; color，默认为黑色</li>
+</ul>
+<p>canvas有两种填充规则<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Nonzero-rule"><code>non-zero</code></a>和<code>even-odd</code>，默认为前者。</p>
+<h2 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h2><ul>
+<li><code>fillText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置填充指定的文本，绘制的最大宽度是可选的</li>
+<li><code>strokeText(text, x, y [, maxWidth])</code> 在指定的(x,y)位置绘制文本边框，绘制的最大宽度是可选的</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ctx.<span class="property">font</span> = <span class="string">&quot;48px PingFangSC&quot;</span>;</span><br><span class="line">ctx.<span class="title function_">strokeText</span>(<span class="string">&quot;Hello world&quot;</span>, <span class="number">10</span>, <span class="number">50</span>);</span><br></pre></td></tr></table></figure>
+
+<p>除了<code>font</code>（语法和CSS的font相同）外，还有下面的选择：</p>
+<ul>
+<li>textAlign &#x3D; value 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。</li>
+<li>textBaseline &#x3D; value 基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。</li>
+<li>direction &#x3D; value 文本方向</li>
+</ul>
+<p>另外，可以通过<code>measureText()</code>，得到文本绘制的宽度。</p>
+<h2 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h2><p>canvas里可以引入Image对象或其他canvas元素，或者通过URL方式使用图片。</p>
+<ul>
+<li>使用相同页面内的图片，使用正常地获取元素的方式获取即可</li>
+<li>使用其它域名下的图片，在HTMLImageElement上使用<code>crossOrigin</code>属性，可以请求加载其它域名上的图片。若服务器不允许跨域加载，则会污染canvas，即不能导出数据</li>
+<li>使用canvas，按获取元素的方式获取即可</li>
+</ul>
+<p>image可以指定<code>src</code>属性为URL或<code>data:url</code>的形式。甚至引入<code>&lt;video&gt;</code>使用视频帧作为image。绘制图片时，使用：</p>
+<ul>
+<li><code>drawImage(image, x, y)</code> 其中image是image或者canvas对象，x和y是其在目标canvas里的起始坐标。</li>
+<li><code>drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)</code>是包含了缩放和切片后完整的<code>drawImage</code>用法</li>
+</ul>
+<h2 id="变形和裁剪"><a href="#变形和裁剪" class="headerlink" title="变形和裁剪"></a>变形和裁剪</h2><p><strong>save</strong>和<strong>restore</strong>用来保存和恢复canvas状态。每当<code>save()</code>方法被调用后，当前的状态就被推送到栈中保存。状态包括所有变形、样式信息。每次<code>restore</code>时会弹出栈顶的状态。<strong>建议在做变形和裁剪前保存状态</strong>。</p>
+<p>变形用到的属性和CSS很像：</p>
+<ul>
+<li><code>translate(x,y)</code>改变当前原点位置，</li>
+<li><code>rotate(angle)</code>以当前原点为圆心旋转画布，angle为弧度值。</li>
+<li><code>scale(x, y)</code>缩放当前canvas中的图形大小，x和y分别表示两轴上的缩放因子</li>
+<li><code>transform(m11, m12, m21, m22, dx, dy)</code>通过变形矩阵进行变换</li>
+<li><code>setTransform(m11, m12, m21, m22, dx, dy)</code>先还原为单位矩阵，再按入参的矩阵变换</li>
+<li><code>resetTransform</code>重置变形为单位矩阵</li>
+</ul>
+<p><code>globalCompositeOperation</code>定义了图形相互重叠时的处理策略，类似PS中图层的混合模式，默认为<code>darker</code>，还有很多<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">别的选项</a>。</p>
+<p><code>clip()</code>即裁剪方法，和<code>fill</code>以及<code>stroke</code>类似，不过<code>clip</code>将路径对应的部分裁剪出指定区域。</p>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>canvas只是一个画布，画出的东西都会保持原样。制作动画只能采取重绘，逐帧绘制，而每一帧包括下面几步：</p>
+<ul>
+<li>清空canvas，可以使用<code>clearRect</code>方法</li>
+<li><em>可选</em>，保存当前状态</li>
+<li>使用上面提过的种种方法绘制下一帧</li>
+<li><em>可选</em>，恢复状态</li>
+</ul>
+<p>绘制动画通常要结合用户交互以及<code>setTimeout</code>，<code>setInterval</code>，<code>requestAnimationFrame</code>。</p>
+<p>MDN给个一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Advanced_animations">小球的组合动画</a>可以参考。</p>
+<h2 id="像素级操作"><a href="#像素级操作" class="headerlink" title="像素级操作"></a>像素级操作</h2><p><code>ImageData</code>接口描述<code>&lt;canvas&gt;</code>元素的一个包含像素数据的区域。它包含<code>width</code>, <code>height</code>, <code>data</code>单个只读属性。<code>ImageData</code>可以通过<code>ctx.createImageData(width, height)</code>或者从已有对象中创建，除此创建的所有像素都是透明黑。</p>
+<p>可以用<code>getImageData(left, top, width, height)</code>方法获取指定范围的<code>ImageData</code>信息，当<code>width</code>和<code>height</code>都为1时，取得当前像素信息。</p>
+<p>使用<code>putImageData(imageData, dx, dy)</code>可以在当前画布(dx, dy)处绘制imageData像素数据。<code>imageSmoothingEnabled</code>默认开启，关闭后可以在图片缩放时看到清楚颗粒化的细节。</p>
+<h2 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h2><p>主要有三种用法：</p>
+<ul>
+<li><code>canvas.toDataURL(&#39;image/png&#39;)</code>，默认将canvas导出成png文件</li>
+<li><code>canvas.toDataURL(&#39;image/jpeg&#39;, quality)</code>，quality指定在0到1之间，默认为0.92。</li>
+<li><code>canvas.toBlob(callback, type, encoderOptions)</code>，这个创建了一个在画布中的代表图片的Blob对像</li>
+</ul>
+<p><code>toDataURL</code>除了上面两种导出格式还有别的选择。</p>
+<h2 id="交互"><a href="#交互" class="headerlink" title="交互"></a>交互</h2><p><code>&lt;canvas&gt;</code>标签只是一个位图，它并不提供任何已经绘制在上面的对象的信息。canvas的内容不能像语义化的HTML一样暴露给一些协助工具。一般来说，你应该避免在交互型的网站或者App上使用canvas。</p>
+<p><code>addHitRegion(options)</code>可以将添加一个点击区域，options可以参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/addHitRegion">MDN文档</a>，鼠标事件如果触发在点击区域中，会带上region用于定位点击区域。</p>
+<p>另外<code>drawFocusIfNeeded()</code>和<code>scrollPathIntoView()</code>方法还可以绘制焦点圈。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><ul>
+<li>预渲染相似或重复对象</li>
+<li>为了避免抗锯齿带来的额外运算，减少使用浮点数</li>
+<li>在离屏canvas中缓存图片的不同尺寸，不要用<code>drawImage()</code>去缩放它们</li>
+<li>使用多层画布去画一个复杂的场景，比如使用多层画布，描绘不同层级的内容。  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">&quot;stage&quot;</span>&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;ui-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;game-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;background-layer&quot;</span> <span class="attr">width</span>=<span class="string">&quot;480&quot;</span> <span class="attr">height</span>=<span class="string">&quot;320&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
+<li>用CSS画大的背景图</li>
+<li>用CSS transforms特性缩放画布，建议不要将小画布放大，而是去将大画布缩小</li>
+<li>尽可能避免text rendering</li>
+<li>尽可能避免 shadowBlur</li>
+<li><code>window.requestAnimationFrame()</code>性能优于<code>window.setInterval()</code></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1058,164 +1298,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/04/14/image-render-md/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/04/14/image-render-md/" class="post-title-link" itemprop="url">图片生成有感</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-04-14 11:20:07" itemprop="dateCreated datePublished" datetime="2018-04-14T11:20:07+08:00">2018-04-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2018-08-25 17:15:40" itemprop="dateModified" datetime="2018-08-25T17:15:40+08:00">2018-08-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/04/14/image-render-md/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/14/image-render-md/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>最近在业务中遇到使用生成图片的需求，图片只需要展示数据，没有计算密集型工作。后端生成的图片字体太单一，工作就交给了前端。从0开始作图做像素级的操作自然是不现实的，有幸的是，HTML本身就是一个很不错的做UI的语言，有CSS的支持。再借助HTML to canvas或是SVG的库，可以完成想要的需求。</p>
-<p><em>实际上，后端大多数也是通过起chrome内核，绘制DOM节点生成图片的</em></p>
-<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
-<li>按照指定格式生成图片</li>
-<li>保证格式正确清晰度高</li>
-<li>生成过程用户无感知</li>
-<li>对图片格式没有明确要求</li>
-</ul>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>HTML to image有两种方案比较流行，一个是<a target="_blank" rel="noopener" href="https://github.com/niklasvh/html2canvas">html2canvas</a>，一个是<a target="_blank" rel="noopener" href="https://github.com/tsayen/dom-to-image">dom-to-image</a>。它们的设计初衷其实都是将<strong>已有</strong>DOM结构转成图片类型。对比来看</p>
-<ul>
-<li>流行度上，html2canvas流行度更高，资料更好找，但更新缓慢</li>
-<li>格式支持上，dom-to-image可以将图转成SVG等更多格式，html2canvas只能输出canvas，需要用户自行处理</li>
-<li>清晰度上，dom-to-image可以导出SVG，html2canvas则需要hack的方式（设置更大的canvas绘制再等比缩放）</li>
-<li>实现原理上，都是通过遍历DOM树，读取格式化数据，dom-to-image通过浏览器解析CSS语法，因此支持度更高；html2canvas则<a target="_blank" rel="noopener" href="https://github.com/niklasvh/html2canvas/tree/master/src/parsing">自己实现了CSS解析</a></li>
-</ul>
-<p>渲染图片的HTML模板在通常情况下，不应该展示给用户。即生成过程短暂停留的DOM需要用户不可见。不可见的方式大致有下面几种：</p>
-<ul>
-<li><code>display: none</code>，这种情况，两个方案度都输出空白图片</li>
-<li><code>visibility: hidden</code>，在输出图片时，DOM结构会短暂闪现，两种方案都输出空白图片</li>
-<li>将DOM移出视口，html2canvas可以正确输出图片，dom-to-image不行</li>
-</ul>
-<p>本场景下生成的图片需要上传，并最后展示给C端，没有对SVG的需求。测试来看，两者的输出结果清晰度类似，且html2canvas输出格式还原度更高。综合考虑，选择html2canvas。</p>
-<p>在其他场景下，如支持SVG、需要高清截图、需要导出更多图片时，可以考虑使用dom-to-image。两者的API实际上非常类似。</p>
-<h3 id="容器组件"><a href="#容器组件" class="headerlink" title="容器组件"></a>容器组件</h3><p>考虑到未来仍可能存在的前端图片渲染需求，将相关逻辑内聚成一个组件，同时开发接口给外部使用。</p>
-<p>组件需要输入：</p>
-<ul>
-<li><code>hide</code>，因为渲染过程是<code>componentDidMount</code>阶段完成的，在每次渲染完成后要在父组件手动卸载该组件，这部分需要在<code>hide</code>中实现</li>
-<li><code>success</code>，可选的成功回调，入参是生成的canvas，<code>hide</code>作为可选第二个入参，可以异步卸载组件</li>
-<li><code>&#123;children&#125;</code>，无状态的函数组件，只负责图片的HTML模板</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * @author: shenlvmeng</span></span><br><span class="line"><span class="comment"> * @desc: 渲染图片的容器组件，加载时根据内部DOM生成图片，输出data64编码到回调</span></span><br><span class="line"><span class="comment"> * @props: hide    &#123;Function&#125; required 图片生成完成后需要在父组件执行的卸载该组件操作</span></span><br><span class="line"><span class="comment"> * @props: success &#123;Function&#125; 成功回调</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span>, &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">PropTypes</span> <span class="keyword">from</span> <span class="string">&#x27;prop-types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> html2canvas <span class="keyword">from</span> <span class="string">&#x27;html2canvas&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GeneratedImage</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> defaultProps = &#123;</span><br><span class="line">        <span class="attr">hide</span>: <span class="function">() =&gt;</span> &#123;&#125;,</span><br><span class="line">        <span class="attr">success</span>: <span class="function">(<span class="params">canvas</span>) =&gt;</span> &#123;<span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(canvas);&#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> propTypes = &#123;</span><br><span class="line">        <span class="attr">hide</span>: <span class="title class_">PropTypes</span>.<span class="property">func</span>,</span><br><span class="line">        <span class="attr">success</span>: <span class="title class_">PropTypes</span>.<span class="property">func</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">componentDidMount</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="title function_">html2canvas</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;html2canvas&#x27;</span>))</span><br><span class="line">        .<span class="title function_">then</span>(<span class="function">(<span class="params">canvas</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// 可以将hide操作作为success的回调使用</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">success</span>.<span class="property">length</span> &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">success</span>(canvas, <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">hide</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">success</span>(canvas);</span><br><span class="line">                <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">hide</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .<span class="title function_">catch</span>(<span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">error</span>(e);</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">hide</span>();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">div</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                <span class="attr">id</span>=<span class="string">&quot;html2canvas&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                <span class="attr">style</span>=<span class="string">&#123;&#123;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">position:</span> &#x27;<span class="attr">fixed</span>&#x27;,</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">left:</span> &#x27;<span class="attr">-9999px</span>&#x27;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                &#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">            &gt;</span></span></span><br><span class="line"><span class="language-xml">                &#123;this.props.children&#125;</span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">GeneratedImage</span>;</span><br></pre></td></tr></table></figure>
-
-<p>使用时，像如下这样，在对应的时机展示组件即可：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">isGenerating</span> ?</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">GeneratedImage</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">hide</span>=<span class="string">&#123;()</span> =&gt;</span> &#123;this.setState(&#123; isGenerating: false &#125;)&#125;&#125;</span></span><br><span class="line"><span class="language-xml">        success=&#123;(canvas) =&gt; &#123; console.log(canvas.toDataURL()); &#125;&#125;</span></span><br><span class="line"><span class="language-xml">    &gt;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Image</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">GeneratedImage</span>&gt;</span></span></span><br><span class="line">    : <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="已知缺陷"><a href="#已知缺陷" class="headerlink" title="已知缺陷"></a>已知缺陷</h3><ul>
-<li>对部分CSS属性支持度有限，如<code>box-shadow</code>，<code>-webkit-line-clamp</code>，<code>background-position</code>等</li>
-<li>使用时需要额外的卸载操作</li>
-</ul>
-<h2 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h2><p>生成图片的业务需求大多数是用内容填充的，因此使用浏览器渲染页面再截图是比较直观的生成方式（qrcode这种简单的图片需求另说）。在使用python的场景下，可以用<a target="_blank" rel="noopener" href="http://selenium-python.readthedocs.io/">selenium</a>生成，代码非常简单。</p>
-<p>首先，<code>pip install selenium</code>，如果是python3，就<code>pip3 install selenium</code>。</p>
-<p>然后，安装<a target="_blank" rel="noopener" href="http://npm.taobao.org/mirrors/chromedriver/">chromedriver</a>。使用headless模式打开chrome，并根据图片位置和大小截图即可。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</span><br><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> path</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">screenshot</span>(<span class="params">path</span>):</span><br><span class="line">    <span class="comment"># Headless chrome</span></span><br><span class="line"></span><br><span class="line">    DRIVER = <span class="string">&#x27;chromedriver&#x27;</span> <span class="comment"># add this to your $PATH</span></span><br><span class="line">    chrome_options = webdriver.ChromeOptions()</span><br><span class="line">    chrome_options.add_argument(<span class="string">&#x27;--headless&#x27;</span>)</span><br><span class="line">    chrome_options.add_argument(<span class="string">&#x27;--disable-gpu&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># get screenshot</span></span><br><span class="line"></span><br><span class="line">    browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=DRIVER)</span><br><span class="line">    browser.get(path)</span><br><span class="line">    ele = browser.find_element_by_id(<span class="string">&#x27;demo&#x27;</span>)</span><br><span class="line">    location = ele.location</span><br><span class="line">    size = ele.size</span><br><span class="line">    image = browser.get_screenshot_as_png()</span><br><span class="line">    browser.quit()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># crop image</span></span><br><span class="line"></span><br><span class="line">    im  = Image.<span class="built_in">open</span>(BytesIO(image))</span><br><span class="line"></span><br><span class="line">    left = location[<span class="string">&#x27;x&#x27;</span>]</span><br><span class="line">    top = location[<span class="string">&#x27;y&#x27;</span>]</span><br><span class="line">    right = location[<span class="string">&#x27;x&#x27;</span>] + size[<span class="string">&#x27;width&#x27;</span>] * <span class="number">2</span></span><br><span class="line">    bottom = location[<span class="string">&#x27;y&#x27;</span>] + size[<span class="string">&#x27;height&#x27;</span>] * <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    im = im.crop((left, top, right, bottom))</span><br><span class="line">    im.save(<span class="string">&#x27;screenshot.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (__name__ == <span class="string">&#x27;__main__&#x27;</span>):</span><br><span class="line">    curr_path = path.dirname(path.realpath(__file__))</span><br><span class="line">    screenshot(<span class="string">&#x27;file://&#x27;</span> + curr_path + <span class="string">&#x27;/demo.html&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这样就可以获取到示例页面的截图。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1246,7 +1328,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:45</span>
+    <span title="站点阅读时长">29:47</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
