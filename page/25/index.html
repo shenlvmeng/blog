@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-count">154</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">470</span>
+        <span class="site-state-item-count">473</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,153 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/29/javascript-async-programming-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2017/03/29/javascript-async-programming-1/" class="post-title-link" itemprop="url">JavaScript中的异步编程 上</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2017-03-29 14:28:06 / 修改时间：15:03:10" itemprop="dateCreated datePublished" datetime="2017-03-29T14:28:06+08:00">2017-03-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2017/03/29/javascript-async-programming-1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/29/javascript-async-programming-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>本文启发于阮一峰老师的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2015/04/generator.html">深入掌握 ECMAScript 6 异步编程</a></p>
+</blockquote>
+<p><span></span></p>
+<blockquote>
+<p>下篇传送门<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/03/29/javascript-async-programming-2/">JavaScript中的异步编程 下</a></p>
+</blockquote>
+<p>JavaScript是一门<strong>单线程</strong>的语言。这样的设计减少了线程间同步和统筹的代价。但是，这也意味着，同一时刻只能完成一项工作，不能“<em>多面手</em>”。多个任务出现时，后一个任务需要等待前一个任务完成才可执行。</p>
+<p>当一项任务耗时较长时，后继者往往需要等待很久。直观体现在浏览器白屏，假死等。异步执行模式便因此而生。</p>
+<h3 id="异步和回调"><a href="#异步和回调" class="headerlink" title="异步和回调"></a>异步和回调</h3><p>异步模式区分于同步模式，任务的执行顺序和排列顺序并不完全一致。在前一个任务开始执行时，将之交给环境中其他辅助线程处理，之后立即执行下一个任务。当任务完成后，再以回调的形式执行回调函数。这种执行方式实际上正是<a target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2017/02/27/event-loop/">Event Loop</a> 的体现。</p>
+<p>在<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2012/12/asynchronous%EF%BC%BFjavascript.html">阮老师博客</a>中提到的<strong>回调函数</strong>，<strong>事件驱动</strong>，<strong>发布订阅</strong>都能很直观的看到回调的概念。</p>
+<h4 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h4><p>这是最常见的实现异步编程的方式。它的大体形式是将回调函数作为输入参数传入到需要异步完成的任务中。在任务体函数内利用全局环境下内建的异步函数实现异步的目的。</p>
+<p>大概是这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里是一个需要异步完成的函数asy和回调函数cal</span></span><br><span class="line"><span class="title function_">asy</span>(), <span class="title function_">cal</span>();</span><br><span class="line"><span class="comment">//它们的定义和使用像下面这样</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">asy</span> (callback) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">//异步工作代码</span></span><br><span class="line">        <span class="title function_">callback</span>();</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">cal</span> () &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello!&#x27;</span>); <span class="comment">//或其它什么</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">asy</span>(cal);</span><br></pre></td></tr></table></figure>
+
+<p><code>asy()</code>函数会在完成自己工作后自动调用回调函数<code>cal()</code>。而这个过程是异步完成的。</p>
+<h4 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h4><p>严格来说，事件驱动是一种异步编程思想。通过事件的触发来执行特定任务的代码。使得代码的执行并不按照顺序来。</p>
+<p>使用时，最典型的用法就是DOM2级事件绑定。为DOM元素绑定监听函数，在事件触发时，执行特定代码。推广开来，可以实现JavaScript中自定义事件的监听。</p>
+<p>大概是这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target.<span class="title function_">on</span>(<span class="string">&#x27;someevent&#x27;</span>, handler); <span class="comment">// 注册事件</span></span><br><span class="line">target.<span class="title function_">emit</span>(<span class="string">&#x27;someevent&#x27;</span>); <span class="comment">//触发事件</span></span><br></pre></td></tr></table></figure>
+
+<p>在实现时，<code>target</code>实现了（或继承）类似于下图中EventUtil类的定义。内部维护一个对象，存储事件和回调函数数组的键值对对象。在使用on，emit时，向管理器中写入事件和读取事件对应的回调数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventUtil</span> = &#123;</span><br><span class="line">    <span class="comment">// 全局事件管理</span></span><br><span class="line">    <span class="keyword">var</span> events = &#123;&#125;,</span><br><span class="line">    <span class="comment">// 注册事件</span></span><br><span class="line">        on = <span class="keyword">function</span> (<span class="params">type, handler</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (events[type]) &#123;</span><br><span class="line">                events[type].<span class="title function_">push</span>(handler);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                events[type] = [handler];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    <span class="comment">// 触发事件</span></span><br><span class="line">        emit = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!events[type]) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = events[type].<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">                events[type][i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>上面这种事件驱动的方式在React和Vue等MVVM框架中经常用来在组件间传递信息。当组件关系复杂时，发布订阅模式会更有利于管理信息和将信息集中化管理。</p>
+<p>也就是<a target="_blank" rel="noopener" href="http://redux.js.org/">Redux</a>和<a target="_blank" rel="noopener" href="https://vuex.vuejs.org/">Vuex</a>所做的事情。任务状态改变时，向中心传递信号，其他订阅这个信号的任务函数都会受到这个信号。</p>
+<h3 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h3><p>异步回调好是好，很好理解。但是处理错误的“<a target="_blank" rel="noopener" href="http://callbackhell.com/">回调地狱</a>”也为人诟病。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">async</span>(<span class="params">request, callback</span>) &#123;</span><br><span class="line">    <span class="comment">// Do something.</span></span><br><span class="line">    <span class="title function_">asyncA</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">        <span class="title function_">asyncB</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">            <span class="comment">// Do something</span></span><br><span class="line">            <span class="title function_">asyncC</span>(request, <span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">                <span class="comment">// Do something</span></span><br><span class="line">                <span class="title function_">callback</span>(data);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种在回调中嵌套其他异步函数的场景下，错误的捕获变得异常头痛。代码也会变得难以阅读和维护。</p>
+<p>ES6中的<a target="_blank" rel="noopener" href="http://wiki.commonjs.org/wiki/Promises/A">Promise</a>对象优雅地解决了回调地狱的问题。它由CommonJS工作组提出，通过<code>then</code>和<code>catch</code>方法指定回调函数和错误的捕获函数，<strong>同时返回一个<code>Promise</code>对象</strong>。</p>
+<p>它的使用方法像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span> (<span class="params">resolve, reject</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</span><br><span class="line">        <span class="title function_">resolve</span>(val);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="title function_">reject</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">promise.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//success handler</span></span><br><span class="line">&#125;, <span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//failure handler</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或是</span></span><br><span class="line">promise.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="comment">//success handler</span></span><br><span class="line">&#125;).<span class="title function_">catch</span>(<span class="params">err</span>) &#123;</span><br><span class="line">    <span class="comment">//error handler</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理一批次的异步任务</span></span><br><span class="line"><span class="keyword">var</span> p = <span class="title class_">Promise</span>.<span class="title function_">all</span>([p1, p2, p3]),</span><br><span class="line">    q = <span class="title class_">Promise</span>.<span class="title function_">race</span>([p1, p2, p3]);</span><br></pre></td></tr></table></figure>
+
+<p>在实现上，<code>Promise</code>其实和事件订阅模式类似。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//constructor</span></span><br><span class="line"><span class="keyword">var</span> <span class="title class_">Promise</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">callbacks</span> = [];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Promise</span>.<span class="property"><span class="keyword">prototype</span></span> = &#123;</span><br><span class="line">    <span class="attr">construct</span>: <span class="title class_">Promise</span>,</span><br><span class="line">    <span class="attr">resolve</span>: <span class="keyword">function</span>(<span class="params">result</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">complete</span>(<span class="string">&quot;resolve&quot;</span>, result);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">reject</span>: <span class="keyword">function</span>(<span class="params">result</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">complete</span>(<span class="string">&quot;reject&quot;</span>, result);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">complete</span>: <span class="keyword">function</span>(<span class="params">type, result</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">callbacks</span>[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">callbacks</span>.<span class="title function_">shift</span>()[type](result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">then</span>: <span class="keyword">function</span>(<span class="params">successHandler, failedHandler</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">callbacks</span>.<span class="title function_">push</span>(&#123;</span><br><span class="line">            <span class="attr">resolve</span>: successHandler,</span><br><span class="line">            <span class="attr">reject</span>: failedHandler</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Promise在回调函数较少时，<code>then</code>方法的链式调用无伤大雅。当出现较多异步回调场景下，如异步<strong>陆续</strong>加载100张图片，<code>then</code>方法的使用仍显得不那么自然。</p>
+<p>有自然的使用方法么？答案是有的。下篇中介绍的Generator和async将实现异步编程的更高境界。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003028634">异步编程 promise模式 的简单实现</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -964,154 +1111,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2017/03/09/js-function/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2017/03/09/js-function/" class="post-title-link" itemprop="url">JavaScript中的函数表达式与闭包</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-03-09 20:43:41" itemprop="dateCreated datePublished" datetime="2017-03-09T20:43:41+08:00">2017-03-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2017-03-29 14:37:40" itemprop="dateModified" datetime="2017-03-29T14:37:40+08:00">2017-03-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2017/03/09/js-function/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/09/js-function/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>函数是JavaScript中最有特色同时又容易让人困扰的特性。定义函数的方式有两种：函数声明和函数表达式。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//函数声明</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span> (arg0, arg1) &#123;</span><br><span class="line">    <span class="comment">//函数体</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数表达式</span></span><br><span class="line"><span class="keyword">var</span> bar = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">//函数体</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在非IE浏览器中，function都有非标准的name属性，属性值为function后的标识符或表达式的接收变量名。在<strong>函数声明</strong>里有一个重要特征——<strong>函数声明提升（function declaration hoisting）</strong>。这意味着函数声明可以放在调用它的语句后。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">sayHi</span>();</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sayHi</span> () &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Hi!&quot;</span>); <span class="comment">// &quot;Hi!&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而函数表达式则不能这样使用，因为<strong>变量声明提升</strong>会将函数名提升，下面的代码将导致错误。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">sayHi</span>();</span><br><span class="line"><span class="keyword">var</span> sayHi = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Hi!&quot;</span>); <span class="comment">// Error！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>正确理解函数声明提升将会避免很多潜在的错误，<em>或者干脆养成好习惯——定义在前，调用在后</em>。</p>
-<h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><p>递归函数是一个函数通过调用自身得到的。如</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">factorial</span> (num) &#123;</span><br><span class="line">    <span class="keyword">if</span> (num &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> num * <span class="title function_">factorial</span>(num-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这是一个经典的递归阶乘函数。不过当我们不知道函数名或者函数是匿名函数时，可以通过<code>arguments.callee</code>来调用自身。<br><code>argument.callee</code>是一个指向正在执行的函数的指针。</p>
-<div class="tip">在ES5的严格模式下，`arguments.callee`特性是禁止使用的。它将影响解释器的优化和运行效率。
-</div>
-
-<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p><strong>闭包</strong>几乎是前端面试必考的一个知识点。它的存在是JavaScript中作用域链带来的特性。<strong>闭包</strong>是指有权访问另一个函数<br>作用域中变量的函数。创建闭包最常用的方式就是在函数内部创建另一个函数。就像下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fatherFunction</span> (propertyName, value) &#123;</span><br><span class="line">    <span class="keyword">var</span> sum = value;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">object1, object2</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> a = object1[propertyName],</span><br><span class="line">            b = object2[propertyName];</span><br><span class="line">        <span class="keyword">if</span> (a + b &gt; value) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到，在返回的函数中引用了外部函数的变量<code>propertyName</code>和<code>sum</code>。即使这个函数已经返回，只要内部函数还存在，那么这两个变量就仍然可以访问。这就是闭包的直观体现。</p>
-<p>解释闭包就要先理解JS中的<em>作用域链</em>。执行环境是JS中的一个关键概念。它定义了变量或函数可以访问的数据。全局执行环境是最外层的执行环境。根据ECMAScript实现宿主的不同，全局执行环境也各不相同。某个执行环境中的代码执行完毕后，环境被销毁，包括其中的所有变量和函数定义。<strong>JS中的每个函数都有自己的执行环境</strong>。执行流进入一个函数时，函数环境就被推入到环境栈中，待执行完毕后出栈。在执行环境中的代码时，会创建变量对象的作用域链，由当前的活动对象到外部环境变量对象一直到全局执行环境中的变量对象。内部环境可以通过作用域链访问所有外部环境，但是外部环境不能访问内部环境中的变量和函数。</p>
-<p>现在回过头看闭包。在函数执行过程中，为了读取和写入变量值，需要保存整个作用域链。因此，在<code>fatherFunction</code>中创建的匿名函数的作用域链实际上包含了<code>fantherFunction()</code>的活动对象（输入参数和变量）以及全局变量对象。在<code>fatherFunction()</code>返回时，匿名函数的作用域链仍然引用着它的活动对象，使其并不会被销毁，直到匿名函数被销毁。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建函数</span></span><br><span class="line"><span class="keyword">var</span> compare = <span class="title function_">fatherFunction</span>(<span class="string">&quot;value&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// 调用函数</span></span><br><span class="line"><span class="keyword">var</span> res = <span class="title function_">compare</span>(&#123;<span class="attr">value</span>: <span class="number">2</span>&#125;, &#123;<span class="attr">value</span>: -<span class="number">1</span>&#125;);</span><br><span class="line"><span class="comment">// 解除匿名函数的引用，释放内存</span></span><br><span class="line">compare = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
-
-<div class="tip">由于闭包会携带包含它的函数作用域，过度使用闭包会导致内存占用过多。忘记解除匿名函数引用还会导致内存泄漏。
-</div>
-
-<h3 id="闭包与变量"><a href="#闭包与变量" class="headerlink" title="闭包与变量"></a>闭包与变量</h3><p>闭包可以取得父级函数的变量的<em>最终值</em>，因此配合for循环这样的结构就容易发生意外，就像下面的函数：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">bindClickFunctions</span> () &#123;</span><br><span class="line">    <span class="keyword">var</span> buttons = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;button&#x27;</span>);</span><br><span class="line">    <span class="comment">// 让我们假设length是20</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = buttons.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">        buttons[i].<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">            <span class="title function_">alert</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的函数会为所有的按钮绑定点击事件，不过效果却并不像预想中那样，不同的button弹出不同的值。结果是所有的button在点击后弹出的都是20。这是因为所有的匿名函数都使用着同一个外部函数的活动对象。可以通过在创建一层闭包来达到预期的目的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">bindClickFunctions</span> () &#123;</span><br><span class="line">    <span class="keyword">var</span> buttons = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;button&#x27;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = buttons.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">        buttons[i].<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params">i</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">                <span class="title function_">alert</span>(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们在每层循环中创建了一个匿名函数，匿名函数包含一个输入参数<code>i</code>，再分别保存在内部函数的作用域链中，就可以使闭包间引用的i互不干扰了。</p>
-<h3 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h3><p>JavaScript中是没有块级作用域的。不过可以利用匿名函数的作用域模拟一个块级作用域出来。在其中定义的私有变量也不必担心与其他作用域的变量名相冲突。这种用法很常用于最外层的封装，用于隐藏代码中的变量，在一定程度上保证安全。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> foo = <span class="string">&quot;You can see me, but you cannot touch me.&quot;</span></span><br><span class="line">    <span class="title function_">alert</span>(foo);</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
-
-<h3 id="私有变量"><a href="#私有变量" class="headerlink" title="私有变量"></a>私有变量</h3><p>同样的，JavaScript中是没有私有成员的概念的。但是，利用闭包可以制造出私有变量。原理是，利用函数作用域隐藏其中的变量甚至输入参数，通过返回的闭包操作这些“私有”变量。如下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Stu</span> (name) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">getName</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">setName</span> = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">        name = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> stu = <span class="keyword">new</span> <span class="title class_">Stu</span>(<span class="string">&quot;Shenlvmeng&quot;</span>);</span><br><span class="line"><span class="title function_">alert</span>(stu.<span class="title function_">getName</span>());</span><br><span class="line">stu.<span class="title function_">setName</span>(<span class="string">&quot;Weii&quot;</span>);</span><br><span class="line"><span class="title function_">alert</span>(stu.<span class="title function_">getName</span>());</span><br></pre></td></tr></table></figure>
-<p>这里只是一个很简单的展示，红宝书中还介绍了模块模式和增强模块模式，利用闭包的特点实现了单例的构造和特权方法。下面对上面的<code>Stu</code>函数进行改造，可以使得所有通过<code>Stu()</code>构造的对象都有相同的公有变量。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">Stu</span> = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">        name = value;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">Stu</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">getName</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">Stu</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">setName</span> = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">        name = value;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stu1 = <span class="keyword">new</span> <span class="title class_">Stu</span>(<span class="string">&#x27;shenlvmeng&#x27;</span>);</span><br><span class="line"><span class="title function_">alert</span>(stu1.<span class="title function_">getName</span>());</span><br><span class="line"><span class="keyword">var</span> stu2 = <span class="keyword">new</span> <span class="title class_">Stu</span>(<span class="string">&#x27;weii&#x27;</span>);</span><br><span class="line"><span class="title function_">alert</span>(stu2.<span class="title function_">getName</span>());		<span class="comment">// &quot;weii&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(stu1.<span class="title function_">getName</span>());		<span class="comment">// &quot;weii&quot;</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/24/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/blog/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/26/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1142,7 +1141,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:47</span>
+    <span title="站点阅读时长">30:45</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

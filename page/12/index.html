@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-count">154</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">470</span>
+        <span class="site-state-item-count">473</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,347 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/06/16/dart-lang-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2019/06/16/dart-lang-intro/" class="post-title-link" itemprop="url">Dart快速入门 语法篇</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-06-16 00:13:19 / 修改时间：00:17:49" itemprop="dateCreated datePublished" datetime="2019-06-16T00:13:19+08:00">2019-06-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/06/16/dart-lang-intro/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/16/dart-lang-intro/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>20 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义个方法。</span></span><br><span class="line">printNumber(<span class="built_in">num</span> aNumber) &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;The number is <span class="subst">$aNumber</span>.&#x27;</span>); <span class="comment">// 在控制台打印内容。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是程序执行的入口。</span></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="keyword">var</span> number = <span class="number">42</span>; <span class="comment">// 定义并初始化一个变量。</span></span><br><span class="line">  printNumber(number); <span class="comment">// 调用一个方法。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注释：<code>//</code>或<code>/* ... */</code>，同其他主流语言</li>
+<li>类型：num、String、int、bool等</li>
+<li>字面量：42，’Hello world!’</li>
+<li>函数：类似<code>print()</code>的形式</li>
+<li>字符串插值</li>
+<li>入口方法：<code>main</code></li>
+</ul>
+<h2 id="基本理念"><a href="#基本理念" class="headerlink" title="基本理念"></a>基本理念</h2><ul>
+<li><strong>所有可以用变量引用的都是对象，每个对象都是一个类的实例</strong>，例如数字、方法、null，<strong>所有对象都继承Object类</strong></li>
+<li>Dart是<strong>强类型语言</strong>。但是不强制使用类型标注，因为它可以通过推导得到变量类型。在你明确不希望有类型时，使用<code>dynamic</code>关键字表示动态类型</li>
+<li>Dart支持泛型，比如<code>List&lt;int&gt;</code></li>
+<li>Dart支持顶级方法<code>main()</code>，支持类的静态方法、实例方法，也可以在函数内使用函数</li>
+<li>类似地，Dart支持全局变量、局部变量和在类中定义的成员变量</li>
+<li>Dart<strong>没有</strong>public、protected、private的区分，如果标识符以<code>_</code>开头，那么该标识符就是私有的</li>
+<li>Dart的变量名只能以<strong>下划线和字母</strong>开头，后跟<strong>字符或数字</strong></li>
+<li>Dart区分语句块和表达式，只有表达式有值。</li>
+</ul>
+<h2 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h2><p>分为三类：</p>
+<ul>
+<li>对于只在特定上下文环境下生效的<strong>上下文关键字</strong>，可以用作标识符</li>
+<li>对于<strong>内置标识符</strong>，为了便于移植JavaScript代码到Dart，这些关键字不可用作类或类型名或import的前缀</li>
+<li>其他关键字为保留字</li>
+</ul>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">&#x27;Dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">String</span> name = <span class="string">&#x27;Dart&#x27;</span>;</span><br><span class="line">Dynamic name = <span class="string">&#x27;Dart&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>根据<em>基本理念</em>，变量都是存储值的引用。使用<code>var</code>修饰时，变量类型会自动推导；也可以显示声明变量类型，或者使用<code>dynamic</code>关键字表示变量可能有多种类型。</p>
+<p>任何没有初始化的变量默认值都为null。</p>
+<p>常量使用<code>final</code>或<code>const</code>（实例变量只能用<code>final</code>）。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> name = <span class="string">&#x27;foo&#x27;</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="built_in">String</span> title = <span class="string">&#x27;FE&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> foo = <span class="number">10000</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">double</span> percent = <span class="number">0.314</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> bar = <span class="keyword">const</span>[];</span><br><span class="line"><span class="keyword">const</span> baz = []; <span class="comment">// 和上面一个效果</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>final变量只能赋值一次，const变量是编译时常量。</li>
+<li><code>const</code>除了用来定义不变量，还可以用来创建不变的值，以及定义创建常量的构造函数。在这么用时可以省略构造过程，像上面的baz变量一样</li>
+</ul>
+<h2 id="内置类型"><a href="#内置类型" class="headerlink" title="内置类型"></a>内置类型</h2><ul>
+<li>numbers</li>
+<li>strings</li>
+<li>booleans</li>
+<li>lists (也被称之为 arrays)</li>
+<li>maps</li>
+<li>runes (用于在字符串中表示 Unicode 字符)</li>
+<li>symbols</li>
+</ul>
+<p>再次重申，Dart中变量都是一个对象，所以你都可以使用构造函数来初始化。</p>
+<h3 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h3><p>有<code>int</code>和<code>double</code>两种类型。提供了原生操作符和<code>abs()</code>等常用函数，整数和浮点数的字面量初始化类似js。</p>
+<p>字符串和数字互转：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// String -&gt; int</span></span><br><span class="line"><span class="keyword">var</span> one = <span class="built_in">int</span>.parse(<span class="string">&#x27;1&#x27;</span>);</span><br><span class="line"><span class="keyword">assert</span>(one == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// String -&gt; double</span></span><br><span class="line"><span class="keyword">var</span> onePointOne = <span class="built_in">double</span>.parse(<span class="string">&#x27;1.1&#x27;</span>);</span><br><span class="line"><span class="keyword">assert</span>(onePointOne == <span class="number">1.1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// int -&gt; String</span></span><br><span class="line"><span class="built_in">String</span> oneAsString = <span class="number">1.</span>toString();</span><br><span class="line"><span class="keyword">assert</span>(oneAsString == <span class="string">&#x27;1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// double -&gt; String</span></span><br><span class="line"><span class="built_in">String</span> piAsString = <span class="number">3.14159</span>.toStringAsFixed(<span class="number">2</span>);</span><br><span class="line"><span class="keyword">assert</span>(piAsString == <span class="string">&#x27;3.14&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>Dart的字符串是UTF-16编码的字符序列。可以使用单引号或双引号创建。字符串中用<code>$&#123;expr&#125;</code>的语法使用表达式，**如果表达式是一个标识符，可以省去<code>&#123;&#125;</code>**，对<code>&#123;&#125;</code>内的表达式，Dart使用<code>toString()</code>方法转成字符串使用。</p>
+<p>使用<code>&#39;&#39;&#39;</code>或<code>&quot;&quot;&quot;</code>表示多行字符串。使用<code>r&#39;&#39;</code>表示纯字符串。</p>
+<h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><p>布尔类型有两个字面量值，<code>true</code>和<code>false</code>。和JavaScript不同的是，在<code>if</code>语句等使用bool类型的地方，<strong>只有<code>true</code>被认为是true，其余所有值都是false</strong>。这也是为了避免JavaScript中判断true、false时坑爹的地方。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="number">1</span>) &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;JS prints this line.&#x27;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Dart in production mode prints this line.&#x27;</span>);</span><br><span class="line">  <span class="comment">// However, in checked mode, if (1) throws an</span></span><br><span class="line">  <span class="comment">// exception because 1 is not boolean.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>List的字面量写法和JavaScript一样。Dart会做类型推导，在元素类型不一致时报错。你可以使用const语句定义一个不变的List对象。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> list = <span class="keyword">const</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<p>2.3后，Dart支持<code>...</code>解构操作符，以及对空列表兼容的<code>...?</code>。同时支持collection if和collection for语法。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> nav = [</span><br><span class="line">  <span class="string">&#x27;Home&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Furniture&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Plants&#x27;</span>,</span><br><span class="line">  <span class="keyword">if</span> (promoActive) <span class="string">&#x27;Outlet&#x27;</span></span><br><span class="line">];</span><br><span class="line"><span class="keyword">var</span> listOfInts = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> listOfStrings = [</span><br><span class="line">  <span class="string">&#x27;#0&#x27;</span>,</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> listOfInts) <span class="string">&#x27;#<span class="subst">$i</span>&#x27;</span></span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><blockquote>
+<p>2.2版本后支持</p>
+</blockquote>
+<p>一组元素唯一的无序列表。字面量写法类似数学中集合的定义方法。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> halogens = &#123;<span class="string">&#x27;fluorine&#x27;</span>, <span class="string">&#x27;chlorine&#x27;</span>, <span class="string">&#x27;bromine&#x27;</span>, <span class="string">&#x27;iodine&#x27;</span>, <span class="string">&#x27;astatine&#x27;</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用构造函数的方式创建。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> elements = &lt;<span class="built_in">String</span>&gt;&#123;&#125;;</span><br><span class="line">elements.add(<span class="string">&#x27;fluorine&#x27;</span>);</span><br><span class="line">elements.addAll(halogens);</span><br></pre></td></tr></table></figure>
+
+<p>类似List，2.3之后有<code>...</code>和<code>...?</code>的语法支持。</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>表达键值对数据，每个键只出现一次，且<strong>可以是任意类型</strong>。类似Set，可以使用字面量和构造函数两种方式构造。使用字面量时，Dart会做类型推导。</p>
+<p>Map的设置和JavaScript类似，另外类似List，2.3之后有<code>...</code>和<code>...?</code>的语法支持。</p>
+<h3 id="Rune"><a href="#Rune" class="headerlink" title="Rune"></a>Rune</h3><p>Dart用Rune类型表示UTF-32的字符，如emoji等。</p>
+<h3 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h3><p>用来代表Dart中声明的操作符或标识符，可以在标识符前添加<code>#</code>获取标识符的Symbol对象。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>类似JavaScript，Dart中的Function也是对象并具有Function类型。推荐使用显式类型声明方法。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span> isNoble(<span class="built_in">int</span> atomicNumber) &#123;</span><br><span class="line">  <span class="keyword">return</span> _nobleGases[atomicNumber] != <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Dart支持箭头函数。</p>
+<h3 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h3><p>可选参数分两种：命名参数、位置参数。</p>
+<p>命名参数使用<code>param: value</code>指定，在调用时使用<code>&#123;param1, param2&#125;</code>的形式传递参数。支持在参数前添加<code>@required</code>表示参数必选。</p>
+<p>位置参数使用<code>[]</code>包裹方法参数，使用时不传参数即可。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">enableFlags(bold: <span class="keyword">true</span>, hidden: <span class="keyword">false</span>);</span><br><span class="line">enableFlags(&#123;<span class="built_in">bool</span> bold, <span class="built_in">bool</span> hidden&#125;) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">String</span> say(<span class="built_in">String</span> from, <span class="built_in">String</span> msg, [<span class="built_in">String</span> device]) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">assert</span>(say(<span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Howdy&#x27;</span>) == <span class="string">&#x27;Bob says Howdy&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>定义方法时，可以使用<code>=</code>定义可选参数的默认值。否则默认值为null。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">String</span> say(<span class="built_in">String</span> from, <span class="built_in">String</span> msg,</span><br><span class="line">    [<span class="built_in">String</span> device = <span class="string">&#x27;carrier pigeon&#x27;</span>, <span class="built_in">String</span> mood]) &#123;</span><br><span class="line">  <span class="keyword">var</span> result = <span class="string">&#x27;<span class="subst">$from</span> says <span class="subst">$msg</span>&#x27;</span>;</span><br><span class="line">  <span class="keyword">if</span> (device != <span class="keyword">null</span>) &#123;</span><br><span class="line">    result = <span class="string">&#x27;<span class="subst">$result</span> with a <span class="subst">$device</span>&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (mood != <span class="keyword">null</span>) &#123;</span><br><span class="line">    result = <span class="string">&#x27;<span class="subst">$result</span> (in a <span class="subst">$mood</span> mood)&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span>(say(<span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Howdy&#x27;</span>) ==</span><br><span class="line">    <span class="string">&#x27;Bob says Howdy with a carrier pigeon&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h3><p>每个应用都需要有顶级的<code>main()</code>函数作为入口，返回值void类型，并且有可选的<code>List&lt;String&gt;</code>参数（用于解析命令行输入的参数数据）。如</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="built_in">querySelector</span>(<span class="string">&quot;#sample_text_id&quot;</span>)</span><br><span class="line">    ..text = <span class="string">&quot;Click me!&quot;</span></span><br><span class="line">    ..onClick.listen(reverseText);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面的<code>..</code>语法为级联调用，表示在一个对象上执行多个操作。</p>
+</blockquote>
+<h3 id="第一公民"><a href="#第一公民" class="headerlink" title="第一公民"></a>第一公民</h3><p>类似JavaScript，Dart中Function可以作为参数、返回值、变量、对象使用。同样也有匿名函数可以使用，区别是箭头后是语句块时，不使用箭头，只在之后是表达式时使用箭头。</p>
+<h3 id="作用域与闭包"><a href="#作用域与闭包" class="headerlink" title="作用域与闭包"></a>作用域与闭包</h3><p>Dart是静态作用域，即变量的作用域在写代码时就确定了，作用域层级即大括号的层级。</p>
+<p>类似JavaScript，Dart的闭包意味着方法可以封闭其作用域内的变量。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// <span class="language-markdown">Returns a function that adds [addBy] to the</span></span></span><br><span class="line"><span class="comment">/// <span class="language-markdown">function&#x27;s argument.</span></span></span><br><span class="line"><span class="built_in">Function</span> makeAdder(<span class="built_in">num</span> addBy) &#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">num</span> i) =&gt; addBy + i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="comment">// Create a function that adds 2.</span></span><br><span class="line">  <span class="keyword">var</span> add2 = makeAdder(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create a function that adds 4.</span></span><br><span class="line">  <span class="keyword">var</span> add4 = makeAdder(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">assert</span>(add2(<span class="number">3</span>) == <span class="number">5</span>);</span><br><span class="line">  <span class="keyword">assert</span>(add4(<span class="number">3</span>) == <span class="number">7</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>所有函数<strong>必须返回一个值</strong>，否则默认<code>return null</code>。</p>
+<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><ul>
+<li><code>~/</code>返回取整截断的商</li>
+<li>使用<code>==</code>判断相等性<ul>
+<li>会调用左侧对象的<code>==</code>方法，和后面的对象对比</li>
+</ul>
+</li>
+<li>类型转换：<ul>
+<li><code>as</code>，类型转换，类似typescript中的as</li>
+<li><code>is</code> 判断对象是否是指定类型</li>
+<li><code>is!</code> 判断对象是否不是指定类型</li>
+</ul>
+</li>
+<li><code>??=</code>在value不是null时赋值给变量</li>
+<li><code>expr1 ?? expr2</code>表示如果expr1是非null则返回其值，否则执行expr2并返回</li>
+<li><code>..</code> 级联操作符，表示在一个对象上连续调用多个函数以及访问成员变量，可以嵌套</li>
+<li><code>?.</code>和<code>.</code>类似，但是在左侧操作对象为null时返回null<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> addressBook = (<span class="keyword">new</span> AddressBookBuilder()</span><br><span class="line">      ..name = <span class="string">&#x27;jenny&#x27;</span></span><br><span class="line">      ..email = <span class="string">&#x27;jenny@example.com&#x27;</span></span><br><span class="line">      ..phone = (<span class="keyword">new</span> PhoneNumberBuilder()</span><br><span class="line">            ..number = <span class="string">&#x27;415-555-0100&#x27;</span></span><br><span class="line">            ..label = <span class="string">&#x27;home&#x27;</span>)</span><br><span class="line">          .build())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><ul>
+<li>for循环中，Dart会自动捕获当时的index索引值，避免JavaScript中问题。对interable的对象可以使用<code>forEach()</code>方法遍历，对List、Set还支持<code>for-in</code>形式的遍历</li>
+<li><code>switch</code>中的每个case（除了空case）都必须有<code>break</code></li>
+<li><code>assert</code>在检查模式下会被跳过</li>
+</ul>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p>和JavaScript中的异常类似。</p>
+<p>不一样的是，可以使用<code>on</code>或<code>catch</code>捕获异常，可以通过<code>rethrow</code>在其中重新抛出异常。</p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li>构造方式类似ES6中引入JavaScript Class。</li>
+<li>用成员方式声明的类变量在定义时初始化，也就是在构造函数前</li>
+<li>可以使用Object的runtimeType属性来判断实例的类型</li>
+<li>使用const关键字结合构造函数可以构造出不可变的对象实例</li>
+</ul>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>使用和类名同名的方法作为构造函数（或者使用<em>命名构造函数</em>）。因为把构造函数参数赋值给实例变量的场景太常见了，Dart提供了下面的语法糖。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x;</span><br><span class="line">  <span class="built_in">num</span> y;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Syntactic sugar for setting x and y</span></span><br><span class="line">  <span class="comment">// before the constructor body runs.</span></span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以使用命名构造函数实现多个构造函数。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x;</span><br><span class="line">  <span class="built_in">num</span> y;</span><br><span class="line"></span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Named constructor</span></span><br><span class="line">  Point.fromJson(<span class="built_in">Map</span> json) &#123;</span><br><span class="line">    x = json[<span class="string">&#x27;x&#x27;</span>];</span><br><span class="line">    y = json[<span class="string">&#x27;y&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>子类不会从父类继承构造函数</strong>，在未定义构造函数时，会有一个默认构造函数，这个函数没有参数，且会调起父类的没有参数的构造函数。</p>
+<p>在有初始化参数列表（initializer list）的情况下，初始化参数列表在父类构造函数前执行。</p>
+<ol>
+<li>初始化参数列表</li>
+<li>父类无参构造函数</li>
+<li>子类无参构造函数</li>
+</ol>
+<p>父类没有无参构造函数时，需要手动调用父类的其他构造函数。</p>
+<h4 id="初始化列表"><a href="#初始化列表" class="headerlink" title="初始化列表"></a>初始化列表</h4><p>在执行父类构造函数前，可以初始化实例参数。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x;</span><br><span class="line">  <span class="built_in">num</span> y;</span><br><span class="line"></span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Initializer list sets instance variables before</span></span><br><span class="line">  <span class="comment">// the constructor body runs.</span></span><br><span class="line">  Point.fromJson(<span class="built_in">Map</span> jsonMap)</span><br><span class="line">      : x = jsonMap[<span class="string">&#x27;x&#x27;</span>],</span><br><span class="line">        y = jsonMap[<span class="string">&#x27;y&#x27;</span>] &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;In Point.fromJson(): (<span class="subst">$x</span>, <span class="subst">$y</span>)&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在冒号右边用逗号隔开初始化表达式。注意：等号右边无法访问<code>this</code>。</p>
+<h4 id="重定向构造函数"><a href="#重定向构造函数" class="headerlink" title="重定向构造函数"></a>重定向构造函数</h4><p>重定向构造函数没有代码，<strong>在构造函数声明后</strong>，用冒号调用其他构造函数</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x;</span><br><span class="line">  <span class="built_in">num</span> y;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The main constructor for this class.</span></span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Delegates to the main constructor.</span></span><br><span class="line">  Point.alongXAxis(<span class="built_in">num</span> x) : <span class="keyword">this</span>(x, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="常量构造函数"><a href="#常量构造函数" class="headerlink" title="常量构造函数"></a>常量构造函数</h4><p>如果类支持提供状态不变的对象，需要定义一个<code>const</code>构造函数，且所有类变量都要是<code>final</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImmutablePoint</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">num</span> x;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">num</span> y;</span><br><span class="line">  <span class="keyword">const</span> ImmutablePoint(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> ImmutablePoint origin =</span><br><span class="line">      <span class="keyword">const</span> ImmutablePoint(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="工厂构造函数"><a href="#工厂构造函数" class="headerlink" title="工厂构造函数"></a>工厂构造函数</h4><p>当你的构造函数不需要返回新对象，而从其他地方获取时（如缓存），使用工厂构造函数。**工厂构造函数内无法访问<code>this</code>**。调用时方式和普通构造函数等同。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> name;</span><br><span class="line">  <span class="built_in">bool</span> mute = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// _cache is library-private, thanks to the _ in front</span></span><br><span class="line">  <span class="comment">// of its name.</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, Logger&gt; _cache =</span><br><span class="line">      &lt;<span class="built_in">String</span>, Logger&gt;&#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">factory</span> Logger(<span class="built_in">String</span> name) &#123;</span><br><span class="line">    <span class="keyword">if</span> (_cache.containsKey(name)) &#123;</span><br><span class="line">      <span class="keyword">return</span> _cache[name];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">final</span> logger = <span class="keyword">new</span> Logger._internal(name);</span><br><span class="line">      _cache[name] = logger;</span><br><span class="line">      <span class="keyword">return</span> logger;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Logger._internal(<span class="keyword">this</span>.name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> logger = <span class="keyword">new</span> Logger(<span class="string">&#x27;UI&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><p>类方法可以访问<code>this</code>，另外对于类对象的每个属性都有隐含的getter和setter（final除外）。也可以显式使用<code>get</code>和<code>set</code>定义getter和setter的行为。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> left;</span><br><span class="line">  <span class="built_in">num</span> top;</span><br><span class="line">  <span class="built_in">num</span> width;</span><br><span class="line">  <span class="built_in">num</span> height;</span><br><span class="line"></span><br><span class="line">  Rectangle(<span class="keyword">this</span>.left, <span class="keyword">this</span>.top, <span class="keyword">this</span>.width, <span class="keyword">this</span>.height);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Define two calculated properties: right and bottom.</span></span><br><span class="line">  <span class="built_in">num</span> <span class="keyword">get</span> right             =&gt; left + width;</span><br><span class="line">      <span class="keyword">set</span> right(<span class="built_in">num</span> value)  =&gt; left = value - width;</span><br><span class="line">  <span class="built_in">num</span> <span class="keyword">get</span> bottom            =&gt; top + height;</span><br><span class="line">      <span class="keyword">set</span> bottom(<span class="built_in">num</span> value) =&gt; top = value - height;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Dart使用<code>extends</code>继承，用<code>super</code>指代父类，用<code>@overide</code>注解重载操作。</li>
+<li>Dart中有抽象类&#x2F;抽象方法，设计和使用类似Java的抽象类&#x2F;抽象方法。如果你希望抽象类可实例化，可以定义一个工厂工造函数。</li>
+<li>每个类都隐式的定义了一个包含所有实例成员的接口，通过使用<code>implement</code>实现若干其他类的API（不包括构造函数）</li>
+<li>可以重载一些操作符，如<code>+</code>, <code>-</code>, <code>[]</code>, <code>&gt;&gt;</code>等，实现在特定类上的特定表现</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vector</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> x;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> y;</span><br><span class="line">  <span class="keyword">const</span> Vector(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">Overrides + (a + b).</span></span></span><br><span class="line">  Vector <span class="keyword">operator</span> +(Vector v) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Vector(x + v.x, y + v.y);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">Overrides - (a - b).</span></span></span><br><span class="line">  Vector <span class="keyword">operator</span> -(Vector v) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Vector(x - v.x, y - v.y);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有意思的是，Dart提供<code>noSuchMethod()</code>方法，在访问不存在的类实例或方法时被调用。如果没有填写，默认使用Object的同名方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@proxy</span><br><span class="line">class A &#123;</span><br><span class="line">  void noSuchMethod(Invocation inv) &#123;</span><br><span class="line">     print(&#x27;You tried to use a non-existent member: &#x27; +</span><br><span class="line">        &#x27;$&#123;inv.memberName&#125;&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>枚举是特殊的类，使用<code>enum</code>关键字定义。每个枚举值都有index属性的<code>getter</code>函数，枚举的<code>values</code>常量可以返回所有枚举值。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> Color &#123; red, green, blue &#125;</span><br><span class="line"><span class="keyword">assert</span>(Color.red.index == <span class="number">0</span>);</span><br><span class="line"><span class="built_in">List</span>&lt;Color&gt; colors = Color.values;</span><br><span class="line"><span class="keyword">assert</span>(colors[<span class="number">2</span>] == Color.blue);</span><br></pre></td></tr></table></figure>
+
+<h3 id="mixin"><a href="#mixin" class="headerlink" title="mixin"></a>mixin</h3><p>Dart中提供了<strong>多类继承</strong>中重用类代码的mixin，用<code>with</code>结合mixin类实现，这种类没有构造函数。除非你想像正常类一样使用mixin，否则使用<code>mixin</code>关键字。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mixin</span> Musical &#123;</span><br><span class="line">  <span class="built_in">bool</span> canPlayPiano = <span class="keyword">false</span>;</span><br><span class="line">  <span class="built_in">bool</span> canCompose = <span class="keyword">false</span>;</span><br><span class="line">  <span class="built_in">bool</span> canConduct = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> entertainMe() &#123;</span><br><span class="line">    <span class="keyword">if</span> (canPlayPiano) &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Playing piano&#x27;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canConduct) &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Waving hands&#x27;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Humming to self&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当限制mixin只在特定类中使用时，结合<code>on</code>让mixin也能调用父类方法。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mixin</span> MusicalPerformer <span class="keyword">on</span> Musician &#123;</span><br><span class="line">  <span class="comment">// ···</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类变量、函数"><a href="#类变量、函数" class="headerlink" title="类变量、函数"></a>类变量、函数</h3><p>使用<code>static</code>前缀修饰，表示类级别的变量、函数。类变量只在第一次使用时初始化。静态方法无法访问this。</p>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><p>使用泛型的两个动机：</p>
+<ul>
+<li>有助于IDE、环境、同事帮你定位问题和代码自动生成</li>
+<li>减少重复代码</li>
+</ul>
+<p>List和Map的泛型定义类似C++风格。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> names = &lt;<span class="built_in">String</span>&gt;[<span class="string">&#x27;Seth&#x27;</span>, <span class="string">&#x27;Kathy&#x27;</span>, <span class="string">&#x27;Lars&#x27;</span>];</span><br><span class="line"><span class="keyword">var</span> pages = &lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt;&#123;</span><br><span class="line">  <span class="string">&#x27;index.html&#x27;</span>: <span class="string">&#x27;Homepage&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;robots.txt&#x27;</span>: <span class="string">&#x27;Hints for web robots&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;humans.txt&#x27;</span>: <span class="string">&#x27;We are people, not machines&#x27;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> names = <span class="keyword">new</span> <span class="built_in">List</span>&lt;<span class="built_in">String</span>&gt;();</span><br><span class="line"><span class="keyword">var</span> views = <span class="keyword">new</span> <span class="built_in">Map</span>&lt;<span class="built_in">int</span>, View&gt;();</span><br><span class="line"><span class="built_in">print</span>(names <span class="keyword">is</span> <span class="built_in">List</span>&lt;<span class="built_in">String</span>&gt;); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>在泛型中使用<code>extends</code>可以限制泛型的具体类型。在1.21之后，Dart支持泛型函数。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">T first&lt;T&gt;(<span class="built_in">List</span>&lt;T&gt; ts) &#123;</span><br><span class="line">  <span class="comment">// ...Do some initial work or error checking, then...</span></span><br><span class="line">  T tmp ?= ts[<span class="number">0</span>];</span><br><span class="line">  <span class="comment">// ...Do some additional checking or processing...</span></span><br><span class="line">  <span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h2><p>使用<code>import</code>和<code>library</code>引入和导出模块。<code>_</code>开头的标识符只在库内部可见。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:html&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:io&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:mylib/mylib.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:utils/utils.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:lib2/lib2.dart&#x27;</span> <span class="keyword">as</span> lib2;  <span class="comment">// 指定库前缀，避免重名</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:lib1/lib1.dart&#x27;</span> <span class="keyword">show</span> foo; <span class="comment">// 部分导入</span></span><br></pre></td></tr></table></figure>
+
+<p><code>dart:</code>开头代表内置库，<code>package:</code>开头代表外部库。外部库使用<code>pub</code>包管理器管理。</p>
+<h3 id="懒加载库"><a href="#懒加载库" class="headerlink" title="懒加载库"></a>懒加载库</h3><p>懒加载即在使用时再加载库，如优化app启动时间，加载很可能用不到的功能。</p>
+<p>加载时使用<code>deferred as</code>导入，使用<code>loadLibrary()</code>方法加载。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:deferred/hello.dart&#x27;</span> <span class="keyword">deferred</span> <span class="keyword">as</span> hello;</span><br><span class="line"></span><br><span class="line">greet() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="keyword">await</span> hello.loadLibrary();</span><br><span class="line">  hello.printGreeting();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="异步支持"><a href="#异步支持" class="headerlink" title="异步支持"></a>异步支持</h2><p>Dart中返回<code>Future</code>和<code>Stream</code>的方法都是异步的，意味着设置好耗时操作（I&#x2F;O）后就返回。类似ES7中的<code>await</code>和<code>async</code>，你也可以像组织同步代码一样组织你的异步代码。</p>
+<p>Dart中声明异步方法是<strong>在函数名后加入async</strong>，这类方法返回一个<code>Future</code>对象，了解JS中<code>Promise</code>的同学可以很快理解Future是做什么的。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">checkVersion() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> version = <span class="keyword">await</span> lookUpVersion();</span><br><span class="line">  <span class="keyword">if</span> (version == expectedVersion) &#123;</span><br><span class="line">    <span class="comment">// Do something.</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Do something else.</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在返回值是Stream时，使用<code>await for</code>的形式接收Stream中的数据。另外别忘了用<code>async</code>修饰外界函数。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Future main() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">await</span> <span class="keyword">for</span> (<span class="keyword">var</span> request <span class="keyword">in</span> requestServer) &#123;</span><br><span class="line">    handleRequest(request);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="生成器函数"><a href="#生成器函数" class="headerlink" title="生成器函数"></a>生成器函数</h2><p>惰性生产数据，类似ES6中的<code>function*</code>。Dart提供两种类型：</p>
+<ul>
+<li>同步：返回Iterator</li>
+<li>异步：返回Stream</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Iterable</span>&lt;<span class="built_in">int</span>&gt; naturalsDownFrom(<span class="built_in">int</span> n) <span class="keyword">sync</span>* &#123;</span><br><span class="line">  <span class="keyword">if</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">yield</span> n;</span><br><span class="line">    <span class="keyword">yield</span>* naturalsDownFrom(n - <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Stream&lt;<span class="built_in">int</span>&gt; asynchronousNaturalsTo(<span class="built_in">int</span> n) <span class="keyword">async</span>* &#123;</span><br><span class="line">  <span class="built_in">int</span> k = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (k &lt; n) <span class="keyword">yield</span> k++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="可调用的类"><a href="#可调用的类" class="headerlink" title="可调用的类"></a>可调用的类</h2><p>类中实现了<code>call()</code>方法时，类实例可以当做方法调用。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WannabeFunction</span> </span>&#123;</span><br><span class="line">  call(<span class="built_in">int</span> a, <span class="built_in">int</span> b) =&gt; a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> wf = <span class="keyword">new</span> WannabeFunction();</span><br><span class="line">wf(<span class="number">3</span>, <span class="number">4</span>); <span class="comment">// 7</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="类型别名"><a href="#类型别名" class="headerlink" title="类型别名"></a>类型别名</h2><p>类似typescript中的interface定义，Dart可以借助<code>typedef</code>进行一些更复杂的类型判断。typedef只是类型别名的一种说法。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">int</span> Compare(<span class="built_in">int</span> a, <span class="built_in">int</span> b);</span><br><span class="line"></span><br><span class="line"><span class="built_in">int</span> sort(<span class="built_in">int</span> a, <span class="built_in">int</span> b) =&gt; a - b;</span><br><span class="line"></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="keyword">assert</span>(sort <span class="keyword">is</span> Compare); <span class="comment">// True!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="元数据"><a href="#元数据" class="headerlink" title="元数据"></a>元数据</h2><p>使用元数据给代码添加额外信息，也能便于文档自动生成。</p>
+<ul>
+<li><code>@deprecated</code></li>
+<li><code>@override</code></li>
+<li><code>@proxy</code></li>
+</ul>
+<p>你还可以自定义自己的元数据注解：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span> todo;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">todo</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> who;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> what;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> todo(<span class="keyword">this</span>.who, <span class="keyword">this</span>.what);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// another file</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;todo.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@todo</span>(<span class="string">&#x27;seth&#x27;</span>, <span class="string">&#x27;make this do something&#x27;</span>)</span><br><span class="line"><span class="keyword">void</span> doSomething() &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;do something&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><ul>
+<li>单行，<code>//</code></li>
+<li>多行，<code>/**/</code></li>
+<li>文档注释， <code>///</code>开头，或<code>/**</code>开头，<code>*/</code>结束</li>
+</ul>
+<p>遵守规范的注释风格会有助于文档自动生成。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1891,241 +2232,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/03/12/indexeddb-introduction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2019/03/12/indexeddb-introduction/" class="post-title-link" itemprop="url">Electron应用数据库选型暨indexedDB扫盲</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2019-03-12 00:01:59 / 修改时间：00:03:38" itemprop="dateCreated datePublished" datetime="2019-03-12T00:01:59+08:00">2019-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2019/03/12/indexeddb-introduction/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/12/indexeddb-introduction/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>6.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>名谓扫盲，实则扫自己的盲</p>
-</blockquote>
-<h2 id="选型"><a href="#选型" class="headerlink" title="选型"></a>选型</h2><p>要说到最近的一个个人项目<a target="_blank" rel="noopener" href="https://github.com/shenlvmeng/calendone">calendone</a>，它是一个普通的Electron日历应用，有每日记录，定计划等功能，需要做数据持久化。数据量不大，不需要考虑性能问题。简单看了些方案。</p>
-<h3 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h3><ul>
-<li><strong>关系型数据库</strong>，具有关系型数据库的一切特性，事务遵循ACID属性。小巧轻便，有knex这样的库做ORM。</li>
-<li>是node原生模块，需要重新编译，而且有坑</li>
-</ul>
-<h3 id="NeDB"><a href="#NeDB" class="headerlink" title="NeDB"></a>NeDB</h3><ul>
-<li><strong>NoSQL类型数据库</strong>，可以实现本地存储，也可以作为内存存储</li>
-<li><strong>API是MongoDB的一个子集</strong></li>
-<li>纯js实现，一个文件对应一张表</li>
-</ul>
-<h3 id="Leveldb"><a href="#Leveldb" class="headerlink" title="Leveldb"></a>Leveldb</h3><ul>
-<li><strong>NoSQL类型数据库</strong>，支持内存和持久化存储</li>
-<li><strong>没有事务机制</strong>，默认按key查询，没有索引</li>
-<li>默认保存的不是js对象，而是字符串。如果要保存为对象，可以在level函数第二个参数加入<code>&#123; valueEncoding: &quot;json&quot; &#125;</code>来让保存的js对象以json的形式读取</li>
-</ul>
-<h3 id="Lowdb"><a href="#Lowdb" class="headerlink" title="Lowdb"></a>Lowdb</h3><ul>
-<li>基于Loadsh的<strong>纯JSON文件数据库</strong>，速度较慢</li>
-<li>不支持索引&#x2F;事务&#x2F;批量操作等数据库功能</li>
-</ul>
-<h3 id="indexedDB"><a href="#indexedDB" class="headerlink" title="indexedDB"></a>indexedDB</h3><ul>
-<li><strong>NoSQL数据库</strong>，浏览器自带，可以储存大量数据，容量为250MB以上</li>
-<li>支持事务，有版本号的概念。</li>
-<li>支持较多的字段类型</li>
-</ul>
-<p>综上考虑，最后采用浏览器自带的indexedDB，足够满足要求，漫游接入成本，升级方便，调试方便。</p>
-<h2 id="indexedDB介绍"><a href="#indexedDB介绍" class="headerlink" title="indexedDB介绍"></a>indexedDB介绍</h2><p>indexedDB脱胎于HTML本地存储。</p>
-<h3 id="HTML本地存储"><a href="#HTML本地存储" class="headerlink" title="HTML本地存储"></a>HTML本地存储</h3><p>上古时代中，HTML中持久化数据只有几种方法[1]：</p>
-<ul>
-<li>cookie。cookie的缺点很明显，最多只能存储4KB的数据，且会携带在同域名下每个HTTP请求的头部，明文传输（除非你使用SSL）。</li>
-<li>IE userData。微软在上世纪90年代的浏览器大战时推出的本地存储方案，允许每个页面最多存储64K数据，每个站点最多640K数据，它不是Web标准的一部分</li>
-<li>Flash cookie。它实际上和HTTP cookie并不是一回事，它的名字可能叫做”Flash本地存储”更为合适。考虑到Flash已经是要被淘汰的技术……</li>
-</ul>
-<p>本地存储出现后，有了下面一些标准化的更简单的方法：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage接口</a>，即localStorage和sessionStorage</li>
-<li>Web SQL，这是一个<strong>已经废弃</strong>的规范。就跟它的名字一样，它就是浏览器端的一个SQL数据库，可以执行SQL语句。由于语法和SQLite绑定过紧，后被标准组织废弃</li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API">indexedDB</a>，Web SQL的替代品，也是浏览器端的数据库，但他是No SQL的。有MongoDB使用体验的，对它就不会感到陌生。</li>
-</ul>
-<h3 id="indexedDB-1"><a href="#indexedDB-1" class="headerlink" title="indexedDB"></a>indexedDB</h3><p>indexedDB是浏览器提供的本地数据库，目标是持久化存储大量数据，提供类No SQL的增删改查体验。因此它有以下几点特色：</p>
-<ul>
-<li><strong>键值对存储</strong>，采用对象仓库（object store）存放数据，所有类型的数据都可以直接存入，包括 JavaScript 对象。</li>
-<li><strong>支持索引</strong>，indexedDB没有表列的概念，但可以建立索引，查询数据时使用id或索引搜索</li>
-<li><strong>支持事务</strong>，保证操作的原子性，事务中的任意一步失败，数据库都会回滚到操作事务前的状态</li>
-<li><strong>异步操作</strong>，indexedDB操作都是异步的，在执行数据增删改查时，不会影响界面性能。</li>
-<li><strong>同源限制</strong>，每一个数据库会关联创建它的域名。网页只能访问自身域名下的数据库，不能跨域访问数据库。</li>
-<li><strong>其他</strong>，包括存储空间大、支持二进制存储等…</li>
-</ul>
-<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
-<li><strong>数据库</strong>，IDBDatabase对象类型，每个域名（协议 + 域名 + 端口）可以新建任意多个数据库。</li>
-<li><strong>对象仓库</strong>，IDBObjectStore对象类型，一个数据库包含若干个对象仓库，类似于关系型数据库中的表</li>
-<li><strong>数据记录</strong>，类型于关系型数据库中的行，但是只有主键和数据体两部分。<strong>数据体可以是任意数据类型，不限于对象</strong>。</li>
-<li><strong>索引</strong>，IDBIndex对象类型，数据记录里除了主键以外的搜索参照</li>
-<li><strong>事务</strong>，IDBTransaction数据类型，对数据库的增删改查都需要通过事务进行，执行结果通过<code>error</code>，<code>success</code>，<code>abort</code>事件回调拿到</li>
-</ul>
-<p>indexedDB定义了许多对象接口，即API，除了上面介绍的一些，更完善的接口介绍可以参考MDN的介绍。</p>
-<h4 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h4><p>indexedDB 鼓励使用的基本模式如下所示：</p>
-<ol>
-<li>打开数据库。</li>
-<li>在数据库中创建一个对象仓库（object store）。</li>
-<li>启动一个事务，并发送一个请求来执行一些数据库操作，像增加或提取数据等。</li>
-<li>通过监听正确类型的DOM事件以等待操作完成。</li>
-<li>在操作结果上进行一些操作（可以在request对象中找到）</li>
-</ol>
-<p><strong>打开数据库</strong></p>
-<p>使用 IndexedDB 的第一步是打开数据库，使用indexedDB.open()方法如下。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> request = <span class="variable language_">window</span>.<span class="property">indexedDB</span>.<span class="title function_">open</span>(databaseName, version);</span><br></pre></td></tr></table></figure>
-
-<p>其中第一个参数为数据库名，第二个参数是数据库版本号。<code>indexedDB.open()</code>方法返回一个<code>IDBRequest</code>对象。这个对象通过三种事件error、success、upgradeneeded，处理打开数据库的操作结果。</p>
-<p>如果数据库不存在，open操作会创建该数据库，然后<code>onupgradeneeded</code>事件被触发，需要在该事件的处理函数中创建数据库模式。如果数据库已经存在，但指定了一个更高的数据库版本，会直接触发 <code>onupgradeneeded</code>事件，允许你在处理函数中更新数据库模式。</p>
-<p><strong>注意：这里的版本号是一个unsigned long long数字，使用浮点数是会被转化到最近的整数</strong></p>
-<p><strong>绑定处理函数</strong></p>
-<p>几乎所有我们产生的请求我们在处理的时候首先要做的就是添加成功和失败处理函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// Do something with request.errorCode!</span></span><br><span class="line">&#125;;</span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// Do something with request.result!</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>如果一切顺利的话，相关request的<code>onsuccess()</code>处理函数就会被触发。如果不是所有事情都成功的话，<code>error </code>事件会在request上被触发。</p>
-<p><strong>新建数据库</strong></p>
-<p>新建数据库与打开数据库是同一个操作。不同之处在于，后续的操作主要在<code>upgradeneeded</code>事件的监听函数里面完成。通常新建数据库后，第一件事是新建对象仓库，即下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">onupgradeneeded</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  db = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">var</span> objectStore;</span><br><span class="line">  <span class="keyword">if</span> (!db.<span class="property">objectStoreNames</span>.<span class="title function_">contains</span>(<span class="string">&#x27;person&#x27;</span>)) &#123;</span><br><span class="line">    objectStore = db.<span class="title function_">createObjectStore</span>(<span class="string">&#x27;person&#x27;</span>, &#123; <span class="attr">keyPath</span>: <span class="string">&#x27;id&#x27;</span> &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面这段语句使用id作为对象仓库的主键，如果没有合适作为主键的属性，可以让indexedDB自动生成主键。为了便于查询，可以在数据仓库中建立索引。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objectStore = db.<span class="title function_">createObjectStore</span>(</span><br><span class="line">  <span class="string">&#x27;person&#x27;</span>,</span><br><span class="line">  &#123; <span class="attr">autoIncrement</span>: <span class="literal">true</span> &#125;</span><br><span class="line">);</span><br><span class="line">objectStore.<span class="title function_">createIndex</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">objectStore.<span class="title function_">createIndex</span>(<span class="string">&#x27;email&#x27;</span>, <span class="string">&#x27;email&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-
-<p><strong>增删改查</strong></p>
-<p>增删改查都通过事务进行。事务来自于数据库对象，必须指定你想让这个事务跨越哪些对象仓库。事务中有三种模式，表示你想对数据库进行的操作类型：</p>
-<ul>
-<li><code>readonly</code> <strong>默认</strong>，只读</li>
-<li><code>readwrite</code> 读写操作</li>
-<li><code>versionchange</code> 修改数据库模式或结构</li>
-</ul>
-<p>只在必要时指定 readwrite 事务。你可以同时执行多个readonly事务，哪怕它们的作用域有重叠；但对于在一个对象仓库上只能运行一个readwrite事务。</p>
-<p>增加一条数据的语句如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> transaction = db.<span class="title function_">transaction</span>([<span class="string">&quot;person&quot;</span>], <span class="string">&quot;readwrite&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在所有数据添加完毕后的处理</span></span><br><span class="line">transaction.<span class="property">oncomplete</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;成功&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">transaction.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;失败&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> objectStore = transaction.<span class="title function_">objectStore</span>(<span class="string">&quot;person&quot;</span>);</span><br><span class="line">    .<span class="title function_">add</span>(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;foo&#x27;</span>, <span class="attr">email</span>: <span class="string">&#x27;foo@bar.com&#x27;</span> &#125;);</span><br></pre></td></tr></table></figure>
-
-<p>在有了数据后，可以通过几种方法对它进行提取。首先是简单的 <code>get()</code>，通过键获得值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> transaction = db.<span class="title function_">transaction</span>([<span class="string">&quot;person&quot;</span>]);</span><br><span class="line"><span class="keyword">var</span> objectStore = transaction.<span class="title function_">objectStore</span>(<span class="string">&quot;person&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> request = objectStore.<span class="title function_">get</span>(<span class="number">1</span>);</span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="comment">// 对 request.result 做些操作！</span></span><br><span class="line">  <span class="title function_">alert</span>(request.<span class="property">result</span>.<span class="property">name</span>);</span><br><span class="line">&#125;;</span><br><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;出错了&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>在很多场景下你并不知道数据的键，这时可以用索引找到你要的数据。例子中的<code>name</code>属性可能并不是唯一的，在这种情况下，你总是得到键值最小的那个。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前提是你已经建立了name索引</span></span><br><span class="line"><span class="keyword">var</span> index = objectStore.<span class="title function_">index</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"></span><br><span class="line">index.<span class="title function_">get</span>(<span class="string">&#x27;foo&#x27;</span>).<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;foo&#x27;s id is &quot;</span> + event.<span class="property">target</span>.<span class="property">result</span>.<span class="property">id</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>在需要遍历某一范围的数据集合时，也可以使用<strong>游标</strong>，这里要用到<code>openCursor</code>方法。比如查询整个数据对象存储。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">objectStore.<span class="title function_">openCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(cursor.<span class="property">value</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;遍历结束&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><em>上面的功能也可以通过<code>getAll</code>完成，但是由于数据对象是懒生成的，<code>getAll</code>性能会有消耗。当然你如果想直接拿到整个数据组成的数组，还是<code>getAll</code>好点</em></p>
-<p>结合索引（IDBIndex）和游标（IDBCursor）可以查询指定索引的所有记录，方法<code>openCursor</code>和<code>openKeyCursor</code>分别返回不同的数据结构。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">index.<span class="title function_">openCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="comment">// cursor.key 是一个 name, 就像 &quot;Bill&quot;, 然后 cursor.value 是整个对象。</span></span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Name: &quot;</span> + cursor.<span class="property">key</span> + <span class="string">&quot;, email: &quot;</span> + cursor.<span class="property">value</span>.<span class="property">email</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">index.<span class="title function_">openKeyCursor</span>().<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> cursor = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  <span class="keyword">if</span> (cursor) &#123;</span><br><span class="line">    <span class="comment">// cursor.key 是一个 name, 就像 &quot;Bill&quot;, 然后 cursor.value是主键的值。</span></span><br><span class="line">    <span class="comment">// 没办法得到存储对象的其余部分。</span></span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;Name: &quot;</span> + cursor.<span class="property">key</span> + <span class="string">&quot;, id: &quot;</span> + cursor.<span class="property">value</span>);</span><br><span class="line">    cursor.<span class="title function_">continue</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>更多游标设置参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB#%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%A0%87%E7%9A%84%E8%8C%83%E5%9B%B4%E5%92%8C%E6%96%B9%E5%90%91">mdn</a>的介绍。</p>
-<p>更新和删除数据，分别使用<code>put</code>和<code>delete</code>方法。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> request = db.<span class="title function_">transaction</span>([<span class="string">&#x27;person&#x27;</span>], <span class="string">&#x27;readwrite&#x27;</span>)</span><br><span class="line">  .<span class="title function_">objectStore</span>(<span class="string">&#x27;person&#x27;</span>)</span><br><span class="line">  .<span class="title function_">put</span>(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;李四&#x27;</span>, <span class="attr">age</span>: <span class="number">35</span>, <span class="attr">email</span>: <span class="string">&#x27;lisi@example.com&#x27;</span> &#125;);</span><br><span class="line"></span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据更新成功&#x27;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">request.<span class="property">onerror</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据更新失败&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> request = db.<span class="title function_">transaction</span>([<span class="string">&#x27;person&#x27;</span>], <span class="string">&#x27;readwrite&#x27;</span>)</span><br><span class="line">  .<span class="title function_">objectStore</span>(<span class="string">&#x27;person&#x27;</span>)</span><br><span class="line">  .<span class="title function_">delete</span>(<span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;数据删除成功&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中put的数据为全量替换，可以通过get方法拿到数据后，修改特定值再交给put完成增量替换。</p>
-<h2 id="indexedDB封装库"><a href="#indexedDB封装库" class="headerlink" title="indexedDB封装库"></a>indexedDB封装库</h2><p>indexedDB虽然强大，但是有些API对于用户来说还是不够方便，下面是几个indexedDB的封装库：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://localforage.github.io/localForage/">localForage</a>，支持类Storage API语法的客户端数据存储polyfill，支持回退到Storage和Web SQL</li>
-<li><a target="_blank" rel="noopener" href="https://dexie.org/">dexie.js</a>，提供更友好和简单的语法便于快速的编码开发，<strong>有Typescript支持</strong>。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/erikolson186/zangodb">ZangoDB</a>，提供类MongoDB的接口实现，提供了许多MangoDB的特性实现</li>
-<li><a target="_blank" rel="noopener" href="http://jsstore.net/">JsStore</a>，提供基于indexedDB的类SQL的语法实现。</li>
-</ul>
-<p>综上，考虑到dexie.js的语法更加友善，文档页较完善。最终选择它作为客户端存储的实现。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://jiangzhenghua.iteye.com/blog/1225201">HTML5本地存储不完全指南</a></li>
-<li><a target="_blank" rel="noopener" href="https://wangdoc.com/javascript/bom/indexeddb.html">IndexedDB API</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB">使用 IndexedDB - Web API接口参考 | MDN</a></li>
-<li><a target="_blank" rel="noopener" href="https://dexie.org/docs/API-Reference">Dexie.js API Reference</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/11/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/blog/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/13/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -2156,7 +2262,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">29:47</span>
+    <span title="站点阅读时长">30:45</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
