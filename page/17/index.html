@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">154</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">473</span>
+        <span class="site-state-item-count">476</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,177 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/06/26/canvas-flowchart-compare/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2018/06/26/canvas-flowchart-compare/" class="post-title-link" itemprop="url">流程图JS实现方案对比</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-06-26 21:09:27 / 修改时间：21:12:03" itemprop="dateCreated datePublished" datetime="2018-06-26T21:09:27+08:00">2018-06-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2018/06/26/canvas-flowchart-compare/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/26/canvas-flowchart-compare/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>实现流程图和类流程图的工具主要需要解决<strong>数据 -&gt; 图形</strong>和<strong>交互</strong>两方面问题。在实现图形元素时也有canvas，SVG，canvas with DOM，SVG with DOM，DOM with canvas一些实现方式。</p>
+<p>canvas和SVG的实现方式区别比较明显：</p>
+<ul>
+<li>大规模元素、频繁重绘上，canvas完胜</li>
+<li>强调光影效果上，canvas小胜</li>
+<li>强调导出图片上，canvas小胜</li>
+<li>强调元素可交互上，SVG完胜</li>
+<li>强调画图元素可缩放上，SVG完胜</li>
+</ul>
+<p>使用SVG实现时，元素规模大以及频繁重绘时会出现卡顿现象，在大规模元素场景下交互也会有卡顿。使用canvas实现时，保证流程图元素的可交互性将成为头疼的难题，开发者需要自己模拟浏览器的一部分行为。</p>
+<p>下面是一些流程图实现基础的对比。</p>
+<h2 id="d3"><a href="#d3" class="headerlink" title="d3"></a>d3</h2><p>d3着眼在数据可视化，重点在使用不同layout组织数据，完成可视化。</p>
+<p>d3最初是天然支持SVG的，这点从类jQuery的API也能看出来。d3和canvas的结合上，绘制需要<a target="_blank" rel="noopener" href="https://bl.ocks.org/mbostock/1276463">额外的data binding</a>操作，周期性地将虚拟的DOM节点映射到canvas上，重绘得到下一帧画面。要实现canvas可交互的话也需要一些<a target="_blank" rel="noopener" href="https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444">hack的手段</a>。基于d3实现流程图并不划算。</p>
+<h2 id="zrender"><a href="#zrender" class="headerlink" title="zrender"></a>zrender</h2><p>zrender是一个canvas画图的基础库。它并不负责数据的组织和渲染，需要自己完成这一部分工作。但是zrender提供了让canvas可交互的重要功能。</p>
+<p>zrender下，mixin了Eventful特性的元素上可以监听交互事件。Eventful只是为元素提供了类似EventEmitter的功能。真正实现元素可交互的handler。</p>
+<p>handler内会拦截发生在canvas内的<code>click</code>&#x2F;<code>mousedown</code>&#x2F;<code>mouseup</code>&#x2F;<code>mousewheel</code>&#x2F;<code>dblclick</code>&#x2F;<code>contextmenu</code>事件，交予prototype内对应的处理方法处理，handler内有下面几个关键方法：</p>
+<ul>
+<li><code>mousemove</code>，监听canvas内mousemove事件，调用<code>findHover</code>得到当前位置对应的元素，根据情况调用<code>dispatchToElement</code>方法，分发<code>mouseout</code>，<code>mouseover</code>，<code>mousemove</code>给刚才得到的元素实例</li>
+<li><code>dispatchToElement</code>，分发事件到对应实例，将事件对象封装，trigger实例的对应事件handler，并通过<code>el.parent</code>向上冒泡</li>
+<li><code>findHover</code>，指定x, y坐标寻找该坐标位置的元素。从storage中拿到所有的displayable的list。挨个调用<code>isHover</code>判断displayable和[x, y]坐标的关系</li>
+<li><code>isHover</code>函数，根据displayable的rectHover属性，即是否使用包围盒检测鼠标进入。调用displayable的<code>rectContain</code>或<code>contain</code>检测是否在其中。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">isHover</span>(<span class="params">displayable, x, y</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (displayable[displayable.<span class="property">rectHover</span> ? <span class="string">&#x27;rectContain&#x27;</span> : <span class="string">&#x27;contain&#x27;</span>](x, y)) &#123;</span><br><span class="line">        <span class="keyword">var</span> el = displayable;</span><br><span class="line">        <span class="keyword">var</span> isSilent;</span><br><span class="line">        <span class="keyword">while</span> (el) &#123;</span><br><span class="line">            <span class="comment">// If clipped by ancestor.</span></span><br><span class="line">            <span class="comment">// <span class="doctag">FIXME:</span> If clipPath has neither stroke nor fill,</span></span><br><span class="line">            <span class="comment">// el.clipPath.contain(x, y) will always return false.</span></span><br><span class="line">            <span class="keyword">if</span> (el.<span class="property">clipPath</span> &amp;&amp; !el.<span class="property">clipPath</span>.<span class="title function_">contain</span>(x, y))  &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (el.<span class="property">silent</span>) &#123;</span><br><span class="line">                isSilent = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            el = el.<span class="property">parent</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> isSilent ? <span class="variable constant_">SILENT</span> : <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先简单看下storage，因为zrender里绘制的元素之间没有逻辑关联，因此需要有一个全局存储storage去统一管理加入的Group或Shape。storage的<code>getDisplayList</code>方法返回所有图形的绘制队列。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">getDisplayList</span>: <span class="keyword">function</span> (<span class="params">update, includeIgnore</span>) &#123;</span><br><span class="line">    includeIgnore = includeIgnore || <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (update) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">updateDisplayList</span>(includeIgnore);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">_displayList</span>;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p><em>注：方法中提到的<code>updateDisplayList</code>用于更新图形的绘制队列，在每次绘制前调用，它会深度优先遍历整个树，更新所有的变换后，根据优先级排序得到新的绘制队列。</em></p>
+<p>在displayable的基类中，<code>contain</code>方法只是单纯调用了<code>rectContain</code>（子类都有区别于<code>rectContain</code>的自己的实现）。在<code>rectContain</code>中，获取到坐标相对于图形的坐标（<code>transformCoordToLocal</code>）和图形的包围盒（<code>getBoundingRect</code>）。这里先说简单的<code>RectContain</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rectContain</span>: <span class="keyword">function</span> (<span class="params">x, y</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> coord = <span class="variable language_">this</span>.<span class="title function_">transformCoordToLocal</span>(x, y);</span><br><span class="line">    <span class="keyword">var</span> rect = <span class="variable language_">this</span>.<span class="title function_">getBoundingRect</span>();</span><br><span class="line">    <span class="keyword">return</span> rect.<span class="title function_">contain</span>(coord[<span class="number">0</span>], coord[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>getBoundingRect</code>是各自类自己实现的。除了个别情况，如Text，形状都基于Path类。在Path的<code>getBoundingRect</code>中可以看到，path的绘制又额外包装了一层<code>PathProxy</code>，<code>getBoundingRect</code>也是使用的<code>PathProxy</code>的方法。在实现上，PathProxy把绘制路径的操作命令拆分成了命令数组。通过记录每一段子路径上x、y的最大最小值，再将所有这些极值比较得到最后的最值。在PathProxy返回结果后，根据描边粗细得到最终结果。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">getBoundingRect</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// _rect变量做缓存用，计算完成后只在重绘时置空，避免重复计算</span></span><br><span class="line">    <span class="keyword">var</span> rect = <span class="variable language_">this</span>.<span class="property">_rect</span>;</span><br><span class="line">    <span class="keyword">var</span> style = <span class="variable language_">this</span>.<span class="property">style</span>;</span><br><span class="line">    <span class="keyword">var</span> needsUpdateRect = !rect;</span><br><span class="line">    <span class="keyword">if</span> (needsUpdateRect) &#123;</span><br><span class="line">        <span class="keyword">var</span> path = <span class="variable language_">this</span>.<span class="property">path</span>;</span><br><span class="line">        <span class="keyword">if</span> (!path) &#123;</span><br><span class="line">            <span class="comment">// Create path on demand.</span></span><br><span class="line">            path = <span class="variable language_">this</span>.<span class="property">path</span> = <span class="keyword">new</span> <span class="title class_">PathProxy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">__dirtyPath</span>) &#123;</span><br><span class="line">            path.<span class="title function_">beginPath</span>();</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">buildPath</span>(path, <span class="variable language_">this</span>.<span class="property">shape</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        rect = path.<span class="title function_">getBoundingRect</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_rect</span> = rect;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (style.<span class="title function_">hasStroke</span>()) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Return rect with stroke</span></span><br><span class="line">        <span class="keyword">return</span> rectWithStroke;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> rect;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p><code>Displayable</code>继承自<code>Element</code>，<code>Element</code>通过mixin得到来自<code>Transformable</code>中的<code>transformCoordToLocal</code>方法。这里要说到，zrender中元素和Group都有一个构造时的初始位置，而后的所有变化都是作为transform叠加在元素上的。例如拖拽元素对应的是“原始位置 + transform”而不是一个“新位置”。</p>
+<p>在每次变换后，<code>Transformable</code>中的<code>updateTransform</code>方法都会调用，设置自身<code>invTransform</code>属性为这次变化的逆矩阵。在<code>transformCoordToLocal</code>中对向量[x, y]应用这个逆矩阵即可得到点相对于当前形状的位置（可以理解成将点逆变换到形状变换前的位置）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">transformableProto.<span class="property">updateTransform</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    m = m || matrix.<span class="title function_">create</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存这个变换矩阵</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">transform</span> = m;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">invTransform</span> = <span class="variable language_">this</span>.<span class="property">invTransform</span> || matrix.<span class="title function_">create</span>();</span><br><span class="line">    matrix.<span class="title function_">invert</span>(<span class="variable language_">this</span>.<span class="property">invTransform</span>, m);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">transformableProto.<span class="property">transformCoordToLocal</span> = <span class="keyword">function</span> (<span class="params">x, y</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> v2 = [x, y];</span><br><span class="line">    <span class="keyword">var</span> invTransform = <span class="variable language_">this</span>.<span class="property">invTransform</span>;</span><br><span class="line">    <span class="keyword">if</span> (invTransform) &#123;</span><br><span class="line">        vector.<span class="title function_">applyTransform</span>(v2, v2, invTransform);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> v2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>综合这两个方法即可判断点是否在某元素的包围盒中。</p>
+<p>判断<code>contain</code>时，首先需要满足<code>rectContain</code>的关系。之后根据描边和填充情况，执行<code>contain/path</code>下对应的<code>contain</code>或<code>containStroke</code>方法。前者实际上是后者stroke为0时的特殊情况。除了path外，可以判断点是否在元素图形内的所有元素在<code>contain</code>下都有对应文件。基本所有的包含都可以转化为指定闭合路径是否包含指定点的问题。</p>
+<p>zrender利用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Point_in_polygon">PIP</a>（point-in-polygon）问题<a target="_blank" rel="noopener" href="https://www.quora.com/How-do-I-know-a-point-is-inside-a-closed-curve-or-not#">winding number</a>的解法判断点是否在path中；canvas提供的API中也有<code>isPointInPath</code>和<code>isPointInStroke</code>，不过只能针对当前的path。</p>
+<p>综上，zrender可以实现canvas内的元素和交互。</p>
+<h2 id="g6"><a href="#g6" class="headerlink" title="g6"></a>g6</h2><p>g6是antv的一部分，是一个canvas实现的展示关系型数据的JS可视化库。使用canvas的原因应该也在展示大量数据和重绘上更流畅。</p>
+<p>使用canvas实现时，g6一样会遇到zrender遇到的实现元素可交互的难题。从处理event的event.js中能看到，关联事件和元素的实现在<code>_getEventObj</code>处完成，剩下的步骤只是额外的封装操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Util</span>.<span class="title function_">each</span>(<span class="title class_">MouseEventTypes</span>, <span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    _events.<span class="title function_">push</span>(<span class="title class_">Util</span>.<span class="title function_">addEventListener</span>(el, item, <span class="function"><span class="params">ev</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> oldEventObj = <span class="variable language_">this</span>.<span class="property">_currentEventObj</span>;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_oldEventObj</span> = oldEventObj;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">_processEventObj</span>(ev);</span><br><span class="line">        <span class="keyword">const</span> currentEventObj = <span class="variable language_">this</span>.<span class="property">_currentEventObj</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="title function_">_processEventObj</span>(<span class="params">ev</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> graph = <span class="variable language_">this</span>.<span class="property">graph</span>;</span><br><span class="line">    <span class="keyword">const</span> canvas = graph.<span class="title function_">get</span>(<span class="string">&#x27;_canvas&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> frontCanvas = graph.<span class="title function_">get</span>(<span class="string">&#x27;_frontCanvas&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> evObj = <span class="variable language_">this</span>.<span class="title function_">_getEventObj</span>(ev, canvas);</span><br><span class="line">    <span class="keyword">const</span> frontEvObj = <span class="variable language_">this</span>.<span class="title function_">_getEventObj</span>(ev, frontCanvas);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">_getEventObj</span>(<span class="params">ev, canvas</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> graph = <span class="variable language_">this</span>.<span class="property">graph</span>;</span><br><span class="line">    <span class="keyword">const</span> clientX = ev.<span class="property">clientX</span>;</span><br><span class="line">    <span class="keyword">const</span> clientY = ev.<span class="property">clientY</span>;</span><br><span class="line">    <span class="keyword">const</span> canvasPoint = canvas.<span class="title function_">getPointByClient</span>(clientX, clientY);</span><br><span class="line">    <span class="keyword">const</span> point = <span class="variable language_">this</span>.<span class="title function_">_parsePoint</span>(canvasPoint.<span class="property">x</span>, canvasPoint.<span class="property">y</span>); <span class="comment">// 根据pixel ratio做一个转换</span></span><br><span class="line">    <span class="keyword">const</span> shape = canvas.<span class="title function_">getShape</span>(canvasPoint.<span class="property">x</span>, canvasPoint.<span class="property">y</span>);</span><br><span class="line">    <span class="keyword">const</span> item = graph.<span class="title function_">getItemByShape</span>(shape);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>p.s. 另说一点，frontCanvas的作用是绘制拖拽状态中的元素和辅助线等信息。</p>
+<p>最关键的方法<code>getPointByClient</code>和<code>getShape</code>来自Graph的<code>canvas</code>属性，这个属性通过‘@antv&#x2F;g’（G2）的canvas构造得来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> G = <span class="built_in">require</span>(<span class="string">&#x27;@antv/g&#x27;</span>);</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Canvas</span> = G.<span class="property">Canvas</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在G2中，Canvas继承自Group，可以认为Canvas本身已经扮演了根节点的角色。Canvas判断坐标对应元素的方法<code>getShape(x,y)</code>也来自Group。此方法遍历Group下所有元素（包括单个元素或Group），判断点[x, y]是否在范围内：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">find</span>(<span class="params">children, x, y</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> rst;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = children.<span class="property">length</span> - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">    <span class="keyword">const</span> child = children[i];</span><br><span class="line">    <span class="keyword">if</span> (child.<span class="property">__cfg</span>.<span class="property">visible</span> &amp;&amp; child.<span class="property">__cfg</span>.<span class="property">capture</span>) &#123;</span><br><span class="line">      <span class="comment">// 是Group就继续向下寻找</span></span><br><span class="line">      <span class="keyword">if</span> (child.<span class="property">isGroup</span>) &#123;</span><br><span class="line">        rst = child.<span class="title function_">getShape</span>(x, y);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (child.<span class="title function_">isHit</span>(x, y)) &#123;</span><br><span class="line">        rst = child;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rst) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> rst;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键的<code>child.isHit</code>方法类似zrender里的<code>contain</code>方法。区别使用包围盒还是自身范围判断。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">isHit</span>(<span class="params">x, y</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> self = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">const</span> v = [ x, y, <span class="number">1</span> ];</span><br><span class="line">    self.<span class="title function_">invert</span>(v); <span class="comment">// canvas</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (self.<span class="title function_">isHitBox</span>()) &#123;</span><br><span class="line">        <span class="keyword">const</span> box = self.<span class="title function_">getBBox</span>();</span><br><span class="line">        <span class="keyword">if</span> (box &amp;&amp; !<span class="title class_">Inside</span>.<span class="title function_">box</span>(box.<span class="property">minX</span>, box.<span class="property">maxX</span>, box.<span class="property">minY</span>, box.<span class="property">maxY</span>, v[<span class="number">0</span>], v[<span class="number">1</span>])) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> clip = self.<span class="property">__attrs</span>.<span class="property">clip</span>;</span><br><span class="line">    <span class="keyword">if</span> (clip) &#123;</span><br><span class="line">        <span class="keyword">if</span> (clip.<span class="title function_">inside</span>(x, y)) &#123;</span><br><span class="line">            <span class="keyword">return</span> self.<span class="title function_">isPointInPath</span>(v[<span class="number">0</span>], v[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> self.<span class="title function_">isPointInPath</span>(v[<span class="number">0</span>], v[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用包围盒时用<code>getBBox()</code>判断，类似zrender；否则使用<code>isPointInPath</code>。这点上g2不同，它只对特殊的闭合曲线如圆、矩形、贝塞尔曲线等等进行自己的实现。对一般性的path，直接使用上面提到的canvas的API来判断。</p>
+<h2 id="processOn"><a href="#processOn" class="headerlink" title="processOn"></a>processOn</h2><p>processOn严格意义上是一个产品，类似于在线的visio，编辑很流畅。使用DOM + canvas实现。具体来说：</p>
+<ul>
+<li>DOM绘制每个元素占位，响应交互</li>
+<li>canvas绘制每个DOM内的图形本身</li>
+</ul>
+<p>这么做的好处在有二：1. 天然解决了元素交互的问题；2. 更平滑的元素拖拽效果。</p>
+<p>类似的还有jsPlumb这样的使用SVG的方案，使用SVG的优势体现在交互更容易实现。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1033,220 +1204,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2018/04/17/some-tips/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2018/04/17/some-tips/" class="post-title-link" itemprop="url">工作中的遇到的一些小知识</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-04-17 23:48:27" itemprop="dateCreated datePublished" datetime="2018-04-17T23:48:27+08:00">2018-04-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2020-05-18 17:01:46" itemprop="dateModified" datetime="2020-05-18T17:01:46+08:00">2020-05-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2018/04/17/some-tips/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/17/some-tips/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><em>持续更新…</em></p>
-<h2 id="免密ssh步骤"><a href="#免密ssh步骤" class="headerlink" title="免密ssh步骤"></a>免密ssh步骤</h2><p>一句命令代替繁琐的ssh远程登录开发机。</p>
-<h3 id="Step-1：免密"><a href="#Step-1：免密" class="headerlink" title="Step 1：免密"></a>Step 1：免密</h3><ol>
-<li>ssh-keygen生成公钥。<code>ssh-keygen</code></li>
-<li>拷贝公钥。<code>ssh-copy-id -i ~/.ssh/id_rsa.pub &lt;your-remote-host&gt;</code></li>
-<li>免密登录。<code>ssh &lt;your-remote-host&gt;</code></li>
-</ol>
-<h3 id="Step-2：简化命令"><a href="#Step-2：简化命令" class="headerlink" title="Step 2：简化命令"></a>Step 2：简化命令</h3><p>使用<code>alias</code>，比如：<code>alias timetowork=&quot;ssh &lt;your-remote-host&gt;&quot;</code></p>
-<h3 id="Step-3：get-back-to-work"><a href="#Step-3：get-back-to-work" class="headerlink" title="Step 3：get back to work"></a>Step 3：get back to work</h3><p>输入<code>timetowork</code>。</p>
-<p>参考：</p>
-<ul>
-<li>[<a target="_blank" rel="noopener" href="http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id]">http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id]</a></li>
-<li>[<a target="_blank" rel="noopener" href="http://www.linfo.org/alias.html]">http://www.linfo.org/alias.html]</a></li>
-</ul>
-<h2 id="fis-receiver"><a href="#fis-receiver" class="headerlink" title="fis-receiver"></a>fis-receiver</h2><p>简写为<code>fisrcv</code>。使用fis进行项目构建时，若需要release到远端开发机，可以通过配置<code>fis-conf.js</code>里的<code>deploy</code>项目实现，fis会通过HTTP的方式上传压缩过的代码到远端指定位置，这需要远端有receiver接收上传的文件。</p>
-<p>fis-receiver是在远端接收上传文件的服务端脚本，node、python、PHP等都可以。<code>fisrcv</code>实际上是使用node服务在远端接收deploy文件的服务端脚本而已。</p>
-<p>参考：</p>
-<ul>
-<li>[<a target="_blank" rel="noopener" href="https://github.com/zhoujq/fis-receiver]">https://github.com/zhoujq/fis-receiver]</a></li>
-<li>[<a target="_blank" rel="noopener" href="http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6]">http://fis.baidu.com/fis3/docs/api/dev-plugin.html#Deploy%20%E6%8F%92%E4%BB%B6]</a></li>
-</ul>
-<h2 id="webpack-release"><a href="#webpack-release" class="headerlink" title="webpack-release"></a>webpack-release</h2><p>等同于webpack版的<code>fis release</code>，不过原先写在<code>fis-conf.js</code>中的部署设置，现在写在<code>webpack.config.js</code>中。<code>receiveUrl</code>和<code>remotePath</code>即远端开发机位置。实现上也采用HTTP POST的方式。</p>
-<p>参考：</p>
-<ul>
-<li>[<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/webpack-release]">https://www.npmjs.com/package/webpack-release]</a></li>
-<li>[<a target="_blank" rel="noopener" href="https://github.com/markate/webpack-release/blob/master/index.js]">https://github.com/markate/webpack-release/blob/master/index.js]</a></li>
-</ul>
-<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><p>tmux是终端复用工具，允许在单个终端下相互隔离地运行多个后台程序。甚至在关闭终端时可以让程序在后台运行。使用<code>tmux attach</code>和<code>tmux detach</code>进入和离开各个session。<code>attach</code>后还可以接<code>-t</code>指定连接的session。</p>
-<p>参考：</p>
-<ul>
-<li>[<a target="_blank" rel="noopener" href="https://github.com/tmux/tmux/wiki]">https://github.com/tmux/tmux/wiki]</a></li>
-</ul>
-<h2 id="HtmlWebpackPlugin"><a href="#HtmlWebpackPlugin" class="headerlink" title="HtmlWebpackPlugin"></a>HtmlWebpackPlugin</h2><p>把html和js或css文件对应组织起来，可以指定<code>filename</code>，<code>template</code>，<code>chunks</code>等。</p>
-<p>参考：</p>
-<ul>
-<li>[<a target="_blank" rel="noopener" href="https://github.com/jantimon/html-webpack-plugin]">https://github.com/jantimon/html-webpack-plugin]</a></li>
-</ul>
-<h2 id="encodeURI和encodeURIComponent"><a href="#encodeURI和encodeURIComponent" class="headerlink" title="encodeURI和encodeURIComponent"></a>encodeURI和encodeURIComponent</h2><p>前者用于对整段URI转码，后者用于对URI中被分割符隔开的部分进行边编码。因此，</p>
-<ul>
-<li><code>encodeURI</code>会忽略允许出现在URI的符号，包括特殊符号。对空格、中文等进行转码</li>
-<li><code>encodeURIComponent</code>也会转码特殊符号，如&#x2F;，$，@，.等</li>
-</ul>
-<h2 id="origami"><a href="#origami" class="headerlink" title="origami"></a>origami</h2><p>origami是sublime中的一个拆分窗口的插件，用快捷键可以像在vim中一样方便地创建和转移到各个窗口编码。通过command + K开启快捷键。</p>
-<ul>
-<li>+up&#x2F;down&#x2F;left&#x2F;right 转移到其他窗口</li>
-<li>+command+up&#x2F;down&#x2F;left&#x2F;right 在该方向上打开新的工作窗口</li>
-<li>+shift+command+up&#x2F;down&#x2F;left&#x2F;right 销毁该方向上的新窗口</li>
-</ul>
-<h2 id="nrm与n"><a href="#nrm与n" class="headerlink" title="nrm与n"></a>nrm与n</h2><p>npm registry管理工具nrm，能够查看和切换当前使用的registry，在切换和查看registry时非常有用。常用命令:</p>
-<ul>
-<li><code>nrm ls</code></li>
-<li><code>nrm use</code></li>
-<li><code>nrm help</code></li>
-<li><code>nrm home</code></li>
-<li><code>nrm add/delete</code> 增加和删除registry</li>
-<li><code>nrm test</code> 测速</li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/n">n</a>是类似nvm的node.js版本管理工具。</p>
-<h2 id="Promise-then的链式调用"><a href="#Promise-then的链式调用" class="headerlink" title="Promise then的链式调用"></a>Promise then的链式调用</h2><p><code>then()</code>方法返回一个Promise 。它最多需要有两个参数：Promise的成功和失败情况的回调函数。</p>
-<p><code>then</code>方法会返回一个Promise，它的行为与then中指定的回调函数返回值有关：</p>
-<ul>
-<li>如果then中的回调函数<strong>返回一个值</strong>，那么then返回的Promise将会成为接受状态（即使原Promise始Rejected状态），并且将返回的值作为接受状态的回调函数的参数值。</li>
-<li>如果then中的回调函数<strong>抛出一个错误</strong>，那么then返回的Promise将会成为拒绝状态，并且将抛出的错误作为拒绝状态的回调函数的参数值。</li>
-<li>如果then中的回调函数返回一个已经是接受状态的Promise，那么then返回的Promise也会成为接受状态，并且将那个Promise的接受状态的回调函数的参数值作为该被返回的Promise的接受状态回调函数的参数值。</li>
-<li>如果then中的回调函数返回一个已经是拒绝状态的Promise，那么then返回的Promise也会成为拒绝状态，并且将那个Promise的拒绝状态的回调函数的参数值作为该被返回的Promise的拒绝状态回调函数的参数值。</li>
-<li>如果then中的回调函数返回一个未定状态（pending）的Promise，那么then返回Promise的状态也是未定的，并且它的终态与那个Promise的终态相同；同时，它变为终态时调用的回调函数参数与那个Promise变为终态时的回调函数的参数是相同的。</li>
-</ul>
-<p>下面是几个官网上的例子:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>(<span class="string">&quot;foo&quot;</span>)</span><br><span class="line">  <span class="comment">// 1. 接收 &quot;foo&quot; 并与 &quot;bar&quot; 拼接，并将其结果做为下一个resolve返回。</span></span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">string</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">resolve, reject</span>) &#123;</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        string += <span class="string">&#x27;bar&#x27;</span>;</span><br><span class="line">        <span class="title function_">resolve</span>(string);</span><br><span class="line">      &#125;, <span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 2. 接收 &quot;foobar&quot;, 放入一个异步函数中处理该字符串</span></span><br><span class="line">  <span class="comment">// 并将其打印到控制台中, 但是不将处理后的字符串返回到下一个。</span></span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">string</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      string += <span class="string">&#x27;baz&#x27;</span>;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(string);</span><br><span class="line">    &#125;, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> string;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 3. 打印本节中代码将如何运行的帮助消息，</span></span><br><span class="line">  <span class="comment">// 字符串实际上是由上一个回调函数之前的那块异步代码处理的。</span></span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">string</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Last Then:  oops... didn&#x27;t bother to instantiate and return &quot;</span> +</span><br><span class="line">                <span class="string">&quot;a promise in the prior then so the sequence may be a bit &quot;</span> +</span><br><span class="line">                <span class="string">&quot;surprising&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注意 `string` 这时不会存在 &#x27;baz&#x27;。</span></span><br><span class="line">    <span class="comment">// 因为这是发生在我们通过setTimeout模拟的异步函数中。</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(string);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>()</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 使 .then() 返回一个 rejected promise</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&#x27;Oh no!&#x27;</span>;</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>( <span class="function"><span class="params">reason</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>( <span class="string">&#x27;onRejected function called: &#x27;</span>, reason );</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>( <span class="string">&quot;I am always called even if the prior then&#x27;s promise rejects&quot;</span> );</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-
-<h2 id="SOLID原则"><a href="#SOLID原则" class="headerlink" title="SOLID原则"></a>SOLID原则</h2><p>程序设计领域，尤其是面向对象编程的优秀实践里，有着一些实现原则，如SOLID（单一功能、开闭原则、里氏替换、接口隔离、依赖翻转）。这些设计模式原则可以有助于编写可维护、可拓展、清晰可读的代码。</p>
-<ul>
-<li>S，Single Responsibility Principle，每个类都应有<strong>单一</strong>的功能，且被类封装起来。</li>
-<li>O，Open-Closed Principle，对象（类、接口、函数等）对于拓展是开放的，对于修改是封闭的。即易拓展、保证可靠。</li>
-<li>L，Liskov Substitution Principle，子类可以在不改变正确性的情况下替换父类</li>
-<li>I，Interface-segregation Principle，多个特定功能的接口好于单个宽泛功能的接口</li>
-<li>D，Dependency Inversion Principle，方法应该依赖于一个抽象（接口）而不是一个实例（类）</li>
-</ul>
-<h2 id="axios-mock-adpter"><a href="#axios-mock-adpter" class="headerlink" title="axios-mock-adpter"></a>axios-mock-adpter</h2><p>使用axios获取数据时，通过<code>axios-mock-adapter</code>mock数据。MockAdapter可以绑定在axios上，拦截通过绑定的axios发送的请求。使用方式如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> axios = <span class="built_in">require</span>(<span class="string">&#x27;axios&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> <span class="title class_">MockAdapter</span> = <span class="built_in">require</span>(<span class="string">&#x27;axios-mock-adapter&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// This sets the mock adapter on the default instance</span></span><br><span class="line"><span class="keyword">var</span> mock = <span class="keyword">new</span> <span class="title class_">MockAdapter</span>(axios);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Mock any GET request to /users</span></span><br><span class="line"><span class="comment">// arguments for reply are (status, data, headers)</span></span><br><span class="line">mock.<span class="title function_">onGet</span>(<span class="string">&#x27;/users&#x27;</span>).<span class="title function_">reply</span>(<span class="number">200</span>, &#123;</span><br><span class="line">  <span class="attr">users</span>: [</span><br><span class="line">    &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;John Smith&#x27;</span> &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/users&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">response</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">data</span>);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-
-<p>另外，可以用<code>mock.restore()</code>撤销所有mocking行为，或通过<code>mock.reset()</code>除去所有mocking的handler。通过<code>mock.on&lt;方法名&gt;</code>还可以链式调用其他方法：</p>
-<ul>
-<li><code>onAny()</code> 绑定任何方法</li>
-<li><code>networkError()</code> 返回网络错误</li>
-<li><code>timeout()</code> 返回请求超时</li>
-<li><code>passThrough()</code> 跳过mocking直接请求</li>
-</ul>
-<p>在reply中可以使用函数进行更复杂的操作：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> normalAxios = axios.<span class="title function_">create</span>();</span><br><span class="line"><span class="keyword">var</span> mockAxios = axios.<span class="title function_">create</span>();</span><br><span class="line"><span class="keyword">var</span> mock = <span class="title class_">MockAdapter</span>(mockAxios);</span><br><span class="line"></span><br><span class="line">mock</span><br><span class="line">  .<span class="title function_">onGet</span>(<span class="string">&#x27;/orders&#x27;</span>)</span><br><span class="line">  .<span class="title function_">reply</span>(<span class="function">() =&gt;</span> <span class="title class_">Promise</span>.<span class="title function_">all</span>([</span><br><span class="line">      normalAxios</span><br><span class="line">        .<span class="title function_">get</span>(<span class="string">&#x27;/api/v1/orders&#x27;</span>)</span><br><span class="line">        .<span class="title function_">then</span>(<span class="function"><span class="params">resp</span> =&gt;</span> resp.<span class="property">data</span>),</span><br><span class="line">      normalAxios</span><br><span class="line">        .<span class="title function_">get</span>(<span class="string">&#x27;/api/v2/orders&#x27;</span>)</span><br><span class="line">        .<span class="title function_">then</span>(<span class="function"><span class="params">resp</span> =&gt;</span> resp.<span class="property">data</span>),</span><br><span class="line">      &#123; <span class="attr">id</span>: <span class="string">&#x27;-1&#x27;</span>, <span class="attr">content</span>: <span class="string">&#x27;extra row 1&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">id</span>: <span class="string">&#x27;-2&#x27;</span>, <span class="attr">content</span>: <span class="string">&#x27;extra row 2&#x27;</span> &#125;</span><br><span class="line">    ]).<span class="title function_">then</span>(</span><br><span class="line">      <span class="function"><span class="params">sources</span> =&gt;</span> [<span class="number">200</span>, sources.<span class="title function_">reduce</span>(<span class="function">(<span class="params">agg, source</span>) =&gt;</span> agg.<span class="title function_">concat</span>(source))]</span><br><span class="line">    )</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
-
-<h2 id="移动端Charles调试经验"><a href="#移动端Charles调试经验" class="headerlink" title="移动端Charles调试经验"></a>移动端Charles调试经验</h2><ol>
-<li>设置http代理为8888端口</li>
-<li>设置SSL代理，填写对应的域名，设置端口为443，安装根证书</li>
-<li>手机打开无线设置，设置代理IP和端口8888</li>
-<li>打开<a target="_blank" rel="noopener" href="http://chls.pro/ssl">chls.pro&#x2F;ssl</a>，安装根证书并信任</li>
-<li>使用Map remote访问开发机位置</li>
-<li>使用Map local可以劫持WebView中请求的JS等资源到本地，通过alert的方式打印调试信息，进行临时的线上Webview环境debug</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/blog/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1277,7 +1234,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30:45</span>
+    <span title="站点阅读时长">31:15</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

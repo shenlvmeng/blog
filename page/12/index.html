@@ -146,18 +146,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">154</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/blog/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">473</span>
+        <span class="site-state-item-count">476</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,376 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/06/25/dart-best-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2019/06/25/dart-best-practice/" class="post-title-link" itemprop="url">Dart快速入门 效率篇</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-06-25 00:51:28 / 修改时间：00:54:59" itemprop="dateCreated datePublished" datetime="2019-06-25T00:51:28+08:00">2019-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2019/06/25/dart-best-practice/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/25/dart-best-practice/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>参考自<a target="_blank" rel="noopener" href="https://dart.dev/guides/language/effective-dart">Effective Dart</a>，截至2019&#x2F;06&#x2F;12</p>
+</blockquote>
+<h2 id="通用原则"><a href="#通用原则" class="headerlink" title="通用原则"></a>通用原则</h2><p>类似其他编程语言，有下面两点注意事项：</p>
+<ul>
+<li>Be consistent, 统一风格</li>
+<li>Be brief, 保持精简，DRY</li>
+</ul>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>指南以下面的关键词开头：</p>
+<ul>
+<li><strong>要</strong>，一定遵守，下面没有前缀的就是以此开头</li>
+<li><strong>不要</strong>，这么做不是个好主意</li>
+<li><strong>推荐</strong>，应该遵守，当不遵守时确保有合理理由</li>
+<li><strong>避免</strong>，和上面相反，除非有足够好的理由，否则不应该这么做</li>
+<li><strong>考虑</strong>，根据实际情况而定</li>
+</ul>
+<p>同时会提到下面这些客体：</p>
+<ul>
+<li><strong>库成员</strong>，顶级变量、getter、setter、函数</li>
+<li><strong>类成员</strong>，类变量、getter、setter、函数</li>
+<li><strong>成员</strong>，库成员或类成员</li>
+<li><strong>变量</strong></li>
+<li><strong>属性</strong>，类中的成员变量、getter、setter，顶级变量、getter、setter</li>
+</ul>
+<h3 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h3><h4 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h4><ul>
+<li>类名用UpperCamelCase风格</li>
+<li>库和文件名用lowercase_with_underscores风格</li>
+<li>导入前缀用lowercase_with_underscores风格<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:javascript_utils/javascript_utils.dart&#x27;</span> <span class="keyword">as</span> js_utils;</span><br></pre></td></tr></table></figure></li>
+<li>其他标识符使用lowerCamelCase风格</li>
+<li><strong>推荐</strong>使用lowerCamelCase风格命名常量<ul>
+<li>原因：CAPS_STYLE可读性差&#x2F;可能会用于final变量&#x2F;和枚举不搭</li>
+</ul>
+</li>
+<li>把超过2个字母的缩略词当做一般单词来做首字母大写<ul>
+<li>原因：提高可读性</li>
+</ul>
+</li>
+<li><strong>不要</strong>在标识符前加前缀<ul>
+<li>举例：<code>kTimes</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="顺序"><a href="#顺序" class="headerlink" title="顺序"></a>顺序</h4><ul>
+<li>把”dart:”导入语句放在最前</li>
+<li>把”package:”放在相对导入前</li>
+<li><strong>推荐</strong>把第三方”package:”导入放在其他语句前</li>
+<li>export语句放在最后</li>
+<li>按字母序排序</li>
+</ul>
+<h4 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h4><ul>
+<li>使用dartfmt帮你美化</li>
+<li><strong>考虑</strong>让你的代码更容易美化</li>
+<li><strong>避免</strong>每行超过80字符</li>
+<li>所有控制结构都使用大括号<ul>
+<li>只有if语句写成1行时可以省略</li>
+</ul>
+</li>
+</ul>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><ul>
+<li>使用句子的形式表达注释</li>
+<li>用单行注释符表达注释</li>
+</ul>
+<h4 id="文档注释"><a href="#文档注释" class="headerlink" title="文档注释"></a>文档注释</h4><ul>
+<li>用<code>///</code>表达文档注释</li>
+<li><strong>推荐</strong>为公开API书写注释</li>
+<li><strong>考虑</strong>为私有API书写注释</li>
+<li>用一句话为文档注释开头</li>
+<li>类似git commit message，第一行后空出一行独立成段</li>
+<li>去掉能从上下文直接读出的冗余信息</li>
+<li><strong>推荐</strong>使用第三人称动词开头表示函数、方法注释</li>
+<li><strong>推荐</strong>使用名词短语开头表示变量、成员、getter、setter注释</li>
+<li><strong>推荐</strong>使用名词短语开头表示库、类型注释</li>
+<li><strong>考虑</strong>在注释中添加示例代码</li>
+<li>在注释中用<code>[]</code>方括号引用作用域里的标识符</li>
+<li>使用简短平实的语言描述参数、返回值和异常</li>
+<li>在注解（annotation）前添加注释</li>
+</ul>
+<h4 id="Markdown"><a href="#Markdown" class="headerlink" title="Markdown"></a>Markdown</h4><p>Dart允许在comment中使用Markdown格式。</p>
+<ul>
+<li><strong>避免</strong>滥用markdown</li>
+<li><strong>避免</strong>使用html格式化文本</li>
+<li><strong>推荐</strong>使用反引号（```）格式化代码</li>
+</ul>
+<h4 id="行文"><a href="#行文" class="headerlink" title="行文"></a>行文</h4><ul>
+<li><strong>推荐</strong>简洁清晰</li>
+<li><strong>避免</strong>使用缩写和首字母缩略词</li>
+<li><strong>推荐</strong>使用“this”而不是“the”来引用实例成员</li>
+</ul>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>下面的规则是书写Dart代码时需要知道的指导原则，尤其是维护你类库的人。</p>
+<h4 id="库"><a href="#库" class="headerlink" title="库"></a>库</h4><ul>
+<li><p>出于历史原因，Dart允许通过<code>part of</code>的方式使用库的一部分文件，使用时通过路径而不是变量名引用</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span> my_library;</span><br><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">part</span> of <span class="string">&quot;../../my_library.dart&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bad case</span></span><br><span class="line"><span class="keyword">part</span> of my_library</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不要从库的<code>src</code>文件夹下引用代码</p>
+</li>
+<li><p><strong>推荐</strong>使用相对路径应用库，但是不要跨<code>src</code>文件夹引用</p>
+</li>
+</ul>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><ul>
+<li>在长字符串场景下，使用邻接字符串而不是“+”链接<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line">raiseAlarm(</span><br><span class="line">    <span class="string">&#x27;ERROR: Parts of the spaceship are on fire. Other &#x27;</span></span><br><span class="line">    <span class="string">&#x27;parts are overrun by martians. Unclear which are which.&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><strong>推荐</strong>使用插值构造字符串</li>
+<li><strong>避免</strong>在插值中使用多余的大括号（对于简单的变量）</li>
+</ul>
+<h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><ul>
+<li>尽可能使用字面量形式定义集合，必要时提供泛型类型即可<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">var</span> points = [];</span><br><span class="line"><span class="keyword">var</span> userMap = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bad case</span></span><br><span class="line"><span class="keyword">var</span> points = <span class="keyword">new</span> <span class="built_in">List</span>();</span><br><span class="line"><span class="keyword">var</span> userMap = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br></pre></td></tr></table></figure></li>
+<li>不使用length属性判断集合是否为空，Dart提供了<code>isEmpty</code>和<code>isNotEmpty</code></li>
+<li><strong>考虑</strong>使用高阶函数来明确表达你的意图<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> aquaticNames = animals</span><br><span class="line">    .where((animal) =&gt; animal.isAquatic)</span><br><span class="line">    .map((animal) =&gt; animal.name);</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>在<code>Iterable.forEach()</code>中使用函数声明，Dart里的<code>for-in</code>循环可以很好完成该工作，当然函数本身已经定义好除外。<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good case</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> person <span class="keyword">in</span> people) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line">people.forEach(<span class="built_in">print</span>);</span><br></pre></td></tr></table></figure></li>
+<li>使用<code>iterable.toList</code>替代<code>List.from</code>，只在改变list类型时使用<code>List.from</code><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creates a List&lt;int&gt;:</span></span><br><span class="line"><span class="keyword">var</span> iterable = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints &quot;List&lt;int&gt;&quot;:</span></span><br><span class="line"><span class="built_in">print</span>(iterable.toList().runtimeType);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prints &quot;List&lt;dynamic&gt;&quot;:</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">List</span>.from(iterable).runtimeType);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Use it with a type</span></span><br><span class="line"><span class="keyword">var</span> numbers = [<span class="number">1</span>, <span class="number">2.3</span>, <span class="number">4</span>]; <span class="comment">// List&lt;num&gt;.</span></span><br><span class="line">numbers.removeAt(<span class="number">1</span>); <span class="comment">// Now it only contains integers.</span></span><br><span class="line"><span class="keyword">var</span> ints = <span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt;.from(numbers);</span><br></pre></td></tr></table></figure></li>
+<li>使用高级的<code>whereType</code>方法从collection中过滤出特定类型元素<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objects = [<span class="number">1</span>, <span class="string">&quot;a&quot;</span>, <span class="number">2</span>, <span class="string">&quot;b&quot;</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> ints = objects.whereType&lt;<span class="built_in">int</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li>有类似用法时，不使用<code>cast()</code>方法<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> stuff = &lt;<span class="built_in">dynamic</span>&gt;[<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="keyword">var</span> ints = <span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt;.from(stuff);</span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">var</span> ints = stuff.toList().cast&lt;<span class="built_in">int</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>使用<code>cast()</code>方法，用该方法可能更慢且更有风险，通常情况下有下面一些备选方案<ul>
+<li>创建有正确类型的list</li>
+<li>使用每个集合元素时进行casting操作<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="keyword">void</span> printEvens(<span class="built_in">List</span>&lt;<span class="built_in">Object</span>&gt; objects) &#123;</span><br><span class="line">  <span class="comment">// We happen to know the list only contains ints.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> n <span class="keyword">in</span> objects) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((n <span class="keyword">as</span> <span class="built_in">int</span>).isEven) <span class="built_in">print</span>(n);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">void</span> printEvens(<span class="built_in">List</span>&lt;<span class="built_in">Object</span>&gt; objects) &#123;</span><br><span class="line">  <span class="comment">// We happen to know the list only contains ints.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> n <span class="keyword">in</span> objects.cast&lt;<span class="built_in">int</span>&gt;()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n.isEven) <span class="built_in">print</span>(n);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>真正想要强制类型转换时，使用附加类型的<code>List.from</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><ul>
+<li>使用函数声明形式命名有名函数（不要使用lambda表达式）</li>
+<li>当有有名函数可以完成任务时，不要创建lambda表达式<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line">names.forEach(<span class="built_in">print</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line">names.forEach((name) &#123;</span><br><span class="line">  <span class="built_in">print</span>(name);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>使用<code>=</code>分隔入参和它的默认值</li>
+<li>不要显式地使用<code>null</code>作为默认值（直接不指定即可）<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> error([<span class="built_in">String</span> message]) &#123;</span><br><span class="line">  stderr.write(message ?? <span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
+<li>不要显式地使用null初始化变量（语言保证了行为可靠性，不需要再显式设置成null）</li>
+<li>不要存储computed value（即可以推算出的值） ，减少冗余信息，保证数据唯一可信源，使用getter和setter去动态推导出它们</li>
+<li><strong>考虑</strong>忽略局部变量的类型，Dart有强大的静态分析工具帮你推断类型。</li>
+</ul>
+<h4 id="成员"><a href="#成员" class="headerlink" title="成员"></a>成员</h4><ul>
+<li>不要创建没必要的getter和setter</li>
+<li><strong>推荐</strong>使用final限定只读属性</li>
+<li><strong>考虑</strong>使用<code>=&gt;</code>实现只有单一返回语句的函数，对于多行语句建议还是老老实实使用花括号<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">get</span> width =&gt; right - left;</span><br><span class="line"><span class="built_in">bool</span> ready(<span class="built_in">num</span> time) =&gt; minTime == <span class="keyword">null</span> || minTime &lt;= time;</span><br><span class="line">containsValue(<span class="built_in">String</span> value) =&gt; getValues().contains(value);</span><br></pre></td></tr></table></figure></li>
+<li>不要使用<code>this.</code>访问成员，除非遇到变量冲突<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> value;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> clear() &#123;</span><br><span class="line">    update(<span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> update(value) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> value;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> clear() &#123;</span><br><span class="line">    <span class="keyword">this</span>.update(<span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> update(value) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>尽可能地在定义变量时初始化该值</li>
+</ul>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><ul>
+<li>尽可能使用更简洁的初始化形式<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">num</span> x, y;</span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要在初始化形式中定义类型</li>
+<li>使用<code>;</code>代替<code>&#123;&#125;</code>表示空方法<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> x, y;</span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要使用可选的<code>new</code>来返回一个对象<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="keyword">return</span> Row(</span><br><span class="line">    children: [</span><br><span class="line">      RaisedButton(</span><br><span class="line">        child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">      ),</span><br><span class="line">      Text(<span class="string">&#x27;Click!&#x27;</span>),</span><br><span class="line">    ],</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不要无谓地使用<code>const</code>（基本上const可能出现在所有你能使用<code>new</code>的地方），因为有些语境已经隐式包含了const语义<ul>
+<li>字面量集合</li>
+<li>const构造函数调用</li>
+<li>metadata注解</li>
+<li>switch的每一个case</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<h4 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h4><ul>
+<li>不要在<code>on</code>以外的语句中丢弃错误，因为在没有<code>on</code>限定时，catch会捕获<em>所有</em>异常</li>
+<li>要只在编程错误时抛出Error的异常</li>
+<li>不要显式地捕获Error及其子类</li>
+<li>使用<code>rethrow</code>重新抛出异常</li>
+</ul>
+<h4 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h4><ul>
+<li><strong>推荐</strong>使用<code>async</code>和<code>await</code>提升你的异步代码可读性</li>
+<li>只在必要的时候使用<code>async</code><ul>
+<li>代码块中使用了<code>await</code></li>
+<li>希望返回一个Future</li>
+<li>希望更方便地处理异步中出现的Error</li>
+<li>异步事件发生具有先后顺序</li>
+</ul>
+</li>
+<li><strong>考虑</strong>使用高阶函数处理stream</li>
+<li><strong>避免</strong>直接使用<code>Completer</code></li>
+<li>用<code>Future&lt;T&gt;</code>而不是<code>T</code>判断<code>FutureOr&lt;T&gt;</code>的具体类型</li>
+</ul>
+<h3 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h3><h4 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h4><ul>
+<li>使用一致的术语</li>
+<li><strong>避免</strong>缩写，只使用广为人知的缩写</li>
+<li><strong>推荐</strong>把描述中心词放在最后</li>
+<li><strong>考虑</strong>尽量让代码看起来像普通的句子</li>
+<li><strong>推荐</strong>使用名词短语命名非布尔类型的成员或变量</li>
+<li><strong>推荐</strong>使用非命令式短语命名布尔类型成员或变量<ul>
+<li>比如配合be动词的不同时态，<code>isEnabled</code>, <code>hasShown</code>等</li>
+<li>配合助动词，比如<code>hasChildren</code>, <code>canSave</code></li>
+</ul>
+</li>
+<li>有可能的情况下，<strong>考虑</strong>省去上一种情况里的动词</li>
+<li><strong>推荐</strong>使用正向含义的布尔类型变量&#x2F;方法名</li>
+<li><strong>推荐</strong>使用命令式动词命名带有副作用的函数和方法</li>
+<li><strong>考虑</strong>使用名词短语或非命令式动词命名返回数据为主要功能的方法或函数<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list.elementAt(<span class="number">3</span>)</span><br><span class="line">string.codeUnitAt(<span class="number">4</span>)</span><br></pre></td></tr></table></figure></li>
+<li><strong>考虑</strong>使用命令式动词表示你需要对方法所做工作有所关心</li>
+<li><strong>避免</strong>使用<em>get</em>开头的命名，它通常能用getter代替</li>
+<li><strong>推荐</strong>使用<code>to___()</code>来命名类型转换</li>
+<li><strong>推荐</strong>使用<code>as___()</code>来命名类型快照</li>
+<li><strong>避免</strong>在命名中使用方法、函数的入参</li>
+<li>使用助记符命名类型参数<ul>
+<li><code>E</code>代表集合元素</li>
+<li><code>K</code>和<code>V</code>代表key和value</li>
+<li><code>R</code>代表return type</li>
+<li><code>T</code>, <code>S</code>和<code>U</code>命名单一通用且上下文表意清晰的泛型</li>
+<li>除上面情况外，可以使用完整词汇作为泛型类型名</li>
+</ul>
+</li>
+</ul>
+<h4 id="库-1"><a href="#库-1" class="headerlink" title="库"></a>库</h4><p>下划线开头的成员表示成员是私有的，这个特性是内置在Dart语言中的。</p>
+<ul>
+<li><strong>推荐</strong>使用私有声明，未用<code>_</code>开头的库中的公开声明、顶级定义表示其他库可以访问这些成员，同时也会受到库实现契约的约束。</li>
+<li><strong>考虑</strong>在同一个库内定义多个类，这样便于在类之间共享私有变量</li>
+</ul>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><p>Dart是纯OOP的语言，它的所有对象都是类实例。当然不像Java，Dart也允许你定义顶级的变量、函数…</p>
+<ul>
+<li><strong>避免</strong>定义一个函数就可以实现的只有一个实现方法的抽象类<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> Predicate&lt;E&gt; = <span class="built_in">bool</span> <span class="built_in">Function</span>(E element);</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Predicate</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">bool</span> test(E element);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>定义只有静态成员的类，可以使用顶级变量、函数更方便地实现等价效果。当然，如果变量属于一个组，可以这么实现</li>
+<li><strong>避免</strong>不必要地定义子类</li>
+<li><strong>避免</strong>实现一个不作为接口的类</li>
+<li><strong>避免</strong>mixin不设计用作mixin的类</li>
+<li>在你的类支持拓展时，定义好文档</li>
+<li>在你的类作为接口存在时，定义好文档</li>
+<li>在你的类作为mixin存在时，定义好文档</li>
+</ul>
+<h4 id="构造函数-1"><a href="#构造函数-1" class="headerlink" title="构造函数"></a>构造函数</h4><ul>
+<li><strong>考虑</strong>在类支持的情况下，让构造函数成为const</li>
+</ul>
+<h4 id="成员-1"><a href="#成员-1" class="headerlink" title="成员"></a>成员</h4><ul>
+<li><strong>考虑</strong>尽可能地把成员变量和顶级变量定义为final类型</li>
+<li>使用setter和getter定义computed value</li>
+<li>不要使用没有getter的setter</li>
+<li><strong>避免</strong>在返回bool，double，int，num的方法里返回null</li>
+<li><strong>避免</strong>在方法中返回this，只为了串联调用函数</li>
+</ul>
+<h4 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h4><p>Dart中的类型可以帮助使用者理解你API中的静态类型设计，它分两种：类型注解和类型参数。前一种放在变量名前注解变量类型，后一种作为泛型参数传入。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span> isEmpty(<span class="built_in">String</span> parameter) &#123;</span><br><span class="line">  <span class="built_in">bool</span> result = parameter.length == <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">List</span>&lt;<span class="built_in">int</span>&gt; ints = [<span class="number">1</span>, <span class="number">2</span>];</span><br></pre></td></tr></table></figure>
+
+<p>在未指定类型时，Dart会从上下文自动推断或者使用缺省的<code>dynamic</code>类型。</p>
+<p>简言之，Dart提供了强大的类型推导简化了你声明类型的负担，但同时不声明类型会降低API的可读性，下面一些guideline帮你在两点间找到一个平衡。</p>
+<ul>
+<li><strong>推荐</strong>对于类型表意不清晰的public属性和顶级变量使用类型注解<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Future&lt;<span class="built_in">bool</span>&gt; install(PackageId id, <span class="built_in">String</span> destination) =&gt; ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> screenWidth = <span class="number">640</span>; <span class="comment">// Inferred as int.</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>考虑</strong>对于类型表意不清晰的private属性添加类型注解</li>
+<li><strong>避免</strong>为局部变量添加类型注解，如果你需要静态类型提供的便利，可以借助<code>is</code>限制变量类型</li>
+<li><strong>避免</strong>在方法表达式上使用类型，考虑到方法表达式通常作为方法入参，类型可以自动推断，不需要类型注解</li>
+<li><strong>避免</strong>冗余的泛型和类型注解<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good case</span></span><br><span class="line"><span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt; things = <span class="built_in">Set</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt; things = <span class="built_in">Set</span>&lt;<span class="built_in">String</span>&gt;();</span><br></pre></td></tr></table></figure></li>
+<li>在不希望使用Dart推断的类型时，使用类型注解</li>
+<li><strong>推荐</strong>使用显示的dynamic代替Dart推断失败回退的dynamic</li>
+<li><strong>推荐</strong>在Function类型注解中添加函数类型签名</li>
+<li>不要为setter指定返回值</li>
+<li>使用新式的typeof判断类型<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> Comparison&lt;T&gt; = <span class="built_in">int</span> <span class="built_in">Function</span>(T, T);</span><br></pre></td></tr></table></figure></li>
+<li>使用<code>Object</code>代替<code>dynamic</code>表示可以接受任何对象</li>
+<li>使用<code>Future&lt;void&gt;</code>作为无返回值的异步函数返回类型</li>
+<li>不使用<code>FutureOr&lt;T&gt;</code>作为返回值</li>
+</ul>
+<h4 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h4><ul>
+<li><strong>避免</strong>位置参数作为可选布尔参数，这样可读性比较差<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bad case</span></span><br><span class="line"><span class="keyword">new</span> Task(<span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">new</span> Task(<span class="keyword">false</span>);</span><br><span class="line"><span class="keyword">new</span> ListBox(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">new</span> Button(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Good case</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>避免</strong>将用户想忽略的参数放在位置可选参数的前列</li>
+<li><strong>避免</strong>使用强制的无意义的参数<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bad case</span></span><br><span class="line">string.substring(start, <span class="keyword">null</span>)</span><br></pre></td></tr></table></figure></li>
+<li>使用<strong>左闭右开</strong>区间表示两个参数代表的范围</li>
+</ul>
+<h4 id="相同判断"><a href="#相同判断" class="headerlink" title="相同判断"></a>相同判断</h4><ul>
+<li>覆写<code>==</code>的同时覆写<code>hashCode</code>，默认的哈希函数实现了恒等式哈希。<strong>任何两个相等的两个对象必须具有相同的哈希值</strong>。</li>
+<li><code>==</code>需要遵循数学的相等规则<ul>
+<li>自反，a &#x3D;&#x3D; a</li>
+<li>对称，a &#x3D;&#x3D; b &#x3D;&gt; b &#x3D;&#x3D; a</li>
+<li>传递，a &#x3D;&#x3D; b &amp;&amp; b &#x3D;&#x3D; c &#x3D;&gt; a &#x3D;&#x3D; c</li>
+</ul>
+</li>
+<li><strong>避免</strong>为可变对象自定义相等函数，<code>hashCode</code>函数会增加你的工作量</li>
+<li>不要在自定义<code>==</code>中判断null，Dart也已经替你做了这部分工作</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1878,360 +2248,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2019/03/12/wisdom-of-life-pessimistic-life/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2019/03/12/wisdom-of-life-pessimistic-life/" class="post-title-link" itemprop="url">《人生的智慧》 ——幸福与人生</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2019-03-12 00:14:51" itemprop="dateCreated datePublished" datetime="2019-03-12T00:14:51+08:00">2019-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-03-16 01:23:07" itemprop="dateModified" datetime="2019-03-16T01:23:07+08:00">2019-03-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">思考</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2019/03/12/wisdom-of-life-pessimistic-life/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/12/wisdom-of-life-pessimistic-life/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>9.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>15 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>“在读完叔本华的书第一页以后，就知道得很清楚，我要把他写的所有东西都读完为止；他说的每一个字词我都要听” —— 尼采</p>
-</blockquote>
-<p>尽管是出自腰封上的促销的话，尼采的推介语比“当代名家们”写的“此书甚好读世之绝有”格调就要高很多了。《人生的智慧》一书取自于叔本华晚年最后一部巨著《附录和补遗》的一部分，包含了他对《作为意欲和表象的世界》其中哲学观点的补充，以及回首一生的一些更广泛的思考。对比哲学形而上学的深奥探讨，这本书讨论的事情与世俗生活甚是接近，叔本华在书中放弃了居高临下的审视态度，用他擅长的冷峻客观的笔法努力将讨论变得清晰简明。</p>
-<blockquote>
-<p>“看到我最后的小孩的诞生，我是多么的高兴。随着这一部著作的完成，我在这个世界上的使命也就终于完成了。我的却感到了如释重负，这一重负在24年来，一直沉重地压在我的双肩。 —— 叔本华”</p>
-</blockquote>
-<p>《人生的智慧》书中延续了叔本华形而上学和悲观主义哲学。叔本华认为：</p>
-<ul>
-<li>意志可以脱离客观实在而存在，甚至能超越人的理性</li>
-<li>同时他将极端悲观主义与之联系，认为人意志的存在是一切痛苦的根源</li>
-<li>世界为意志表象，而人生只是表象的一种状态；从而生活在表象的世界中，一切都是虚幻泡影，现实的生活没有任何意义</li>
-</ul>
-<p>在这本书中字里行间都渗透着他上面的认识，幸运的是，书写的角度足够世俗，逐一探讨关于人性、人格、地位、荣耀、名声等长久困惑人们的问题，认为<strong>有智慧的人应该以超然而明智的态度对待世务</strong>。通篇在论述道理时，并不像苦口婆心的教导或谆谆教诲的指引。你能感受到他只是静静地表达自己的思想，不把它强加给你；但当你合上书后，那些思想结晶却已让你心悦诚服地接受。</p>
-<p>全书分为下面几节展开。</p>
-<h2 id="基本的划分"><a href="#基本的划分" class="headerlink" title="基本的划分"></a>基本的划分</h2><p>除开外在的财与名外，内在的健壮充实、精神世界的高追求和高禀赋更有助于找到幸福。</p>
-<ul>
-<li>人的命运决定于<strong>人的自身</strong>，<strong>人拥有的身外之物</strong>，<strong>人向其他人展示的样子</strong>；这也是后面论述的划分</li>
-<li>人的内心快乐异或痛苦首先都是人的感觉、意愿、思想的结果，人身外的所有事物都只是间接地发挥作用</li>
-<li>一个人精神能力的界限决定性地限定了他领略高级快乐的能力</li>
-<li>人的自身是具有<strong>绝对价值</strong>且<strong>他人无法得到的</strong>，这和后两点完全不同。<strong>人的自身对人的幸福而言比人所拥有的财富重要得多。</strong></li>
-<li>我们不应该把这一说法错误地理解为：我们应该忽略赚取那些必须和适合的东西，但真正的财富，亦即过分的丰裕盈余，对我们幸福帮助不大</li>
-<li>人拥有的财产、物品和人的名誉、声望是互为影响、促进的关系</li>
-</ul>
-<h2 id="人的自身"><a href="#人的自身" class="headerlink" title="人的自身"></a>人的自身</h2><blockquote>
-<p>无论身在何处，我们只能在我们自身寻找或者获得幸福 ——《旅行者》</p>
-</blockquote>
-<p>每个人都必须成为和做最好的自己，一个人越能做到这一点，在身上就越能够找到乐趣和幸福的源泉。精神需求（即陶冶自己）有助于摆脱无聊、摆脱庸俗，追求真正的幸福。</p>
-<ul>
-<li>对人的幸福起着首要和关键作用的是主体的好处，即健康的身体和心灵。</li>
-<li>让我们幸福或者不幸福的事情不是那些客观、真实的事物本身，而是我们对这些事物的理解和把握</li>
-<li><strong>人类幸福的两个死敌就是痛苦和无聊。还有我们成功远离其中一个的时候，也就在同等程度接近了另一个</strong>。外在原因是生活的艰辛和匮乏造成了痛苦，而相反丰裕和安定就会产生无聊；内在原因是<strong>一个人对痛苦的感受能力与对无聊的感受能力成反比</strong>。精神迟钝就不易感到痛苦的忧伤，后果就是内在空虚，外在体现一刻不停地关注外在世界的各种事情；精神敏锐的人思想活跃，奔涌不息，很少感到无聊，但相反更易提高了对精神痛苦的敏感性。</li>
-<li>正是由于内在空虚，人们才追求社交、娱乐和五花八门的奢侈</li>
-<li><strong>一个人自身拥有越丰富，对身外之物的需求就越少，别人对他来说就越不重要</strong></li>
-</ul>
-<blockquote>
-<p>愚蠢的人饱受无聊之苦 —— 塞内加<br>愚人的生活比死亡还要糟糕 —— 耶稣·西拉克</p>
-</blockquote>
-<ul>
-<li>思想狭隘的人更容易受到无聊侵袭，他们会为意欲找到一些琐碎、微小和暂时的动因，以图刺激意欲并以此刺激智力活动起来。因为没有动因时意欲就休息了，智力也就放假了。对于这种人，<strong>闲暇</strong>只会造就无用的家伙。</li>
-<li>为了争取外在之物而失去了内在的东西，比如为了荣耀、地位、排场、头衔、名声牺牲自己全部或大部分的宁静、闲暇和独立——这是极度愚蠢的行为</li>
-<li>人的快乐分三种：<strong>机体新陈代谢能力带来的快乐</strong>，如吃喝；<strong>发挥肌肉力量带来的快乐</strong>，如狩猎；<strong>施展感觉能力方面的快乐</strong>，如思考观察。感受能力约卓越，我们享受的精神快乐就越大。</li>
-<li>精神生活是“天才”的唯一目标，生活知识他们实现自己目标的一种手段。这类人即使有最良好的性格脾气，也不会对朋友、家庭、集体表现出其他人都有的休戚与共。因为他们自给自足，只有拥有自身内在，失去了其他一切也能得到安慰。</li>
-<li><strong>一个内在丰富的人需要闲暇去培养和发展自己的精神才能，享受自己的内在财富。</strong>闲暇即自我。</li>
-<li>闲暇是反命运的。因为人的天然使命就是花费时间去获得自己和家人赖以生存的东西，而不是自由发挥自己的智力。因此需要闲暇是一个人的幸运。因为这体现了他不同常人的禀赋。</li>
-</ul>
-<h2 id="人所拥有的财产"><a href="#人所拥有的财产" class="headerlink" title="人所拥有的财产"></a>人所拥有的财产</h2><p>财富应该是手段而不是目的。</p>
-<ul>
-<li>一个人拥有财产的方面是否得到满足由他期待得到的财产和他已经拥有的财产之间的关系所决定</li>
-<li>我们感到不满足的根源，在于我们不断推高我们的期望。</li>
-<li>我们应把现有的财富视为抵御众多可能发生的不行和灾祸的城墙</li>
-<li>（赚钱）这苦役本是凡夫俗子的天然命运。只有得到命运如此垂青和眷顾的人，才可能是真正自由的人，是“自己的主人”。</li>
-</ul>
-<h2 id="人所展现的表象"><a href="#人所展现的表象" class="headerlink" title="人所展现的表象"></a>人所展现的表象</h2><p>正视、珍视自我认知，不要狂热地活在他人的看法里。珍惜自己的个性，尤其是较好的一面。</p>
-<ul>
-<li>他人的看法就其本身而言，对我们的幸福并非至关重要。（我们会受到他人看法的影响）从我们的角度出发，应该抑制这一人性的弱点，尽量降低我们对待别人意见的敏感程度。</li>
-<li>每个人首要并确实是活在自己的皮囊里，而不是活在他人的见解中。据此，<strong>正确评估自己本身的价值和看待他人对自己的看法，对我们的幸福大有裨益</strong>。把别人的意见和看法看得太过重要是人们普遍犯下的错误</li>
-<li>虚荣使人健谈，骄傲使人沉默</li>
-<li>如果我们善意地忽略自己的优点，他人就会真心、坦率地把我们认定为就是这个样子</li>
-<li>个性远远优于民族性</li>
-</ul>
-<blockquote>
-<p>你必须强迫自己接受应有的骄傲 —— 贺拉斯</p>
-</blockquote>
-<p><em>（注：即对自己应有的心安理得）</em></p>
-<h3 id="地位"><a href="#地位" class="headerlink" title="地位"></a>地位</h3><p>地位对于增进幸福的目的而言，没有什么意义。然而大众缺乏判断力，记忆力也不强，这也是地位意义不大的原因。</p>
-<h3 id="名誉"><a href="#名誉" class="headerlink" title="名誉"></a>名誉</h3><p><strong>名誉在客观上是他人对我们的价值的看法，主观上则是我们对于他人看法的顾忌</strong>。每一个人为了维持名誉，需要完成在他所占据的独特位置上，人们要求他和期望他做好的事情。而他通常也会重视别人的这些看法，即“名誉感”或“羞耻感”。</p>
-<h4 id="公民名誉"><a href="#公民名誉" class="headerlink" title="公民名誉"></a>公民名誉</h4><ul>
-<li>之所以有名誉，归根到底是因为人们确信一个人的性格是不会改变的</li>
-<li>公民名誉即道德</li>
-<li>名誉只是标明这个人不是一个例外，声望却标明这个人是一个例外。因此，声望是要争取的，而名誉只需保有就行了。</li>
-<li>名誉的价值是间接的</li>
-</ul>
-<h4 id="公职名誉"><a href="#公职名誉" class="headerlink" title="公职名誉"></a>公职名誉</h4><ul>
-<li>公职名誉要求担任公职的人，除了保有公民名誉，还要对其职位保持尊敬</li>
-<li>自愿为国家服务的人亦都享有公职荣誉</li>
-</ul>
-<h4 id="性别名誉"><a href="#性别名誉" class="headerlink" title="性别名誉"></a>性别名誉</h4><p><em>（注：这一部分论述的是传统社会中的性别名誉）</em></p>
-<ul>
-<li>女性名誉远比男性名誉重要，因为女性与异性之间的关系在女性生活中是头等大事</li>
-<li>女性从男性哪里要求和期待一切东西，而男性从女性哪里首要和直接地只要求得到一样东西——女性本身。可以说，女性名誉的价值只是一种习俗的常规意义上的价值</li>
-</ul>
-<h4 id="骑士名誉"><a href="#骑士名誉" class="headerlink" title="骑士名誉"></a>骑士名誉</h4><p>这类名誉在西方历史中较为典型。</p>
-<ul>
-<li>骑士名誉跟一个人自身价值或道德本性没有关系，只和他人对我们的看法和行为有关。只要因为他人的污言秽语或行动冒犯丧失了骑士名誉，我们能做的只有诉诸身体和暴力，通过决斗的方式恢复名誉。</li>
-<li>骑士名誉是自大和愚蠢的象征。看似匪夷所思，实际也在我们生活中时常出现。一个真正珍视自己价值的人，面对空穴来风的侮辱、诋毁会淡然处之，但如果做不到这一点，那精明和修养会帮他掩藏起怒气</li>
-<li>我们应该避免对一些身体冲撞做过度解读，这会带来真正的祸害</li>
-</ul>
-<h4 id="民族荣誉"><a href="#民族荣誉" class="headerlink" title="民族荣誉"></a>民族荣誉</h4><p>民族荣誉上，武力是唯一的裁决者。相比可信任来说，令人生畏是民族荣誉和国家荣誉更需要的。</p>
-<h3 id="名声"><a href="#名声" class="headerlink" title="名声"></a>名声</h3><blockquote>
-<p>石头扔进泥淖，是不会弄出涟漪的 —— 谚语</p>
-</blockquote>
-<ul>
-<li>名誉包含人们在同等处境下必须具备的素质；而名声涉及的素质是我们不可能要求人们一定具备的。这可以是行为业绩或思想作品。行为业绩一方面有赖机遇，另一方面总是跟随动因，所以往往不能持久。而思想作品通常开始声音微弱，而后历久弥新逐渐响亮起来。</li>
-<li>名声维持的越久，到来得就越迟。人类精神思想最高级的产物一般都不会受大众欢迎，根本原因就是每一个人只能真正理解和欣赏自己同类</li>
-<li>名誉是作为信用预先支付的，而名声只能是顶住嫉妒，经过争取得来的。要创作优秀的作品，避免低劣的作品，创作者就必须地址和鄙视大众和其代言人的批判。从而<strong>名声总是逃离追逐它的人，却会尾随对它毫不在意的人</strong>。</li>
-<li><strong>有价值和让人幸福的不是名声，而是借以获得名声的东西</strong>，或更准确的说，让人得到幸福的是产生这些优点和贡献的思想与能力。</li>
-<li>大众的头脑是可怜、凄凉的舞台，这里不可能有真正的幸福。既然人们一般都缺乏独立判断，尤其缺乏欣赏高级别和高难度成就的能力，所以，人们总是听从他人的权威</li>
-</ul>
-<h2 id="建议和格言"><a href="#建议和格言" class="headerlink" title="建议和格言"></a>建议和格言</h2><p>聊了上面一些原则性的话题，下面谈一些建议。</p>
-<h3 id="泛论"><a href="#泛论" class="headerlink" title="泛论"></a>泛论</h3><blockquote>
-<p>理性的人寻求的不是快乐，而只是没有痛苦</p>
-</blockquote>
-<p><em>（注：叔本华的悲观主义认知）</em></p>
-<ul>
-<li>缺少痛苦的程度是衡量一个人生活幸福的标准。而没有痛苦的状态是真正的最大的幸福。</li>
-<li>正是奋力争取幸福快乐、荣耀排场带来了巨大的不幸</li>
-</ul>
-<blockquote>
-<p>我们所说的社交、聚会、沙龙，是悲惨的一出戏，一台糟糕的话剧，乏味、无趣，依靠机械、服饰和包装暂时地撑持。 ——《格言和随想》</p>
-</blockquote>
-<ul>
-<li>一般来说，人们常做的一大蠢事就是过分地为生活未雨绸缪</li>
-</ul>
-<h3 id="对待自己"><a href="#对待自己" class="headerlink" title="对待自己"></a>对待自己</h3><p>对自己负责，自给自足。冷静、理性地使用自己的思想能力。</p>
-<ul>
-<li>对自己生命计划有一个大概的了解，能够比任何一切都更有效地增强自己的勇气</li>
-<li><strong>人生智慧的重要一点是在关注现在和计划将来两者之间达成恰到好处的平衡</strong>。我们的存在唯独就在这一时间。</li>
-<li>只有人挣脱了所有各种可能的期望和要求<em>（注：这当然不现实）</em>，返回赤裸和冰冷的存在本身，人才领会精神上的安宁，而精神上的安宁却是幸福的构成基础</li>
-<li>思想活动要和实际活动相结合<em>（注：学而不思则罔，思而不学则殆）</em></li>
-<li>要<strong>勤于反省</strong>，不要随波逐流</li>
-<li><strong>谁要是不热爱独处，他也就不热爱自由</strong>。社交聚会要求人们做出牺牲，而一个人越具备独特的个性，他就越难做出这样的牺牲。社交聚会一旦人多势众，平庸就会占据上风。有深度的交谈和充满思想的想法，只能属于有思想丰富的人所组成的聚会。而在泛泛的社交聚会上，人们对有思想见识的谈话绝对深恶痛绝，所以在这种社交场合要取悦他人。</li>
-</ul>
-<blockquote>
-<p>一个完全依靠自己，一切称得上属于他的东西都存在于他的自身的人是不可能不幸福的 —— 西塞罗</p>
-</blockquote>
-<ul>
-<li><strong>只有那些依靠自己，总的来说能够成为自己的人才是处境最妙的</strong>。促使人们热衷与人交往的原因，就是人们无法忍受孤独或无法在孤独中忍受自己。而人们单调的个性使他们无法忍受自己，人的群居生活可被视为人与人相互间的精神取暖。</li>
-<li>一个人的高贵本性首先反映在这个人无法从他人的交往中得到乐趣<em>（注：持保留意见）</em>。虽然生活在众人之中，但他不可以成为众人的一份子，而是要与众人更多地保持某种纯粹客观的联系<em>（注：从某种角度讲，就是缺乏人情味。我认为在叔本华所推介的精神高尚境界以及世俗感情间找到一个平衡点才是最适宜的）</em>。</li>
-<li>嫉妒对人来说是自然的，但嫉妒既是一种罪恶又是一种不行。<em>（注：叔本人也没有给出有效地克服这种感情的办法）</em></li>
-<li>不要老是紧张兮兮不断回头重新考虑已经付诸实行的事情和担忧可能遭遇到的危险，应该给思考贴上封条，确信已经考虑到了一切，并以此得到安慰</li>
-<li>遭遇不幸时，要能积极主动地面对生活，把握住自己的情绪，改变能改变的</li>
-<li><strong>任何关乎我们痛苦和快乐的事情都应该以理性和判断力去观察和考虑</strong>，对其不掺杂个人情绪的思考。与此同时，<strong>千万不要让想象力介入思考</strong>，因为想象力无法对事情做出判断，智慧毫无益处地扰乱我们的情绪。</li>
-<li>在夜晚，我们的理解力和判断力就变得疲倦和呆滞，已无法深入事情的本质。因此<strong>夜晚并不适宜思考严肃的，尤其令人不悦的事情</strong>。早上适合人们从事工作和创造，不管是精神上还是体力上的。因为早晨是一天的青年期，一切都是明亮、新鲜和轻松的。</li>
-<li>只在恰当的时间里操心、享受、忍耐一样事情，其他的则完全不要想<em>（注：想清楚自己为何烦忧，逐个击破，不要带着包袱前进）</em></li>
-</ul>
-<blockquote>
-<p>生命在于运动 —— 亚里士多德</p>
-</blockquote>
-<ul>
-<li>我们的生存从本质上就是不停歇、不安的。<strong>去操劳、去克服困难是人的一种需要。持久的享受和完全的满足所带来的停滞和静态，会让人无法忍受</strong>。克服障碍是人的本能，没有机会时，人们也会依照自己的个性去制造这样的机会</li>
-<li>肌肉会疲劳，精神操劳得厉害也会变衰弱。我们不应强制性地、持续不停顿和在不适宜的时间用脑，<strong>我们一定要给予大脑必需的、充足的睡眠，借此修养、恢复</strong>。睡眠是我们提前借取的一小段死亡，以此获得和更新被白天所耗尽了的生命。</li>
-</ul>
-<h3 id="看待他人"><a href="#看待他人" class="headerlink" title="看待他人"></a>看待他人</h3><p>他人是固执的，不要抱太高的期望。要谨慎机灵，避免受伤。</p>
-<ul>
-<li>为了在人群中生存，我们必须容许和承认别人以既定的个性存在。<strong>我们关心的只是如何以一个人的本性和特质所允许的方式利用这个人，既不应该希望改变也不可以干脆谴责这个人的本性</strong></li>
-<li>人与人在精神、气质上的同声相应或大相径庭，会轻易和很快在人们的交谈中显现出来。同类的两个人很容易就谈论的一切达成某种程度的和谐一致。</li>
-<li>记忆中人会被理念化，这个美化工作需要很长时间才能完成。要想得到这个好处，方法之一就是尽量不要与人见面</li>
-<li>和别人说话时，会自然地把自己降到他人的水平。因此<strong>和庸俗的人交谈时，自己不同时变得庸俗简直就是不可能的事情</strong>。</li>
-</ul>
-<blockquote>
-<p>很难在高度尊敬一个人的同时，有非常喜爱他 —— 拉罗什富科<br>取悦我们所必需的思想深度刚好就是我们自己的思想深度 —— 《论精神》 第2篇，第10章</p>
-</blockquote>
-<ul>
-<li><strong>我们只能选择得到别人的尊敬，或是他们的喜爱。</strong>别人对我们的喜爱总是出于私心，且并不总是值得我们自豪的。别人对我们的尊敬，情况相反，因为这是我们强行从别人哪里、违背他们意愿获得的。别人通常都把这尊敬掩藏起来。尊敬和我们的价值紧密相关，而喜爱则不是，因为<strong>喜爱是主观的，尊敬是客观的</strong></li>
-<li>大部分人都是如此主观，根本上除了他们自己外不会对别的感兴趣，结果就是别人说什么话马上就能让他们联想到自己。在这些人身上，意欲远远压倒了认识力，他们微弱的智力完全服务于意欲们甚至片刻也摆脱不了意欲的控制。<strong>占星术是一个极好的证明，由于人这种可鄙的主体性，所以把一切都与自己搭上关联。占星术把天体的运行和寒酸的自己拉上关系，也把它与尘世间的俗事、丑行联系在一起。这种情况古已有之</strong>。</li>
-<li><strong>对任何人都不可太过迁就和热情</strong>。如果我们太过友好、礼貌和殷勤，我们反而有可能失去这些朋友。与人交往的优势全在于任何方面都不需要对方，<strong>并且让他们看到这一点</strong>。</li>
-</ul>
-<blockquote>
-<p>不尊崇别人的人会受到别人的尊崇 —— 意大利谚语</p>
-</blockquote>
-<ul>
-<li>谁要是以为这世上魔鬼就是头上长角或者傻瓜就是身挂铃铛，他就会永远成为他们的猎物和玩物。与他人交往时，人们只是露出其中的一面。无论如何，对刚认识不久的人，都应注意不要评估太高。否则十有八九我们都会失望甚至蒙受损失。<strong>一个人会在细节小事上疏于防备，从而表露出自己的性格</strong>。</li>
-</ul>
-<blockquote>
-<p>没有哪条狗是坏到不会摇尾巴的 —— 意大利谚语</p>
-</blockquote>
-<ul>
-<li>要具备某种不发自我们与生俱来的本性，而只是出自理想思考，完全从外在获得的性格，是件很困难的事。人的天性从来没有完全停止过对此的抗争。<strong>造作是我们对自己的某种自我谴责和贬低</strong>。我们不能无条件放任自流，完全表现自己的样子。<strong>对否定属性的隐瞒是合理的，但是对肯定属性的冒充是不对的</strong>。</li>
-<li>以他人为镜，从中能清楚看到自己的缺点</li>
-<li>人与人最重要的关系和由此产生的联系不是理念上的<em>（注：即兴致相投）</em>，而是以某种物质利益为基础。这点认识上的转变通常在年长时才会认识到。因为<strong>在这个贫穷和匮乏的世界，应付匮乏和需求的手段无论在何处都是最重要的，因此也是压倒一切的。</strong></li>
-<li>在这个世界上流行的不是真正的尊重和真正的友谊，只是做得尽量逼真和自然地显示尊重和友谊的表面功夫。朋友间分隔太远或长时间不见会有损友情，<strong>甚至我们最亲爱的朋友随着岁月的流逝会逐渐变成抽象的概念，我们对他们的关切也越来越变得纯粹只是理性上的</strong>。</li>
-</ul>
-<blockquote>
-<p>从我们最好的朋友所遭遇的不幸，我们总能找到某样并不会使我们不悦的东西 —— 拉罗什富科</p>
-</blockquote>
-<ul>
-<li>一个人表现出聪明和思想只能激起人们对他的憎恨和方案，并且这种感情还因为憎恨者和反感者没有正当理由说出来而变得更加强烈。<strong>显示自己的聪明智慧其实就是间接地指责别人愚蠢和无能</strong>。每个人都会本能地靠近给他带来优越感的物体。</li>
-</ul>
-<blockquote>
-<p>要取悦别人的话，唯一的方式就是把自己裹以最傻呆的动物的外皮 —— 格拉西安</p>
-</blockquote>
-<ul>
-<li><strong>保持礼貌就是大家心照不宣订下这样一条协议：我们都将互相忽略和避免对方在道德上和智力上的可怜本质。</strong>有礼貌是精明的做法，不礼貌的言行是愚蠢的。<em>（注：礼貌是人的一种保护措施，用光彩的外表掩饰贫乏难看，有棱有角的内在动物本性；在公众面前失去礼貌，就有如脱光衣服示众）</em></li>
-<li>人的性格是不会改变的。<strong>一辈子也难改变一个人，能改变一个人的只有他自己</strong></li>
-<li>所有激烈的情绪都来自意欲，而认识力在本质上是冷静的</li>
-</ul>
-<blockquote>
-<p>你的敌人不可以知道的东西，都不能告诉你的朋友 —— 阿拉伯谚语<br>如果保持沉默，那我的秘密就是我的囚徒；如果失口说出这个秘密，那我就变成了这秘密的囚徒 —— 阿拉伯谚语<br>沉默之树结出安宁之果 —— 阿拉伯谚语</p>
-</blockquote>
-<ul>
-<li>选择沉默是精明所致，采用说话则是虚荣心使然。我们经常都有做出这两者的机会，但通常为求得瞬间的快意而选择说话，不惜舍弃沉默所带给我们的长久好处</li>
-<li>对不少人我们可以态度礼貌、声调友好地说出真正无礼的话语，而又避免直接的危险。<em>（注：因为这表示我们并没有诉诸自己的感情，没有情绪化）</em></li>
-</ul>
-<h3 id="看待命运"><a href="#看待命运" class="headerlink" title="看待命运"></a>看待命运</h3><p>要对可能面临的苦难有所认识和准备。</p>
-<ul>
-<li>通常，外在的时间和我们的根本目的犹如两股向着不同方向牵引的力，这两股力形成的对角线就成了我们的生活轨迹。</li>
-<li>一个精明的人不会被事物恒久不变的表象欺骗，甚至能预见事物即将发生的变化方向</li>
-<li>时间索取的利息比任何一个高利贷都夸张</li>
-<li>总的来说，一个人在遭遇各种不幸横祸的时候，如果能够保持镇定自若，那就显示出他知道人生有可能遭遇的灾难是巨大和不可胜数的。</li>
-<li>我们对每天人际交往中遇到的琐细烦忧，不可以放在心上，放在脑子里，而应视这些东西为前进路上的小狮子，随脚踢开，千万不要认真回想和琢磨这些事情。</li>
-<li>一定程度的敬畏对于我们在这一世界的生存是必须的</li>
-</ul>
-<h2 id="人生的各个阶段"><a href="#人生的各个阶段" class="headerlink" title="人生的各个阶段"></a>人生的各个阶段</h2><h3 id="童年期"><a href="#童年期" class="headerlink" title="童年期"></a>童年期</h3><p>懵懂，上帝视角观察生活，不被意欲牵扰。</p>
-<ul>
-<li>童年期我们更多处于认知而不是意欲的状态，因此也充满了幸福。这个时候，生活以其全部以呈现在我们眼前，一切都是那样的新颖、鲜活。在童年期和青年早期对事物的经验和认识构成了以后所有认识和经验的固定原型和类别。</li>
-<li>教育也忙于向我们灌输概念。不过这些概念并不会给我们真正本质的东西。这些东西就在我们对这个世界所作的直观把握中</li>
-<li><strong>所有事物的客体存在，亦即其纯粹在表象中的存在，总是令人愉快的，而这些事物的主体存在，亦即作为意欲存在时，却都沉浸在痛苦和悲哀中</strong>。</li>
-<li>在稍后的日子，我们有了对现实生活的渴望，急切期盼做事和受苦，这把我们拉进了喧嚷、骚动的人生。我们逐渐了解事物的另一面，即意欲的一面。</li>
-</ul>
-<h3 id="青年期"><a href="#青年期" class="headerlink" title="青年期"></a>青年期</h3><ul>
-<li>在青年期困扰我们造成我们不幸福的原因是，我们对幸福的<strong>刻意追求</strong>。无论处在何种环境，我们通常都会感到不满，那是因为我们把现在才首次了解到的、无处不在的人生的空虚和可怜归咎于我们的环境</li>
-<li>如果人的前半生特征是苦苦追求幸福而又无法满足，那人的后半生特征则变成了害怕遭遇不幸</li>
-<li>一个成熟的人从自己生活经验中获得的，首先是不再先入为主和想当然</li>
-<li><strong>在年轻的时候，我们误以为生活中的重要人物和重要意义的时间会大张旗鼓地露面和轰轰烈烈地发生。到了老年后，对生活的回顾却显示这些人物和事件都是悄无声息、不为人注意地从后门进入我们的生活</strong></li>
-</ul>
-<h3 id="中老年"><a href="#中老年" class="headerlink" title="中老年"></a>中老年</h3><ul>
-<li>到了人生后半部分的人，看到了刺绣的背面，背面不那么美丽，但给人以教益，因为它让人看到刺绣品的总体针线</li>
-<li>我们在青年时代感到喜悦和朝气，部分原因是我们正在走着上坡的路，并没有看见死亡。从年轻的角度看，生活就是漫长无尽的将来；从老年的角度看，那不过是一段极其短暂的过去</li>
-<li>蓦然回首走过的一生，我们为什么觉得如此短暂呢？因为我们对这生活回忆不多，所以就觉得生活短暂了。这回忆漏掉了所有没多大意义和许多不愉快的事，剩下来的因此很少。很多开始有意义的事情，经过经常和无数次的重复后，慢慢成了没有意义。因为我们更能回忆我们的早年，而不是之后的时光。我们生活的时间越长，值得事后回想和重要有意义的事情就越少，唯有回想，才能让这些事留在记忆中。</li>
-<li>有时我们的回忆可以把某一幕尘封已久的往事栩栩如生地重现在眼前，仿佛发生在昨天，但我们无法回想起现在和当初发生这一幕往事间所流逝的漫长时间。这段时间无法像一副图画一目了然，并且这之间发生的事情也大都忘记了；对这些事情只保留抽象中的大概认识，纯粹某一概念而已。所以那过去很久的某一往事显得那样的接近，宛如发生在昨天，而其余的时间则消失无踪。</li>
-<li>青年人根据自己度过的为数不多的年岁估算将来，这些过去了的日子总是充满回忆，并因此显得漫长，因为<strong>新奇感</strong>使所有一切都显得有意义。</li>
-<li><strong>有时候，我们以为自己是在怀念某一处遥远的地方，但其实，我们只是怀念着我们在年轻、朝气蓬勃的时候。</strong></li>
-<li>人只有在年轻时期才是充满意识地生活，到了老年只带着一半的意识活着。人们做他们不得不做的事，之后却不知道自己是否做了那些事情</li>
-<li>童年期，新奇感把一切事物都纳入我们的意识，因此每一天都是漫长的。<strong>我们在外出旅行的时候也遭遇同样的情形，所以，在旅行中度过的一个月似乎比在家的四个月还要长</strong>。</li>
-<li><strong>一年的感觉长短与这一年除以我们年龄所得的商成反比</strong>；其次我们感受无聊的成都与我们的年龄成反比。在后半辈子，无聊也大都连带消失了。并且另一方面，我们的情欲及其痛苦也沉寂了。</li>
-<li>青年期占优势的是直观，在老年期占优势的是思想</li>
-<li>我们精神力最旺盛的时期，毫无疑问是青年期，最迟能延至35岁左右。从这个年纪开始，精神力就开始衰弱。</li>
-<li>在青年期，我们的知识总是支离破碎、残缺不全的。只有到了老年，我们才能对生活获得某一完整的、恰如其分的表象认识。人们在青年时代有更多的设想，但在老年阶段，有的更多是判断力、洞察力和对事物的根本认识</li>
-<li>我们经常低估我们在年轻时做出的成绩，也轻视那时候的判断力</li>
-<li>最奇怪的是，只有在生命临近完结之时，一个人才会真正认清和明白，甚至他自己、他就自己的木目标和方向，尤其在他与这个世界和他人的关系方面</li>
-<li><strong>每种快感的产生都只是一种需求的缓解</strong></li>
-<li>不管怎么说，青年期是躁动不安的时期，老年期是安宁的时期。青年人收到缤纷世界及其丰富形态的诱惑，他的想象力马上就夸大了这一世界所能给予的东西。在老年，人们得以更正确、更清晰地认清所有一切的客观面目。</li>
-<li>青年期和老年期的根本区别在青年期的前景就是生活，而老年期的前景却是死亡。</li>
-</ul>
-<h2 id="附：叔本华的生平轶事"><a href="#附：叔本华的生平轶事" class="headerlink" title="附：叔本华的生平轶事"></a>附：叔本华的生平轶事</h2><ul>
-<li>“在孩子们从生活原型中了解到生活之前，不应该从生活的复制品中认识生活的任何方面。因此，不要匆匆忙忙只是把书本放在孩子们的手中。……让他们永远直接从现实世界里提取概念”</li>
-<li>生来就注定要成就一番伟大事业的人，从青年时代起就会在内心秘密感到这一事实</li>
-<li>“设立国家的必要性就在于人们已经承认：人与人之间并没有什么公正可言”。</li>
-</ul>
-<p><em>–END–</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/page/11/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/blog/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/13/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -2262,7 +2278,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30:45</span>
+    <span title="站点阅读时长">31:15</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
