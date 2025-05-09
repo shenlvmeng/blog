@@ -146,7 +146,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/blog/archives/">
-          <span class="site-state-item-count">171</span>
+          <span class="site-state-item-count">175</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/blog/tags/">
-        <span class="site-state-item-count">520</span>
+        <span class="site-state-item-count">529</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,1923 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2025/02/08/xp-and-software-enginering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2025/02/08/xp-and-software-enginering/" class="post-title-link" itemprop="url">关于软件编程思路的一点借鉴</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-02-08 21:00:58 / 修改时间：21:02:31" itemprop="dateCreated datePublished" datetime="2025-02-08T21:00:58+08:00">2025-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2025/02/08/xp-and-software-enginering/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2025/02/08/xp-and-software-enginering/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>XP: eXtreme Programming</p>
+</blockquote>
+<p>做好大公司下的软件工程和项目管理不是件简单的事，业务变更总是超出预期，人力永远跟不上业务规模，团队成员能力参差不齐，代码工程日渐发臭，直到积重难返无能为力，只能花更多心力勉力支撑。这在大公司里可能是很容易遇到的一些场景。它不仅关于编码，是更大的技术甚至管理命题。要解决好，要向外求向内求。向外求，看看其他人是如何做的，这就是最近看的这两本书的初衷。</p>
+<ul>
+<li>《敏捷整洁之道》</li>
+<li>《Google软件工程》</li>
+</ul>
+<h2 id="敏捷之道">敏捷之道</h2>
+<p>极限编程（XP）、敏捷开发在大公司的软件开发中能见到一些残影。敏捷是什么？用鲍勃大叔的话说，就是<strong>帮助做小事的小团队解决小问题的小主意</strong>。小而美。小步迭代，快速试错，快速反馈。那敏捷能解决大团队的大事情吗？<strong>当然不能</strong>。这需要敏捷以外的手段。在明白这个前提下，就可以看后文了。敏捷虽然“<strong>小</strong>”，但小里面也能吸取一些经验。</p>
+<h3 id="了解敏捷">了解敏捷</h3>
+<p>敏捷前是流水线式的瀑布管理流程，它的僵化流程不重要，只需要知道它给团队和程序员带来了一些麻烦，也影响了许多程序员的思维方式。而后极限编程XP出现了，再之后一帮程序员在雪鸟会议上提出了敏捷宣言，宣言倡导4条价值观</p>
+<ul>
+<li><strong>个体和互动</strong>优于流程和工具</li>
+<li><strong>工作的软件</strong>优于详尽的文档</li>
+<li><strong>客户合作</strong>优于合同谈判</li>
+<li><strong>响应变化</strong>优于遵循计划</li>
+</ul>
+<p>在这个价值观下的实操，将会是类似下面这样的。</p>
+<ul>
+<li><strong>反馈驱动</strong>，用sprint作为项目的子周期单位，用燃尽图来度量进度和发现问题，可以祛除幻想用数据说话</li>
+<li>项目管理铁十字：质量、速度、成本、完成。
+<ul>
+<li><strong>快速前进的唯一方法就是做扎实</strong>，生成垃圾代码不会使你更快</li>
+<li><strong>给delay的项目增加人手反而会导致更加delay</strong></li>
+<li>调整功能优先级，削减功能</li>
+</ul></li>
+</ul>
+<p>更具体的，“生命之环”在业务、团队、技术上提供了一些具体的框架</p>
+<ul>
+<li><strong>业务实践</strong>：计划游戏、小步发布、验收测试、完整团队</li>
+<li><strong>团队实践</strong>：可持续节奏、代码集体所有、持续集成、隐喻（DDD）</li>
+<li><strong>技术实践</strong>：简单设计、测试驱动开发、重构、结对编程</li>
+</ul>
+<p>框架里的每一项都和价值观相关联。</p>
+<h3 id="敏捷的理由">敏捷的理由</h3>
+<p>敏捷的重要性在于保证自己的专业性和给客户合理期望，即高质量交付、持续交付、高质量架构设计来保证稳定生产率。同时开发人员和客户划分清晰权利条款，这部分不细展开。因为职责划分和公司里的组织架构、文化、项目开展形式密切相关，书里给出的无法直接使用。</p>
+<h3 id="业务实践">业务实践</h3>
+<p>生命之环的业务实践部分主要是一些流程上的建议。譬如</p>
+<ul>
+<li><strong>计划游戏</strong>：将需求拆成故事点，按ROI排序，用几个简单的迭代周期评估整体完成的风险</li>
+<li><strong>小步发布</strong>：结合测试，频繁地发布集成</li>
+<li><strong>验收测试</strong>：业务方编写形式化的用户行为case，开发人员来实现测试自动化，QA来做悲观测试</li>
+<li><strong>完整团队</strong>：同地办公，鼓励沟通</li>
+</ul>
+<h3 id="团队实践">团队实践</h3>
+<p>这部分主要是一些团队协作的建议。</p>
+<ul>
+<li><strong>隐喻</strong>：即领域模型设计的思路，建模问题域，定义业务元语来对齐认识</li>
+<li><strong>可持续节奏</strong>：被动加班并不能体现奉献精神，只能表明计划做得糟糕，充足的睡眠很关键</li>
+<li><strong>代码集体所有</strong>：知识共享，不意味着不能有所专长，但也要是通才</li>
+<li><strong>持续集成</strong>：CI/CD永不应该破坏，所有测试一定都要通过</li>
+<li><strong>站会</strong>：只过做了什么？将做什么？需要什么帮助？不要深入讨论，只呈现事实</li>
+</ul>
+<h3 id="技术实践">技术实践</h3>
+<p>这部分是具体在技术领域的建议。也是三类实践里的基本，缺少技术实践，将无从谈起敏捷。</p>
+<ul>
+<li><strong>测试驱动开发（TDD）</strong>：先写失败的测试，再写让测试通过的代码，保证代码一直可以工作</li>
+<li><strong>重构</strong>：重构只改变代码结构，不改变测试定义的行为；<strong>重构永远不出现在时间表里，它是我们每分钟、每小时开发活动里不可分割的</strong></li>
+<li><strong>简单设计</strong>：减少认知负担</li>
+<li><strong>结对编程</strong>：间歇性、不强迫，来增进知识共享</li>
+</ul>
+<h3 id="实践敏捷">实践敏捷</h3>
+<p>敏捷的价值观包括<strong>勇于冒险、积极沟通、快速反馈、直截了当</strong>，保持团队和代码简单。说起来就是这么简单，但组织像敏捷转型并非易事，有时需要团队内的敏捷教练来倡导和监督。在大型组织里，更是需要敏捷以外的手段来解决问题。敏捷对团队的要求实际上挺高，团队需要较高的技术和工程实践能力，需要战略性思维，需要模块化设计。</p>
+<p>书里有一句话说得很好：“没有实践的原则只是空壳，没有原则的实践往往是没有判断力的死记硬背。原则指导实践，实践具象化原则，两者齐头并进。”。如果在没对问题达成一致前就提供了解决方案，人们看不到价值，就不会改变他们的工作方式。</p>
+<h2 id="软件工程">软件工程</h2>
+<p>这本书的内容不涉及具体的代码编写，而是聚焦<strong>工程</strong>，主要在讲软件工程的方法论。从理论到文化到流程再到工具。针对大公司里遇到的工程问题，给出了解决的视角和思路。这探讨的范畴恰好和敏捷是另一个方向，一个是大而壮，一个是小而美。既然聊到工程，主要就是从下面的维度来分析问题。</p>
+<ul>
+<li>时间维度：代码的生命周期里如何适应变化</li>
+<li>规模维度：组织和工程在增长中如何适应</li>
+<li>成本维度：如何权衡成本来做出决策</li>
+</ul>
+<h3 id="理论部分">理论部分</h3>
+<p>首先，<strong>软件工程不是编程</strong>。它是带有时间维度的编程。要考虑上面提到的三个维度，一方面做到软件的可持续性，即响应持续的有价值变更的能力；另一方面要能适应业务和团队的规模。在这么多因素里，要做好权衡。</p>
+<ul>
+<li>时间：关系着<strong>代码的生命周期</strong>。大公司不同于个人的练手项目，项目的生命周期长很多，甚至长到无限；因此要思考的不只是“现在可工作”，而是“一直可工作”。长期保持软件的<strong>可维护性</strong>是一项挑战。在“法无禁止即可为”的背景下，用户足够多时，什么写法都会发生</li>
+<li>规模：不只指团队的规模，也有业务的规模，<strong>扩展性</strong>不佳时，不仅在代码、在整个编码流程上都会遇到问题，例如API弃用、API升级、代码合并。借助组织规模化，<strong>知识分享</strong>也可以带来超线性的价值。同时风险左移也可以降低维护成本。</li>
+<li>权衡：重要的是“<strong>达成共识</strong>”，而不是“我说了算”。决策是需要经过充分讨论的，有开放和明确权衡的，而不是拍脑袋决定的。一个<strong>数据驱动</strong>的文化可以支撑决策，在数据改变时及时调整方向。</li>
+</ul>
+<p>总结一下，编码是产生代码，软件工程是代码维护，是一组政策、实践、工具，是有管理成分的。</p>
+<h3 id="文化部分">文化部分</h3>
+<h4 id="团队协作">团队协作</h4>
+<blockquote>
+<p>一切为了团队</p>
+</blockquote>
+<p>文化少不了人，在公司里，代码维护都是团队协作的成果。软件工程是<strong>团队努力</strong>的结果。一个良好的团队氛围很重要。</p>
+<ul>
+<li><strong>围绕团队而不是个人</strong>
+<ul>
+<li>团队成就感 &gt; 自我感觉良好</li>
+<li>设置人员backup，提升巴士系数（开发者被巴士撞了让项目停摆）</li>
+<li>团队反馈，“足够多的眼睛可以让所有问题暴露”</li>
+</ul></li>
+<li>谦虚、信任和尊重
+<ul>
+<li>无指责文化、建设性批评</li>
+<li>虚心提出和接受批评</li>
+</ul></li>
+<li>多元兼容的团队
+<ul>
+<li>兼容用户</li>
+<li>兼容团队成员</li>
+</ul></li>
+</ul>
+<h4 id="知识共享">知识共享</h4>
+<p>组织需要知识共享来降低沟通成本。因此需要创建一种促进开放、诚实的知识分享文化。</p>
+<ul>
+<li><strong>必要性</strong>：大公司、流水线式组织必然会有信息碎片化、信息重复、信息偏差的问题，那些存留在单个成员大脑里的未文档化的知识孤岛很容易逸失</li>
+<li><strong>促进手段</strong>
+<ul>
+<li>鼓励持续学习和交流</li>
+<li>鼓励社区提问和解答</li>
+<li>技术讲座、技术分享、尊重、激励和奖赏</li>
+<li>建立<strong>规范的信息源</strong></li>
+<li>去改变事物之前，先了解它为什么在那里</li>
+</ul></li>
+<li><strong>可读性</strong>：<strong>代码阅读量要远远大于书写量</strong></li>
+</ul>
+<h4 id="团队领导">团队领导</h4>
+<p>大小团队的领导风格是不一样的。</p>
+<ul>
+<li>基层领导：偏业务的经理（Manager）和偏技术的技术主管（Tech
+Lead），或两者兼有。
+<ul>
+<li>克制住管理的冲动，<strong>学会营造氛围，做好服务工作</strong></li>
+<li>关注团队的健康和成长，<strong>不操心如何完成任务，而是完成什么任务</strong></li>
+<li>关注人
+<ul>
+<li>招聘比自己强的人</li>
+<li>重视低绩效的人</li>
+<li>有人情味</li>
+<li>不要混淆友谊和工作</li>
+</ul></li>
+<li>正面case
+<ul>
+<li>多信任，少微操</li>
+<li>对其目标，留下空间</li>
+<li>当禅师，不给解法，多引导</li>
+<li>多做拉齐共识的事，帮助成员解决资源的障碍</li>
+<li>坦诚、有同理心</li>
+</ul></li>
+</ul></li>
+<li>大团队领导：多做决策，培养自驱，考虑扩展
+<ul>
+<li><strong>多做决策</strong>：定义清楚问题，识别盲点，权衡和决策</li>
+<li><strong>培养自驱</strong>：建设自组织、自管理的团队，组织里有一组强大的领导者，健康的工程流程和积极自驱的文化，增加自己的可替代性。达到这点，需要做几件事
+<ul>
+<li><strong>划分问题子方向</strong>，给团队清晰的目标感和成就感</li>
+<li><strong>授权问题和领导者</strong>，培养一批自立的领导者，多思考“<strong>我能做什么团队其他人做不了的事情</strong>”</li>
+<li><strong>调整和迭代</strong>，保持自驱团队的健康，谨慎锚定一个团队的角色，要随业务发展</li>
+</ul></li>
+<li><strong>考虑扩展</strong>，随着能力的提升和成功，责任和问题会越来越大，要学会授权，保护自己的精力，更多关注最重要的事情</li>
+</ul></li>
+</ul>
+<h4 id="度量">度量</h4>
+<p>首先团队必须保持数据驱动，减少主观误判。不仅要提高生产力，还要高效做到这一点。度量前，先要认识以下几点</p>
+<ul>
+<li>确定度量指标足够反映问题，而不是虚荣心指标</li>
+<li>确定的目标要能针对结果采取动作</li>
+<li>确定自己有精力变更流程/工具</li>
+</ul>
+<p>在目标上，可以从<strong>代码质量、工作专注度、认知复杂度、速度、满意度</strong>几个方面来度量。然后针对这些维度确定指标。</p>
+<h3 id="流程部分">流程部分</h3>
+<h4 id="代码风格">代码风格</h4>
+<p>风格指南旨在提高<strong>一致性</strong>，提高代码<strong>对于时间和规模的韧性</strong>。</p>
+<ul>
+<li>规则就是法律，是强制性的，不仅是建议或提示</li>
+<li>风格的原则
+<ul>
+<li><strong>为读者优化</strong>，而不是作者，推荐“简单读”而不是“简单写”</li>
+</ul></li>
+<li>规则的好处
+<ul>
+<li>一致性</li>
+<li>可扩展性</li>
+<li>避免容易出错的写法</li>
+<li>和外界一致</li>
+</ul></li>
+<li>调整规则
+<ul>
+<li>对于新特性，规则逐步放开</li>
+<li>规则不能一成不变，由社区提出，委员会决策批准</li>
+</ul></li>
+<li>配套工具：lint、格式化工具
+<ul>
+<li>自动化工具的好处：公平公正、不易遗忘、可扩展性</li>
+</ul></li>
+</ul>
+<h4 id="代码审查">代码审查</h4>
+<p>代码审查（Code
+Review，CR）是一种<strong>知识共享</strong>的重要工具，用好的话，也可以促进积极的团队氛围。</p>
+<ul>
+<li>流程上，可以要求代码的OWNERS，也可以邀请上专门负责<strong>可读性</strong>的人</li>
+<li>CR就像论文的同行评审，可以大大提升代码质量：正确性、可读性、一致性，同时也能加深<strong>代码团队所有</strong>的观念，促进知识共享</li>
+<li>最佳实践
+<ul>
+<li><strong>礼貌而专业</strong>：信任和尊重文化，如果不同写法都有效果，且能通过可读性检查，应该接受作者的偏好</li>
+<li>鼓励<strong>小变更</strong>，可以减少CR成本</li>
+<li>在CR前，准备好<strong>清晰的变更描述</strong></li>
+<li>减少CR人数目，提高自动化程度</li>
+</ul></li>
+<li>CR类型：
+<ul>
+<li>新项目</li>
+<li>改进需求</li>
+<li>hotfix：避免夹带其他fix，会增加评审难度和回滚难度</li>
+<li>重构</li>
+</ul></li>
+</ul>
+<h4 id="文档">文档</h4>
+<p>文档是知识分享重要的一环，但文档质量是所有程序员都感知过的通病，要想搞好文档质量需要一番功夫。</p>
+<ul>
+<li>文档的重要性：前期的投入换来后期的团队回报
+<ul>
+<li>API介绍可以帮助评估设计</li>
+<li>路线图和历史记录可以提供更多上下文</li>
+<li>减少其他用户的问题</li>
+</ul></li>
+<li><strong>像代码一样对待文档</strong>
+<ul>
+<li>有所有者和负责人</li>
+<li>有源代码管理</li>
+<li>有变更评审</li>
+<li>有缺陷跟踪</li>
+<li>有定期评估甚至测试</li>
+</ul></li>
+<li>最佳实践
+<ul>
+<li><strong>认清读者</strong>：初学者 or 专家，有目的的探索者 or
+困惑者，客户 or 团队内部成员</li>
+<li><strong>单一的文档目的</strong>：注释生成的参考文档、技术设计文档、新手教程、概念文档、landing
+page</li>
+<li><strong>完整、清晰、准确、简洁</strong></li>
+<li>5元素：WHO、WHAT、WHEN、WHERE、WHY</li>
+<li>文档的<strong>有效期</strong></li>
+</ul></li>
+</ul>
+<h4 id="测试概述">测试概述</h4>
+<p>开发人员自驱的自动化测试实践是重要的测试文化。</p>
+<ul>
+<li>自动化测试的文化是软件变更的基础</li>
+<li>测试细粒度：单元测试、中型测试、大型测试，以单元测试为主，集成和端到端测试为辅</li>
+<li>代码覆盖率的最大价值是对<strong>未覆盖代码的洞察</strong>，并不能代表覆盖代码没有问题</li>
+<li>自动化测试可以解放人工测试人员精力</li>
+</ul>
+<h4 id="单元测试">单元测试</h4>
+<p>单元测试是写得最多的一类测试。可维护性的测试很重要，频繁阻塞发布的测试错误会降低开发者对测试的信任度。</p>
+<ul>
+<li>编写测试的最佳实践
+<ul>
+<li>按用户路径，测试公共API</li>
+<li>测试最终状态（结果如何），而不是行为（做了没做）</li>
+<li>保持测试的完整度和清晰度，一个case只做一件事</li>
+<li>清晰的测试失败信息</li>
+</ul></li>
+<li>测试结构化：Given……When……Then</li>
+<li><strong>测试代码应更清晰直接，而不是更聪明更高复用程度</strong></li>
+</ul>
+<h4 id="大型测试">大型测试</h4>
+<p>大型测试成本更高，但可以覆盖单元测试覆盖不到的地方，也有更高的保真度。</p>
+<ul>
+<li>大型测试的挑战：可靠性、快速、可扩展性</li>
+<li>大型测试类型：压测、UAT、AB、小流量、容灾演练、灰度用户等</li>
+<li>需要明确大型测试的负责人，否则相比单元测试，大型测试更容易劣化</li>
+</ul>
+<h4 id="mock测试">mock测试</h4>
+<p>mock类型测试是实际实现的轻量级替替身实现，它对于提高测试case的清晰度和测试效率至关重要，但是滥用的话，会带来测试不清晰、稳定性差的问题。因此有一些最佳实践。</p>
+<ul>
+<li>在速度相近的情况下，<strong>实际实现永远优于mock实现</strong></li>
+<li>几种mock类型
+<ul>
+<li>桩（stub）：模拟实现，返回固定值</li>
+<li>模拟（mock）：模拟实现，返回可配置的值</li>
+<li>间谍（spy）：记录调用信息，返回固定值</li>
+<li>伪造（fake）：模拟实现，返回可配置的值，但是可以修改</li>
+</ul></li>
+<li>过度使用桩技术，会让测试代码脆弱不清晰，可以考虑用伪造技术。伪实现的内部是实际实现的轻量版，相比桩更拟真</li>
+<li>对写函数调用状态测试（结果如何），对读函数使用行为测试（做了几次）</li>
+</ul>
+<h4 id="弃用">弃用</h4>
+<p>对于一个明显过时的且有成型的替代产品的系统，最好的办法是<strong>弃用</strong>。代码是负债，产品功能才是资产。代码只会带来开发成本和维护成本，弃用正是从降低成本角度出发的。</p>
+<ul>
+<li>弃用比构建更困难
+<ul>
+<li>使用用户多，迁移有难度</li>
+<li>说明价值困难</li>
+<li>最初的设计通常不会考虑弃用</li>
+</ul></li>
+<li>弃用类型
+<ul>
+<li>建议型：只能起到宣传作用，不能指望用户完成主要的迁移</li>
+<li>强制性：要提供可操作性的手段，越早提示越好</li>
+</ul></li>
+<li>推进流程：要有owner，要有里程碑，要避免倒退</li>
+</ul>
+<h3 id="工具部分">工具部分</h3>
+<h4 id="版本控制和分支管理">版本控制和分支管理</h4>
+<p>软件开发和软件工程的重要区别之一就是，软件工程一定要有版本控制。本节的其余部分主要在推介主干分支（trunk-based）开发和monorepo。</p>
+<ul>
+<li>trunkbase：长周期分支会带来维护困难</li>
+<li>monorepo：有利于统一依赖</li>
+</ul>
+<h4 id="代码搜索">代码搜索</h4>
+<p>需要用工具帮助开发者理解代码和检索他需要的代码信息。</p>
+<ul>
+<li>强大的检索功能：各种检索场景</li>
+<li>可视化的UI</li>
+</ul>
+<h4 id="构建工具">构建工具</h4>
+<p>构建是开发人员的重要工作之一，提升构建体验对开发者很重要。</p>
+<ul>
+<li>愿景：<strong>要快，要正确</strong></li>
+<li>实现方式：基于制品 &gt; 基于任务 &gt; shell脚本 &gt; 直接使用编译器
+<ul>
+<li>基于制品相对于基于任务，只要解决好依赖的划分，可以很好地实现复用、并行化、增量构建，从而提升构建体验</li>
+<li>用hash去标识构建产物，实现缓存和避免“供应链投毒”</li>
+</ul></li>
+<li>构建技巧
+<ul>
+<li>分布式构建：远程缓存、worker并发执行、按需下载</li>
+<li>模块依赖处理
+<ul>
+<li>合理的模块拆分</li>
+<li>显式依赖传递</li>
+<li>单一版本规则</li>
+<li>显式外部依赖</li>
+<li>外部依赖本地化</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="代码评审">代码评审</h4>
+<p>之前就有提过，代码评审是提高代码质量和知识分享的有效手段，但花在评审上的时间会占用编码，所以任何评审流程的优化都可以带来生产力的提高。</p>
+<ul>
+<li>一些最佳实践思路
+<ul>
+<li>清晰的UI、简易的操作流程</li>
+<li>自动化提前发现一些问题</li>
+<li>集成到工作流中，如办公软件里</li>
+</ul></li>
+</ul>
+<h4 id="静态分析">静态分析</h4>
+<p>静态分析类似lint，是代码问题左移的重要工具。</p>
+<ul>
+<li>最佳实践
+<ul>
+<li>减少误报</li>
+<li>自动修复</li>
+<li>增加用户的误报反馈</li>
+<li>IDE集成</li>
+</ul></li>
+</ul>
+<h4 id="依赖管理">依赖管理</h4>
+<p>依赖管理是软件开发里最复杂的一类话题。</p>
+<ul>
+<li>引入依赖可以提高开发效率
+<ul>
+<li>慎重引入新依赖</li>
+</ul></li>
+<li>依赖管理本身就比代码管理难得多
+<ul>
+<li>依赖网络随着时间推移越来越复杂</li>
+<li>兼容性问题和菱形依赖</li>
+<li>用CI和测试来保证</li>
+</ul></li>
+<li>semver的局限性：来源于<strong>将软件变更简化为版本号变更</strong>，带来保真度损失的问题
+<ul>
+<li>过分约束 or 过分承诺</li>
+<li>最小版本选择</li>
+</ul></li>
+<li>开源的隐患：外部用户维护成本、系统中任何可被观察的行为都会被依赖</li>
+</ul>
+<h4 id="大规模变更">大规模变更</h4>
+<p>大规模变更一般指一些基础设施的改造，需要调整整个仓库维度的写法。包括</p>
+<ul>
+<li>反模式清理</li>
+<li>替换已废弃的写法</li>
+<li>支持底层基础设施的升级改进</li>
+<li>旧系统迁移</li>
+</ul>
+<p>这类事情最好有专门的团队负责迁移工作。原子性地进行大的变更很困难，需要拆成较小的、独立的快，这也给大规模变更带来的难度。一般至少要包含下面几步：</p>
+<ul>
+<li>提出变更提案，获得委员会授权</li>
+<li>创建变更</li>
+<li>切片并提交</li>
+<li>各切片的测试和评审</li>
+<li>提交</li>
+</ul>
+<h4 id="持续集成">持续集成</h4>
+<p>CI是一个老生常谈的话题，在极限编程里也有提到，就是通过频繁地集成，减少项目风险的手段。</p>
+<ul>
+<li>关键：快速反馈循环</li>
+<li>重要部件：功能开关（feature flag）、自动化测试</li>
+<li>最佳实践：快速可靠的测试case、快速修复导致失败的变更、先回滚后修复</li>
+</ul>
+<h4 id="持续交付">持续交付</h4>
+<p>持续交付是CI向终端用户的延伸。是保证<strong>小步快跑</strong>的实践，将小批量变更快速实现并交付用户。配套的工具有功能开关、发布火车、灰度发布、ab实验等。</p>
+<h4 id="计算即服务">计算即服务</h4>
+<p>计算资源池化是公司规模变大后的必然趋势，它可以提高管理资源的效率，同时能给软件提供标准化、稳定的抽象和环境。</p>
+<ul>
+<li>功能组件：机器资源调度、多租户隔离、容器</li>
+<li>选型：公有云、私有云、serverless
+<ul>
+<li>serverless是更轻量级细粒度更小，但定制性也更弱的方案，对规模较小的组织和团体吸引力较大</li>
+</ul></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2025/01/06/image-and-colors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2025/01/06/image-and-colors/" class="post-title-link" itemprop="url">图像与颜色 —— 视觉和社会的隐秘关联</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-01-06 21:11:11 / 修改时间：21:13:06" itemprop="dateCreated datePublished" datetime="2025-01-06T21:11:11+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E7%A4%BE%E7%A7%91/" itemprop="url" rel="index"><span itemprop="name">社科</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2025/01/06/image-and-colors/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2025/01/06/image-and-colors/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>《图像——文艺复兴到社交媒体》和它的姊妹篇《色彩——颜色如何改变我们的视觉》从机制角度分解了我们视觉和社会的隐秘关联。这些隐秘关联有的来自历史文化，有的来自先天本能，有的来自科技进步。搭配丰富的配图，阅读体验很棒。大多数内容有趣且有用。因为全书思路较散，下面用以点带面的形式做一个总结和整理。</p>
+<h2 id="空间">空间</h2>
+<h3 id="正中央的吸引力">正中央的吸引力</h3>
+<p>正中心和透视的发展，稳定的构图。</p>
+<ul>
+<li>孩子就像未开化的先人，是没有空间概念的</li>
+<li><strong>中央带来平稳</strong>，具有庄严性、对称性、圆满性，有推崇、理所当然、不容置疑的意味。受肖像画欢迎。</li>
+<li>不对称带来动感与不安</li>
+<li>透视与投影，从逻辑性到真实感的进步</li>
+<li>透视的发明过于成功，以至于成了后来思考图像的唯一方式</li>
+<li>暗箱、摄影的借鉴和发明</li>
+</ul>
+<h3 id="外围的吸引力">外围的吸引力</h3>
+<p>边框带来的新思考。</p>
+<ul>
+<li>作画和卡景思路的不同。作画时，人物完整不会被切割，卡景则更强调真实性，会有景物的切割与取舍。简言之，<strong>作画是构建</strong>，来获得特定的行；<strong>摄影是提取</strong>，对现实世界的节选。</li>
+<li>光学仪器出现后，人们才意识到绘画不是对可见世界的贴近，而是逃离。</li>
+<li>文艺复兴前，绘画是个封闭的有限体系，绘画外一片虚无。文艺复兴后，有了“世界可以超过边框而存在”的假设，这也是最伟大的突破。</li>
+<li>在印象派时期和之后，画面的切割更贴近照片，德加就经常从照片里获取灵感。<strong>卡景成为思考世界的新方式</strong>。</li>
+<li>火车的发明，车窗的取景方式，和对真实感的追求</li>
+</ul>
+<h2 id="形">形</h2>
+<h3 id="矩形的胜利">矩形的胜利</h3>
+<p>矩形的胜利来自社会的进步。</p>
+<ul>
+<li>早期，绘画的形状根据场合和载体各异。矩形得到偏好来自几个原因
+<ul>
+<li>阿尔贝蒂的“图像即窗户”理论</li>
+<li>布面绘画的普及</li>
+<li>印刷术普及的要求</li>
+</ul></li>
+<li>最早期，画被当做家具；资产阶级发展起来后，艺术品成为了时装类的消费品。公众也可以通过市场和交易会了解最新趋势。艺展（也叫沙龙）就此发展，艺术逐渐成为一种文化消费。</li>
+<li>印象派的发展就来源于拿破仑三世组织的落选者画展</li>
+<li>在19世纪，只有大幅矩形油画才被视为艺术品</li>
+</ul>
+<h3 id="黄金矩形和工业比例">黄金矩形和工业比例</h3>
+<p>常用的矩形比例来自工业进步。</p>
+<ul>
+<li>美术用品商店出现后，画家们开始用预先钉好的画布，最常用的是4:3</li>
+<li>电影胶片的版式经过多番调整</li>
+<li>宽银幕电影镜头</li>
+<li>裸体画里男性多用站姿，而女性多用躺姿，这和委托人多为男性有关</li>
+<li>版式不是中性元素，也是政治价值和复杂世界观的载体</li>
+<li>16:9的普及，和家用电视机有关</li>
+</ul>
+<h2 id="金色画框">金色画框</h2>
+<p>画框和边界感</p>
+<ul>
+<li>莫奈的谁联系列是无画框构图的鼻祖</li>
+<li>画框确定图像范围，建立起画作和外界的联系</li>
+<li>画框还是一道心理围栏，引导视线，强调理性</li>
+</ul>
+<h2 id="深渊迷雾">深渊迷雾</h2>
+<p>取景的妙用</p>
+<ul>
+<li>画中画强调了观看的指向作用</li>
+<li>画中分隔出的“虚拟画框”也能起到暗示的含义</li>
+</ul>
+<h2 id="感知">感知</h2>
+<h3 id="印象派">印象派</h3>
+<p>印象派之前，画作越光滑、越透亮，就越受人们欢迎，到了印象派，开始欣赏画布和颜料本身的美</p>
+<h3 id="门和肖像画">门和肖像画</h3>
+<p>追求写实到表达含义传达感受</p>
+<h3 id="意外访客">意外访客</h3>
+<p>人的欣赏过程</p>
+<ul>
+<li>看画时，先看耳朵</li>
+<li>关心的内容会影响欣赏者的眼球轨迹</li>
+<li>欣赏古典艺术时，眼球的移动更宽广和平缓</li>
+</ul>
+<h2 id="机制">机制</h2>
+<h3 id="路布刀枪">路、布、刀、枪</h3>
+<p>画面里的视觉引导元素</p>
+<ul>
+<li>人的心理学会将画面里的元素联系起来</li>
+<li>在边缘的物体会有向画面里的作用力
+<ul>
+<li>画面边缘的刀</li>
+</ul></li>
+<li>胳膊和手的指引，眼神的指引</li>
+<li>画面切入点在东方艺术里较分散</li>
+</ul>
+<h3 id="树的推力">树的推力</h3>
+<p>边衬的推力，和带来的纵深感</p>
+<ul>
+<li>舞台里背景布和侧幕收到了典型绘画规范的影响；之后绘画又开始模仿剧院创意</li>
+<li>树木也好，建筑也好，在侧面出现不是为了框住主题，而是<strong>制造景深和突出主角</strong></li>
+<li>有的边衬是为了制造距离感，提升代入感</li>
+</ul>
+<h3 id="焦点">焦点</h3>
+<p>突出焦点的方式</p>
+<ul>
+<li>光圈和明亮度</li>
+<li>画面中心</li>
+<li>人群衬托</li>
+</ul>
+<h2 id="拓扑结构">拓扑结构</h2>
+<h3 id="重力的方向">重力的方向</h3>
+<p>人对画的方向受到重力的影响</p>
+<ul>
+<li>我们观看一幅图像时，下方通常都显得更重，重力已嵌入我们的目光</li>
+<li>在自然风光中，上半部分——天空往往颜色更浅</li>
+<li>抽象主义，不去定义方向</li>
+</ul>
+<h3 id="天使与恶魔的方向">天使与恶魔的方向</h3>
+<p>左右的不等向性</p>
+<ul>
+<li><strong>左边代表远离和动荡，右边代表归属感和家</strong></li>
+<li>留白带来动感和活力</li>
+<li>因为一般的阅读习惯是从左到右，左边一般意味着之前，右边意味着之后。</li>
+<li>海因里希·沃尔夫林将右下角称为具象话语的“终点”</li>
+<li>印刷术的出现，使从左到右开始涉及图像。人物<strong>从左到右进入画面，从右到左返回起点</strong></li>
+<li>人物与阅读方向相反，意味着消极，所以一般向左代表逃跑。</li>
+<li>善良的人物总是从左向右移动，邪恶的角色也出现在右方，扮演阻挡主角的角色</li>
+</ul>
+<h3 id="对角线">对角线</h3>
+<p>对角线代表活力</p>
+<ul>
+<li>新造型主义不再把画作视为通向世界的窗口，即不再呈现或描摹可见器物，而是将画作本身视为器物</li>
+<li>水平描述给人一种休息、平静、浩瀚的感觉；倾斜则会给画面注入活跃、动荡</li>
+<li>穿过画面边缘的线条会带来强势、明确的张力感和阻力感</li>
+</ul>
+<h2 id="构图">构图</h2>
+<h3 id="盆盆罐罐的形而上学">盆盆罐罐的形而上学</h3>
+<p>静物排布和节奏</p>
+<ul>
+<li>静物画的结构逻辑和物体的大小排布节奏有关</li>
+<li>静物的排布就像音乐节奏</li>
+</ul>
+<h3 id="总体观感理论">总体观感理论</h3>
+<p>整体构图的进化</p>
+<ul>
+<li>古代开始，人们以几何学为指导原则
+<ul>
+<li>圆代表完美，三角形代表稳固，三位一体，杏仁型代表出生、起源</li>
+</ul></li>
+<li>15世纪起，人们对于形状的教条开始被拟真度所取代；在17世纪后，构图又开始得到重视，图像里元素的一致性得到重视</li>
+</ul>
+<h3 id="地平线原则">地平线原则</h3>
+<ul>
+<li>黄金分割法</li>
+<li>三分法分割天空和地面</li>
+<li>地平线代表观察角度</li>
+</ul>
+<h3 id="希区柯克的天平">希区柯克的天平</h3>
+<p>图像重量的平衡</p>
+<ul>
+<li>图像一侧的“视觉重量”可以通过合理排布达到平衡</li>
+<li>颜色、光亮、线条疏密都可以贡献“视觉重量”</li>
+<li>人的审美里天生对平衡是有评判标准的</li>
+<li>“轮廓线条派”逐步被“色彩平衡派”取代</li>
+</ul>
+<h3 id="小鹿需要空间">小鹿需要空间</h3>
+<p>留白的艺术</p>
+<ul>
+<li>源自东方的留白艺术，随着18世纪以来东西方文化交流开始影响西方</li>
+<li>蒙德里安的不对称也有从日本艺术中吸取经验</li>
+<li>商业的留白有另外的原因</li>
+</ul>
+<h3 id="记者的膝盖">记者的膝盖</h3>
+<ul>
+<li>构图并非只属于艺术范畴，它也不是针对形式的表态，只是为了表达或审美而穿插在作品当中</li>
+<li>摄影无需追求极致真实，可以有构图和取景</li>
+<li>越战照片的视角观察</li>
+</ul>
+<h2 id="媒介">媒介</h2>
+<h3 id="面孔的尺寸">面孔的尺寸</h3>
+<ul>
+<li>画作的真实尺寸可能和你看到的不一样</li>
+<li>摄影具有呈现任何尺寸且可复制的能力</li>
+<li>媒介的大小影响人的视觉感知
+<ul>
+<li>圣像里，玛利亚和耶稣都和真人一样大小，人站在画作前，会有种与他们谈话的感觉</li>
+</ul></li>
+<li>电影里的大特写有放大人情绪的能力</li>
+</ul>
+<h3 id="剪刀的审美感知">剪刀的审美感知</h3>
+<ul>
+<li>如今我们认为是“艺术”的许多绘画作品，在五个世纪之前只是一些日用品</li>
+<li>摄影里，裁剪是常态；裁剪得好，可以成为点睛之笔</li>
+<li>裁剪对于平面设计师至关重要，可以突出想要表达的重点</li>
+</ul>
+<h3 id="斗牛士的命运">斗牛士的命运</h3>
+<ul>
+<li>复制能力模糊了艺术和图像的界限，让一些原本不属于艺术的东西变成了“艺术”</li>
+<li>艺术是一种特殊的图像</li>
+</ul>
+<hr />
+<h2 id="视角">视角</h2>
+<h3 id="工业黄">工业<span style="color: #ffe27a">黄</span></h3>
+<p>工业时代使生产规范化，让人们在颜色和物品间建立联系，就像黄色和铅笔一样。</p>
+<h3 id="统一红">统一<span style="color: #fe2c55">红</span></h3>
+<p>纯色和工业化的挂钩，让纯色和崭新、规范化、新时代建立关系。</p>
+<ul>
+<li>自然界很少有纯色，都是复杂的色彩组合</li>
+<li>工业生产里倾向简化产品，简化生产过程</li>
+<li>整洁、秩序在现代社会成为基本准则，我们永远期待崭新的物品，对现代材料老化的容忍度明显低于历史悠久的木材、玻璃等传统材料</li>
+</ul>
+<h3 id="构造黑">构造黑</h3>
+<p>工业社会下的<strong>纯色</strong>平面设计</p>
+<h2 id="故事">故事</h2>
+<p>对颜色的认识历程。</p>
+<h3 id="昂贵蔚蓝">昂贵<span style="color: #4b5bc2">蔚蓝</span></h3>
+<p>现代前的首个染料。</p>
+<ul>
+<li>事物因稀缺而宝贵，颜料也是如此，绛红色和天青色就因此成为地位的象征</li>
+<li>群青因为昂贵的制作，被用来绘制圣母的斗篷，也被认为是最高贵的颜色</li>
+</ul>
+<h3 id="符号绛红">符号<span style="color: #e83128">绛红</span></h3>
+<p>脱离自然事物的颜色</p>
+<ul>
+<li>人们选择一种色彩不是为了搭配，而是它的效用</li>
+<li>颜色从自然事物剥离到牛顿才完全完成</li>
+</ul>
+<h3 id="光谱靛">光谱<span style="color: #00b5ee">靛</span></h3>
+<p>对颜色的进一步认识</p>
+<ul>
+<li>色相环、光谱色、互补色</li>
+</ul>
+<h3 id="包法利蓝">包法利<span style="color: #2b5db9">蓝</span></h3>
+<p>包含社会含义的颜色</p>
+<ul>
+<li>《包法利夫人》和《少年维特之烦恼》里的蓝色引起风潮</li>
+<li>蓝黄对比，蓝色成为诗意和品位的象征</li>
+</ul>
+<h3 id="现代紫">现代<span style="color: #c71585">紫</span></h3>
+<p>消费主义和崇拜狂热带来的影响</p>
+<ul>
+<li>化学打开了时尚产业的大门</li>
+<li>在资本主义成熟的同时，现代社会的特征也被确定下来</li>
+<li>颜料的经济适用性带来了艺术风格的转变，出现了厚涂的画法</li>
+</ul>
+<h3 id="非法绿">非法<span style="color: #00a545">绿</span></h3>
+<p>关于基本色的探讨</p>
+<ul>
+<li>在16世纪，混合颜色风潮下，人们开始思考有没有能够合成所有颜色的“<strong>基本色</strong>”</li>
+<li>颜色的分类和科技革命以及工业革命带来的理性思考有关</li>
+<li>勒布朗用<strong>红黄蓝</strong>印刷，奠定了最早的三原色</li>
+<li>实际上三原色并不成立，没有哪三种颜色可以组成所有颜色，它仅有文化属性和技术属性</li>
+</ul>
+<h3 id="石板印刷青">石板印刷<span style="color: #3b824a">青</h3>
+<p>印刷、摄影技术的革新和其中颜色的运用</p>
+<h3 id="和谐灰">和谐<span style="color: gray">灰</span></h3>
+<p>颜色搭配的理论化</p>
+<ul>
+<li>伊顿色相环，伊顿声他的灵感来自歌德的理论</li>
+<li>蒙赛尔也和伊顿一样，认为和谐的构图中色相、明度和饱和度的色彩混合生成了一种中性灰</li>
+</ul>
+<h2 id="人造物">人造物</h2>
+<h3 id="神经元棕">神经元<span style="color: #9b6016">棕</span></h3>
+<p>大脑如何构建颜色</p>
+<ul>
+<li>人类的感知总是一种<strong>构建</strong></li>
+<li>对眼睛而言，棕色并不存在，它仅仅存在于人的头脑中</li>
+<li>视错觉：大脑可以在不改变物理实质的情况下，创造出新感知</li>
+</ul>
+<h3 id="破碎紫">破碎<span style="color: #ea2c9a">紫</span></h3>
+<p>明度与色彩</p>
+<ul>
+<li>在视觉艺术里，明度和色彩是构图的两大支柱</li>
+<li>平面里的色彩也自带空间感，<strong>颜色深的看起来更靠前，颜色浅的看起来更靠后</strong>直到和空气融为一体。在这个思路下，其实阴影区域只需要选择明度小于高光部分的颜色即可，因此，让阴影颜色的选择更多</li>
+</ul>
+<h3 id="同时天蓝">同时<span style="color: #3ddaf2">天蓝</span></h3>
+<p>颜色对比</p>
+<ul>
+<li>数量对比：占比面积大小的不同颜色对比衬托</li>
+<li>明暗对比：强调形状和和量感</li>
+<li>纯色对比：强调色彩的支配</li>
+<li>质量对比：不同色彩饱和度的组合</li>
+<li>互补色对比、同时性对比</li>
+<li>成对对比</li>
+</ul>
+<h3 id="重要红">重要<span style="color: #ff005c">红</span></h3>
+<p>人为选择的颜色</p>
+<ul>
+<li>颜色传达的商业概念和符号意思</li>
+<li>黑色给人感觉更重</li>
+</ul>
+<h3 id="酸涩绿">酸涩<span style="color: #79d54b">绿</span></h3>
+<p>食物的颜色</p>
+<ul>
+<li>颜色给人的联想功能：蛋黄酱、胡萝卜</li>
+<li>大脑看到两个或以上的事物时，总会建立一种联觉联系，来加快理解</li>
+<li>颜色也能暗示价格区间</li>
+</ul>
+<h3 id="殖民地米黄">殖民地<span style="color: #ffdb1f">米黄</span></h3>
+<p>市场营销问题</p>
+<ul>
+<li>摩托车是第一个有个性化图案的商品</li>
+<li>色彩不仅是商品属性之一，也是消费者个性的提现</li>
+<li>市场对颜色的偏好具有偶然性</li>
+</ul>
+<h3 id="道德白">道德<span style="color: #f7f9fa">白</span></h3>
+<ul>
+<li>和彩色比，黑白被认为更严肃和真实</li>
+<li>16世纪，新教将节制和禁欲作为一种美德，自此，黑色服饰就成为道德准则和内心平静的代名词</li>
+<li>在古代，色彩是罕见的，不属于日常生活</li>
+</ul>
+<h3 id="眩晕绿">眩晕<span style="color: #25932c">绿</span></h3>
+<ul>
+<li>色彩属于没有文化的群体，黑白色则意味着精致高雅</li>
+</ul>
+<h2 id="观点">观点</h2>
+<h3 id="沸腾橙">沸腾<span style="color: #fc9c0c">橙</span></h3>
+<p>看见温度</p>
+<ul>
+<li>冷色调象征科技、工业、都市或夜景，暖色调传达忧郁感</li>
+<li>直到19世纪，人们的想法都和今天截然不同，粉色属于男孩，因为是红色的弱化版本，而天蓝色属于女孩，因为是对圣母的致敬</li>
+</ul>
+<h3 id="被注册的松石绿">被注册的<span
+style="color: #00c5bb">松石绿</span></h3>
+<p>有关版权</p>
+<ul>
+<li>颜色无法被注册为版权，因为很难定义相同的颜色，依赖的前置条件太多</li>
+<li>克莱因蓝被注册为专利的是制作程序而不是颜色本身</li>
+<li>颜色不是一种事物，只是一种感觉</li>
+</ul>
+<h3 id="桃粉"><span style="color: #fcebeb">桃粉</span></h3>
+<p>何为肉色</p>
+<ul>
+<li>色彩样本是一个历史概念，如今我们用来展示无法用语言表达的色彩</li>
+</ul>
+<h3 id="荷马蓝">荷马<span style="color: #4b5dc2">蓝</span></h3>
+<ul>
+<li>红色可能是第一个被人类命名的颜色，因为它是首个被用于手工活动的颜色</li>
+</ul>
+<h3 id="犹大黄">犹大<span style="color: #face15">黄</span></h3>
+<ul>
+<li>在12世纪时，黄色代表虚伪、欺骗和黄牙，因为它被认为是黄金颜色的折损</li>
+</ul>
+<h3 id="尾声和科学概念">尾声和科学概念</h3>
+<ul>
+<li>我们的神经系统并不能识别单个广播，只能对齐形成整体心理印象</li>
+<li>人视网膜上的感光细胞分为视杆细胞和三种视锥细胞，视杆细胞对弱光刺激敏感，视觉呈灰色，几种视锥细胞都会对所有波长光波做出发硬，但分别对蓝、绿、红光最敏感</li>
+<li>视锥细胞只起测量作用，真正构建颜色的是大脑的视觉区域</li>
+<li>人类的颜色的明度感知，和响应的视锥细胞数目有关</li>
+<li>目前还不存在能够呈现所有颜色的科技手段</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/12/23/2024-to-2025/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2024/12/23/2024-to-2025/" class="post-title-link" itemprop="url">2024回顾 & 2025展望</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-12-23 21:01:06 / 修改时间：21:03:39" itemprop="dateCreated datePublished" datetime="2024-12-23T21:01:06+08:00">2024-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2024/12/23/2024-to-2025/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/12/23/2024-to-2025/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>2024过去了，和2023不太一样。这一年里发生了不少大事。这些大事里有好有坏，但整体还算顺利。一整年里，为数不多的闲暇时间也被人生大事占去不少。在暂时解决完户、婚、房的问题后，我和吕西终于也迎来一些喘息时光。在即将到来的2025年，今年里没有达成的遗憾也希望能一一圆满。每年的总结不像是一次OKR总结式的任务，而是回头看看，一年的积累里面原来还有这样的惊喜。同时，也承载一些对于未来美好生活的寄托。要不，在漫长的工作生涯里，未免也太苦了点。</p>
+<h2 id="回顾">2024回顾</h2>
+<p>2024年里有很多改变，但要说有什么事情是贯穿了整个2024的，那莫过于读书。去年底还在感慨自己利用每日地铁通勤读了十来本书的我，也许想不到，这一年能读下来60多本书。这些书籍类型丰富，但大体上有绘本、科普、文史、社科、文学作品几类。每一类相对去年都有井喷式的扩张。对于专业类的书籍，也会在博客里留下笔记（这也成了这个blog唯一的内容来源，笑）。本身工作压力已经不小，读书不求字斟句酌，有收获即可。</p>
+<p>新书来源主要是来自豆瓣精挑细选，去粗取精；抑或是灵感乍现，随心所欲。再从京东批量购置，之后静候佳音，提早溜号，迎接书柜新库存。细细数来，下面这些积少成多，如今，1个书柜已不能满足它们。</p>
+<ul>
+<li><p>《3秒》，漫画，5星</p></li>
+<li><p>《方向》，漫画，4星</p></li>
+<li><p>《纳闷集》，漫画，5星</p></li>
+<li><p>《可爱的鼠小弟》，绘本，4星</p></li>
+<li><p>《别的国家都没有》，绘本，4星</p></li>
+<li><p>《生活蒙太奇》，绘本，5星</p></li>
+<li><p>《形状游戏》，绘本，4星</p></li>
+<li><p>《有一年》，画集，4星</p></li>
+<li><p>《追火车》，画集，5星</p></li>
+<li><p>《图像》，科普，5星</p></li>
+<li><p>《肠子的小心思》，科普，3星</p></li>
+<li><p>《万物发明指南》，科普，4星</p></li>
+<li><p>《寄生虫星球》，科普，4星</p></li>
+<li><p>《What if?》，科普，4星</p></li>
+<li><p>《What if?2》，科普，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/01/31/qian-qian-the-dog/">《小狗钱钱》</a>，科普，3星</p></li>
+<li><p>《刑法学讲义》，法律，5星</p></li>
+<li><p>《法治的细节》，法律，3星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/11/28/aristocrat-politics-of-east-jin-dynasty/">《东晋门阀政治》</a>，历史，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/11/06/whole-history-of-china/">《中国通史》</a>，历史，4星</p></li>
+<li><p>《叫魂》，历史，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/07/05/xiang-rui/">《祥瑞》</a>，历史，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/04/23/jian-shang/">《翦商》</a>，历史，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/03/25/history-of-nan-ming-1/">《南明史·上》</a>，历史，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/04/09/history-of-nan-ming-2/">《南明史·下》</a>，历史，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/03/08/the-way-of-socialism-for-ccp/">《筚路维艰——中国社会主义路径的五次选择》</a>，历史，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/06/19/era-of-deng-xiao-ping/">《邓小平传》</a>，传记，5星</p></li>
+<li><p>《BIKE FIR：骑行姿势设定指南》，运动，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/10/14/150-years-of-modern-art/">《现代艺术150年》</a>，艺术，5星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/09/13/the-story-of-art/">《艺术的故事》</a>，艺术，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/08/22/zhong-guo-wen-xue-chuan-tong/">《中国文学传统》</a>，文学，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/07/24/story/">《故事——材质、结构、风格和银幕剧作的原理》</a>，文学，4星</p></li>
+<li><p>《苏菲的世界》，哲学，4星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/07/11/something-about-marketing/">《细节营销》</a>，商业，3星</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://shenlvmeng.github.io/blog/2024/01/26/you-are-what-you-eat/">《你是你吃出来的1、2》</a>，健康，5星</p></li>
+<li><p>《长安的荔枝》，小说，4星</p></li>
+<li><p>《克莱因壶》，小说，4星</p></li>
+<li><p>《小径分岔的花园》，小说，4星</p></li>
+<li><p>《阿莱夫》，小说，3星</p></li>
+<li><p>《万物生光辉》，小说，5星</p></li>
+<li><p>《小偷家族》，小说，4星</p></li>
+<li><p>《银河帝国 1-7》，小说，3星</p></li>
+<li><p>《太白金星有点烦》，小说，4星</p></li>
+<li><p>《燕食记》，小说，5星</p></li>
+<li><p>《文城》，小说，5星</p></li>
+<li><p>《兄弟》，小说，5星</p></li>
+<li><p>《许三观卖血记》，小说，5星</p></li>
+<li><p>《第七天》，小说，4星</p></li>
+<li><p>《活着》，小说，5星</p></li>
+<li><p>《在细雨中呐喊》，小说，4星</p></li>
+<li><p>《地球大炮》，文集，3星</p></li>
+<li><p>《笑林广记》，文集，3星</p></li>
+<li><p>《受戒》，散文，5星</p></li>
+<li><p>《老派少女购物路线》，散文，5星</p></li>
+<li><p>《人间草木》，随笔，4星</p></li>
+<li><p>《晚饭花集》，随笔，5星</p></li>
+<li><p>《西行漫记》，纪实，5星</p></li>
+</ul>
+<p>接下来，仅次于读书的便是贯穿了上半年的人生大事。在经过23年按部就班的往前推进结婚和买房事项后，在24年的上半年，相继走完落户、贷款、过户、公积金的流程。看着每月抵扣流水按部就班就行，就像人生又回到正轨。在确定这套貌不惊人但物美价廉的老破小后，我和吕西曾经有过一段时间心情的反复。在房价低迷的24年，吕西也会时不时回头看看我们的房有没有降价。不过既然是刚需房，房价上涨下跌我们都可以做受益人，何必再孜孜以求。这套新房胜在内部装修崭新，用料良心，前房东让我们省了许多心。完成了深度清洁、家具、电器入场，全屋保洁后，5、6月份基本就达成了拎包入住标准。也是给双方父母在市区里留了一个新的落脚点。同时，在公司走的人才落户流程也按部就班完成了，连续早起了几个周末后，在3月份成功拿到了新的身份证。紧接着就是五一的婚礼，和刘明达一前一后，我1号，他2号，也是蛮有意思。邀请的老同学大多都来了，流程十分顺利。五月一号当天，晴空万里，也是给足了面子。婚礼的前后几天，筹备忙碌又难忘。1号的下午2点，觥筹交错后，宾客差不多散尽，我和吕西准备更衣常服，东风宾馆的天台上倏然安宁，阳光煦然恰似心情。和姚凯和研究生室友相遇，祝他们下午玩得愉快，不知下次又是何时相逢。备婚的日子，乡下老家的新房也装修完成，成功在5月份搬了进去。上海这边的回门宴是在国庆办的，仪式并不复杂，也没有司仪，吸取了五一婚礼再次断片的教训，这次并没喝多。父母也借机会又来了上海，这次带他们完成了体检，住进了买的新房，也参观了乡下的新房，还一同自驾去了西山岛看了上好的风景。</p>
+<p>五一和国庆都被用来办大事的结果就是，今年除了利用婚假去日本大阪、东京玩耍了一圈之外，便没有其他旅行了。不过日本的7日游确实超值，除了玩了吃了许多之前只能在电子设备里见到的东西，也体验了属于日本的独特文化。作为继济州岛后第二次出国游，回头想来十分难忘。以至于吕西经常念叨着，何时雪季再去北海道。我也时常能想起在心斋桥、梅田、浅草、晴空塔的自由，京都、奈良的遗憾。除日本之旅外，仅有年初去北京见出差的吕西，国庆西山岛和11月去武汉参加龙哥的婚礼了。龙哥是研究生我们几个里面最后一个结婚的，酒席结束是个阴沉的下午，我对他说“在你之后，可就难有机会再聚起来了”。他说“会有的”。本来中秋规划了海南环岛骑行，将毕业前没能完成的西半环补全，因为天气和家人的原因没能成行，为此他11月借转机专门来上海约我骑车，我规划了浦东绿道和苏州河1日游也算是部分弥补了缺憾。24年旅游的遗憾，会在25年补偿。我跟基友约定明年分别带上对象继续长途骑游。</p>
+<p>生活里，骑行还在继续，吕西的骑行热情和我形成了互补，我们在4月份骑去了滴水湖，并开启了我的东大公路、大叶公路、叶新公路补全计划。在5、6、8、10月份将路线推进到辰塔路和叶新公路交叉口。距离完整只差到枫泾的一段。在10月份还购置了适合寒冷天气下运动的长袖骑行服，结合运动耳机，提升了不少骑行体验。遗憾之处是，相比去年里程和次数普遍少了许多，去年五一可是骑到了苏州。动感单车倒是时断时续地坚持着，只是没有去年那么频繁。游泳更是下降了许多，吕西因为购买了游泳年卡还在努力坚持中。在看了《你是你吃出来的1、2》以及年中意外痔疮后，学习到了不少保养菊花的经验，饮食和饮水注意了很多。饮酒频率也临时地下降了不少，不过到年底又有回升趋势。另外吕西的影音室计划在乡下和新房布置过程中意外得到实现，次卧的双人床搬到了乡下，腾出的空间，经过去源氏木语的调研，我们置办了沙发、升降茶几，和一个书柜。在给新房、老家买电视机的时候，也给我们这里买了一台sony的。但吕西没有选择上墙，而是选择了可移动的电视架。事后证明这是再英明不过的决定，从我们看电视频率大大增加就能证明。6月份之后，我们再也不用在餐桌上用电脑显示屏甚至ipad看下饭综艺了。10月份，因为吕西的电脑淘汰给老丈人用，又给她新装了一台台式机，有了之前我那台做经验，她的这台从选材颜值到组装熟练度上都大大提升。最终经过一下午成功点亮，吕西再也不会遇到团战打着打着电脑没电了，两全其美！</p>
+<p>业余兴趣方面，对于桌游、拼图的兴趣依旧没有燃起。其中吕西在9月份短暂地重燃斗志，但中秋节冲刺1个晚上拼出荨麻疹后，从此一蹶不振再不提起。去年曾很感兴趣的音乐节，今年因为大事太多，时间难凑也没继续。不过在做菜上倒是大放异彩，今年依旧在不断积累新菜式，到了年末，突然放开了想象，开始尝试此前从未设想过的菜品，如板栗烧鸡、奶油蘑菇汤等，目前还在起步阶段，到了2025才是真正大展拳脚的时候。今年话剧没怎么看，电影也没看多少，最让我印象深刻的是《抓娃娃》和《从二十一世纪安全撤离》，没想到有生之年还能看到李阳导演的大银幕作品，当初看《李献计历险记》和《坏未来》的时候，就为他的创意叹服。这部电影还是一贯的味道，视觉效果余味绕梁。探店还在继续，这也成了每周五的一个盼头，我还建了一个备忘录，专门记录还能重温的店面。</p>
+<p>工作上变动不小。5月婚假回来后，前ld就宣布他要转岗，这打破了FE团队的宁静范围。他走后，大老板直接与我们对接。大家这才意识到之前的岁月静好之后有人在遮风挡雨，既然失去了ld的缓冲，部分工作就交到我身上，本来我所在的C端就承担相对B端更多更重要的事情，跟大老板也更频繁。在几个月的磨合后，终于能理解前ld的不容易之处。凡事总有两面，长达半年ld的缺位，自然也释放出更多的空间给我，体验到了之前不太能接触到的事情，如需求排人力。也被迫也更高更全局的角度思考C端目前的挑战和解法。之前一些并不是很match前ld思路的工作，在Q3、Q4也得以按追求落实的办法推行下去。之前我并不理解的他在推行的两件理想化工作，在他走后也终止了。一个关于性能，一个关于效率。性能的方案步调不够实际，年初推行时就阻力重重，ROI不够，如今终于回退，按我所设想的实用节奏推广。效率的方案也有些空中楼阁，虚无缥缈难以落地看到实效，如今我得以按从小到上的方式逐步实现，令人欣慰。新的效率、质量、性能三方向经过立项启动，如今看来已经走上正轨，未来可期。不过除了刚刚提到的两点，前ld还是以身作则维护了FE团队的安宁团结。在我们这个大部门乃至整个公司集团，如今都处于不强硬就要吃屎的大环境，他之前自然也是吃过不少屎。尽管走下层路线，平和亲民会得到一线非卷王同学的欢迎喜爱。但真正能得到大老板青睐的还是强硬、以自我为中心、能抢到饭吃、走上层路线的ld。我不想成为这种人，我鄙弃这种人。终于，年底新ld来了，是我们原客户端的ld。他也是强硬的人物，他能给之前岁月静好的FE团队带来什么改变呢？能将团队改造成他想要的“更大声量”的团队么？拭目以待吧。</p>
+<h2 id="展望">2025展望</h2>
+<p>2024年里的最大改变来自于人生阶段的推进和工作环境的变化，也让我感慨到热爱生活的美好。真正的自由是在自我限制下，自我肉体和精神的充分实现。而对于我个人而言，热爱生活就是自由的重要实现方式。2024年回顾里，生活的比重也在增加，也努力在实践着2023年底“珍惜不多的自由时光”的希冀，不过受到前面提到两方面的压迫还大有可为。往后的每一年都很珍贵，2025年要更多弥补2024里的遗憾，朝自由多走几步。</p>
+<ul>
+<li>生活
+<ul>
+<li>周末旅行，至少10个城市</li>
+<li>1次和吕西一起的长途骑行</li>
+<li>继续积累菜单，制作私房菜单点菜应用</li>
+<li>完成书柜重构，支持日益增长的书籍</li>
+<li>体验头皮按摩</li>
+</ul></li>
+<li>家庭
+<ul>
+<li>和家里人的年内见面</li>
+</ul></li>
+<li>个人
+<ul>
+<li>控制体重在90以下</li>
+<li>完成60本书阅读</li>
+<li>坚持骑行锻炼，避免体检新问题</li>
+</ul></li>
+<li>工作
+<ul>
+<li>达成新的效率、质量、性能三方向的里程碑</li>
+<li>探索新岗位的可能性</li>
+</ul></li>
+</ul>
+<p>伙计们，明年这会儿再见~</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/12/09/notes-of-penal-law/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="name" content="shenlvmeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shenlvmeng's Blog">
+      <meta itemprop="description" content="Be sharp, my friend.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/blog/2024/12/09/notes-of-penal-law/" class="post-title-link" itemprop="url">懂一点法 ——《刑法学讲义》书摘</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-12-09 21:11:27 / 修改时间：21:13:28" itemprop="dateCreated datePublished" datetime="2024-12-09T21:11:27+08:00">2024-12-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E7%A4%BE%E7%A7%91/" itemprop="url" rel="index"><span itemprop="name">社科</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/blog/2024/12/09/notes-of-penal-law/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/12/09/notes-of-penal-law/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>作为法律的门外汉，罗翔老师的这本书与其说是入门书，不如说是在一些对于立法的理念以及一些刑法细节上让我有了一些新的认识。一本书如果能够做到这一点，就至少值得优秀的水平。其中，“道德可以作为出罪理由，不能作为入罪理由”准则还是蛮给人以清晰的收获。关于法律维护消极自由——即“free
+from something”——而非积极自由——即“free to do
+something”——的观点，也很给人启示。总体来看，相较《法治的细节》，更好读也更有意思。</p>
+<p>为了一方面展现刑法的基本脉络，起到刑法扫盲的效果，另一方面提现一些有咀嚼趣味的观点。下面一方面以思维导图的方式列出纲领，同时对于有意思的点单独展示出来。</p>
+<h2 id="刑法的基础知识">刑法的基础知识</h2>
+<ul>
+<li>刑罚起源：神授、战争、社会契约、正义
+<ul>
+<li>惩罚犯罪人是对他理性的尊重</li>
+<li>我国法律体系由7大法律部门组成：宪法、民商法、行政法、经济法、社会法、刑罚、程序法。</li>
+<li>刑法是补充法，不可能出现是犯罪，但不是违法行为的情况</li>
+</ul></li>
+<li>刑法是道德的最低要求
+<ul>
+<li>功利论和道义论的争执
+<ul>
+<li>既要考虑结果正义，也要考虑程序正义</li>
+</ul></li>
+<li>入罪和出罪
+<ul>
+<li><strong>入罪上考虑是否侵犯法益，出罪上考虑是否侵犯伦理道德</strong></li>
+</ul></li>
+</ul></li>
+<li>受约束的刑罚权：<strong>刑事法律要遏制的不是犯罪人，而是国家</strong></li>
+<li>刑法基本原则
+<ul>
+<li>法无明文不为罪，法无明文不处罚</li>
+<li>空白罪状
+<ul>
+<li><strong>刑法在其他专业领域需要援引其他法律法规，但不允许其他法律法规来创造新的犯罪类型</strong></li>
+<li>只有明确的法律才能保障公民的合理预期</li>
+</ul></li>
+<li>量刑原则
+<ul>
+<li>客观上，刑罚轻重和犯罪行为的社会危害性相适应</li>
+<li>主观上，刑罚轻重和犯罪人的人身危险性相适应</li>
+</ul></li>
+<li>刑法面前人人平等
+<ul>
+<li>贯彻刑事立法、司法和行刑的全过程</li>
+</ul></li>
+</ul></li>
+<li>刑法的解释
+<ul>
+<li>理解法律的关键：解释
+<ul>
+<li><strong>民法是私法，解释强调平等主体间的财产关系和人身关系</strong>，可以根据法律精神比照类似条款甚至法理、习惯作为依据；刑法则需要严格解释</li>
+<li>主观解释（立法者的原意）和客观解释（客观生活实际）</li>
+<li>形式解释（语言形式的边界）和实质解释（语言原意的延伸）</li>
+</ul></li>
+<li>解释的范围和边界
+<ul>
+<li>文理解释和论理解释</li>
+<li>扩张解释和缩小解释：不允许类推，但允许发散</li>
+</ul></li>
+<li>入罪时举轻以明重，出罪时举重以明轻</li>
+</ul></li>
+<li>刑法的效力
+<ul>
+<li>空间效力
+<ul>
+<li>属地管辖、属人管辖、保护管辖、普遍管辖
+<ul>
+<li>旗国主义、遍在地主义</li>
+<li>保护管辖需要尊重他国法律，只有重罪才可适用</li>
+</ul></li>
+</ul></li>
+<li>时间效力：旧兼从轻
+<ul>
+<li>新法律没有溯及力，但<strong>对行为人有利的可以溯及过往</strong></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="犯罪">犯罪</h2>
+<ul>
+<li>犯罪和责任
+<ul>
+<li>概念：违反刑法规定，具有社会危害性，后果上应当承受刑罚</li>
+<li>分类
+<ul>
+<li>重罪：3年以上；轻罪：3年以下</li>
+<li>自然犯、法定犯</li>
+<li>身份犯：如受贿罪需要是国家工作人员、非身份犯</li>
+<li>亲告罪：侮辱罪、诽谤罪、暴力干涉婚姻自由罪、侵占罪、虐待罪，需要亲自报案；非亲告罪</li>
+</ul></li>
+<li>作为与不作为
+<ul>
+<li>危害行为分作为和不作为，看违反的命令规范还是禁止规范</li>
+<li>权利和义务是对等的，<strong>警察在休假期间没有制止犯罪的义务，因此此时未阻止行凶也不算犯罪</strong></li>
+<li><strong>医疗人员只有在形成医疗合同的情况下才有法律上的救助义务</strong></li>
+<li>根据“情况更糟理论”和“机会剥夺理论”，一些做好人做到一半的后悔可能构成法律责任</li>
+</ul></li>
+<li>见死不救，是否应定罪：鼓励善举，不打击不作为</li>
+<li>因果关系
+<ul>
+<li>惩罚的根据是<strong>报应</strong>，不是预防；</li>
+<li>因果关系无法假设</li>
+<li>如果危险是专业人员负责的，那就不需要考虑因果</li>
+<li>只有实行行为和结果有因果关系，预备行为不构成</li>
+<li>多因一果，可以构成竞合元素</li>
+</ul></li>
+<li>不知者无罪
+<ul>
+<li>认识要素和意志要素
+<ul>
+<li>意志要素包括希望和放任，前者是对结果的积极追求，后者是对结果的听之任之</li>
+</ul></li>
+</ul></li>
+<li>过失犯罪和无罪过行为
+<ul>
+<li>过失犯罪：自信的过失和疏忽大意的过失</li>
+<li>无罪过行为：意外事件、不可抗力</li>
+</ul></li>
+<li>目的和动机
+<ul>
+<li>动机不影响定罪</li>
+</ul></li>
+</ul></li>
+<li>犯罪排除事由
+<ul>
+<li>正当防卫、特殊防卫（对于杀人、抢劫、强奸等严重威胁人身安全的暴力犯罪，采取防卫行为导致不法侵害人身亡）
+<ul>
+<li>正当防卫的紧迫性：<strong>侵害前和侵害后，不可以正当防卫</strong></li>
+</ul></li>
+<li>紧急避险
+<ul>
+<li>不能针对职务或业务上有职责的人，如消防员不能因为火势太大不去救火</li>
+</ul></li>
+<li>责任排除事由
+<ul>
+<li>年龄：14岁以下，看行为时间不看结果时间</li>
+<li>精神病人</li>
+<li>责任能力年龄下调</li>
+</ul></li>
+<li>法律认识错误</li>
+</ul></li>
+<li>未完成的犯罪
+<ul>
+<li>犯罪预备
+<ul>
+<li>准备工具或制造条件，但因为意志之外的原因未能着手实行犯罪。从轻或免除处罚</li>
+<li>犯意表示不予以处罚</li>
+</ul></li>
+<li>犯罪未遂
+<ul>
+<li>预备在犯罪前，未遂在犯罪中</li>
+<li>能犯未遂、不能犯未遂</li>
+<li>迷信犯未遂</li>
+</ul></li>
+<li>犯罪中止
+<ul>
+<li><strong>犯罪中</strong>出于<strong>意志之内</strong>的原因，<strong>自主放弃</strong>犯罪</li>
+<li>中止的有效性：成功地防止了既遂结果的发生</li>
+<li>和未遂区分：主观上认为可以继续犯罪，但放弃；放弃本身是在向合法秩序回归</li>
+</ul></li>
+</ul></li>
+<li>共同犯罪
+<ul>
+<li><strong>行为人只参与犯罪部分，但要承担共同犯罪的全部责任</strong></li>
+<li>犯罪共同说、行为共同说</li>
+<li>正犯和共犯
+<ul>
+<li>正犯：教唆犯、帮助犯，
+<ul>
+<li>教唆犯：对象一定要达到刑事责任能力，否则是间接正犯</li>
+<li>帮助犯：包括物理性帮助和心理性帮助，犯人开直播时，为犯罪行为喝彩的观众也算共犯</li>
+</ul></li>
+</ul></li>
+<li>共同犯罪的中止
+<ul>
+<li>一人既遂，全体既遂</li>
+<li><strong>必须要切断对共犯犯罪的作用或影响力，否则单纯脱离不算中止</strong></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="刑罚">刑罚</h2>
+<ul>
+<li>刑罚种类
+<ul>
+<li>刑罚体系：报应主义、功利主义；追求积极目的</li>
+<li>主刑：一种罪行适用一个
+<ul>
+<li>管制、拘役、有期徒刑、无期徒刑、死刑</li>
+<li>管制：3个月-2年，数罪并罚不超3年，不予关押，但限制一定自由，社区矫正</li>
+<li>拘役：就近实行关押改造，1个月-6个月，数罪并罚不超1年，参与劳动的酌量发报酬，每月可回家1、2天</li>
+<li>有期徒刑：在监狱内执行刑罚，强制教育改造，6个月-15年，数罪并罚可达25年，强制劳动改造</li>
+<li>无期徒刑：剥夺终身自由</li>
+<li>死刑：少杀、慎杀，对于犯罪时不满18周岁、审判时的孕妇、审判时超75岁的人免除死刑（特别残忍手段致人死亡除外）
+<ul>
+<li>死缓，2年期内没有故意犯罪的，减为无期徒刑，有重大立功表现的，可减为25年有期徒刑</li>
+</ul></li>
+</ul></li>
+<li>死刑的存废：贝卡利亚《论犯罪与刑罚》</li>
+<li>附加刑：和主刑一同，或独立使用
+<ul>
+<li>罚金：没有上限的数额、确定的数额、倍比罚金制。一般只对贪利性犯罪</li>
+<li>剥夺政治权利：选举、被选举、言论、出版、集会、结社、游行、示威、担任公务员、担任国企事业单位和人民团体领导</li>
+<li>没收财产：<strong>不能株连家属</strong>，一般只对贪利性犯罪</li>
+<li>驱逐出境</li>
+</ul></li>
+<li>社区矫正</li>
+</ul></li>
+<li>刑罚的裁量和消灭</li>
+<li>刑罚的执行
+<ul>
+<li>量刑：法定情节、酌定情节；<strong>刑罚里的“应当”是必须的意思，“可以”是可从宽可不从宽的意思</strong>
+<ul>
+<li>从重处罚、从轻处罚、减轻处罚、免除处罚</li>
+<li>从重处罚都有刑法分则的明确规定</li>
+</ul></li>
+<li>自首：<strong>自动投案和如实供述</strong>
+<ul>
+<li>有关机关采取了讯问或强制措施后再交待的，就不成立自首</li>
+<li>代首和送首</li>
+<li>现场候补型自首：明知他人报案，能逃不逃，无拒捕行为，供认犯罪事实</li>
+<li>形迹可疑型自首：警方没有掌握任何犯罪证据，但交待了罪行。被发现犯罪嫌疑后再坦白的不算</li>
+<li>对于自首，<strong>法律规定的是可减主义，不是必减主义</strong></li>
+</ul></li>
+<li>累犯
+<ul>
+<li>前后罪要是故意犯罪，且都必须判处有期徒刑以上刑罚，后罪发生在前罪刑罚执行完毕或赦免后5年内。</li>
+<li>特别累犯：危害国家安全、恐怖活动、黑社会性质组织犯罪等后罪没有限制</li>
+</ul></li>
+<li>缓刑
+<ul>
+<li>前提：<strong>拘役或3年以下有期徒刑才可适用</strong></li>
+<li>犯罪情节轻、有悔罪表现、没有再犯罪危险、对居住社区没有重大不良影响</li>
+<li>战时缓刑：战争期间，允许戴罪立功</li>
+</ul></li>
+<li>刑罚的消灭
+<ul>
+<li>减刑：管制、拘役、有期徒刑、无期徒刑的犯罪人，在刑罚执行期间，有悔罪或立功表现，可以适当减轻刑罚
+<ul>
+<li>不能少于原刑刑期的一半；无期徒刑不得少于13年（对特别严重的不得少于20年），死缓不得少于15年</li>
+</ul></li>
+<li>假释：对有期徒刑、无期徒刑，在一定刑罚后，有悔改表现，无犯罪风险的，可以有条件地提前释放</li>
+<li>追诉时效
+<ul>
+<li>罪行越重，失效越长；无期徒刑、死刑追诉期20年</li>
+<li>逃避侦查或审判的，不受追诉期限制</li>
+<li>被害人追溯期间提出控告，应立案不予立案的，不受追诉期限制</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="危害公共安全罪">危害公共安全罪</h2>
+<ul>
+<li>危险方法类犯罪
+<ul>
+<li>5种故意犯罪：放火罪、决水罪、爆炸罪、投放危险物质罪、以危险方式危害公共安全罪；5种响应的过失犯罪</li>
+<li><strong>5种故意犯罪不需要实际损害结果</strong>，但5种过失的犯罪必须危及公共安全，必须出现致人重伤、死亡或重大财产损失的实际损害</li>
+</ul></li>
+<li>投放危险物质罪
+<ul>
+<li>投放虚假危险物质罪</li>
+</ul></li>
+<li>以危险方式危害公共安全罪
+<ul>
+<li>此类危险方法必须能够和防火、爆炸、决水有等价值性，如开车</li>
+</ul></li>
+<li>交通肇事罪
+<ul>
+<li>必须发生在交通运输过程中，违反交通法规和发生事故间必须有因果关系</li>
+<li>并不是所有交通肇事都构成犯罪，只有以下情况才构成
+<ul>
+<li>死亡1人或重伤3人以上，负事故全部或者主要责任的</li>
+<li>死亡3人以上，负事故同等责任的</li>
+<li>造成公共财产或他人财产直接损失，负事故全部或者主要责任</li>
+<li>交通肇事致1人以上重伤，负事故全部责任，或有酒驾、毒驾、无证驾驶、明知车辆装置故障、或严重超载、逃逸现场等情形</li>
+<li>只要逃避法律追究就可以理解为逃逸</li>
+</ul></li>
+<li>发生事故后，行为人需要有2个义务：<strong>报告义务和救助义务</strong></li>
+<li>逃逸致人死亡刑罚为7年以上有期徒刑</li>
+</ul></li>
+<li>危险驾驶罪：飙车、醉驾、超速超载、运输危险化学品
+<ul>
+<li>处拘役和罚金</li>
+<li>对于情节显著轻微危害不大的醉驾，不予定罪处罚</li>
+<li>妨害驾驶罪</li>
+</ul></li>
+</ul>
+<h2 id="破坏社会主义市场经济秩序罪">破坏社会主义市场经济秩序罪</h2>
+<ul>
+<li>伪劣商品犯罪
+<ul>
+<li>生产、销售伪劣商品罪
+<ul>
+<li>生产、销售不符合安全标准食品罪和生产、销售不符合标准的医用器材罪无需实害结果即可形成既遂</li>
+<li>生产、销售假药罪和生产销售有毒有害食品罪，保留了死刑条款</li>
+<li>买假货不犯法，卖假货入刑，要求销售金额达到5万元以上</li>
+</ul></li>
+</ul></li>
+<li>走私与公司犯罪
+<ul>
+<li>走私：普通货物、物品必须有逃避应缴税额；走私法律禁止或限制出入境物品，无需逃避应缴税额
+<ul>
+<li>偷逃税款达到50万即可构成犯罪</li>
+<li>1年内因走私获2次行政处罚继续走私的，可以认定走私罪</li>
+<li>保税物品未经许可内销，擅自将特定减免税货物在境内销售牟利的，也属于走私</li>
+<li>对于文物和贵重金属，只打击出口不打击进口；对于废品相反，只打击进口不打击出口</li>
+</ul></li>
+<li>妨害对公司、企业的管理秩序罪
+<ul>
+<li>非国家工作人员受贿罪
+<ul>
+<li>6万即可达到数额较大的标准</li>
+<li>需要为他人谋取不正当利益</li>
+<li><strong>国家工作人员受贿罪，只要有主动索贿的行为，无需为他人谋取利益，也可成立犯罪</strong></li>
+<li>医生做手术时收受患者红包，不构成犯罪，但可以进行纪律处分</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>金融犯罪
+<ul>
+<li>贷款诈骗罪和骗取贷款罪
+<ul>
+<li>区别在是否想要还贷款的钱</li>
+</ul></li>
+<li>洗钱罪</li>
+<li>非法集资犯罪
+<ul>
+<li>欺诈发行股票、债券罪；擅自设立金融机构罪；非法吸收公众存款罪；擅自发行股票，公司，企业债券罪；集资诈骗罪；领导、组织传销活动罪；非法经营罪</li>
+<li>非法吸收公众存款罪
+<ul>
+<li>非法性、公开性、利诱性、社会性</li>
+<li>主要用于正常生产经营，能够及时清退吸收资金的，可以免于刑事处罚</li>
+</ul></li>
+<li>集资诈骗罪：e租宝</li>
+<li>信用卡诈骗罪
+<ul>
+<li>对于恶意透支，立案前还的钱不计算为透支数额，提起公诉前还清或其他情节轻微的，可以不起诉，一审钱还清或其他情节轻微的可以免于刑事处罚。累犯除外</li>
+<li>信用卡套现一般不构成犯罪，恶意透支的，可以以信用卡诈骗论处</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>其他经济犯罪
+<ul>
+<li>侵犯著作权
+<ul>
+<li>卖盗版软件可能构成犯罪</li>
+</ul></li>
+<li>合同诈骗罪
+<ul>
+<li>本罪的合同一定是经济合同</li>
+</ul></li>
+<li>非法经营罪
+<ul>
+<li>当违法成为普遍现象，选择性执法就会成为一种常态</li>
+<li>如果水军行为只是损害个人名誉，而和商业信誉和商品声誉无关，那么这种行为就并未侵犯市场秩序</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="侵犯公民人身权利民主权利罪">侵犯公民人身权利、民主权利罪</h2>
+<ul>
+<li>生命健康
+<ul>
+<li>比较重要的个人利益（生命、重大的身体健康）和有公共利益属性的个人利益（民主、婚姻），个人史不能自由处分的，对于相对次要的个人利益（如名誉权），一般可以自由处分</li>
+<li>故意杀人
+<ul>
+<li>自杀不构成犯罪，胎儿和尸体不是故意杀人罪的对象</li>
+<li>胁迫、欺骗他人自杀的，如果属于经验上的高概率，是间接正犯</li>
+</ul></li>
+<li>协助自杀
+<ul>
+<li>教唆和帮助的对象如果不能够理解自己行为能力，属于故意杀人罪的间接正犯</li>
+<li><strong>得到被害人承诺的杀人，也属于故意杀人</strong></li>
+</ul></li>
+<li>故意伤害罪
+<ul>
+<li>帮助、教唆自伤不构成故意伤人</li>
+<li>利用他人自伤达成晒目的的，也可能成立故意伤害罪的间接正犯</li>
+<li>战时自伤逃避军事义务的，构成战时自残罪</li>
+</ul></li>
+<li>组织出卖人体器官罪
+<ul>
+<li>打击的是中间商</li>
+<li>违背他人意愿或未得到本人生前同意，死后摘取器官的，依据盗窃、侮辱、故意损坏尸体、尸骨、骨灰罪定罪</li>
+<li>根据器官提供者是否同意摘除器官，和故意伤害罪有区分</li>
+</ul></li>
+</ul></li>
+<li>性自由权
+<ul>
+<li>强奸罪
+<ul>
+<li>暴力、胁迫或其他手段让一般妇女不能反抗、不敢反抗或不知反抗</li>
+<li><strong>欺骗会导致同意无效</strong>，但只有实质意义上的欺骗才有否定承诺的效力</li>
+</ul></li>
+<li>性同意年龄：14周岁</li>
+<li>特定职责人员性侵罪</li>
+<li>加重情节
+<ul>
+<li>情节恶劣的</li>
+<li>多人</li>
+<li>在公众场合</li>
+<li>两人以上轮奸</li>
+<li>奸淫不满10周岁幼女或造成幼女伤害</li>
+<li>致使被害人重伤、死亡或其他严重后果</li>
+</ul></li>
+<li>职场中的交易与强奸
+<ul>
+<li><strong>强制下的性行为才具有惩罚的正当性</strong></li>
+</ul></li>
+<li>猥亵与强奸
+<ul>
+<li>只有强制手段压制一般人反抗的才入罪，否则只能进行行政处罚</li>
+<li>对象是14周岁以上，对于不满14周岁的，属于猥亵儿童罪，无需采取强制手段，也无需对方形式上是否同意</li>
+</ul></li>
+</ul></li>
+<li>自由
+<ul>
+<li>非法拘禁罪
+<ul>
+<li>非法剥夺人身活动自由，必须要被害人认识到</li>
+<li>软暴力也算</li>
+<li>索债型的非法拘禁和索财型的绑架区别在是否有债务关系</li>
+</ul></li>
+<li>绑架
+<ul>
+<li>索财型和人质型</li>
+<li>直接向被绑架人索取财物的，应以抢劫罪定罪</li>
+<li>只要实际控制了被绑架人，就形成既遂</li>
+</ul></li>
+<li>拐卖妇女、儿童罪
+<ul>
+<li>拐卖成年男子只构成其他犯罪，如非法拘禁、强迫劳动罪等</li>
+<li>拐卖罪不必完成卖出</li>
+<li>如果没有出卖目的，则构成<strong>拐骗</strong>儿童罪</li>
+<li>加重情节：首要分子、3人以上、奸淫被拐卖妇女、诱骗强迫卖淫、使用暴力胁迫等手段、偷盗婴幼儿、造成重伤死亡等后果</li>
+<li>出卖自己子女或亲属的也构成犯罪，但没有非法获利目的，只是生活困难或受封建思想影响的，属于民间送养，带来子女身心健康损害的，以<strong>遗弃罪</strong>论处</li>
+</ul></li>
+<li>收买被拐卖的妇女、儿童罪
+<ul>
+<li>收买也构成犯罪</li>
+</ul></li>
+</ul></li>
+<li>婚姻家庭
+<ul>
+<li>婚姻自由
+<ul>
+<li>暴力干涉婚姻自由罪，丈夫家暴不允许妻子离婚，不构成改罪，构成虐待罪或故意伤害罪</li>
+<li>重婚罪，双向犯，双方都构成重婚罪。从行为终了之日算起5年</li>
+<li>破坏军婚罪</li>
+</ul></li>
+<li>虐待和遗弃
+<ul>
+<li>虐待罪，行为需要有经常性，而且情节恶劣
+<ul>
+<li>幼儿园虐童，定性单位犯罪需要体现单位意志，即由单位决策机构决定，由直接责任人员实施</li>
+</ul></li>
+<li>遗弃罪，<strong>有抚养义务和能力</strong>而拒绝抚养
+<ul>
+<li>如果行为人有放任或希望其死亡的心态，按故意杀人罪论处</li>
+</ul></li>
+<li>组织残疾人、儿童乞讨罪</li>
+</ul></li>
+<li>家庭暴力
+<ul>
+<li>可以是离婚的法定理由，严重的构成虐待罪</li>
+<li>家暴中的正当防卫：对抗性、非对抗性、雇凶。前后两者定性没有异议，在非对抗性中，大多数无法定性正当防卫，但可以减轻处罚</li>
+</ul></li>
+</ul></li>
+<li>名誉和民主权
+<ul>
+<li>侮辱罪、诽谤罪
+<ul>
+<li>诽谤只能采取口头或文字的方式，侮辱则可以采用暴力手段</li>
+<li>侮辱、诽谤必须到情节严重才构成犯罪，利用信息网络的，点击、浏览次数要达到5000次，转发要达到500次</li>
+</ul></li>
+<li>侵犯公民个人信息罪
+<ul>
+<li>不是个人隐私信息，而是与特定自然人关联的识别性信信息，如身份识别信息、活动情况信息等</li>
+<li>购买公民个人信息也能构成此罪</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="侵犯财产罪">侵犯财产罪</h2>
+<ul>
+<li>强制占有型
+<ul>
+<li>侵犯财产罪，包括所有权和占有权
+<ul>
+<li>债务凭证也算财产，因此抢回自己的借条，也可以构成抢劫罪</li>
+<li>财产犯罪有两重含义：排除意识（排除原权利人的占用）和利用意识（利用财物的使用价值，即便是非常规的）</li>
+<li>数额要根据一般人的标准来判断行为人是否能意识到</li>
+</ul></li>
+<li>抢劫罪
+<ul>
+<li>不管他人对财物的拥有是否合法、<strong>也不论财物是否是违禁物品</strong></li>
+<li>必须当场使用暴力等强制手段，当场获得财物，强制手段和获得财产需要有因果关系，并处于同一时空
+<ul>
+<li>强制手段和获得财产无因果，只能以未遂论处</li>
+</ul></li>
+<li>加重情节
+<ul>
+<li>入户抢劫：入户目的有非法性，以侵害户内人员的人身、财产为目的；和因正常原因入户，临时起意实施抢劫不同。入户实际上侵犯了住宅安宁权</li>
+<li>公共交通工具上抢劫：不包含未运营中的交通工具，但是要是公众出行的交通工具就算，黑大巴也算</li>
+<li>其他六种情节</li>
+</ul></li>
+</ul></li>
+<li>抢夺罪
+<ul>
+<li>对物的暴力，而不是对人的；实施时，被害人来不及抗拒，而不是不能、不敢抗拒</li>
+<li>和抢劫的区别是，平和性对暴力性，公然性和秘密性的区别</li>
+</ul></li>
+<li>敲诈勒索
+<ul>
+<li>实施威胁或要挟，强行索取，不具备当场的可实施性</li>
+<li><strong>政府不是敲诈勒索对待对象</strong>，但政府官员可以</li>
+<li><strong>捡到东西索要感谢费不属于敲诈勒索</strong>，虽然不鼓励，但不能用法律强迫人行善</li>
+</ul></li>
+<li>索赔是正当权利
+<ul>
+<li>行为人索取债权有正当的权力基础，行使权利时不构成敲诈勒索</li>
+</ul></li>
+</ul></li>
+<li>平和占有型
+<ul>
+<li>盗窃罪
+<ul>
+<li>必须窃取他人占有的财物，如果替人保管，后生贪意，将其据为己有，不构成盗窃，此时构成侵占</li>
+<li>占有的推定：处于他人事实控制下，主人在场但他人对财物只是暂时使用，无因保管的占有（旅馆对遗失物），包装物的占有</li>
+</ul></li>
+<li>诈骗罪
+<ul>
+<li>欺骗、陷入认识错误、做出处分、获得财产、财产损失</li>
+<li>欺骗如果是社会生活允许的范围，如交易中的适当夸张，不构成诈骗</li>
+<li>机器不能陷入认识错误（信用卡诈骗除外），无处分之人也不可以</li>
+<li>处分必须和认识错误有因果关系</li>
+<li>财产损失必须是社会规范认同的损失</li>
+</ul></li>
+<li>三角诈骗、二维码诈骗</li>
+<li>侵占罪：将代为保管、他人遗忘的财物或埋藏物非法占为己有，<strong>拒不归还</strong>，数额较大
+<ul>
+<li>保管物侵占、脱离物侵占
+<ul>
+<li>将包装物拆开占有其中内容物的构成盗窃，而非侵占</li>
+</ul></li>
+<li>职务侵占：单位必须有财务损失</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="妨害社会管理秩序">妨害社会管理秩序</h2>
+<ul>
+<li>扰乱公共秩序罪
+<ul>
+<li>妨害公务罪
+<ul>
+<li>本质是损害公务人员利益来阻止，不应扩张至损害自身权益</li>
+<li>暴力袭警罪</li>
+</ul></li>
+<li>招摇撞骗罪
+<ul>
+<li>冒充警察和军人的从重处罚</li>
+<li>冒充的必须是国家机关工作人员，而且国家机关必须是大家普遍上意识到存在的</li>
+</ul></li>
+<li>考试舞弊犯罪
+<ul>
+<li>组织考试作弊罪，非法出售、提供试题、答案罪和代替考试罪</li>
+<li>限定在“法律规定的国家考试”</li>
+<li><strong>考生和枪手同罪</strong></li>
+</ul></li>
+<li>虚假信息和虚假恐怖信息罪</li>
+<li>寻衅滋事罪
+<ul>
+<li>前身是1979年刑法的流氓罪，流氓罪在1997年取消，寻衅滋事罪的罪状源于1984年“两高”关于流氓罪的司法解释</li>
+</ul></li>
+</ul></li>
+<li>妨害司法及卖淫罪
+<ul>
+<li>律师伪证罪：引诱证人违背事实改变证言或作伪证等</li>
+<li>组织卖淫罪
+<ul>
+<li>即使是卖淫者自愿也不行，主要基于道德主义的禁止剥削原则</li>
+<li>一般认为非进入式性活动不宜定为卖淫</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="贪污贿赂罪">贪污贿赂罪</h2>
+<ul>
+<li>贪污犯罪
+<ul>
+<li>和公务活动有关，犯罪主体一般有国家工作人员的身份，离退休的国家工作人员和特定关系人也有可能构成</li>
+<li>私分国有资产罪：单位犯罪，经常发生在国有企业改制中</li>
+<li>贪污罪
+<ul>
+<li>有死刑，还有不得减刑、假释的<strong>终身监禁</strong></li>
+<li>贪污罪必须使单位财物受到损失、必须利用职权便利</li>
+<li>和职务侵占的区别是主体不同，贪污罪主体是国家工作人员或受委托管理国有财产的人员，而后罪主体是公司、企业或者其他单位人员</li>
+</ul></li>
+<li>挪用公款罪
+<ul>
+<li>主体是国家工作人员，必须谋求个人利益</li>
+<li>超期未还型、营利活动型、非法活动型</li>
+</ul></li>
+</ul></li>
+<li>贿赂犯罪
+<ul>
+<li>受贿罪
+<ul>
+<li>只要有和职务行为对等的财物收取，就可构成受贿罪</li>
+<li>财物不包含非物质性利益</li>
+<li>送假币也构成受贿</li>
+<li><strong>收到财物后及时上交或退还的，不是受贿</strong>，但必须是主观上不想收钱，不能是被迫上交</li>
+</ul></li>
+<li>索贿
+<ul>
+<li>索贿无需为他人谋取利益</li>
+</ul></li>
+<li>收受贿赂
+<ul>
+<li>承诺、实施、实现三阶段</li>
+<li><strong>明知他人有具体请托事项而收受财物的，是默示承诺，也构成受贿罪</strong>，但若自己没有办这个事的职权，就构成诈骗罪</li>
+<li><strong>谋求的利益可以是正当利益，也可以是不正当利益</strong></li>
+</ul></li>
+<li>单纯受贿
+<ul>
+<li>只要双方有上下级关系或行政管理关系，即使没有为人谋利的意思表示，经济往来也构成受贿</li>
+</ul></li>
+<li>斡旋受贿</li>
+<li>事后受贿
+<ul>
+<li>离退休人员，在退休前为人谋利，退休后收受财物，必须要在在职期间有事后受贿约定才构成</li>
+</ul></li>
+<li>行贿罪
+<ul>
+<li>谋求的利益必须不正当</li>
+<li>因被勒索给予国家工作人员以财物，没有获得不正当利益的，不是行贿</li>
+</ul></li>
+<li>利用影响力受贿罪
+<ul>
+<li>和斡旋受贿的区别在是利用职权、地位还是其他事实职权来收钱</li>
+<li>国家工作人员知道特定关系人索取、收受他人财物后，未退还或上交的，应当认定国家工作人员具有受贿故意。</li>
+</ul></li>
+</ul></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -524,1514 +2441,6 @@ id="北方民族关系与淝水之战性质问题">北方民族关系与淝水�
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/11/06/whole-history-of-china/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2024/11/06/whole-history-of-china/" class="post-title-link" itemprop="url">《中国通史》摘录笔记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-11-06 23:56:22 / 修改时间：23:57:54" itemprop="dateCreated datePublished" datetime="2024-11-06T23:56:22+08:00">2024-11-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%96%87%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">文史</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2024/11/06/whole-history-of-china/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/11/06/whole-history-of-china/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.9k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>8 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="section"></h2>
-<p>下面提到的<a
-target="_blank" rel="noopener" href="https://book.douban.com/subject/26302851/">《中国通史》</a>是吕思勉先生在1930年代所著的的高中历史教材读本。更偏向历史普及读物。作为教材的通史，大多数地方点到为止，下面对于部分内容做摘录，作为读书笔记。</p>
-<h2 id="绪论">绪论</h2>
-<ul>
-<li>历史上东西洋的界限，是亚洲中央的葱岭</li>
-<li>四区中，最先发达的是中国本部。……，汉族的重要根据地在黄河流域。到春秋时，楚与吴、越渐强；战国时，巴、蜀为秦所并，长江流域开始发达。秦取两广、安南（今越南）、福建之地，……，而南岭以南，始入中国版图。在北方，战国时期，热、察、绥和辽宁省，加入中国版图，漠北和新疆省是汉代蔡政府的。……，青海，汉时为羌人所占据，西藏与中国无交涉，……，元初征服其地。</li>
-</ul>
-<h2 id="上古史">上古史</h2>
-<ul>
-<li>三皇之世距今五千年左右</li>
-<li>只有农业时代，生计宽裕，所做事业，极和平，所以能产生较高的文化。</li>
-<li>孔子是用周道，墨子是用夏政的。</li>
-<li>古代的教育，以陶冶德性为主。</li>
-<li>夏代凡传十七主，共历四百多年，而其事迹可考的很少。</li>
-<li>商代始祖名契，传十四世至成汤</li>
-<li>周始祖后稷，传若干世主不窋，流亡戎狄之间，再传至公刘，复修后稷之业，九传至古公檀父，周代王业就此兴起</li>
-<li>孔子论小康之治，至成公、周公而告终；而《史记》亦说昭王之后，王道微缺</li>
-<li>平王借此前所营的东都而仅存，然而号令不能行于列国；而列国中强盛的亦渐多，遂成为“政由方伯”的局面</li>
-<li>姓起于女系，氏起于男系。……一族之人，分居各处，互相护卫。……然而数传之后，各国之君，相互关系，已渐疏远。</li>
-<li>到战国时，则次国无以自立，大国各以存亡相搏，遂逐渐趋于统一。</li>
-<li>东周时期，各封建的列国，都逐渐强盛，我国民族滋大也一同发展</li>
-<li>春秋时代，王室已不能号令天下。列国内部，相互间有什么问题，都由<strong>霸主</strong>来协调。</li>
-<li>古代文明的中心是黄河流域</li>
-<li>我国的学术思想，起源很早；其发达在春秋、战国。……，学术起初为贵族专有，……东周之后，封建政体渐次破坏，居官任职的贵族，多有失其官守，降为平民的。于是在官之学，变成私家之学。</li>
-<li>仁人君子，各思出其所学以救世。其中，最有关系的要推儒、墨、道、法四家</li>
-<li>古代的郡县是没有从属关系的，大约在繁华之地的，称为县，在边远之地的，称为郡。</li>
-<li>古代阶级森严，大夫之上，都是世官</li>
-</ul>
-<h2 id="中古史">中古史</h2>
-<h3 id="秦汉">秦汉</h3>
-<ul>
-<li>焚书的理由在《管子·法禁》和《韩非子·问辩》里就有体现，这是法家向来的主张</li>
-<li>秦朝的同文字，是大体以式籀的大篆为标准，废六国新造的字</li>
-<li>亡秦之后，封建思想还未破除。没有推一个人做皇帝之理，于是便要分封</li>
-<li>高祖初定天下，这时候还有封建思想，有功之臣，其势不得不封。……，封建的问题，到底因吴楚七国之乱而解决</li>
-<li>后汉的政治，坏于外戚宦官的专权。……桓帝和宦官单超等合谋，把梁冀杀掉，于是后汉外戚专权局终，而宦官专横</li>
-<li>黄巾时期，盗贼群起，灵帝听刘焉的话，改刺史为州牧，外官威权渐重</li>
-<li>汉灵帝死前将废嫡立庶的使命交给宦官蹇硕，何皇后兄何进得知，杀蹇硕，并欲尽诛宦官，太后不肯。宦官引诱何进入宫杀掉。袁绍遂入宫诛杀宦官。此时凉州牧董卓入京掌控大权，拥立献帝。袁绍奔山东，号召州郡，起兵讨董卓。而后因暴虐被王允和吕布所杀。董卓部将李傕、郭汜为卓报仇，攻破长安，杀王允。吕布逃奔东方。后二人自相攻击。献帝逃到洛阳，召在兖州颇有实力的曹操来护卫。于是大权尽归曹氏</li>
-<li>汉代司法界的黑暗，不但刑罚的严酷，还有法律的混乱</li>
-<li>欧洲的罗马，当时所谓大秦</li>
-<li>汉武帝好大喜功，儒家之学也是在此兴起</li>
-<li>《太史公书》（《史记》）分本纪、世家、列传、书、表五体。后人去其世家，而改书之名为志。形成后代纪传体的基础，班固便是以此体修《汉书》。《史记》二字为当时史籍的通称，《太史公书》为最早出者，所以冒其总名</li>
-<li>中国社会里，佛、儒、道并称三教</li>
-<li>汉代家庭中，父权很重。在伦理上，则很有以一孝字，包括一切的观念</li>
-</ul>
-<h3 id="三国两晋南北朝">三国两晋南北朝</h3>
-<ul>
-<li>三国时期的战乱来源是州郡握兵。晋武帝平定天下后，便免去州郡的兵，回复汉朝的样子。这时候的致乱之源来自塞内的异族：匈奴、鲜卑、羯、氐、羌，并称五胡。</li>
-<li>晋代鉴于魏朝薄待宗室，以致为己所篡，于是大封同姓。晋朝的诸王政治上实力尤大。</li>
-<li>晋元帝立国江东，建立东晋，很靠江东的世家名士，因此也带来了后续的门阀政治</li>
-<li>晋代时，北方五国大概有前赵、后赵、前燕、前秦、后燕、后秦几个时期
-<ul>
-<li>前赵：刘渊、刘曜，为石勒所灭</li>
-<li>后赵：石勒、石虎，冉闵，为前燕所灭</li>
-<li>前燕：慕容氏，为苻坚所灭</li>
-<li>前秦：苻坚，为姚苌所灭</li>
-<li>后燕：慕容垂，被冯跋所篡</li>
-<li>后秦：姚苌，为刘裕所灭</li>
-</ul></li>
-<li>南方，历经宋齐梁陈四朝
-<ul>
-<li>宋：刘裕开国，被萧道成所篡</li>
-<li>齐：萧道成开国，为梁武帝萧衍所篡</li>
-<li>梁：萧衍开国，侯景之乱后，陈霸先击败王僧辩后自立</li>
-<li>陈：陈霸先开国，被隋消灭</li>
-</ul></li>
-<li>秦汉以来，君权日渐发达，相权则被削弱，东汉之后，实权渐移到尚书</li>
-<li>晋武帝命贾充修订的《晋律》是后朝法律的基础</li>
-<li>从两汉到魏晋，其文化转折的要点是破除古代的迷信，而从事哲学的研究</li>
-<li>颓废的人生观是魏晋南北朝时期人的通病</li>
-</ul>
-<h3 id="隋唐五代十国">隋唐五代十国</h3>
-<ul>
-<li>中欧陆路连接，而起交通之始，反自海道而来</li>
-<li>尚书，历代都分曹治事。至隋才设六部，以总诸曹。唐代之后，都沿其制</li>
-<li>隋炀帝始设<strong>进士科</strong>。唐时设科甚多，其常行的为明经、进士两科。明经试帖经、墨义，进士试诗赋</li>
-<li>汉代郡县之佐，都由其长官自辟。所辟的大多是本地人。隋文帝才尽废之，别置品官，都由吏部除授</li>
-<li>玄宗时，沿边设十节度经略使。兵力多强。而内地守备空虚，遂酿成安史之乱</li>
-<li>唐诗，大抵初唐浑融，盛唐博大，中唐清俊，晚唐流于纤巧</li>
-<li>中国的文明，各方面都是充实的，惟在宗教方面，颇为空虚。……，佛教刚传入时，多为小乘。佛教中典籍甚多，佛说的为<strong>经</strong>；僧、尼、居士所守的戒条为<strong>律</strong>；菩萨所说的为<strong>论</strong>。三者并称三藏。……，中国的佛教一大特色就是大乘的发达。……，佛教之外传入的外国宗教有袄教、摩尼教、景教、伊斯兰教。</li>
-<li>句丽、百济在四夷之中，算和我最为相像。此文化，经半岛传入日本。</li>
-<li>唐中叶后，深受军人跋扈、紊乱政治的影响。……玄宗置十节度使，而内地守备空虚，遂成尾大不掉之势</li>
-<li>黄巢乱后，唐室的威灵，全然失坠。……，僖宗崩后，昭宗继立，百计无法挽回。于907年被朱全忠劫至洛阳，之后被弑</li>
-<li>六朝门阀之盛，在隋时因废九品中正，以及废乡官，改吏部任派，而地位衰落，除受社会尊敬外，别无所有</li>
-<li>五代
-<ul>
-<li>后梁：朱全忠，为后唐所灭</li>
-<li>后唐：李克用、李存勖，李嗣源、李从厚、李从珂，为石敬瑭所灭</li>
-<li>后晋：石敬瑭，称臣契丹，割让幽云十六州，引入外族，为辽所灭</li>
-<li>后汉：刘知远，为郭威所篡</li>
-<li>后周：郭威、郭荣（柴荣），为赵匡胤所篡</li>
-</ul></li>
-<li>除开五代的大国外，还有十个割据势力，来自藩镇或土匪，称为十国
-<ul>
-<li>吴：杨行密</li>
-<li>吴越：钱镠</li>
-<li>南汉：刘隐</li>
-<li>前蜀：王建</li>
-<li>楚：马殷</li>
-<li>闽：王潮</li>
-<li>南唐：李昇</li>
-<li>后唐：孟知祥</li>
-<li>北汉：郭旻</li>
-<li>南平</li>
-</ul></li>
-</ul>
-<h3 id="宋">宋</h3>
-<ul>
-<li>因为五代十国的教训，宋太祖认识到禁军的骄横和藩镇的保护要不得。所以使用杯酒释兵权，削弱藩镇权力</li>
-<li>宋朝以中书治民，三司理财，枢密主兵，各不相知，大权集于中央。宰相既无大权，欲图改革，就会多方掣肘，这也是后来王安石未能有所成就，反而酿成<strong>党争</strong>的原因</li>
-<li>王安石的新法：青苗法、裁兵置将保甲、改革学校贡举</li>
-<li>宋朝人的风气，喜持苛论，又好名高，又因谏官权重，朋党之风，由来已久</li>
-<li>大抵陆子之说，是为天分高、能直探本源的人说法的。朱子之说，则为天分平常，须积累而致的</li>
-<li>印刷术的发明是推动宋代文化的巨轮</li>
-<li>宋朝人的议论是喜欢彻底的，也是偏于理论的</li>
-</ul>
-<h3 id="元">元</h3>
-<ul>
-<li>元世祖忽必烈灭宋之日，就是最盛之时。然而其分裂，也就于此时开始了</li>
-<li>指南针、印刷术、火药，中国人所发明的，都经大食人之手，而传入欧洲</li>
-<li>火药的发明，随起于中国，而火炮的制造，则中国人似乎反而从欧洲学来</li>
-<li>北宋期间，人民苦于金属货币运输的不便，自造一种纸币，名为交子</li>
-</ul>
-<h3 id="明">明</h3>
-<ul>
-<li>明代的北方，是鞑靼、瓦剌的时代。……现在的长城，就大都是明q代所造的</li>
-<li>明代最精细的，要属赋税的制度，有黄册，有鱼鳞册</li>
-<li>元明的学术思想，是承宋人之流的。在当时，占思想界中心的，自然还是理学。</li>
-<li>王守仁之说，是承陆九渊之绪。……“知而不行，只是未知”，所以说知行合一。既然知行是一事，那人只要在知上下功夫，一切问题就解决了</li>
-<li>程朱一派，注重行为，王学注重一心</li>
-<li>明代可以算是一个平民文学发达的时代</li>
-<li>天下不论什么事情，不可受社会上过分的崇信。崇信的过分，其本身就要成为罪恶了</li>
-<li>清朝管束绅士极严，虽说是异族入侵，猜忌汉人，要削减其势力，而明代绅士的暴横也是一大原因</li>
-</ul>
-<h2 id="近代史">近代史</h2>
-<h3 id="清">清</h3>
-<ul>
-<li>隆武帝颇为英武，但受郑芝龙制约，不能有所作为</li>
-<li>西洋近世发明的，而中国最为缺乏的，便是科学</li>
-<li>基督教初入中国，是绝无帝国主义思想的</li>
-<li>在当时，传入的科学并不少，因中国人向来不大擅长于行而下学，同时科学伴随宗教进入，不免有所障碍，所以一时未能发生很大影响</li>
-<li>清朝的盛衰，在乾隆时为关键，此时表面上看极盛，实则暗藏衰机。</li>
-<li>世宗死后，高宗继之。高宗（乾隆）表面上模仿圣祖（康熙），但他没有圣祖的勤恳，又没有世宗（雍正）的明察；而且他的天性是奢侈的。</li>
-<li>由于黄教僧徒禁止娶妻，所以黄教始祖宗客巴遗命，其两大弟子达赖喇嘛、班禅额尔德尼，世世以呼毕勒罕（重生），主持宗教事务</li>
-<li>明朝的瓦剌，在清初分裂成四部：和硕特，居乌鲁木齐；准噶尔，居伊犁；杜尔伯特，居额尔齐斯河；土尔扈特，居塔尔巴哈台</li>
-<li>在太平天国时，不论绿营、八旗，都不足用，不得不专靠乡勇，当时办团练的地方很多，曾国藩就此兴起</li>
-<li>太平天国的灭亡，其中央无长于政治和军事的人才，实在是最大的原因</li>
-<li>咸丰即位时，可以重用汉人，削平内乱。但因时局艰难，图治无效，后来就倦怠了。</li>
-<li>使中国历史大变局面的，前为鸦片战争，后为中日战争</li>
-<li>维新时期，想要模仿的是日本的睦仁，俄国的彼得，借专制君主的力量，改革政治，于是废八股、设学校等各种举措。……，那拉氏和光绪的不和，是维新的一大阻力。那拉氏是不愿放弃权势的。</li>
-<li>清代学术的中坚，便是所谓汉学。……，文学上，清朝比前朝，可以说无甚特色</li>
-</ul>
-<h2 id="现代史">现代史</h2>
-<ul>
-<li>中国的革命思想动机有三：民族思想、民权思想、民生问题</li>
-<li>袁世凯死后，北方连形式上的统领都没有了。而南方的新势力又未能完成，就酿成复辟之战和护法之战</li>
-<li>山东问题在巴黎和会上，因为英法对日本的偏袒，按照日本的意思，将德国在山东的权利让给日本</li>
-<li>因五卅惨案引起的民族运动，似乎是失败了。然而因此惨案，我国人的民族意识，格外发达</li>
-<li>中国的统一，是帝国主义者所不利的，所以要多方阻挠</li>
-<li>国民政府定都南京后，一方面宣告取消不平等条约，并宣布于民国十六年九月一日，实行关税自主，同日裁厘</li>
-<li>不平等条约，贻害最大的，有关税协定、领事裁判权、租界、租借地、内河航行</li>
-<li>中山先生的革命方略，是分军政、训政、宪政三时期的。军政时期，由党取得政权。训政时期，代国民行使。在宪政时期，将政权交付国民。……，国民政府的政治，是以人民自治为目的的</li>
-<li>因庚子赔款，美国首先退还，规定作为派遣学生赴美留学所用，所以赴美者由盛</li>
-<li>中国对社会科学的研究，本来很精深。唯独对自然科学，较诸西方国家，较为落后</li>
-</ul>
-<h2 id="结论">结论</h2>
-<ul>
-<li>外国有人说：“中华民国，是世界的怪物。”因为世界并非无大国，但其起源都较晚。古代亦非吴大国，但迄今都已灭亡。团结数万万的大民族，建立世界上第一等的大国；而文明进步，在世界亦称第一等；这是地球之上，中华民国之外，再没有第二个国家的。……至于战国之末，而神州大陆上，可以称为国家的，都因竞争而合并为一。至此，我国为一大国的基础确定</li>
-<li>我国文化程度之高，异族虽一时凭借武力，荐居吾国，终仍不能不为我所同化。……，虽然政治之力，尚未能触及美洲、欧洲等其他地方，这是我民族不尚武力的结果。最后的胜利，未必属于武力。</li>
-<li>我国民族，现在正当变化以求适应于新环境的时候，一旦大功告成，其能大有造于世界，是可以豫决的。到这时代，我民族的发展，就更其不可限量了。我国民族，是向不以侵略压迫为事的。</li>
-<li><strong>罗素说：“东西洋人，是各有长处的。西洋人的长处，在于科学的方法。东洋人的长处，在于合理的生活”。</strong>若论人与人相处之道，则中国人之所发明，确有过于西洋人之处。西洋人是专想克服外物的，所以专讲斗争。中国人则是专讲与外物调和的。不论对于人，对于天然，都是如此。……中国人的对物，宜效法西洋，西洋人的对人，宜效法中国。……中西文化的不通电，溯其根源，怕还是从很早的时代，生活之不同来的。西洋文化的根源，发生于游牧时代。游牧民族，本来以掠夺为生的，所以西洋人好讲斗争。中国文化的根源，则是农耕社会，其生活比较平和。……凡事无不反求诸已，而冀他人之自然感化；非到万不得已，决不轻用武力。这又是中国人爱尚和平的性质表现。……我们既不压迫人，人家自乐于亲近我。所以不论什么异族，都易于与我同化。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/10/14/150-years-of-modern-art/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2024/10/14/150-years-of-modern-art/" class="post-title-link" itemprop="url">认识现代艺术</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-14 20:29:05 / 修改时间：20:31:24" itemprop="dateCreated datePublished" datetime="2024-10-14T20:29:05+08:00">2024-10-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E8%89%BA%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">艺术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2024/10/14/150-years-of-modern-art/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/10/14/150-years-of-modern-art/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>16k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>27 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>谢德庆在1985年到1986年一整年不看、不谈、不接触艺术，完成了他的《不做艺术》的艺术品，葛宇路创作了与自己同名的路牌，小野洋子的《切片》，这些艺术家的创作恐怕难以让对现代艺术不了解的人接受和理解。蒙德里安的三原色创作、克莱因的纯色创作、波洛克的斑渍绘画，常人看来也会说“就这？”。在往前一点，沃霍尔的金汤宝罐头、杜尚的小便池、施维特斯的“梅兹”，和大家常规理解里的艺术家苦心孤诣创作的艺术品也相去甚远。那它们和梵高、毕加索、塞尚、高更这些人又有着什么联系呢？《现代艺术150年》从18世纪上半叶的印象派讲起，作为《艺术的故事》在现当代的出色补充，将现代艺术的演进脉络清晰又有趣地讲述了出来。颇有些纪实小说的感觉，读起来甚是畅快。</p>
-<h2 id="导论你在看什么">导论：你在看什么</h2>
-<p>当代艺术家不都是骗子，现代艺术品收藏家也不都是傻子。过去150年的现代艺术故事里，能多少让你下次看到类似作品时多一些有趣，少一些迷惑。</p>
-<h2 id="泉1917">泉：1917</h2>
-<p>杜尚将购买的小便池取名为《泉》，作为一件艺术品。意图传达：<strong>艺术家的工作是通过展示理念，对世界进行评论或理解</strong>。而《泉》能成为一件艺术品，也是来自艺术家的<strong>主意</strong>，而不是艺术家的制作。这种解除物件原始功能，给它赋予新的角度和背景，从而创造一件艺术品的方式，体现了杜尚的一种观念主义。杜尚来自达达主义的启发，又开启了现成品的流派。</p>
-<h2 id="前印象派走向真实-18201870">前印象派：走向真实 1820——1870</h2>
-<h3 id="相关人物及作品">相关人物及作品</h3>
-<ul>
-<li>莫奈（1840-1926）</li>
-<li>欧仁·德拉克罗瓦（1798-1863），《自由引导人民》</li>
-<li>古斯塔夫·库尔贝（1819-1877），现实主义，《世界的起源》</li>
-<li>爱德华·马奈（1832-1883），《喝苦艾酒的人》、《草地上的午餐》、《奥林匹亚》</li>
-<li>波德莱尔，散文家</li>
-</ul>
-<h3 id="思潮">思潮</h3>
-<p>在当时，印象派是最激进、最反叛、最能突破障碍的一群人。他们想摆脱传统绘画的冠冕堂皇，走出画室记录现代世界，在现场创作，捕捉稍纵即逝的感觉。对所见念兹在兹。在当时也收到政治变迁、科技进步、摄影发展、哲学新观点的助推。他们试图努力突破学院派的封堵，走向未来。马奈等人的绘画开始并不被学院所接受。拿破仑三世上台后，给了这些落选学院沙龙的画家提供了新平台。年轻艺术家在其中相互得到鼓励。印象派艺术家吹鼓手波德莱尔也鼓励艺术家从现代生活中“从短暂中发现永恒”，抓住当下。</p>
-<h2
-id="印象派现代生活的画家1870-1890">印象派：现代生活的画家，1870-1890</h2>
-<h3 id="相关人物及作品-1">相关人物及作品</h3>
-<ul>
-<li>爱德华·马奈（1832-1883），《奥林匹亚》</li>
-<li>莫奈（1840-1926）：《日出·印象》、《威斯敏斯特下的泰晤士河》</li>
-<li>保罗·塞尚（1839-1906）</li>
-<li>卡米耶·毕沙罗（1830-1903），《白霜，通往埃那里的老路》</li>
-<li>埃德加·德加（1834-1917），《舞蹈课》，《赛场上的马车》</li>
-<li>雷诺阿（1841-1919），《青蛙塘》</li>
-<li>阿尔弗雷德·西斯莱（1839-1899）</li>
-<li>保罗·杜兰-鲁埃，经纪人，印象派的伯乐</li>
-<li>路易斯·勒罗伊，艺术评论家，“印象派”批评者，也是这个名字的来源</li>
-<li>特纳（1775-1851），《雨，蒸汽和速度》</li>
-<li>安藤广重（1797-1858），日本浮世绘画家，《大津站》</li>
-<li>葛饰北斋（1760-1849），日本浮世绘画家，《神奈川巨浪》</li>
-</ul>
-<h3 id="思潮-1">思潮</h3>
-<p>勒罗伊并不能欣赏莫奈的《日出·印象》，用画作里的名字“印象”来给这一派风格起了讽刺的名字，结果反而催生了文艺复兴后最著名的艺术运动。起初印象派的创作并不被欣赏。艺术经纪人保罗·杜兰-鲁埃意外起到了伯乐的作用，他给予这些印象派艺术家资助，对他们创作的艺术坚信不疑。他购买了莫奈和毕沙罗的作品，资助他们的日常生活，并为他们策展。杜兰-鲁埃意识到，革命和机械化催生出新的社会阶层——资产阶级。这些新贵们可能青睐新的艺术，尤其是能代表新世界、新科技的艺术。到1874年展览时，杜兰-鲁埃支持和推介了莫奈、毕沙罗、西斯莱、雷诺阿和其他人的作品。最终他在巴黎的画廊大获成功。</p>
-<p>莫奈的画作受特纳的作品以及日本浮世绘影响很深。其他的印象派画家如马奈、德加等也受浮世绘的影响。他们喜爱浮世绘的风格鲜明和简洁。德加就很敬重安藤广重。德加的作品里能看到他对迅捷和动感的捕捉能力，画面仿佛是时空冻结的瞬间。当然他也借鉴了摄影技术的一些技巧。</p>
-<p>在1886年巴黎最后一次最后一次展览后，由于地理位置、个人性格、艺术理念的差异，合称印象派的艺术家们也走向分裂。印象派走入后印象时期。而此时，印象派画家的名声已经确立，前程无忧，他们的作品不愁无人购买，已经成为新时代的现代艺术。</p>
-<h2 id="后印象派扩展领域1880-1906">后印象派：扩展领域，1880-1906</h2>
-<h3 id="相关人物及作品-2">相关人物及作品</h3>
-<ul>
-<li>文森特·梵高（1853-1890），《吃土豆的人》、《黄房子》、《花瓶里的向日葵》、《寝室》</li>
-<li>保罗·高更（1848-1903），《布道后的幻象》，《你为何生气？》</li>
-<li>乔治·修拉，《阿尼埃尔的浴场》，《大碗岛的星期天下午》</li>
-<li>保罗·塞尚（1839-1906）</li>
-</ul>
-<h3 id="思潮-2">思潮</h3>
-<p>梵高、高更、修拉和塞尚并称“后印象派”艺术家，但“后印象派”这个词是英国博物馆馆长罗杰·弗莱在1910年发明的，是为了在策展时吸引观众眼球，起了“马奈和后印象派艺术家”这样的名字。这四位在印象派基础上，各有各自的艺术追求：</p>
-<ul>
-<li>梵高和<strong>表现主义</strong>：梵高起初是艺术经纪公司学徒，而后在弟弟提奥的资助下成为艺术家。梵高的画善用厚涂法，浓重的颜色并不仅仅描画画面，颜色本身也成为画面的一部分，表现出浓烈的情感。这种深刻的表现性开启了表现主义的道路，而后爱德华·蒙克也收到很大的影响，创作出《呐喊》。梵高和高更曾是好友，而后因争执分道扬镳。梵高在37岁时自杀，几个月后弟弟提奥随之去世。</li>
-<li>高更和<strong>象征主义</strong>：高更放弃了自己股票经纪人的生活，转身成为一名艺术家。他的作品饱含隐晦的含义和象征。梵高用颜色表达情感，高更则用来讲故事。为了戏剧性的比喻和画面，他选择放弃真实。同时，他还讨厌他们的现代生活，想要创立自己的<strong>原始主义</strong>美学风格。之后前往塔西提岛生活采风。最终死在岛上。</li>
-<li>修拉和<strong>点彩画派</strong>：修拉对印象派抓住稍纵即逝的瞬间不感兴趣，他希望抓住永恒。他想给印象派带来<strong>秩序和纪律</strong>，吸收颜色上的创新，结合一些科学方法论来解释。《颜色理论》、《颜色对比原理》这样的著作对修拉帮助很大。最终修拉放弃印象派的即兴画法，改为用点状颜料细致地涂在画布上，通过点和点之间的配合呈现预期中的效果，保证色彩的平衡。</li>
-</ul>
-<h2 id="塞尚吾人之父1839-1906">塞尚：吾人之父，1839-1906</h2>
-<h3 id="相关人物及作品-3">相关人物及作品</h3>
-<ul>
-<li>保罗·塞尚（1839-1906），《有苹果和桃子的静物》，《圣维克多山》</li>
-</ul>
-<h3 id="思潮-3">思潮</h3>
-<p>“他是第一位用双眼作画的艺术家”，有人这么评价塞尚。的确，塞尚认为之前的画作几乎被创作成从一个视角下观察的样子，不能反映真实所在，最起码应该有两个视角。而这也开启了<strong>现代主义</strong>的大门。塞尚创作了很多有两个视角的作品。他对画面总体设计和双视角的应用，也启发了之后的<strong>立体主义</strong>。对于印象派客观性的不足，修拉求助于科学，而塞尚求助于大自然。他认为画家应该全身心投入在大自然的研究中。因此他坚持室外创作，《圣维克多山》也是这样在普罗旺斯创作出来的。塞尚在创作时发现，在观察自然景观时，实际上看到的是形状而不是细节。他把视觉细节缩减成几何图形作为自己的分析基础，这个方法在几十年后就是抽象表现主义的由来。甚至包豪斯的设计、蒙德里安的网格结构也与此有关。塞尚死于外出作画淋雨感染的肺炎。此时，他在巴黎先锋派的地位已经很高，许多人对他崇拜至极，包括巴勃罗·毕加索。</p>
-<h2
-id="原始主义1880-1930和野兽派1905-1910原始的呐喊">原始主义（1880-1930）和野兽派（1905-1910），原始的呐喊</h2>
-<h3 id="相关人物及作品-4">相关人物及作品</h3>
-<ul>
-<li>古斯塔夫·克里姆特（1862-1918），《吻》</li>
-<li>莫里斯·德·弗拉芒克（1876-1958）《布吉瓦尔的餐馆》</li>
-<li>亨利·马蒂斯，《戴帽子的妇人》、《生之快乐》</li>
-<li>安德烈·德兰（1880-1954），《科利乌尔港的船》</li>
-<li>巴勃罗·毕加索（1881-1973），《格特鲁德·斯泰因肖像》、《亚威农的少女》</li>
-<li>亨利·卢梭（1844-1910），《饿狮猛扑羚羊》、《一个女人的肖像》</li>
-<li>康斯坦丁·布朗库西（1876-1957），雕塑家，《吻》、《沉睡的缪斯》</li>
-<li>奥古斯特·罗丹（1840-1917），雕塑家，《吻》</li>
-<li>阿梅代奥·莫迪利亚尼（1884-1920），雕塑家，《头》</li>
-<li>阿尔伯托·贾科梅蒂（1901-1966），雕塑家，《行走的人》</li>
-<li>芭芭拉·赫普沃斯（1903-1975），雕塑家，《穿孔之形》、《海洋生物》、《单一的形式》</li>
-</ul>
-<h3 id="思潮-4">思潮</h3>
-<p>原始主义贯穿了整个现代艺术，它指模仿或借用古代原始文化的手工制品。这个概念在17世纪的启蒙运动就有出现，后面高更就接受了它。原始主义者认为这些“原始”艺术没有被西方文化玷污，可以直抵灵魂，天然而真实。弗拉芒克购买的非洲面具给了马蒂斯以及德兰很大的启发。他们转而不再追求理想化的美，而是强调对象的内在特征。<strong>色彩和感情的表达优于忠实再现</strong>成为了这种新画法的特征。在将自己作品报名到1905年的秋季沙龙时，他们的作品被评论家路易斯·沃克塞尔轻蔑的认为是“野兽的作品”。野兽派的名字也由此而来。但德兰、马蒂斯、弗拉芒克一开始倒没想发起一场运动，他们只是想探索新的表现领域，找到一些原始气息而已。</p>
-<p>同年，马蒂斯落选沙龙的《戴帽子的妇人》被斯泰因买下。斯泰因兄妹的公寓是当时巴黎艺术家的核心据点。格特鲁德·斯泰因而后接受了马蒂斯的新画法，进而购买了马蒂斯的其他作品，如《生之快乐》。同一时期，毕加索通过斯泰因认识了马蒂斯，也因此引发了一场竞争。两者的风格类似，但也有姿态的区别。马蒂斯反映生活的速度和活力，毕加索则反映支撑这种生活的上层建筑。在竞争中，他创作的《亚威农的少女》促使了立体主义的出现，又引领了再之后的未来主义、抽象艺术。</p>
-<p>在毕加索的派对上，艺术家亨利·卢梭因其画风的独特得到了青睐。卢梭没有绘画的相关教育，在技巧和知识上的缺乏，反而促生了略显孩子气的朴实风格，但同时又有日本版画般清晰的表现。毕加索也从卢梭的作品中获得很多启发，之后开始像孩子一样画画。</p>
-<p>在雕塑领域，一样有着类似的、无拘无束的、从简单造型里蕴含淳朴情感的原始主义。从布朗库西到罗丹再到之后的赫普沃斯。</p>
-<h2
-id="立体主义另一种视角1907-1914">立体主义：另一种视角，1907-1914</h2>
-<h3 id="相关人物及作品-5">相关人物及作品</h3>
-<ul>
-<li>巴勃罗·毕加索，《亚维农的少女》、《我的美人》、《有藤椅的静物》</li>
-<li>纪尧姆·阿波利奈尔，法国诗人，剧作家，现代艺术的有力支持者</li>
-<li>乔治·布拉克，《埃斯塔克的房子》、《小提琴和调色板》、《水果盘与玻璃杯》</li>
-<li>胡安·格里斯，《静物花卉》</li>
-<li>丹尼尔-亨利·卡恩维勒，毕加索和布拉克的资助者</li>
-</ul>
-<h3 id="思潮-5">思潮</h3>
-<p>立体主义的精髓在于选择一个主题之后通过<strong>大量分析性观察，将其解构</strong>。毕加索和布拉克都受到了塞尚很大的启发，其中，毕加索的《少女》被认为开启了立体主义之门。就像印象派一样，起初立体主义并不被认可。布拉克的作品被马蒂斯开玩笑说是“立方体拼成的画”，立体主义的名字也由此诞生。立体主义并非刻意呈现三维物体，它承认画布的二维特质，然而呈现的是从任何角度观察到的物体。这种观察世界的新视角也和近代科技领域突飞猛进有所关联。</p>
-<p>彻底的抽象是立体主义不可避免的倾向，毕加索和布拉克开始在作品里加入字母和单词，如毕加索的《我的美人》，布拉克的《水果盘与玻璃杯》里，直接用木质壁板纹样的壁纸贴在画布上。两位艺术家无意间创造了新的拼贴画流派。立体主义里棱角分明、强调空间的精简风格也影响到了后来的现代主义美学。</p>
-<h2 id="未来主义快进1909-1919">未来主义：快进，1909-1919</h2>
-<h3 id="相关人物及作品-6">相关人物及作品</h3>
-<ul>
-<li>菲利波·托马索·马里内蒂（1876-1944），诗人、小说家</li>
-<li>翁贝托·薄丘尼（1882-1916），《空间中连续的唯一形体》、《离开的人》、《告别》、《留下的人》</li>
-<li>卡洛·卡拉（1881-1966）</li>
-<li>吉诺·塞维里尼（1883-1966）</li>
-<li>贾科莫·巴拉（1831-1958），《拴着皮带的狗的动态》</li>
-<li>罗伯特·德劳内（1885-1941），《加迪夫队》</li>
-<li>温德姆·刘易斯（1882-1957），漩涡主义</li>
-<li>雅格·爱泼斯坦（1880-1959），《凿岩机》</li>
-</ul>
-<h3 id="思潮-6">思潮</h3>
-<p>1905年之后的十几年见证了现代艺术的兴起，它们流派各异，有的来自法国（野兽派、立体主义、俄耳甫斯主义），有的来自德国（桥社和青骑士）还有来自俄罗斯（辐射主义）和英国（漩涡主义）的。在其中，马里内蒂为了给意大利争得在现代艺术里的一席之地，提出了崭新的未来主义概念。</p>
-<p>和其他运动不同，<strong>未来主义一开始就公然与政治挂钩</strong>。马里内蒂在《费加罗报》上公开发表未来主义宣言，言辞激烈，甚至令人心惊。其中一些有悖传统的极端词语，甚至为未来的法西斯主义埋下了种子。不过从炒作效果看，宣言达到了目的。后来达达主义者、达利、杜尚、沃霍尔等人都从马里内蒂这里学到了如何宣传。不过马里内蒂到底还是作家，并不是视觉艺术家，目前未来主义只有一个宣言。不过宣言不到1年，他的麾下就吸引了一批艺术家。未来主义也成了一场艺术运动。</p>
-<p>未来主义是立体主义的发展，它也将时间和空间毁坏，然后融到一个形象里。不过立体主义的主题还在于艺术，而未来主义期望激起情感反应，想发起政治声明，并在描绘的物体间形成很大的张力。未来主义打破了巴黎对现代艺术的控制，世界上许多城市开始谱写艺术新篇章。如德劳内开启的俄耳甫斯主义，温德姆·刘易斯领导的漩涡主义。一战结束后，未来主义“辞旧迎新”的口号很受欧洲民众欢迎。1919年，马里内蒂参与意大利法西斯宣言的撰写，虽然他对法西斯主义的构想和后来实际发生的事情很不一样，让他与之分道扬镳。但他度一墨索里尼始终保持忠诚。</p>
-<h2
-id="康定斯基俄耳甫斯主义青骑士音乐之声1910-1914">康定斯基/俄耳甫斯主义/青骑士：音乐之声，1910-1914</h2>
-<h3 id="相关人物及作品-7">相关人物及作品</h3>
-<ul>
-<li>弗朗齐谢克·库普卡（1871-1957），《第一步》</li>
-<li>罗伯特·德劳内，《共时的圆盘》</li>
-<li>瓦西里·康定斯基（1866-1944），《慕尼黑——普拉内格1》、《穆尔瑙，乡村道路》、《克黑尔，笔直之路》、《即兴4》、《印象3（音乐会）》、《带圆的圆》、《作曲4》、《作曲7》</li>
-<li>保罗·克里，《哈马马特的清真寺》</li>
-</ul>
-<h3 id="思潮-7">思潮</h3>
-<p>抽象艺术即抽离形象化的手法，从印象派去除视觉信息到野兽派强调色彩再到从多重角度观察题材的立体主义，趋势不可避免地导向所有细节的消失。库普卡是巴黎立体——未来主义运动的一员，阿波利奈尔也称为俄耳甫斯主义，他的《第一步》就是不描述任何事物的纯抽象作品。同时期的音乐家瓦格纳看到了将音乐和艺术融合的可能性，他希望创造出统一的“总体艺术品”。康定斯基在听到瓦格纳的歌剧《罗恩格林》时，受到启发，他希望创作出以颜色为音符，以构图为色调的作品。在一系列以道路为主题的作品中，康定斯基渐渐把形象化特征统统抹掉。</p>
-<p>1911年，康定斯基认识了音乐家勋伯格，收到他的无调性音乐启发，创作出《印象3（音乐会）》。两位艺术家在音乐和绘画的关联上志趣相投，成为了一生的朋友。康定斯基认为应该从事物的表现中解脱出来，创作出源于本能而非后天习得的作品，借此唤醒观众的感官意识。之后，因为艺术理念不被德国同行认可，他独自创建青骑士俱乐部。并邀请德劳内和勋伯格加入。《作曲7》是康定斯基生涯的顶峰，他拒绝做出任何指向已知事物的解读。保罗·克利受到这幅作品影响，发展出自己的风格，他相信艺术不是为了<strong>再现可见事物，而是使生活变得可见</strong>。</p>
-<h2
-id="至上主义构成主义俄国人1915-1925">至上主义/构成主义：俄国人，1915-1925</h2>
-<h3 id="相关人物及作品-8">相关人物及作品</h3>
-<ul>
-<li>卡济米尔·马列维奇，《奶牛和小提琴》、《黑色正方形》、《征服太阳》、《至上主义》</li>
-<li>弗拉基米尔·塔特林（1885-1953），《角落的反浮雕》、《第三国际的纪念塔》</li>
-<li>柳博芙·波波娃（1889-1924）</li>
-<li>亚历山大·罗琴科（1891-1956），《纯红、纯蓝和纯黄》</li>
-<li>亚历山大·艾克斯特（1882-1949）</li>
-<li>埃尔·利西茨基（1890-1941），《以红楔攻打白军》</li>
-</ul>
-<h3 id="思潮-8">思潮</h3>
-<p>在托洛茨基、列宁、斯大林谋划建设共产主义时，俄国的艺术家们也提出了先进和民主的新艺术形式，叫做<strong>非客观艺术</strong>。到1913年，这批俄国的艺术家已经在西欧艺术家的基础上走了很远，并开始质疑西方朋友的冒险精神。马列维奇就是其中的代表。他的《奶牛与小提琴》似乎预示达达主义和超现实主义的到来。《黑色正方形》更是他的经典，作品纯粹是白布上的一个简单黑色正方形。他将这种纯粹抽象、非描述性的绘画风格称作至上主义。艺术家靠描绘已知世界取悦观众的兴趣，康定斯基则向抽象迈出了一步，从而提高了艺术家的地位。到了至上主义时，<strong>艺术完全变成由艺术家制定规则的智力游戏</strong>。</p>
-<p>和马列维奇同时期的艺术家里还有塔特林，他的《角落的反浮雕》启发了后来的装置艺术，这件三维作品作品在艺术史里第一次不为模仿和再现现实而存在。和马列维奇不同，塔特林兴趣在材料的物理性质和如何组合它们。而后这一理念也被称为构成主义。构成主义画家罗琴科称马列维奇的至上主义艺术没有象征意义，作品重要不在其象征，而是原材料本身的构成。不论至上主义还是构成主义，都是<strong>纯粹抽象艺术</strong>的先锋。这一时期的俄国先锋艺术和左派联系密切，艺术家被赋予共产主义理想和任务。女性艺术家也头一次在运动中心扮演重要角色，如波波娃、亚历山大·埃克斯特等人。</p>
-<h2 id="新造型主义网格1917-1931">新造型主义：网格，1917-1931</h2>
-<h3 id="相关人物及作品-9">相关人物及作品</h3>
-<ul>
-<li>皮艾特·莫德里安（1872-1944），树系列，《构成C》、《构成6》</li>
-<li>特奥·凡·杜斯伯格（1883-1931），艺术赞助人，杂志主编</li>
-<li>赫立特·里特费尔德（1888-1964），木工，《扶手椅》</li>
-</ul>
-<h3 id="思潮-9">思潮</h3>
-<p>在马列维奇、康定斯基、塔特林同一时期，荷兰画家蒙德里安也创作着自己对抽象艺术的理解。他希望能发展一种绘画形式，融合我们所知所感的一切到一个简单系统里。这种想法在一战期间形成了新造型主义。以蒙德里安本人的说法，就是“以造型的方式表现万物之共性，而非它们与众不同的地方”。他认为需要将艺术减至最基本的元素：<strong>颜色、形状、线条和空间</strong>。经过树系列的探索，蒙德里安在抽象的道路上越走越远。1917年他得到杜斯伯格的支持，两人创办杂志，野心勃勃地传播他们的艺术理念。按杂志的命名，他们也被叫做<strong>风格派</strong>。风格派宣称，自然形式将被“彻底根除”，因为它们是纯粹艺术表现的阻碍。这一理念影响了许多人，包括荷兰木工、建筑师里特费尔德、法国时尚设计师伊夫·圣·罗兰等。在因理念不同发生多次争执后，杜斯伯格和莫得里安分道扬镳，他开始周游欧洲宣传风格派的“福音”。他将风格派、至上主义和构成主义定义为“<strong>理性抽象</strong>”，康定斯基的更有象征性的作品称为“<strong>冲动抽象</strong>”。这一精炼总结展示出这十年欧洲艺术家的殊途同归：抽象。</p>
-<h2 id="包豪斯校园重聚1919-1933">包豪斯：校园重聚，1919-1933</h2>
-<h3 id="相关人物及作品-10">相关人物及作品</h3>
-<ul>
-<li>威廉·莫里斯（1834-1896），艺术和工艺运动创始者</li>
-<li>约翰·拉斯金，英国艺术史家、左翼知识分子</li>
-<li>赫尔曼·穆特修斯（1986-1927），文化官员</li>
-<li>彼得·贝伦斯（1868-1940），建筑师</li>
-<li>沃尔特·格罗培斯（1883-1969），贝伦斯的弟子，包豪斯的创办人</li>
-<li>约翰·伊登（1888-1967），包豪斯艺术课程最初的负责人</li>
-<li>莱昂纳尔·法宁格，包豪斯职工，“青骑士”成员</li>
-<li>拉斯洛·莫霍利-纳吉（1895-1946），伊登之后的包豪斯造型教师</li>
-<li>约瑟夫·亚伯斯（1888-1976），第一位成为导师的包豪斯学徒</li>
-<li>特奥·凡·杜斯伯格、康定斯基、保罗·克利、一时齐聚</li>
-<li>玛丽安·布兰德（1893-1983），包豪斯学徒，知名设计师</li>
-<li>马塞尔·布劳耶（1902-1981），匈牙利设计师，包豪斯学徒</li>
-<li>路德维希·密斯·凡德罗（1886-1969），沃尔特·格罗培斯的继任者</li>
-</ul>
-<h3 id="思潮-10">思潮</h3>
-<p>19世纪末英国和德国是欧洲两大工业力量。德国的文化参赞赫尔曼·穆特修斯来英国学习先进经验，看到莫里斯和拉斯金将艺术价值运用到工业品中的理念。拉斯金是左翼知识分子，他视工业化为恶魔，认为它贬低了手工业者的地位。莫里斯和拉斯金都设想着恢复中世纪的一些生活方式，比如师徒相授的手工行会培训制度。穆特修斯回到德国后不久，德国工艺联盟成立。这个组织就是以莫里斯的理想为基础成立的。联盟里包括建筑家贝伦斯，他也是世界上第一位品牌顾问。而格罗佩斯就是他的弟子。贝伦斯凭借<strong>对设计以及材料的现代化处理</strong>获得的成功也对格罗佩斯有所影响。他和同为贝伦斯弟子的阿道夫·梅耶还一同创立了公司，实践这一理念。</p>
-<p>一战后，德国新时代的曙光点燃了民众的希望。新的魏玛共和国成立，格罗佩斯也希望尽一份力。依靠在德国工艺联盟里的经验，他想要创立一所艺术学院，在其中培养的新一代兼具实践和智慧技能，以求建立一个更文明的社会。可以说包豪斯的成立肩负了社会改良者的角色。包豪斯全称“魏玛包豪斯国立学校”，成立于1919年。格罗佩斯希望学艺术的学生能从象牙塔里走出来，接接地气，像工匠一样弄脏手。他还认为建筑是最优秀的艺术形式，“包豪斯”的德语意思就是“房屋建造”。学校是莫里斯所倡导的中世纪师徒模式。包豪斯的学生都从学徒开始，成为熟练工人，甚至导师。一定程度上，包豪斯挺像一个嬉皮士社区，里面随处可见理想主义的老师和学生。</p>
-<p>可以说包豪斯在某种程度上是成功的，在它的时尚设计包装下，科技驱动的消费主义成了新的一种被称为<strong>现代主义</strong>的审美趣味。随着越来越多开创性艺术人才聚集，包豪斯在现代主义里的中心地位，就像文艺复兴时期的佛罗伦萨和19世纪初的巴黎。不过好景不长，随着德国赔款艰难，学校被右翼视为政治实体，经费大幅缩减。随着美国支持，包豪斯一度在德绍有了自己的校园综合体建筑。不久后，格罗佩斯辞职前往柏林，密斯·凡德罗继任。3年后，1933年，这个最伟大的艺术设计学院被希特勒强行关闭。学院成员大多去往美国。</p>
-<h2
-id="达达主义混乱的秩序1916-1923">达达主义：混乱的秩序，1916-1923</h2>
-<h3 id="相关人物及作品-11">相关人物及作品</h3>
-<ul>
-<li>雨果·鲍尔（1886-1927），德国年轻作家，伏尔泰俱乐部创建人，无政府主义引领者</li>
-<li>特里斯坦·查拉（1896-1963），罗马尼亚诗人，无政府主义引领者</li>
-<li>阿尔弗雷德·雅里（1873-1907），达达主义者</li>
-<li>让·阿尔普（1886-1966），达达主义发起人之一，《根据随机法则排布的正方形的拼贴画》</li>
-<li>库尔特·施维特斯（1887-1948），装置艺术家，“Merz”，“梅尔兹堡”</li>
-<li>弗朗西斯·毕卡比亚（1879-1953）</li>
-<li>杜尚，现成品艺术，《泉》、《三个标准的终止》、“L. H. O. O.
-Q.”、《美丽气息》</li>
-</ul>
-<h3 id="思潮-11">思潮</h3>
-<p>达达主义是<strong>反叛精神</strong>的代表。在一战后，最早的达达主义者认为罪魁祸首是对理性、规章、制度的过度依赖。他们考虑一种非理性、非逻辑、无法纪的可能性。雨果·鲍尔和特里斯坦·查拉一拍即合，引领了无政府主义艺术运动，走上了超现实主义的道路，这影响到了流行艺术，催生了<strong>垮掉的一代</strong>，赋予<strong>朋克</strong>灵感，成就了<strong>观念艺术</strong>。他们把自己宣传为艺术少年犯，反对一切：<strong>反权威、反社会、反宗教，特别是反艺术</strong>。1916年，两人效仿未来主义的马里内蒂，发出了达达主义运动的宣言。开始狂热推崇起源于巴黎文学先锋的<strong>荒诞主义</strong>思想。他们的宣言吸引了很多人，查拉和一帮艺术激进分子身穿奇装异服，在虚无和恐惧作用下，疯狂表演，就像孩子发脾气。孩子气也恰是达达主义的一个侧面。</p>
-<p>阿尔普也是达达主义发起人之一，他认为要<strong>远离控制</strong>，创作合乎自然的<strong>偶然</strong>的作品，抗拒人类秩序施加影响的冲动。他的《根据随机法则排布的正方形的拼贴画》就是一个代表，其中大卡片上的碎片是自由散落在其上的。这和之后波洛克的创作有异曲同工之妙。库尔特·施特维斯在受到阿尔普的达达主义启发后，也通过各种废物创作出装配艺术品，并为之起名“梅尔兹”。他相信艺术可以来自任何东西。他在家里创作的“梅尔兹堡”就是由各种破铜烂铁组合而成。杜尚创作的《三个标准的终止》也是对于现存教条和知识的质疑。之后杜尚利用现成品创作的各种作品，也体现出他的态度——<strong>别把艺术太当回事</strong>。他以空的Rigaud香水品贴上新商标创作的《美丽气息》在08年拍卖时，高达1148万。</p>
-<p>在社会高度商业化的背景下，世界性的反艺术运动——达达主义最终还是失败了。在坚持叛逆的背景下，1923年，达达主义转变为超现实主义。</p>
-<h2
-id="超现实主义以梦为生1924-1945">超现实主义：以梦为生，1924-1945</h2>
-<h3 id="相关人物及作品-12">相关人物及作品</h3>
-<ul>
-<li>纪尧姆·阿波利奈尔，法国诗人，“超现实”一词的发明人</li>
-<li>安德烈·布勒东（1896-1966），超现实主义倡导人</li>
-<li>巴勃罗·毕加索，《三个舞蹈者》</li>
-<li>胡安·米罗（1893-1983），《小丑的狂欢节》</li>
-<li>马克斯·恩斯特（1891-1976），“擦印画法”，《西里伯斯》、《森林和鸽子》</li>
-<li>萨尔瓦多·达利（1904-1989），《记忆的永恒》</li>
-<li>勒内·马格利特（1898-1967），《受威胁的谋杀者》</li>
-<li>乔治·德·基里科（1888-1978），《爱之歌》</li>
-<li>曼·雷，李·米勒，摄影师，“雷摄影”，中途曝光，《物质相对于思想的第一性》、《色情的面纱》</li>
-<li>佩姬·古根海姆，艺术经纪人、收藏家、艺术圈知名人物</li>
-<li>莫瑞特·古根海姆（1913-1985），曾做过曼·雷的模特，《物体》</li>
-<li>弗里达·卡罗（1907-1954），墨西哥艺术家，《梦》、《自画像：框架》、《自画像：黎明马客栈》</li>
-</ul>
-<h3 id="思潮-12">思潮</h3>
-<p>超现实一词是纪尧姆·阿波利奈尔在他意识流一般的剧本里发明的。而后启发了已经对达达主义厌倦的安德烈·布勒东。他受到弗洛伊德的影响，认为梦境和“<strong>无意识</strong>”的概念格外有趣。面对资本主义社会的危机，左派的他希望挖掘出人们被体面压制的秘密和无意识，从而带来不安和迷失。这和之前康定斯基、马列维奇、蒙德里安的无意识使用还不一样，布勒东的超现实主义力图撕破乌托邦，揭露我们思想里的堕落。他将毕加索的《亚维农的少女》视为超现实主义的著作，并之后又加入他的《三个舞蹈者》。毕加索本人欣然应允。《三个舞蹈者》本身也反应了他那段时间糟糕的精神状态。</p>
-<p>同一时期，胡安·米罗的《小丑的狂欢节》也得到展出。这幅作品像是他潜意识的大爆发，所有的内容都来自自发创作。用布勒东的话说就是“<strong>最纯粹状态下的精神的不自觉</strong>”，推崇写或者画进入脑海的第一个东西，不作任何思考。米罗的工作室附近还活动着他的朋友马克斯·恩斯特。他还是让·阿尔普的好朋友，同样的他的作品《西里伯斯》里也能看到各种怪诞的组合。他还发明了用材料拓印在画纸上的擦印画法。在这种画法里，在拓印好之后，就盯着拓印的形状看，然后将意识里的东西画出来。</p>
-<p>达利和马格里特也是出色的超现实画家，他们的著作里能感受到创作者的恍惚状态，画作里重现了画家的逼真梦境。曼·雷和李·米勒意外发明的中途曝光，创作出了仿佛梦境般的摄影作品，得到布勒东的赞赏。同样的，还有许多女艺术家的身影，就包括莫瑞特·古根海姆和弗里达·卡罗。卡罗以“自己”为主题，创作了许多画作，其中《自画像：框架》成为第一个进入卢浮宫的墨西哥艺术家作品。随着二战到来，欧洲的超现实主义者和达达主义者齐聚到美国。他们包豪斯成员、风格派、俄国构成主义等人汇合在一起，让纽约成了现代艺术的新中心。</p>
-<h2
-id="抽象表现主义宏大的姿态1943-1970">抽象表现主义：宏大的姿态，1943-1970</h2>
-<h3 id="相关人物及作品-13">相关人物及作品</h3>
-<ul>
-<li>佩姬·古根海姆，伦敦当代艺术博物馆创建人</li>
-<li>杰克逊·波洛克（1912-1956），滴画法，《壁画》、《母狼》、《满五英寻》</li>
-<li>汉斯·那慕斯（1915-1990），波洛克的工作照</li>
-<li>威廉·德·库宁（1904-1997），《挖掘》、《画》、《女人》系列</li>
-<li>巴尼特·纽曼（1907-1970），色域画家，《太一》、《人，英勇而崇高》</li>
-<li>马克·罗斯科（1903-1970），《无题》、《赭石，红上之红》</li>
-<li>大卫·史密斯（1906-1965），《澳大利亚》</li>
-<li>安东尼·卡洛（1924-），《一天清晨》</li>
-</ul>
-<h3 id="思潮-13">思潮</h3>
-<p>在尝试建立伦敦现代艺术馆因二战中途失败后，佩姬·古根海姆将阵地从欧洲转移到曼哈顿。她建立了一家以当代艺术见长的画廊，里面包含蒙德里安、达利、布拉克等人的作品。为了掀起一场新的艺术运动，她在画廊里组织了支持新型艺术家的沙龙。波洛克的《速记人物》在其中脱颖而出，得到了蒙德里安的赞赏。波洛克在所罗门·古根海姆的非客观绘画博物馆里工作，在其中得到康定斯基的作品启发。和康定斯基的镇定、冷静不同，波洛克是一股不稳定的、强大的力量。在试图用酒精压制失败后，他通过心理治疗对自我意识、无意识等有了更深度理解，之后他开始尝试无意识行为，自发绘画脑海里的任何事物，在画布上用富有表现力的方式涂抹。他的滴画法受到了拼贴画、施威特斯的“梅尔兹”的影响。起初，波洛克的作品并没有受到重视。在摄影师汉斯·那慕斯的拍摄助推下，他一下成为抽象表现主义的著名人物。</p>
-<p>德·库宁是另一位出名的抽象表现主义艺术家。对生命阴暗面的感受是他艺术风格的一部分，它抵消了作品里和谐的美感。巴尼特·纽曼和马克·罗斯科是色域画家的领军人物，他们分别有纯色中属于自己的签名。纽曼是画中胶带的拉链，罗斯科则是柔和模糊过渡的色彩。罗斯科曾描述他的艺术是“对复杂思想的简单表达”，这也能拿来解释抽象表达主义。</p>
-<h2 id="波普艺术零售疗法1956-1970">波普艺术：零售疗法，1956-1970</h2>
-<h3 id="相关人物及作品-14">相关人物及作品</h3>
-<ul>
-<li>爱德华多·保罗齐（1924-2005），《我是一个有钱人的玩物》</li>
-<li>理查德·汉密尔顿（1922-2011），《是什么让今天的家庭如此不同、如此富有魅力》</li>
-<li>贾斯培·琼斯（1930-），《旗》</li>
-<li>罗伯特·劳申伯格（1925-2008），《字母组合》、《擦除的德·库宁绘画》、《白色绘画》</li>
-<li>约翰·凯奇，《4'33''》</li>
-<li>安迪·沃霍尔（1928-1987），《可口可乐》、《金宝汤罐头》、《玛丽莲双联画》</li>
-<li>罗伊·利希滕斯坦（1923-1997），《嘭！》</li>
-<li>彼得·布莱克（1932-），《帕波军士孤独之心俱乐部乐队》</li>
-<li>克拉斯·欧登伯格（1929-），《商店》、《两个一切都有的芝士汉堡》</li>
-</ul>
-<h3 id="思潮-14">思潮</h3>
-<p>考虑到<strong>消费主义</strong>的主题，爱德华多·保罗齐的《我是一个有钱人的玩物》可以说是波普艺术的第一个样本。波普艺术也离不开当时的流行文化、年轻时尚一代、大众媒体和轻率性行为。同样对消费主义痴迷的还有理查德·汉密尔顿，他的作品发掘了高科技给现代生活带来的乐观主义精神，是消费主义和科技乐观主义的结合。1957年，他将流行文化定义为：<strong>流行、短暂、可消耗、低成本、大量生产、年轻、诙谐、性感、噱头、刺激、大事件</strong>。再之后，贾斯培·琼斯和罗伯特·劳申伯格认为抽象表现主义和现实脱离了联系。他们不希望只关注自己，而希望反映和讨论社会以及生活现实。于是创作出各种新达达主义的装置艺术，如蜡画星条旗的《旗》以及各种材料组合而成的《字母组合》。劳申伯格认为要在“<strong>艺术和生活之间</strong>”创作。他综合了杜尚的“现成品”和施威特斯的“梅尔兹”概念。他解读至上主义《白上之白》的《白色绘画》还启发了约翰·凯奇创作出知名的无声作品《4’33’’》。琼斯和劳申伯格的作品为后来沃霍尔以及利希滕斯坦铺平了道路。</p>
-<p>沃霍尔从广告界的商业艺术家转型而来，紧随保罗齐、汉密尔顿、劳申伯格的部分，创作出《可口可乐》和《热水器》。1962年后他和经纪人欧文·布鲁姆策划了很多反映<strong>大规模生产</strong>和<strong>消费文化</strong>的艺术品。这也成为波普艺术的显著特征。沃霍尔的作品里消除了他作为创作者存在的一切痕迹，他的作品力量在于不带感情的冷淡。他对消费社会的展示和利用让他成为非凡的艺术家。同时期，利希滕斯坦则使用漫画来创作戏剧性的场景。他的绘画方式类似修拉的点彩画法，利希滕斯坦模仿漫画的画法以及印刷过程，从而创作出一种能很快被辨识出来的风格。同样的，个人化的表达象征也成为了不带个人色彩的大量生产的对象。彼得·布莱克作品里讽刺的幽默、<strong>对各路名流的引用</strong>也是波普艺术的普遍特征。在波普艺术中，<strong>艺术和商业的界限很艺术地结合起来</strong>。欧登伯格在此基础上进一步模糊了界限。他的《商店》直接售卖可以在零售商那里购买到的物品，不过这些商品都不可用。1年后，他的《汉堡》诞生。用塑料盒搪瓷做成，以垃圾食品作为艺术主题。</p>
-<p>“艺术并非得看起来像艺术才是艺术”，在这个概念下，新的艺术运动即将诞生。</p>
-<h2
-id="观念主义激流派贫穷艺术行为艺术心灵游戏1952年至今">观念主义/激流派/贫穷艺术/行为艺术：心灵游戏，1952年至今</h2>
-<h3 id="相关人物及作品-15">相关人物及作品</h3>
-<ul>
-<li>马塞尔·杜尚，《泉》</li>
-<li>玛丽娜·阿布拉莫维奇（1946-），《艺术家在现场》</li>
-<li>劳申伯格、约翰·凯奇、梅尔赛·康宁汉在北卡罗来纳州黑山学院的即兴演出</li>
-<li>艾伦·卡普罗，《6处18次即兴演出》</li>
-<li>伊夫·卡莱茵（1928-1962），国际克莱因蓝发明者、《单调交响乐》</li>
-<li>路绮欧·丰塔纳（1899-1968），《空间概念：等待》</li>
-<li>米开朗基罗·皮斯特莱托（1933-），《破衫中的维纳斯》、《行走的雕塑》</li>
-<li>简尼斯·库奈里斯（1936-），《12匹马》</li>
-<li>约瑟夫·博伊斯（1921-1986），《一群》、《我爱美国，美国爱我》、《怎样向一只死兔子解释绘画》</li>
-<li>乔治·马修纳斯（1931-1978），《激流派宣言》</li>
-<li>小野洋子（1933-），《切片》</li>
-<li>布鲁斯·瑙曼（1941-）,《未能在工作室漂浮》、《广场舞》</li>
-<li>弗朗西斯·阿里斯（1959-），《收藏家》、《重演》</li>
-<li>理查德·朗（1945-），地景艺术，《走出来的线》</li>
-<li>罗伯特·史密森（1938-1973），《螺旋形的防波堤》</li>
-</ul>
-<h3 id="思潮-15">思潮</h3>
-<p>在杜尚开头后，艺术开始不必再与美有关，更多关乎<strong>理念</strong>。不论是阿布拉莫维奇的行为艺术，还是凯奇臭名昭著的《4分33秒》，还是卡普罗试图将老百姓变成艺术的一份子，都关乎理念。</p>
-<ul>
-<li><strong>新现实主义</strong>：克莱因对“虚空”——无限空间非常着迷。他的许多绘画都用同一种颜色画成，而后被他申请了专利——克莱因蓝。他还是法国新现实主义的一份子，这一流派力图超越“<strong>人体测量</strong>”，克莱因的做法则是把“人体测量”当成一种行为艺术，让模特蘸满颜料在画布上压靠。冯塔纳则是对自己的画布下手，用剃刀切割出许多划痕，他称之为空间主义。在破坏了一张画布的同时，他制作了一件艺术品。这就是他的理念。</li>
-<li><strong>贫穷艺术</strong>：这里的“贫穷”不是差的意思，而是在艺术创作中用<strong>最基础的材料</strong>，如小树枝、破布、报纸。皮斯特莱托在这个理念下创作出许多装置艺术。《破衫中的维纳斯》就是用二手衣服包裹维纳斯雕像。而这个雕像不过是一个花园里一尊廉价复制品。借此他讽刺消费主义的肤浅。简尼斯·库奈里斯同样走着反资本主义路线，他展出的《12匹马》真的由12匹活马拴在墙上构成。</li>
-<li><strong>激流派</strong>：激流派的理念在马修纳斯于1963年起草的《激流派宣言》中可以看到——<strong>在世界上去除资产阶级的弊病、知识文化、专业文化和商业文化</strong>。约瑟夫·博伊斯也在宣言上签了字。博伊斯的作品往往因奇异给人留下深刻的印象，在《我爱美国，美国爱我》里，他将自己和一只小狼关在一个笼子里长达一周。在他的行为艺术里，艺术不局限于艺术家自己，还包含观众的反应。小野洋子的《切片》也类似，这个行为艺术需要观众用剪刀剪艺术家的衣服。这种和观众的互动能让我们重新审视一些事物</li>
-<li><strong>观念艺术</strong>：有些艺术家也通过自己的身体表演，但不倾向于在观众面前展示。如瑙曼的一些作品里，排在首位的就是<strong>意识</strong>。在阿里斯的作品里，如《收藏家》，也暗示我们因为太忙忽视了身边的环境。理查德·朗和罗伯特·史密森的地景艺术，一样遵循着观念艺术的理念——<strong>只有当观念出色，观念艺术才会出色</strong>。</li>
-</ul>
-<h2 id="极简主义无题1960-1975">极简主义：无题，1960-1975</h2>
-<h3 id="相关人物及作品-16">相关人物及作品</h3>
-<ul>
-<li>唐纳德·贾德（1928-1994），《无题》、《鬣狗爵士舞》</li>
-<li>弗兰克·斯特拉（1936-），《理性与卑劣的联姻2》</li>
-<li>卡尔·安德烈（1935-），《等量物8》、《144块镁方砖》</li>
-<li>丹·弗莱文（1933-1996），《献给V·塔特林纪念碑1》</li>
-<li>索尔·勒维特（1928-2007），《ABCD》</li>
-</ul>
-<h3 id="思潮-16">思潮</h3>
-<p>极简主义里包含了超现实主义、包豪斯的现代主义还有俄罗斯的构成主义。极简主义艺术家的作品以三维雕塑为主，那些工业材料制成的三维立方体边角清晰平直，朴素得近乎无情。尽管风格不同，极简主义艺术家在有一个目标上，还是保持了和之前艺术家的统一，那就是<strong>希望掌控生活</strong>。而他们的办法就是让生活<strong>规范有序</strong>。这些艺术品们有着机械般的冷酷严肃。同波普艺术家一样，极简主义艺术家想抹去自己在作品里的痕迹，甚至是作品里表露出创作者情感、主观性和作者性的一切痕迹。他们的目的是，<strong>让观众集中精力感受面前的实物，而不是分散到作者的个性上</strong>。</p>
-<p>贾德创造的作品就单一而不所不包。其中没有任何隐藏的含义需要寻找，所见即所在。恰是至上主义、观念主义的反面。类似的想法可以在弗兰克·斯特拉的绘画里找到，在实现“你看见什么，就是什么”上，贾德的解法是“削减成分”，斯特拉的解法是对称——哪里都是一个样。和波洛克的无意识行为相反，斯特拉也好、贾德也好，对他们来说思考是最关键的。卡尔·安德烈也受极简主义的影响，他的雕塑更接近我们现在的<strong>装置</strong>，创作完全是回应和影响所处空间和空间里的人。他同样受到了构成主义者塔特林的影响，但谈及塔特林的影响，丹·弗莱文更是他的死忠粉。他的艺术生涯里创作了39座雕塑致敬这位构成主义的创始人，其中典型的《献给V·塔特林纪念碑1》便是通过荧光灯的光来影响周边的环境。在索尔·勒维特的作品《ABCD》里，整齐的立方体以极为冷静客观的方式有条理地摆放着。</p>
-<p>极简主义标志着现代主义的终结，艺术从此迈向后现代主义。</p>
-<h2 id="后现代主义假身份1970-1989">后现代主义：假身份，1970-1989</h2>
-<h3 id="相关人物及作品-17">相关人物及作品</h3>
-<ul>
-<li>辛迪·舍曼（1954-），《无题电影剧照》</li>
-<li>杰夫·沃尔（1946-），《损毁的房间》、《模拟》</li>
-<li>芭芭拉·克鲁格（1954-），《我买故我在》、《你的身体是战场》</li>
-<li>约翰·巴尔代萨里（1931-），《给想卖作品的艺术家的建议》</li>
-<li>弗施利 / 韦斯，《天衣无缝的连锁反应》</li>
-</ul>
-<h3 id="思潮-17">思潮</h3>
-<p>后现代主义有个特点就是捉摸不定，几乎你想让它是什么，它就是什么。它开始于现代主义和极简主义式微的1960年代中期（尽管极简主义到现在尚有影响）。和后印象派一样，后现代主义是对其先驱的发展和批判性回应，也有人说是“对宏大叙事的怀疑”。美国
-AT&amp;T
-大楼就是典型的后现代主义拼缀物。抽样、嘻哈、文化、混合、对公众形象的敏锐意识均成为后现代的特色：自觉地洞察和辛辣讽刺成为通用的语言。如辛迪·舍曼在《无题电影剧照》系列里对好莱坞男性沙文主义的讽刺。这也成为后现代戏仿和扮演艺术的早期代表。舍曼在照片里描绘了电影里的虚构人物，去掉了一切个人特性的痕迹，只基于市场的需要。以照片为媒介进行隐喻的不止辛迪·舍曼和她的赞助人麦当娜。杰夫·沃尔在他的《损毁的房间》里就细腻地隐喻了德拉克罗瓦的油画《萨丹纳帕露斯之死》，尽管他的照片里并没有人物。《模拟》也是如此，这张照片则模拟了古斯塔夫·卡耶博特的《巴黎街道：雨天》。</p>
-<p><strong>现代主义棱角分明，后现代主义没有棱角；现代主义拒绝传统，后现代主义什么都不拒绝。现代主义注重线条和系统性，后现代主义则分散得七零八落。现代主义者相信未来、有冒险精神，后现代主义者则对什么都抱着怀疑和反讽谑的态度</strong>。</p>
-<h2
-id="今日艺术名利场1988-2008至今">今日艺术：名利场，1988-2008至今</h2>
-<h3 id="相关人物及作品-18">相关人物及作品</h3>
-<ul>
-<li>杰夫·昆斯，《天堂制造》</li>
-<li>查普曼兄弟，《悲惨的躯体》</li>
-<li>达米恩·赫斯特（1965-），“冻结”展览，《现场画》、《一千年》、《飞物》</li>
-<li>杰·乔普林、拉里·高古轩，艺术经纪人</li>
-<li>莎拉·卢卡斯，《两个煎鸡蛋和一根烤肉串》、《裸体》</li>
-<li>翠西·艾敏（1963-），《1963至1995年曾经和我睡在一起的每一个人》、《我的床》</li>
-<li>村上隆，《Ko小姐》、《我的寂寞牛仔》</li>
-<li>艾未未，《打碎一个汉代陶罐》</li>
-</ul>
-<h3 id="思潮-18">思潮</h3>
-<p>上世界末至今的艺术还没有个统一的术语来概括，后现代主义是最后一个被广泛认可的艺术运动。不过在这几十年里艺术里，还是有些它的特点，如大型雕像或是“体验”艺术。1988年赫斯特组织的在伦敦的展览是一个关键的时间节点，几乎意味着今日艺术的起始（作者这么认为）。这一代崛起的艺术家怀有一种<strong>企业家精神</strong>，将命运掌控在自己手里。他们很懂得创建基于作品和自己形象的品牌，如赫斯特、昆斯等人。卢卡斯和艾敏也是如此，她们的风格明显，对于媒体的掌握也驾轻就熟，这让她们很快成为名人，变得富有。当然，这些艺术家们的成功离不开像杰·乔普林、拉里·高古轩这样的著名经纪人。成为一名艺术企业家的后果之一是，你会像任何从商的人一样，接受权宜的哲学。街头艺术家们就不受这个限制。街头艺术和涂鸦也有蓬勃的发展。</p>
-<p><em>--END--</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/09/13/the-story-of-art/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2024/09/13/the-story-of-art/" class="post-title-link" itemprop="url">《艺术的故事》撷趣</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-09-13 21:33:10 / 修改时间：21:37:11" itemprop="dateCreated datePublished" datetime="2024-09-13T21:33:10+08:00">2024-09-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E8%89%BA%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">艺术</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2024/09/13/the-story-of-art/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/09/13/the-story-of-art/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>8 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="导论">导论</h2>
-<ul>
-<li>没有艺术这回事，只有艺术家而已</li>
-<li>正是这些艺术家教会了我们如何从大自然中瞥见未曾想象的美</li>
-<li>出色的艺术家不墨守成规，寻求自己的合适的平衡</li>
-</ul>
-<h2 id="奇特的起源">奇特的起源</h2>
-<ul>
-<li>壁画</li>
-<li>部落工匠</li>
-<li>面具、房屋、雕塑、头像</li>
-</ul>
-<h2
-id="追求永恒的艺术埃及美索不达米亚克里特">追求永恒的艺术——埃及、美索不达米亚、克里特</h2>
-<ul>
-<li>此时，最紧要的不是好不好看，而是完不完整</li>
-<li>埃及人对每一处细节都有强烈的秩序感。坐着的雕像必须双手在膝盖上，男人必须比女人黑，太阳神必须是一只鹰，死神必须是一只豺</li>
-<li>图坦卡蒙</li>
-<li>苏美尔人喜好对称和精确</li>
-<li>美索不达米亚人习惯于树碑勒石纪念战功</li>
-</ul>
-<h2
-id="伟大的觉醒希腊公元前7世纪到公元前4世纪">伟大的觉醒——希腊，公元前7世纪到公元前4世纪</h2>
-<ul>
-<li>希腊最初的艺术风格相当朴素、粗糙、原始</li>
-<li>花瓶、雕刻上的初步尝试</li>
-<li>此时艺术家的目标已不再是把所有东西都一目了然地呈现在图里面</li>
-<li>自然的形状和<strong>短缩法</strong></li>
-<li>大量神像在基督教时期被砸碎</li>
-<li>帕特农神庙</li>
-<li>掷铁饼者</li>
-<li>荷马史诗</li>
-</ul>
-<h2
-id="美的王国希腊公元前4世纪到公元1世纪">美的王国——希腊，公元前4世纪到公元1世纪</h2>
-<blockquote>
-<p>艺术走向</p>
-</blockquote>
-<ul>
-<li>建筑的Ionic风格
-<ul>
-<li>Erechtheion神庙</li>
-</ul></li>
-<li>Praxiteles和他的《赫尔墨斯和小狄俄尼索斯》</li>
-<li>观景楼的阿波罗</li>
-<li>米洛的维纳斯</li>
-<li>亚历山大大帝像</li>
-<li>亚历山大帝国之后的希腊艺术</li>
-<li>拉孔奥群像</li>
-<li>庞贝的镶嵌画</li>
-</ul>
-<h2
-id="天下的征服者罗马人佛教徒犹太人基督徒">天下的征服者——罗马人、佛教徒、犹太人、基督徒</h2>
-<ul>
-<li>罗马竞技场</li>
-<li>凯旋门</li>
-<li>万神庙</li>
-<li>图拉真纪功柱</li>
-<li>火窑三士</li>
-<li>基督教的兴起宣告古代世界的终结</li>
-</ul>
-<h2
-id="十字路口骡马和拜占庭5到13世纪">十字路口——骡马和拜占庭，5到13世纪</h2>
-<ul>
-<li>公元311年，君士坦丁大抵确定了基督教会在国家的权力</li>
-<li>虔诚的季度教徒反对大型逼真的雕像，但对绘画的看法却不一样</li>
-<li>希腊艺术里观察自然的能力开始沉睡，教堂里的绘画被当做神圣的典范，有传教的作用</li>
-</ul>
-<h2
-id="向东瞻望伊斯兰教国家中国2到13世纪">向东瞻望——伊斯兰教国家、中国，2到13世纪</h2>
-<ul>
-<li>由于不准表现人物，东方的工匠就放纵想象摆弄各种图案和形状</li>
-<li>波斯地毯</li>
-<li>朝觐图</li>
-<li>佛教的影响</li>
-<li>顾恺之</li>
-<li>对远图</li>
-<li>雨山图</li>
-<li>墨的使用</li>
-</ul>
-<h2 id="西方美术的融合6至11世纪">西方美术的融合——6至11世纪</h2>
-<ul>
-<li>维京人、凯尔特人、撒克逊人的艺术融合</li>
-<li>圣禄嘉像</li>
-<li>亚琛主教堂</li>
-<li>圣马太像</li>
-<li>埃及人画他们知道<strong>存在</strong>的东西，希腊人画他们<strong>看见</strong>的东西，而在中世纪，艺术家还懂得在画里表现他<strong>感觉</strong>到的东西</li>
-<li>贝叶花毯</li>
-</ul>
-<h2 id="战斗的教会12世纪">战斗的教会——12世纪</h2>
-<ul>
-<li>诺曼底风格和罗马式风格</li>
-<li>十字形耳堂、窗间壁</li>
-<li>桶形拱顶和肋式拱顶</li>
-<li>格罗斯特主教堂的烛台</li>
-<li>圣母领报</li>
-<li>艺术家不再感到非得研究和模仿自然界的实际色调层次，获得了自由</li>
-</ul>
-<h2 id="胜利的教会13世纪">胜利的教会——13世纪</h2>
-<ul>
-<li>多里安式和哥特式教堂</li>
-<li>尖拱、扶垛和飞扶垛</li>
-<li>巴黎圣徒小教堂</li>
-<li>巴黎圣母院</li>
-<li>沙特尔主教堂大门</li>
-<li>斯特拉斯堡主教堂大门</li>
-<li>观察自然的目的是把宗教故事叙述的更令人感动</li>
-<li>法国和意大利的艺匠</li>
-<li>佛罗伦萨画家——<strong>乔托</strong>和他的湿壁画</li>
-<li>乔托开启了艺术史上新的一章，从此以后，先是意大利再到其他国家，艺术史成为艺术家的历史</li>
-</ul>
-<h2 id="朝臣和市民14世纪">朝臣和市民——14世纪</h2>
-<ul>
-<li>修建教堂不再是建筑家的主要任务，城市的繁荣还需要许多非宗教性建筑</li>
-<li>在意大利，特别是佛罗伦萨，乔托的艺术已经改变了绘画的概念，古老的拜占庭方式显得陈旧、生硬</li>
-<li>锡耶纳艺术家杜乔（Duccio）</li>
-<li>但丁</li>
-<li>来自意大利和法国的艺术影响通过一些传播中心更广泛地扩散，波西米亚就是其中之一</li>
-<li>国际式风格</li>
-<li>细密画</li>
-<li>兴趣已经发生转移，已经从最佳方式尽可能清楚、尽可能动人地叙述宗教故事转为以忠实的方式展现自然的一角</li>
-<li>皮萨内洛</li>
-</ul>
-<h2 id="征服真实15世纪初期">征服真实——15世纪初期</h2>
-<ul>
-<li>文艺复兴（Renaissance）一词原意是再生或复活，在意大利萌发。意大利人责怪哥特人把罗马帝国搞垮，就把中间时期的艺术成为哥特式，意为野蛮的。因此复活是指复活罗马时期的艺术。</li>
-<li>Filippo Brunelleschi和佛罗伦萨主教堂</li>
-<li><strong>透视法</strong></li>
-<li>马萨乔</li>
-<li>雕塑家<strong>多纳泰罗</strong>（Donatello）</li>
-<li>克劳斯·斯勒特（Claus Sluter）</li>
-<li>Netherlands画家<strong>杨·凡·艾克</strong>，订婚式
-<ul>
-<li>坚持像镜子一样反映现实的全部细节</li>
-<li>有人说他是油画的发明者</li>
-</ul></li>
-<li>瑞士画家康拉德·维茨</li>
-</ul>
-<h2 id="传统和创新意大利15世纪">传统和创新——意大利，15世纪</h2>
-<ul>
-<li>意大利和佛兰德斯的艺术家被新观念吸引：艺术不仅可以动人地描述宗教故事，还可以反映真实世界</li>
-<li>艺术学校</li>
-<li>佛罗伦萨建筑家Leon Battista Alberti</li>
-<li>雕塑家Lorenzo Ghiberti，莎乐美的舞蹈</li>
-<li>安杰利科修士，圣母领报</li>
-<li>保罗·乌切洛，圣马力诺之战</li>
-<li>贝诺佐·哥佐利</li>
-<li>安德烈·曼泰尼亚</li>
-<li>皮耶罗·德拉·弗兰切斯卡，君士但丁大帝之梦</li>
-<li>安东尼奥·波拉尤罗</li>
-<li>桑德罗·波蒂切利，维纳斯诞生</li>
-<li>艺术为现实生活添加美丽和愉悦的作用日益占据主导地位</li>
-</ul>
-<h2 id="传统和创新北方各国15世纪">传统和创新——北方各国，15世纪</h2>
-<ul>
-<li>垂直式风格：剑桥学院礼拜堂</li>
-<li>让·富凯，教皇画像</li>
-<li>凡·德尔·威登，卸下圣体</li>
-<li>胡戈·凡·德尔·格斯，圣母安息</li>
-<li>印刷术和木版画、铜版画</li>
-<li>铜版画大师马丁·舍恩高尔，圣诞之夜</li>
-</ul>
-<h2
-id="和谐的获得托斯卡纳和罗马16世纪初期">和谐的获得——托斯卡纳和罗马，16世纪初期</h2>
-<ul>
-<li>艺术家获得了选择自己喜爱差事的自由</li>
-<li>建筑家Donato Bramante，小神殿</li>
-<li><strong>达·芬奇</strong>（1452-1519），曾在雕塑家安德烈·德尔·韦罗基奥的作坊里做过学徒
-<ul>
-<li>探索可见世界的奥秘</li>
-<li>壁画《最后的晚餐》</li>
-<li>《蒙娜丽莎》</li>
-<li><strong>渐隐法</strong></li>
-</ul></li>
-<li><strong>米开朗基罗·博纳罗蒂</strong>（1475-1564），曾在多美尼克·吉兰达约的作坊里做学徒
-<ul>
-<li>西斯廷礼拜堂壁画</li>
-<li>《创造亚当》</li>
-<li>《垂死的奴隶》</li>
-<li>对人体的出色把握</li>
-</ul></li>
-<li><strong>拉斐尔·桑迪</strong>（1483-1520），曾在彼得罗·佩鲁吉诺的作坊里做学徒
-<ul>
-<li>《大公爵的圣母》</li>
-<li>湿壁画《海中仙女加拉特亚》</li>
-<li>人物形象的纯粹美，生动和宁静的和谐</li>
-</ul></li>
-</ul>
-<h2
-id="光线和色彩威尼斯和意大利北部16世纪初期">光线和色彩——威尼斯和意大利北部，16世纪初期</h2>
-<ul>
-<li>建筑师雅各布·桑索维诺
-<ul>
-<li>圣马可图书馆</li>
-</ul></li>
-<li>画家乔瓦尼·贝利尼和他的徒弟
-<ul>
-<li><strong>乔尔乔内</strong>：《暴风雨》</li>
-<li><strong>提香</strong>：《年轻的英国人》，肖像画、对颜色的驾驭</li>
-</ul></li>
-<li>安东尼奥·阿莱格里，《圣诞之夜》
-<ul>
-<li>光线明暗的处理</li>
-</ul></li>
-</ul>
-<h2
-id="新知识的传播日耳曼和尼德兰16世纪初期">新知识的传播——日耳曼和尼德兰，16世纪初期</h2>
-<ul>
-<li>意大利大师的三项成就：科学透视法、解剖学只是、古典建筑形式</li>
-<li>德国画家
-<ul>
-<li><strong>丢勒</strong>，《启示录》、《野草地》、《耶稣诞生图》</li>
-<li>马蒂亚斯·格吕内瓦尔德，《磔刑图》、《耶稣复活》</li>
-<li>卢卡斯·克拉纳赫，阿尔卑斯山风景画</li>
-</ul></li>
-<li>尼德兰画家
-<ul>
-<li>扬·格赛尔特、马布斯</li>
-<li>博施，《天堂与地狱》</li>
-</ul></li>
-</ul>
-<h2 id="艺术的危机欧洲16世纪后期">艺术的危机——欧洲，16世纪后期</h2>
-<ul>
-<li>寻求艺术表现的新方式和新形式</li>
-<li>佛罗伦萨雕刻家，本韦努托·切利尼，盐盒</li>
-<li>帕尔米贾尼诺，《长颈圣母》</li>
-<li>雕刻家琼·得·布洛尼，《墨丘利》</li>
-<li>雅各布·罗布斯蒂，又称丁托列托，《圣乔治大战恶龙》</li>
-<li>埃尔·格列柯，《第五印》</li>
-<li>北方艺术家面临的危机来自宗教改革，许多新教教徒反对教堂里的雕像和圣徒画像</li>
-<li>小汉斯·霍尔拜因的人像画</li>
-<li>尼古拉斯·希利亚德，《玫瑰里的年轻人》</li>
-<li>绘画的范围变得更细分，画家们走上了专门化道路</li>
-<li>16世纪最伟大的“门类画”大师，<strong>老皮特尔·布吕格尔</strong>，专攻农民生活的场面，《农家婚宴》</li>
-<li>雕刻家让·古戎</li>
-<li>雅客·卡洛</li>
-</ul>
-<h2
-id="视觉和视像欧洲的天主教地区17世纪前半叶">视觉和视像——欧洲的天主教地区，17世纪前半叶</h2>
-<ul>
-<li>巴洛克风格，原意为怪诞、怪异</li>
-<li>耶稣会教堂</li>
-<li>摆脱了手法主义停滞不前的做法，17实际的艺术中更强调光线、色彩、偏爱更复杂的构图</li>
-<li>安尼巴莱·卡拉奇，《圣母哀悼基督》</li>
-<li>卡拉瓦乔，《多疑的多马》</li>
-<li>圭多·雷尼，《曙光女神》</li>
-<li>法国画家，尼古拉·普森</li>
-<li>克劳德·罗兰</li>
-<li>保罗·鲁本斯，充满活力的画面，《加冕的圣母、圣婴和圣徒》</li>
-<li>安东尼·凡·戴科</li>
-<li>蒂亚戈·维拉斯克斯，冷静的观察，《宫女》</li>
-</ul>
-<h2 id="自然的镜子荷兰17世纪">自然的镜子——荷兰，17世纪</h2>
-<ul>
-<li>新教的胜利对绘画影响巨大，肖像画因此发展起来，</li>
-<li>弗兰德·哈尔斯</li>
-<li>很多画家需要先做出画来，再寻找买家</li>
-<li>扬·凡·格因，自然风光</li>
-<li><strong>伦勃朗</strong>，肖像画，《夜巡》，他珍重真实和诚挚胜过和谐与美</li>
-<li>杨·斯特恩，《命名宴》</li>
-<li>雅各布·凡·雷斯达尔，风景画</li>
-<li>威廉·卡尔夫，静物画</li>
-<li>杨·维米尔·凡·德尔福特，《厨妇》</li>
-</ul>
-<h2 id="权力和荣耀17世纪到18世纪">权力和荣耀——17世纪到18世纪</h2>
-<ul>
-<li>意大利
-<ul>
-<li>雕塑家洛伦佐·贝尔尼尼</li>
-<li>画家乔瓦尼·巴蒂斯塔·高里，《耶稣圣名的崇拜》</li>
-<li>弗朗切斯特·瓜尔迪，风景画</li>
-</ul></li>
-<li>法国、德国、意大利
-<ul>
-<li>凡尔赛宫</li>
-<li>建筑家卢卡斯·冯·希尔德，维也纳观景楼</li>
-<li>梅尔克修道院</li>
-<li>洛可可风格，和放纵的装饰活动</li>
-<li>安托万·华托，《游园图》</li>
-</ul></li>
-</ul>
-<h2 id="理性的时代英法18世纪">理性的时代——英法，18世纪</h2>
-<ul>
-<li>建筑家克里斯托佛·雷恩爵士，圣保罗教堂</li>
-<li>当时的国民倾向是反对巴洛克设计的放纵幻想，反对立意支配感情的艺术</li>
-<li>新教在英国的胜利和清教徒对圣像与奢侈的敌视，给予英国艺术传统一个沉重打击</li>
-<li>画家威廉·贺拉斯，《浪子生涯》、《没得分析》</li>
-<li>乔舒亚·雷诺兹，喜欢给画像添加额外的趣味，来表现他们的性格和社会角色</li>
-<li>托马斯·盖恩斯巴勒，肖像画、乡村风景画</li>
-<li>法国画家夏尔丹</li>
-<li>安托万·乌东，《伏尔泰胸像》</li>
-</ul>
-<h2
-id="传统的中断英法美18世纪晚期到19世纪初期">传统的中断——英法美，18世纪晚期到19世纪初期</h2>
-<ul>
-<li>近代时期的剧变
-<ul>
-<li>法国大革命带来的观念转变，理性主义</li>
-<li>绘画从师徒传授到学院教授</li>
-<li>艺术家的题材不再受到限制</li>
-</ul></li>
-<li>把建筑当做严格和简单规则的实践</li>
-<li>美国画家约翰·辛格尔顿·科普利</li>
-<li>英雄题材绘画的推动</li>
-<li>雅克—洛易·达维德，《马拉之死》</li>
-<li>西班牙画家弗朗西斯科·戈雅，蚀刻画，诡异怪相的主题，《巨人》</li>
-<li>威廉·布莱克，不注重精确再现《永恒之神》</li>
-<li>威廉·特纳，强烈的震撼力和喜剧效果，《汽船》</li>
-<li>约翰·康斯特布尔，真实性，《干草车》</li>
-<li>稀疏和传统决裂，有的人追求戏剧性，如特纳；有的人则固守传统，如康斯特布尔。</li>
-</ul>
-<h2 id="持久的革命19世纪">持久的革命——19世纪</h2>
-<ul>
-<li>法国大革命带来的传统中断以及工业革命摧毁的手工业传统都削弱了艺术的基础。手工让位于机器生产，作坊让位于工厂。“风格”和“美”让位给实用性。公众趣味遭到暴发户和残次品的败坏。</li>
-<li>伦敦国会大厦</li>
-<li>艺术家的选择范围扩大，追求风格的手段也增加了</li>
-<li>让-奥古斯特-多米尼克·安格尔，尊崇精确性，鄙视即兴创作，《浴女》</li>
-<li>欧仁·德拉克罗瓦，《冲刺的阿拉伯骑兵》</li>
-<li>让-巴蒂斯特·卡米耶·科罗，风景画</li>
-<li>让-弗朗索瓦·米勒，《拾穗者》</li>
-<li>古斯塔夫·库尔贝，现实主义</li>
-<li>但丁·加布里埃尔·罗塞蒂，“前拉斐尔派兄弟会”，《圣母领报》</li>
-<li>法国画家，<strong>爱德华·马奈</strong>，抛弃柔和的传统明暗法，呈现出自然真实的样子，《隆香赛马》，《船上做画的莫奈》</li>
-<li><strong>克劳德·莫奈</strong>，认为自然的一切都要在现场完成，《印象·日出》
-<ul>
-<li>较多注重画幅的整体效果，较少顾及细节</li>
-<li>“印象主义者”起初是评论家拿来嘲笑这一派的叫法</li>
-</ul></li>
-<li>奥古斯特·雷诺阿，《煎饼磨坊的舞会》</li>
-<li>卡米耶·毕沙罗，《清晨阳光下的意大利大道》</li>
-<li>印象主义的大胜利和摄影术的发明也有关，机械能做得更出色的工作，没必要让画家再做，同时印象主义者受到日本的彩色版画的影响也很多</li>
-<li>埃德加·德加，和印象派保持一定距离</li>
-<li>奥古斯特·罗丹，不重视外形的“完成”，喜欢留一些给观众区想象。</li>
-<li>惠斯勒，优雅图案的构图，《灰色与黑色的布局》、《夜曲》</li>
-</ul>
-<h2 id="追求新标准19世纪晚期">追求新标准——19世纪晚期</h2>
-<ul>
-<li>比利时建筑家维克托·霍尔塔</li>
-<li><strong>保罗·塞尚</strong>，立体主义，忠实于面前的感官印象，保证画面的清晰和秩序，“现代艺术之父”，《圣维克托山》</li>
-<li><strong>点彩派</strong>，乔治·修拉</li>
-<li><strong>凡·高</strong>，表现主义，用色彩和形状表达感受，有意识地抛开“模仿自然”的目标，《玉米地》、《阿尔勒的寓所》</li>
-<li><strong>保罗·高更</strong>，原始主义，追求他向往的直率、单纯表达的效果</li>
-<li>皮埃尔·博纳尔，《餐桌》</li>
-<li>图卢兹-劳特雷克，招贴画艺术</li>
-</ul>
-<h2 id="实验性美术20世纪前半叶">实验性美术，20世纪前半叶</h2>
-<ul>
-<li>建筑师，劳埃德·赖特</li>
-<li>德绍的<strong>包豪斯</strong>学校，功能主义</li>
-<li><strong>爱德华·蒙克</strong>，《呐喊》</li>
-<li>凯西·珂勒惠支，《先知》、《需求》</li>
-<li>桥社，埃米尔·诺尔德</li>
-<li>恩斯特·巴拉赫，《请赐怜悯！》</li>
-<li>奥地利画家奥斯卡·科柯施卡，《玩耍的孩子》</li>
-<li>瓦西里·康定斯基，抽象艺术《哥萨克人》</li>
-<li>野兽派，追求强烈的色彩刺激，亨利·马蒂斯，《餐桌》</li>
-<li><strong>巴勃罗·毕加索</strong>，立体主义，《小提琴与葡萄》</li>
-<li>保罗·克利，《小矮人的小故事》</li>
-<li>莱昂内尔·法宁格，《帆船》</li>
-<li><strong>皮特·蒙德里安</strong>，《红，黑，蓝，黄和灰的够图》</li>
-<li>本·尼克尔森，《浮雕》</li>
-<li>亚历山大·考尔德，《宇宙》</li>
-<li>亨利·卢梭，原始主义</li>
-<li>格兰特·伍德、马尔克·夏加尔</li>
-<li>基里科 《爱之歌》</li>
-<li>勒内·马格利特，<strong>超现实主义</strong>，《知其不可为而为之》</li>
-<li><strong>萨尔瓦多·达利</strong>，超现实主义</li>
-<li><strong>实际上根本没有艺术，只有艺术家</strong></li>
-</ul>
-<h2 id="没有结尾的故事现代主义">没有结尾的故事——现代主义</h2>
-<ul>
-<li>达达派，马塞尔·杜尚</li>
-<li>库特·斯威尔特</li>
-<li>杰克逊·波洛克，斑渍画法，抽象表现主义</li>
-<li>弗朗茨·克兰，《白色形体》</li>
-<li>皮埃尔·苏拉热</li>
-<li>尼古拉·德·史特尔</li>
-<li>佐尔坦·克梅尼</li>
-<li>马力诺·马里尼</li>
-<li>乔治·莫兰迪</li>
-<li>艺术演变的影响因素
-<ul>
-<li>历史进程和变化，如法国大革命</li>
-<li>科学技术发展，如工业革命、摄影术发明</li>
-<li>回避理性和机械性的东西</li>
-<li>艺术家的心理学假设，如弗洛伊德、荣格的理论</li>
-<li>艺术教学发展</li>
-<li>政治因素</li>
-</ul></li>
-<li>后现代主义</li>
-</ul>
-<p><em>--END--</em></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://shenlvmeng.github.com/blog/2024/08/22/zhong-guo-wen-xue-chuan-tong/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-      <meta itemprop="name" content="shenlvmeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shenlvmeng's Blog">
-      <meta itemprop="description" content="Be sharp, my friend.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shenlvmeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/blog/2024/08/22/zhong-guo-wen-xue-chuan-tong/" class="post-title-link" itemprop="url">中国文学传统</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-08-22 22:24:20 / 修改时间：22:30:40" itemprop="dateCreated datePublished" datetime="2024-08-22T22:24:20+08:00">2024-08-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/blog/categories/%E6%96%87%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">文史</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/blog/2024/08/22/zhong-guo-wen-xue-chuan-tong/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/08/22/zhong-guo-wen-xue-chuan-tong/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>17k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>28 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本书实际上一本导论性质的教材。书名实际颇有些迷惑性。看似讲述中国文学里不断在文学作品里传承的默契和经验，但实际却是将中国文学置于整个传统文化和历史社会的大背景下，研究文学作品表达的“<strong>表达者</strong>”和承载表达的“<strong>体裁</strong>”。而没有围绕“表达”本身展开许多。这对我是种遗憾。但也许是作为中文系的导论、文科学生的通识教育课程，先了解全貌更为关键。书的上半关于士大夫和庶民文化的梳理颇有意思，后半文体发展的介绍就略显科普性质。整体看，依旧是一本坦诚清晰的好教材。</p>
-<h2 id="讲什么">讲什么</h2>
-<p>文学是以某种诗意的感知（如秋天——悲伤）造成的<strong>文学经验</strong>为基础；经验是可以传承和学习积累的，因此形成一种传统；传统源远流长，便有民族性，即中华民族的特点。从而构成了本书的核心脉络，并以此来介绍这本书的核心内容——<strong>中国文学传统</strong>。</p>
-<p>当然除了经验，还有个表达问题。把经验表达出来，就是创作。创作需要“诗眼文心”，即出色的文学感知力所获得的文学经验。不同人的表达和传达出的意思还会有所变化，因作者个人的特殊经历、遭遇而异。另外，体裁是作品的存在形式，对于理解作品、学习文学传统也是必须掌握的。因此，全书分别从<strong>作者</strong>和<strong>作品体裁</strong>来展开，讲授“表达”的“经验”，以及“经验”演变而形成的“传统”。</p>
-<h2 id="作者论">作者论</h2>
-<h3 id="士大夫及其表达方式">士大夫及其表达方式</h3>
-<p>从身份角度，可以将中国传统的作者分成两类：</p>
-<ul>
-<li>绝大多数诗词、文言文的作者都是所谓“<strong>士大夫</strong>”，或接近士大夫的幕僚、乡绅、门客、闺阁等角色</li>
-<li>与此相对的是通俗文学的作者，往往是无名的<strong>庶民</strong></li>
-</ul>
-<p>笼统来讲的话，第一种情形属于士大夫的精英文化、第二种则是庶民的通俗文化。中国的士大夫具有双重身份，既像学者又像官员，这一方面是因为官僚的<strong>考试选拔制度</strong>，另一方面是纸的发明和普及让中国的政治运作很早就呈现了<strong>文书化</strong>的特点，我国传统的政治家都要能写文章。</p>
-<h4 id="士大夫的来源">士大夫的来源</h4>
-<p>士大夫一词起源于西周。自春秋战国起，士大夫其实是指世袭领主的封建规则阶层。自秦始皇废除周政的封建，使中国进入君主集权的帝国时代。此前的“封建士大夫”就演化为之后的“帝国士大夫”。一个士大夫若完全认同自己的身份，那他的力量则来源于皇帝的委任，而非自己背后的家族势力。他的立场应当是抛开道德的国家主义。但同时，作为知识分子，他的古典修养却使他更容易认同儒家的道德观念。这也是士大夫的<strong>双重角色</strong>所在。</p>
-<h4 id="从门阀士大夫到科举士大夫">从门阀士大夫到科举士大夫</h4>
-<p>帝国士大夫里也有从门阀到科举的演变过程。隋炀帝发明科举之前是士族门阀的时代。世家大族代代相传，此时的士大夫虽在帝国体质之下，但更像世袭的封建士大夫。门阀士大夫不会对皇帝唯命是从，他们优先维护家族和集团的利益。此时的皇帝为了维持统治稳定，需要处理好和世族的关系，照顾各方利益。</p>
-<p>为了更好掌控士大夫，隋炀帝发明“进士科”的考试制度后，开始培植取代门阀士大夫的科举士大夫。直到唐朝，社会里还残留严重的贵族意识和贵族势力。新的科举士大夫没有家族实力的支撑，荣辱完全来自朝廷命令。从唐到宋，士大夫的性质逐渐转变，主体部分从门阀士大夫转为科举士大夫。自从唐朝开始到北宋后，中国文学史的诗词古文作家，核心成员大多都是进士，或向进士努力的人。因此，从北宋士大夫的作品中，可以看到他们对于自己身份的认同——以天下为己任，如范仲淹的“先天下之忧而忧”。这种帝国立场的精神，和“通经行道”的文化传承结合，体现着<strong>知识分子</strong>和<strong>帝国官僚</strong>的双重身份。</p>
-<h4 id="士大夫政治">士大夫政治</h4>
-<p>由士大夫的来源能看到，士大夫的文学必然与政治关系密切。门阀士大夫主要是家族、集团、地域的政治代言人，“<strong>代表性</strong>”是他们的立足之本。新的科举士大夫没有背后势力支撑，他们依靠知识被选拔，“<strong>合理性</strong>”是他们的立足之本。他们能代表的不是具体的利益，而是观念、意识形态。<strong>从“代表性”到“合理性”的政治转变</strong>是很明显的。</p>
-<p>但科举士大夫同样需要力量的团结手段。没有血缘，靠的是“<strong>朋党</strong>”。即同年兄弟、同乡、师生关系这种政治结盟方式。这种<strong>朋党政治</strong>，是科举士大夫的政治的重要实施途径。在《西游记》、《三国演义》等一些作品里，也能看到结拜这种故事。</p>
-<h4 id="士大夫的精神世界">士大夫的精神世界</h4>
-<p><strong>儒、佛、道是对中国传统思想和士大夫精神影响最主要的三教</strong>。虽称为“教”，实际上更像三种思想。用作者的话来说，除了少数特色鲜明的思想家外，大多数士大夫都是：<strong>自然观近“道”，社会观近“儒”，人生观近“佛”</strong>。这和三教各自的特点也是匹配的。只有佛教不避讳生死，反而以此展开；但佛教的尺度又太大，不能反应到自然，《周易》的思想此时就更合适；而三教中，只有儒教是入世的，因此处理社会问题还得靠儒家圣人的经验。</p>
-<p>在“三教盛行”的唐朝，王维、李白、杜甫就分别呈现了偏佛、偏道、偏儒的倾向，各自被成为诗佛、诗仙、诗圣。三人中出身更好的王维思想追求更纯粹一些，而进士们因为要考虑现实，思想就更为杂糅。这并不算是缺点。科举士大夫靠知识赢得自己的位置，但知识越渊博，各派的思想矛盾也会越多。与此同时，士大夫又需要从繁冗的知识出发，建构出确切的理论，规劝皇帝，指导帝国发展，确立自己的存在基础。从这个角度也可看到这个阶层的负担之重。</p>
-<h4 id="士大夫与文学">士大夫与文学</h4>
-<p>考试入仕和“文书行政”模式使士大夫们都有足够的书面表达能力支持文学创作。科举起初考的是诗赋，这为唐诗繁荣起了不小作用。但毕竟是录取政治方面人才，考文学显得有些文不对题。于是在王安石时期改为考“经义”和“策论”，一是经学论文，一是施政提案。这是从“<strong>诗赋取士</strong>”到“<strong>八股取士</strong>”的转折。对于这点改变当然也有反对意见。</p>
-<p>一方面是寒门子弟更欢迎诗赋考试，因为凭才华竞争，不需要获取政治、礼仪方面的知识，门槛更低。另一方面，开始考察施政观点时，朝廷和当前执政者的意识形态，一定会影响对文章价值的判断。这就构成了思想专制的嫌疑。苏轼就极为反对。就连科举革命最后的受益者道学家们也经常发表厌恶科举的言论，认为不符合孔孟之道。</p>
-<p>总的来说，自汉魏六朝以来，诗歌盛行，文学观念逐渐明确，贵族士大夫得以展现其文学方面特长；到了唐代，出身低微的士人可以借助文学才能，通过进士考试走入仕途；而后到宋代开始出现将文学逐出科举的努力，士大夫被要求在学术思想乃至政教民生领域发言，当道学成为科举考试核心内容后，文学写作对于一个士大夫来说，就成为“余事”了。</p>
-<h4 id="科举士大夫的困境">科举士大夫的困境</h4>
-<p>科举士大夫文化发展商整体面临困境：</p>
-<ol type="1">
-<li><strong>意识形态</strong>问题，作为思想指导的儒学，和帝国秩序并不完全契合</li>
-<li>士大夫的<strong>知识教育</strong>并不实用，缺乏近代意义上的大学给予职业教育</li>
-<li><strong>经济基础</strong>问题，科举士大夫的俸禄有限，难以避免要在俸禄外寻求经济资源</li>
-<li><strong>数量</strong>问题，坑位有限</li>
-<li><strong>特权</strong>问题，皇帝的特权会蔓延开来，到宗室、外戚、宦官等身上，权力寻租腐蚀士大夫阶层</li>
-</ol>
-<p>在宋代时期，科举士大夫已经发展到巅峰，而后就是上面问题的循环往复出现。</p>
-<h4 id="文学创作中的身份分化">文学创作中的身份分化</h4>
-<p>大概从北宋后期起，士大夫的地主、富农化越来越不可避免。如果家族能连续培养出进士，就会逐渐形成类似六朝的“<strong>世族</strong>”群体。如果只能维持两三代子弟维持，后续的非士大夫身份文化人就成为了“<strong>乡绅</strong>”。实际上，随着时间推移，绝大多数士大夫家族都会不可避免地变成“乡绅”。除了乡绅胥吏，和士大夫接近的幕僚、馆客、门生也构成非士大夫的文人群体。到了南宋，这种非士大夫身份的著名文人就不算特例了。不过<strong>他们往往需要依附于士大夫</strong>，在专业创作外，来获得生活上的有力支持。</p>
-<p>除了这一种出路外，随着出版作品集出现，<strong>作品的商业化</strong>也是一种办法。这也让中国文学出现了一个新的作者群体——江湖诗人。但这条出路大体上还是辅助作用，士大夫的赏识和自主还是主要办法。在江湖诗人中，以禅僧为主的僧道作者，构成了宋代非士大夫作者的主要部分。</p>
-<h3 id="庶民文学的群体性作者">庶民文学的群体性“作者”</h3>
-<p><strong>庶民文化</strong>不同于士大夫文化的很重要一点就是作者的<strong>群体性特征</strong>，并不像士大夫那样强调个人的著作权。实际上，在晚清前的人们来看，说唱、小说、戏剧这些都只算娱乐，并不能算文学。庶民文化自古便存在，大多数经过士大夫的转述和记录才被后人倾听到，如《诗经》或乐府中的民歌。但庶民文化在整体上进入后人视野，就需要<strong>庶民本身对表达工具的掌握</strong>，而这需要教育的普及、出版技术的进步、士大夫和庶民阶层的流动、娱乐设施的建设等客观条件。</p>
-<h4 id="近世论和庶民文化">“近世”论和庶民文化</h4>
-<p>不同于笼统将战国到清末的这段历史视为“封建社会”。内藤湖南的<strong>古代</strong>、<strong>中世</strong>、<strong>近世</strong>三个阶段划分要更确切些。其中汉朝前为古代，经过三国过渡，魏晋以降到唐朝为中世，经过五代时期过渡，到宋朝之后为近世。唐宋转型阶段，<strong>贵族门阀政治瓦解</strong>，<strong>君主独裁下的科举文官体制确定</strong>，<strong>庶民文化随之兴起</strong>。</p>
-<p>之所以要叫“近世”，而不是“近代”，就是刻意和西方史学的划分区分开。东方世界的近代通常从西方侵略开始，如日本的明治维新。但西方的不同在于他们从封建贵族到资本主义兴起中间的君主独裁统治时间很短。而在中国这段时间很长，没有贵族的这千年时间里，是<strong>科举士大夫和庶民的天下</strong>。而这个时期里社会阶层的流动，使庶民文化逐渐进入我们的历史视野。在上层士大夫文化里孕育出道学这样的帝国指导思想时，庶民文化里也产生了高水平佳作，如四大奇书。</p>
-<h4 id="庶民文学">庶民文学</h4>
-<p>庶民文学，也可以叫“大众文学”。在宋元时期，庶民文学的原生状态主要是充满错别字的拙劣文本或仅靠口头流传的白话小说、剧本、说唱、民谣。除了少数杰作进入士大夫视野，得以修订出版传播外，流传民间的数量很大。对于广大的庶民社会来说，它们的意义不仅是专业领域意义上的“文学”，<strong>更类似古代神话之于原始部族，几乎就是精神生活的全部</strong>。在这种形态下，庶民文学根本谈不上有著作权的作者，“作者”只能是群体性的。</p>
-<h4 id="文本问题和作者问题">文本问题和“作者”问题</h4>
-<p>上面说到，庶民文学的一些杰出作品，获得相对高层的文人留意后，经过整理修订可以出版相对正式的文本。上面往往会标注编订人或出版人的姓名，看起来就像是有了<strong>标准的文本</strong>和<strong>标准的作者</strong>。但这不意味着他就有了著作权，只是对文本的形成有所贡献而已。《西游记》、《水浒传》、《封神演义》都有更早期的说书话本为前身。《三国演义》、《金瓶梅》、《七侠五义》这种应该也经历了类似的演变过程。从这些著作的文本里，也能察觉出一些“词话”的痕迹，书里就举了一些例子。</p>
-<p>在改编过程里，漏编、错编一些故事，亦或是编织得不合理都是很容易出现的情况。为了和长篇小说的定义对齐，<strong>现在我们阅读的“标准文本”是由现代研究者选择、校勘、确定之后，从历史里的诸多文本中选择出的“最好”的那个，是其传播的历史过程中的某个横截面</strong>。这样的文本通常会标一个“作者”名，如罗贯中、施耐庵、吴承恩、兰陵笑笑生。但以庶民文学的群体性作者特点看，他们都没有准确的身份信息。当然白话小说在后来也出现了真正由文人创作的作品，如《红楼梦》、《镜花缘》等。其中可以寄寓作者的志趣、具备较高的思想价值、其性质更类似士大夫文化。</p>
-<p>总之，面对庶民文学时，<strong>应避免执着文本的分析，以及“作者”个人信息的解读</strong>。</p>
-<h4 id="以西游记为例">以《西游记》为例</h4>
-<p>在百回本《西游记》之前，其中的故事实际上就存在了。唐僧和孙悟空的主角关系甚至发生了翻转。从唐僧为主角转变到以孙悟空为绝对的主人公。《西游记》的文本里也很容易注意到一些故事改编过程中暴露的漏洞，和编者本身的知识错误。这些都表现出作品本身不是由有士大夫知识的“作者”完成的。它的作者是群体性的。</p>
-<h4 id="庶民文学的批评方法">庶民文学的批评方法</h4>
-<p>我们讲了庶民文学的文本和作者特点——流动的文本、群体的作者。这两方面和士大夫文学都有明显不同。因此我们对庶民文学的欣赏和批评方法自然也会有所差异。</p>
-<ul>
-<li>将作者视作庶民<strong>群体</strong>，避免研究个别作者的生平，这些作品的蕴含价值会更高</li>
-<li>放弃对个别文本的执着，有“<strong>全览式</strong>”的文本观，体会穿越各历史时期的文本</li>
-<li>对于特别的文学形式，有具体的艺术分析方法，如以话本的标准看，《水浒传》、《三国演义》的每个片段都会比《红楼梦》精彩。有时刻意夸大任务性格，说书人可以挽救沉闷赢得喝彩</li>
-</ul>
-<hr />
-<h2 id="作品体裁论">作品体裁论</h2>
-<h3 id="中国传统的文献构成和文体分类">中国传统的文献构成和文体分类</h3>
-<p>要研究中国文学传统，就要去看古籍而非注解。在浏览学习古籍上，要先掌握文言文阅读能力和文献的分类。</p>
-<p>刘歆的“<strong>七略</strong>”和隋唐的<strong>四部</strong>——经、史、子、集——是经典的分类办法。其中“集”部的文学作品最集中。以欧阳修的自选别集《居士集》为例，能看到丰富的<strong>文体</strong>和<strong>文类</strong>划分。文体可以分为诗、赋、文，文下根据用途、格式又可分为各种文类。清代姚鼐将众多的文类聚合成了一些类型：论辩类、序跋类、奏议类、书说类、赠序类、诏令类、传状类、碑志类、杂记类、颂赞类、箴铭类、辞赋类、哀祭类。</p>
-<p>文类的产生起初是为了实用。不同文类不仅格式不同，行文风格也逐渐有所区分。在西方并无发展到如此完备的文类系统。只有在中国才能看到发展如此壮观的<strong>文体文类和写作风格的关联</strong>。西方的“风格即人”在这里不太适用。后面的章节将按诗、词、曲、文、辞赋以及庶民文学里的小说、戏剧、说唱展开介绍各体裁的发展和各自特点。</p>
-<h3 id="辞赋">辞赋</h3>
-<p>赋是介于诗和文中间的一种文体，来源和楚辞密切相关。楚辞的原意是楚地的歌词，但在文学创作上，辞赋是五言、七言诗歌以外的另一种体制。</p>
-<p>在楚辞前，古代文献中就流传着一些歌谣，如《卿云歌》，还被定为国歌。到了战国后期，长江流域的楚国形成的楚辞被汉代编为《楚辞》一书。按理说战国里除了楚国，其他国家应该也有民歌才对，但因为汉朝是以楚人造反夺取了秦朝创立的，所以才特意重视楚地流传下来的东西。</p>
-<p>楚辞中也有不同的文章体式：</p>
-<ul>
-<li>天问体：只问不答</li>
-<li>橘颂体：以“兮”结尾。古代的“兮”类似现代的“啊”，但若改成新的语气词，就很奇怪。所以这个古老的语气词在后世的楚辞中保留了下来</li>
-<li>楚歌：在句中加“兮”，如大风歌</li>
-<li>骚体：两句中加“兮”，上下串联，以《离骚》为代表。《离骚》传说作者为屈原，但战国时代是否有这样一个人物，还存疑。从文学角度看，《离骚》在蕴含价值判断的地方，通常用“美”代表正面价值。颇有特点。</li>
-</ul>
-<p>在楚辞中，由于感叹词兮的存在，<strong>情感往往是源源不断的，适宜表达复杂、深厚的感情</strong>。</p>
-<p>从汉到唐，赋成为了核心的文学体裁。和诗的区别在于，<strong>诗是唱的，赋是读的</strong>。当然赋的特点不止于此。赋的种类大抵有<strong>楚辞体</strong>、<strong>诗体</strong>、<strong>文章体</strong>，形式上相对自由。其中楚辞体和诗体和楚辞、诗类似。文章体的赋和其他文章到有所区别，有自己的特色。与一般的言事说理的文不同，<strong>辞赋往往突出描写、刻画、形容的功能</strong>，以至于被认为过度刺激感官而被批评。随着文章骈化，赋也倾向于采用比较整齐的句式，形成骈俪对偶。在六朝骈赋中，“<strong>抒情小赋</strong>”和“<strong>咏物赋</strong>”最受关注，在文人中还引发同类赋的相互竞争。但除此以外，也有比照汉代<strong>大赋</strong>的创作，如谢灵运的《山居赋》、庾信的《哀江南赋》。</p>
-<p>到了唐朝，<strong>律赋</strong>在进士科考试中形成，即格律较严格的赋体。一般情况是从古代经典中摘取一句话做赋题，再找一句八个字的成语，依次为韵。律赋因为是考试文体，唐人写的很多。在科举不考诗赋后，便不受重视。赋的发展到宋朝便是“<strong>文赋</strong>”，受到古文运动的影响，文赋的形式比照古文，更为自由。作为赋，它依旧重视描述，但加入了宋人最喜欢的议论成分。之后由于科举考试的变化，文人写赋成了纯粹的兴趣，缺少了持续动力，再加上诗和文逐渐成熟，赋渐渐淡出文坛。</p>
-<h3 id="诗">诗</h3>
-<h4 id="作为歌词的存在">作为歌词的存在</h4>
-<p>诗歌本是一体，读出来是诗，唱出来是歌。从诗歌脱胎而来的《诗经》成为最早的固化形态，即四言。在这个时期，很多人认定只有和《诗经》体制相似的作品才配叫“诗”。再之后是楚辞，不能叫做“诗”。直到东汉班固据刘歆的《七略》作《汉书·艺文传》，依据<strong>诗即是歌词</strong>的观念，将汉代的乐府歌词也叫做“诗”。诗的历史因此得到延续，后面的五言、七言体制诗流行起来，从汉代绵延至今。</p>
-<p>五言和七言体制实际来源于汉代的乐府歌词。乐府诗的创作到曹魏时期，因为曹操、曹丕、曹植的重视和提倡，还进入到一个高潮。乐府诗是汉魏的一种歌词形态，更是诗歌创作的一大传统。一些乐府旧题如《出塞》《燕歌行》等为后朝留下了上好的创作题材。在汉魏乐府后，南北朝也曾产生新的乐府曲目，等到了唐朝，诗人们创作的诗和音乐就没什么关系了。</p>
-<h4 id="字音和声律">字音和声律</h4>
-<p>因为和“歌”一同而来，诗具有天生的<strong>音乐性</strong>。早期的四言诗里的语素组合比较简单，因为汉语的两字词比较多，组合一般是“二二”，“一三”和“三一”很少。五言多出的一字提供了更多结构的可能性，供诗人尝试，“二二一”、“二一二”、“一二二”都有出现，也有少量的“二三”、“三二”组合。七言则主要是在五言上再加一个阅读单位。五言诗在六朝时期大获发展，七言诗则是在唐朝走向成熟。</p>
-<p>诗的音乐性体现在声律。以南朝人沈约的理论，即“四声八病”，讲究平仄。近体诗声律的规则形成要到唐代，但完全遵守则从宋人开始。简单来说，可概括为：<strong>双音节、平仄交替、对、粘、平声韵</strong>。除此以外，律诗的四联里，中间两联一般要求对偶。当然，要求每个字都符合要求有时过于严苛。实际创作时，有“一三五不论、二四六分明”的说法，即第一、三、五字可平可仄，但第二、四、六字需严格遵守。但我们知道汉字发音有历史变化，所以实际创作时，并不是按照诗人自己的发音，而是有官方编订的韵书。<strong>唐朝格律的形成与科举考试文体的程式化也有关系</strong>。</p>
-<h4 id="唐音和宋调">“唐音”和“宋调”</h4>
-<p>可以说，诗在体制上的发展就到唐朝为止。此时也进入诗这个文体的创作高峰期。就像宋的“词”、元的“曲”。这一方面离不开唐人做诗的热情，而科举考试对诗的考察是维护这种热情的关键。作为那个时代的士，基本的身份标志就是能做诗。由唐如、入宋后，随着贵族消亡，科举阶层的庞大，形成了新的兼顾政治领导和文化精英身份的特殊共同体，在群体里，诗同时具有自我呈现和社会交际的双重功能。唐诗和宋诗，经常被认为<strong>前者重“情”，后者重“理”</strong>。这也构成了中国诗歌批评最核心的一个传统。</p>
-<blockquote>
-<p>空山不见人，但闻人语响。返景入深林、复照青苔上。 ——《鹿柴》
-独坐幽篁里，弹琴复长啸。深林人不知，明月来相照。 ——《竹里馆》</p>
-</blockquote>
-<p>以王维的诗为例，在诗句中，很巧妙地在空间形式里传达出时间性的存在，使画面具有禅意。回头再看黄庭坚的《题山谷石牛洞》</p>
-<blockquote>
-<p>司命无心播物，祖师有记传衣。白云横而不渡，高鸟倦而犹飞。</p>
-</blockquote>
-<p>两段里用对比揭示禅法违背自然地一面，构建了人文和自然现象之间的对抗局面，开启了“以议论为诗”的序幕。在同一个话题里，黄庭坚传达的意思要复杂得多。王维的禅是一种享受，黄庭坚的禅是一个话题。</p>
-<p>而后李白《梁甫吟》和苏轼的《百步洪》作品对比，也能看出李白是喷薄而出的激情狂涛，苏轼的则是理性的思辨；李白是惊天地泣鬼神的梦幻展示，苏轼则是鞭辟入里的智慧随处点化。李白具备所有我们认同为诗的东西，苏轼则把不具备诗特质的东西变成诗。</p>
-<h4
-id="诗人的历史境遇和自我认同分析杜甫">诗人的历史境遇和自我认同——分析杜甫</h4>
-<p>写诗不仅关乎个人声誉，还有进入社会上层的机会和实际的经济利益。六朝时期的创作主要依靠贵族文人，在相对封闭的交际圈里传播，类似西方的沙龙。在进士科考试后，诗歌走出宫廷的小圈子，成为士人在公共舞台展示自我的基本手段。一些善于作诗的寒士借助科举进入仕途。士大夫感激论天下事，奋不顾身的风采在北宋就有了很完美的呈现。另一方面，因为进士出身有暴发户的性质，中国文士，包括很多著名的诗人被承认有才华的同时，也会被批评为作风轻浮，这种<strong>轻薄的无端指责</strong>，似乎是从唐朝开始的一种习惯。不仅王勃、李白，连保守的杜甫、韩愈都逃不脱。而杜甫的个人经历，体现出<strong>从“门户私计”到国家意识</strong>在诗歌里的转向。</p>
-<p>杜甫出身一般，一开始也不像王维、李白一样受人欣赏，还有一段追随李白的短暂时光。然而杜甫很善于自我体认，在追随李白不久，就对后者的生存方式提出了疑问。</p>
-<blockquote>
-<p>秋来相顾尚飘蓬，未就丹砂愧葛洪。痛饮狂歌空度日，飞扬跋扈为谁雄？</p>
-</blockquote>
-<p>深刻的反省能力使杜甫企图拜托李白为标志的盛唐诗人的生存形态。而后杜甫靠献赋获得官职，但杜甫在这方面水平不如他的诗。安史之乱后，杜甫靠冒死逃出京城，投奔流亡的唐朝政权获得赏识，成为了王维的同事。一句“旌旗日暖龙蛇动，宫殿风微燕雀高”，体现出和王维不一样的心态。而后不久，他放弃了公职，回到西川。杜甫入蜀后，作品逐渐成熟，诗圣的地位也是在此奠定。在那个年代，<strong>诗歌主要用来表现才华、表达诉求</strong>，读诗的人不习惯从是隔离获得某种道理的深刻剖析，因此也不容易发现杜甫在诗里表达的内心纠结。而这正是北宋士大夫诗人的热衷。因此杜诗在生前不受好评，到了身后备受推崇。<strong>杜甫的人生价值观始终以服务国家为指引，这一点上特别死心塌地。与前人相比，这也是他创造历史的地方，使他无愧诗圣称号，赢得之后诗人的崇敬</strong>。用陆游的话说，就是“位卑未敢忘忧国”。</p>
-<h3 id="词曲">词曲</h3>
-<p>词被称作“诗余”，但这是一种误解的叫法。不是可以把诗的句子弄得长短不齐，而是要和音乐相配。</p>
-<h4 id="从唐曲子到宋词">从唐曲子到宋词</h4>
-<p>词在唐朝称作“曲子”或“曲子词”，就是流行音乐的歌词。和乐府诗先有诗再有曲不同，曲子词则是主动根据音乐的节拍调整词句的长短来填词。士大夫填词之风从唐中期起。词一般分上下两<strong>阙</strong>。每一阙里面又由多<strong>拍</strong>组成。一般来说，词中押韵的地方就是拍的标志。唐人爱讲规矩，一段曲子的拍数是稳定的。<strong>一阕一般是二拍或四拍</strong>。这样一曲就是四拍或八拍。四拍的叫做<strong>令</strong>，八拍的叫做<strong>慢</strong>。一首词一般是将曲子演奏两遍，上下阕的开头略有区别，称作“<strong>换头</strong>”。拍中的每一字的平仄规律、每句的字数、以及押韵的地方构成了“词谱”。每支曲子的名字则是<strong>词牌</strong>。</p>
-<p>最早的曲子词来源于敦煌石室里出图的《云谣集杂曲子》。但最出名的则是五代时期的《花间集》。此集专门收集男女绮情之事。一般认为“慢”在填词里的大量出现，和北宋的柳永有关。但北宋最著名的词人苏轼也独创了许多“慢”调，如《沁园春》、《水调歌头》等。在唐宋时，因为曲调靠人口耳相授，语音也有变化。歌词和曲调的配合其实有不小的自由度，至于元明已有，更成为脱离音乐的句式特殊的格律诗。在格律上，因为更自由的句式，单词音节的使用更多样。</p>
-<h4 id="士大夫化">士大夫化</h4>
-<p>唐代士人填词还是少数，宋代则多数有过填词。宋词以士大夫词为主。所谓士大夫化，不仅指作者，也指<strong>作者的写作姿态</strong>。<strong>抒情主体从词中代言的女性转变为士大夫本人</strong>。代言习惯的消失意味着写词从士大夫闲暇的娱乐消遣变成正经的严肃创作，被士大夫社会接受，因此词体里“敏感多情”的主人公形象变成了男性。士大夫化的一个结果是，“以诗为词”的写作态度，即<strong>把词当做新的诗体来写</strong>，苏轼就是这一派的代表人物，《江城子·密州出猎》被视为豪放派词的开山之作。</p>
-<blockquote>
-<p>老夫聊发少年狂，左牵黄，右擎苍，锦帽貂裘，千骑卷平冈。为报倾城随太守，亲射虎，看孙郎。
-酒酣胸胆尚开张。鬓微霜，又何妨！持节云中，何日遣冯唐？会挽雕弓如满月，西北望，射天狼。</p>
-</blockquote>
-<p>苏轼显然是有意改变柳永词的写法。柳永擅长的是以柔婉的风格表现男女情爱题材，因为也企图通过科举成为士大夫，词中也含有士大夫自我表达的成分，融在词里。到了苏轼，则更进一步把身世之感从艳情中抽出来，成为纯粹的士大夫的自我表达，从根本上由歌姬的唱词变成士大夫的抒情诗。在这首词中，苏轼表现出了为国报效的热情，但实际上却根本没有和宋神宗合作的可能。这种报国无门的忧患和同歌姬厮混的风流才子形象可以说截然不同。</p>
-<h4 id="豪放和婉约">豪放和婉约</h4>
-<p>既然说到苏轼，就不得不说<strong>豪放派</strong>和<strong>婉约派</strong>的风格对比。文人填词之风自唐代中期兴起后，多是在酒席间交付歌姬去唱，因此词也是以女性口吻去写。这个背景下，豪放派的出现，除了<strong>风格</strong>的创新外，更主要的是对词这种文学体裁认识的改变。相比作品风格，更应该注重<strong>写作态度</strong>。以苏轼为代表的豪放派，革新的程度是更彻底的。虽然苏轼在那个时代有很大影响力，但走上豪放派道路的人在唐代并不多。人们仍将《花间集》的婉约作为“本色”。</p>
-<p>回头再来赏析苏轼的豪放特点，提现在以下几点：</p>
-<ul>
-<li><strong>题材</strong>广阔，“以诗为词”，无意不可入，无事不能言。</li>
-<li><strong>词调</strong>不拘守格律，还自创了许多新的曲调</li>
-<li>在词牌和正文间，增加了<strong>词题</strong>和<strong>词序</strong>，短的叫词题直接写在词牌后面，如《江城子·密州出猎》，长的词序，单独写一行字作序。题和序的作用更强调了词的<strong>著作权</strong>，增加了个性化</li>
-<li><strong>笔法</strong>豪放，即使是婉约的词如《江城子·乙卯正月二十日夜记梦》，也把豪放的笔力、思力运转于婉约的情境中</li>
-<li><strong>抒情主体</strong>都是士大夫作者本人</li>
-</ul>
-<h4 id="散曲">散曲</h4>
-<p>在宋代，宫廷曲的填词形式繁复讲究，民间更有生命力的演出在市井勾栏中，由民间艺人填词，曲子和曲子相连接、有口语词语加入等创新心态都有加入。这些新生的民间形式，一时难以被士大夫接受。直到元朝，大量知识分子被逐出“士大夫”阶层，迫使他们给勾栏艺人填词谋生。元曲由此发展开来。因此散曲并非从宋词演变而来，就像词不是从诗而来一样。元曲和宋词的发源都是唐曲子。由于中间经过了宋、辽、金时期，元曲产生了南北的差异。其中北曲的散曲性质与乐府词相似。</p>
-<p>元曲里<strong>小令</strong>通常只有单曲。而<strong>套数</strong>则是多支曲子前后连贯构成一套，这让曲词可以容纳更丰富的内容。在乐府词中也有类似的形制，称为“<strong>变曲</strong>”，指同曲反复演奏。进人研究音乐文学者，用“<strong>定格联章</strong>”来称呼。有的联章浑然天成，如张若虚的《春江花月夜》。相比之前的乐府诗、唐宋词，成熟的“套数”形式是元曲的特色。“套数”里的曲子有很多讲究，如都要是同一宫调等。散曲的用韵比词要密，基本句句用韵。同时每句有“<strong>衬字</strong>”，字数不等，所谓的曲牌只意味着相对稳定的一种节奏，伸缩的自由度较大。另外，元代儒生身份地下，散曲作者失去了曾经的体面，和社会下层混在一起，悲凉之余往往滑稽自嘲，故曲情自由发挥，将宋代士大夫词人声韵格律的严格规则破坏殆尽。</p>
-<p>到了明代，读书人恢复了体面，散曲也走上文雅化、格律化的道路，逐渐像诗词格调回归，和民间的流行歌词、白话诗区别开来。</p>
-<h3 id="骈文与古文">骈文与古文</h3>
-<p>骈文和古文之所以要放一起说，是因为两者的关系就像<strong>律诗和古诗</strong>。“骈”意为两匹马拉车，指<strong>对偶</strong>。而古文就是不遵循对偶规则的文。对偶具体指<strong>虚实词性相同</strong>、<strong>声调平仄相对</strong>。和五七言诗体类似，骈文以四字、六字句为主，故又称“<strong>四六</strong>”。其特征通常是<strong>通篇对偶、大量用典、辞藻华丽</strong>，但真正的标志性特征只有对偶。所以骈文又称骈偶、骈俪等，就是基本用对偶句组成的文章。</p>
-<p>不过律诗与古诗的关系和骈文与古文还不完全一样。律诗从产生起就是和古文并存的一种特殊诗体，但骈文不是，在形成的一段时间，有着“所有文章都必须这么写”的主张倾向，提倡骈文或古文还是时代文学思潮的一部分。</p>
-<h4 id="骈文的形成和演变">骈文的形成和演变</h4>
-<p>对偶只是一种修辞手法，在文章里使用可以增强气势。因此在东汉时期还不多，经过魏晋，到了南朝之后，便普遍流行，成为一般文体。骈文从辞赋中吸收了对偶手法，但也不要求整篇全都使用对偶句。骈文的对偶写法容易得到流行，和汉语单音节文字也有关系。</p>
-<p>在骈文成为一般文体的六朝时代，出现了著名文章选本《<strong>文选</strong>》，此书是梁代太子萧统所编，显示出“随言短长”到“骈四俪六”的演变。后世将之视作骈文的范本。中唐时期韩愈、柳宗元提倡写古文，北宋欧阳修继续，终于使古文成为一般的表达文体。但骈体依旧存在于正式文本里，成为了特殊文体。同时，对作者写作技巧的要求也有提高，长对子的“扇对”出现，对后世的八股文也有影响。到了明代中期，骈体由逐渐复兴，在清代形成了以扬州为中心，学习《文选》的选学派，和桐城派古文够坦诚分庭抗礼的局面。再到后面白话文运动兴起，连着桐城派、选学派一起批评。</p>
-<h4 id="古文运动">“古文运动”</h4>
-<p>中唐韩愈、柳宗元主张政治要恢复古代制度，同时文章体式上也要排斥骈俪，恢复先秦两汉的文体，与古制、古道适配，这个全面的文化复古运动，被近人称作“古文运动”。这个说法是胡适提出的。韩、柳二人的古文水平被人称道，但到北宋初期欧阳修再次倡导古文，曾巩、王安石、“三苏”继起，才基本奠定了古文作为文言文一般文体的格局。以上八人史称“<strong>唐宋八大家</strong>”，更严格来说应该叫做“<strong>唐宋古文八大家</strong>”。</p>
-<p>唐宋古文为了避免骈化，常会有意避免对偶，变换句式。但是骈文发展之久，已经对人们的思维方式有了很大的影响，让文人做不到秦汉时期人们的“心中无骈”。韩愈等人提出古文的精神不在于改变骈文这种文体，而是心中的<strong>古代圣贤之道</strong>。唐宋古文的基本命题就是<strong>文以载道</strong>，中唐以来的“新古文”发源于这种“新儒学”。欧阳修主持科举时，将古文作为考试文体；王安石执政时，把“新儒学”引入科举。等古文重新回到对偶句的道路时，就是八股文时期了。</p>
-<h4 id="从经义到八股">从“经义”到“八股”</h4>
-<p>王安石废除诗赋考试，改考“经义”，即以王氏所著的《三经新义》里的句子为考题。既然观点已被限制，久而久之，就连写法也逐渐固化。到南宋时，形成了稳定了“十段文”：冒子（破题、接题、小讲、缴结）、官题、原题、大讲、余意、原经、结尾。其中破题作为第一印象要足够精彩。此十段文就是后来“八股文”的前身。当然，明清时期的八股文内容是程朱理学而不是王安石的学说了，同时格式上冒子有破题、承题、起讲、入手四段，之后有<strong>四比八股</strong>，就是长对子，一比即一对，每比有两股。四比也被称为前股、中股、后股、束股。结合了骈、古文特点的八股文，在观点和写法上都被严格限定，文学价值无法高估。但它却是每个有志于士的读书人必须学习的文章体式。</p>
-<p>骈文本就把对偶这一修辞手法发展为通篇行文的基本体式。八股文则比骈文更进一步，将长对子“<strong>扇对</strong>”体式化。扇对即两句对两句，像是拉长的对偶。一般超过四六隔句对的长度，便可视为扇对。在唐人的文章里就有出现隔句对，唐朝的科举考试使用律赋，隔句对自然也受重视。专门根据隔句对的每一联两句字数，分为轻隔（4+6）、重隔（6+4）、疏隔（3+x）、密隔（5+&amp;6+）、平隔（x+x）、杂隔等。扇对在“宋四六”中仍然还是修辞性因素，并未明显地呈现体式化趋势。北宋擅议论文，经义通常一分为二或从题目中两个要素展开，来组织对偶。这意味着后文也可以分别论述两个元素或两个方面。类似的写法下，只要在句式上下点功夫，就可以长短对称，这个时期两比已经呼之欲出。</p>
-<p>汉语写作者似乎对对偶有着根深蒂固的迷恋，律诗、骈文、八股、章回体小说的标题都是对偶，对联、挽联也是对偶。古文家也许是厌倦了到处的对偶，觉得庸俗，才努力要自拔吧。</p>
-<h3 id="说唱">说唱</h3>
-<p>中国古代的白话文学不只有小说和戏剧，还是处在之中的“说唱”。说唱的发展甚至早于白话小说和戏剧。最早甚至可追溯到汉代和汉代以前。但现在能读到的最早一批成熟作品，在敦煌遗书中。</p>
-<h4 id="敦煌遗书中的说唱作品">敦煌遗书中的说唱作品</h4>
-<p>敦煌遗书在1900年被王圆箓道士偶尔间发现，因为当时国情的原因，部分散佚到国外。1950年代，敦煌学家王重民整理出版了《敦煌变文集》，是后来研究敦煌遗书的重要著作。</p>
-<p>敦煌遗书中有大量说唱体通俗作品，和当时佛教徒的“俗讲”活动有关。<strong>俗讲</strong>即面向群众的教义宣讲。宗教这种兼具上层路线和面向世俗的特征，使它可以称为雅俗文学的沟通桥梁。佛教在中国就是如此。士大夫在自己的庄园里邀请僧人来主讲教义，同时欢迎有兴趣的朋友来听和讨论，即“<strong>结讲</strong>”。持续一段时间后解散，即“解讲”。既然现场除了士大夫还有普通群众，讲的内容就要通俗易懂，就是“俗讲”名字的来源。俗讲活动的专业化，诞生了一批俗讲高手，也让俗讲可以突破宗教概念，成为一般的<strong>通俗说唱</strong>。敦煌遗书中保存下来的各类讲唱文本都可以视为“俗讲”的产物，大致有下面几类。</p>
-<ul>
-<li><strong>讲经文</strong>。都讲宣读经文一段，法师用韵散交杂的通俗词句讲唱出来，都讲再宣读一段，法师再讲唱一段，如此循环。敦煌“讲经文”根据窥基经疏而作，做到了通俗但不庸俗。玄奘、窥及的学说也得以传播，庶民们虽不能完全领悟，但以传诵“西游”故事的方式来传播。</li>
-<li><strong>押座文</strong>、<strong>解座文</strong>。分别对应俗讲开头和终了的唱词。简要明了。</li>
-<li><strong>词文</strong>、<strong>话本</strong>。词文只有韵文唱词，没有散文说白的本子。话本与之相反，只包含说白。它们分别记录了说唱表演的不同部分。实际表演时，不一定是只说不唱或只唱不说的。</li>
-<li><strong>缘起</strong>。又称<strong>因缘</strong>。是一种只讲佛经故事，而不诵读经文的本子。是俗讲的简化，和“讲经文”的区别只在于不讲解经文。它因此更有故事性，也是俗讲向纯粹故事说唱的倾向。这种缘起也可称作“<strong>变</strong>”。</li>
-<li><strong>变文</strong>。来源于遗书的标题。它的类型最复杂，表演方式被称为<strong>转变</strong>，表演者被称为“变家”，对应的图画称作“变相”，文字脚本称为“变文”。这个类型的来源可能有很悠久的历史。</li>
-</ul>
-<h4 id="变相和变文">变相和变文</h4>
-<p>在中国典籍里，将佛经叙述的故事或场面画成图画，被称作“变相”，或直接称为“变”。变文和变相配合进行表演，即所谓转变，可以在一些变文文本中找到根据。那“变”这个名字的起源是什么呢？作者认为既不代表一种变化，也不代表神奇古怪，<strong>只和内容有关</strong>。在东晋的《佛国记》里提到“变”，这里的变就是“<strong>变现</strong>”，即化身成现实物象。而变相就是变现之相。再之后，“变”的含义就普适起来。</p>
-<p>一般认为敦煌“变文”是宋代以后通俗艺术的先驱，但“变文”一名在五代和宋代后突然消失，偶然的出现，表示唱演故事的意思。</p>
-<h4 id="辩论和斗法">辩论和斗法</h4>
-<p>《降魔变文》中有记载辩论的文本，甚是精彩。关于斗法场面的描写，给后来的神魔小说开了先路。</p>
-<h4 id="说唱体制的发展">说唱体制的发展</h4>
-<ul>
-<li>诗话、词话。如《大唐三藏取经诗话》、《金瓶梅词话》，《西游记》中也有词话的痕迹</li>
-<li>宝卷。与讲经文类似，阐说讲理，教人劝善，以韵文为主，间以散文讲说</li>
-<li>弹词、鼓书。鼓书流行于北方，弹词流行于南方。是离我们比较近的说唱形式。</li>
-</ul>
-<h3 id="小说">小说</h3>
-<p>先秦时期就有“小说家”的叫法，但那时主要是指游说之意。后来“说”成了议论文的一种文类，前面加个“小”字，则表杂谈。如今意义上的中国现代小说，开山鼻祖是鲁迅。他也是中国古典小说的最早梳理者。《中国小说史略》奠定了后续“中国小说史研究”的基础。这里的“小说”简单来说就是“虚构故事”。我们从“俗文学”发展的角度来观察，可以大致认为“说唱”里的“说”和“唱”演化出了小说和戏剧。小说也分<strong>文言小说</strong>和<strong>白话小说</strong>。下面主要考察白话小说。</p>
-<h4 id="文言小说">文言小说</h4>
-<p>大致分为<strong>笔记</strong>和<strong>传奇</strong>两种。笔记是一条条简短的记录汇成一书，传奇则是唐代才有的名字，是单篇成文的文章，内容模仿史传，但内容有虚构成分，或者全是臆想，篇幅比笔记长。</p>
-<ul>
-<li><strong>笔记</strong>，随着出版业兴盛，在宋代数量大增。有着从“外向”的记录到“内向”表达的过程，是作者个人性越来越明显的体现。从晋代《搜神记》到蒲松龄的《聊斋志异》就能看出这个变化</li>
-<li><strong>传奇</strong>，按鲁迅的说法，单篇成文的唐传奇，是从六朝志怪发展而来的，在此基础上丰富辞藻描写。文体上类似史传，一般作品也已”传“和”记“结尾，如《儿女英雄传》、《水浒传》、《石头记》等</li>
-</ul>
-<h4 id="白话小说">白话小说</h4>
-<p>白话小说<strong>不是</strong>从文言小说发展而来的。可以看作<strong>没有韵文唱词的说唱文本</strong>。许多本子从说唱的本子改编之后，变成散体叙述的小说文体，离真实的表演也越来越远，供人案头阅读。这些“话本”小说也按书籍出版的规则，往往会标上作者名，如《三国演义》的罗贯中，《水浒传》的施耐庵等，作者不一定真的存在，最多只是做了一些记录、编订工作，不能算真正的作者。</p>
-<p>在“话本”小说流行的时代，也有文人会模仿“话本”的章回形态，编写故事，自创小说。这类小说被称为“<strong>拟话本</strong>”，和“话本”有着不同的性质。文人独立创作的小说，往往寄寓了作者的志趣，思想性更深。至近代之后，文人独立创作称为白话小说的主流。从<strong>故事类型</strong>上，近人编订的小说可以分为：</p>
-<ul>
-<li><strong>公案侠客</strong>，如《施公案》、《七侠五义》，为武侠小说的先驱</li>
-<li><strong>才子佳人</strong>，是近代鸳鸯蝴蝶派小说、狎邪小说的先驱</li>
-<li><strong>世情小说</strong>，多带讽刺，如《儒林外史》，是近代谴责小说的先驱</li>
-<li><strong>历史演义</strong>，数量较多，大多以唐宋、五代历史为主，多以男女武将为主角</li>
-<li><strong>神魔小说</strong>，以《西游记》、《封神演义》最为著名。在近代“破除迷信”后，数量锐减</li>
-</ul>
-<h4 id="探索四大奇书">探索“四大奇书”</h4>
-<p>“四大奇书”即《三国演义》、《水浒传》、《西游记》、《金瓶梅》。今人所称四大名著里，《红楼梦》成就最高，但实际上是士大夫文人创作，而非“<strong>世代累积型小说</strong>”。相比之下，“四大奇书”的庶民色彩要浓烈很多。从书中可以看到广大庶民的世界观、伦理观、宗教信仰、历史知识、审美趣味、处世态度以及日常生活的技巧等。大体上能看到<strong>从“英雄”到“好汉”</strong>的转变，庶民的“<strong>生活力</strong>”也充分体现。</p>
-<p>首先就是从贵族气质的“英雄”过渡到庶民气质的“好汉”。《西游记》里主角从唐三藏转变成孙悟空的过程就是很明显的例子。《西游记》的故事逐步转变成在庶民社会讲述规则时代的故事，庶民代言的“好汉”在成长，而贵族“英雄”逐步淘汰，这也是“唐宋转型”的一个缩影。《水浒传》里亦是如此。对于好汉来说，佛教的正果比儒教的正果更好接受，所以人们对孙悟空皈依没有什么疑义，但对宋江归顺则议论纷纭。</p>
-<p>在《三国演义》里的“尊刘抑曹”则体现了士大夫文化对通俗小说的影响。在北宋之前，人们在三国时期使用曹魏纪年。而在欧阳修大谈“正统”，司马光编纂《资治通鉴》尊南方汉族政权为“正统”皇朝差不多的时期，北宋说书人奠定了“尊刘抑曹”的倾向。这也让小说从对成功者的歌颂变成对失败者的凭吊。但《三国演义》也是用庶民的视角讲述贵族时代的故事，只不过“英雄”并非被“好汉”替代，而是被“奸雄”战胜。在《金瓶梅》中，则通过西门庆和潘金莲对性交近乎执拗的追求，直至无可救药穷途末路，表现的浓重虚无主义发生于庶民社会，折射出人生的真相似乎就是无可救药。</p>
-<p>四大奇书的世界可以被概括为：<strong>奸盗邪淫</strong>。书里呈现的世相、人生相并不专属于“末世”或外国，反应的正是中国近世里人生的极端形象。四大奇书似乎在告诉我们这个世界上，一味笃信古典经论，只会成为毫无用途的唐三藏，伟大的救世情怀未必能有多大作用。获胜的是奸人，三教归一也不能拯救《金瓶梅》里的主人公。英雄退场，好汉登场。在人心不古的近世里，好汉自有应对环境的办法，这办法映射的观念和意识也是庶民文化的精粹。</p>
-<p>“好汉”一词的量词是“条”，也是“一条生命”里的量词。英雄就不能这么来称呼。简单来说就是好汉<strong>敢于轻视这条命</strong>。英雄也许有许多身外之物，但好汉就是一条命，别无更多负累。这种对于生命的轻视也是<strong>庶民对自己社会地位的清醒认识</strong>。这种认识具有革命性和颠覆性，因为一个不怕死的人，无视秩序，什么都敢做。四大奇书里的“正统”——刘备、诸葛亮、宋江、追求性欲的西门庆、潘金莲——无一不以悲剧收场。只有孙悟空成了佛，但也曾大闹天宫失败。这么来看，好汉代表的庶民人生观似乎是绝望灰暗的。在这样的社会环境下，庶民如何觉悟到生活追求和行动准则呢？从《西游记》里对俗语的大量使用，甚至作为角色的行动理由，也能反映出庶民文化的群体性特征，日常经验积累出的“大众化”智慧就是庶民生活的教科书。</p>
-<p>不论是《西游记》里孙悟空依靠交游广泛、为达目标能屈能伸造就一番事业，还是宋江、刘备依靠人缘畅行无阻，亦或是诸葛亮、无用的妙计或西门庆的财富、性能力，都能看到大众文化对“<strong>生活力</strong>”的向往。这是以绝望为底色，在帝国中所处无权无势社会地位的觉悟。这不仅体现在个体的“过上好日子”，实际上具有<strong>群体性特征</strong>，即好汉们都有所谓“<strong>义气</strong>”。好汉间也依靠义来结成一个共同体，努力去“过上好日子”。从这一份“生活力”里，包含着一种隐藏的觉悟：每一个活在这世上的人，都有基本的生存权利。</p>
-<h3 id="戏剧">戏剧</h3>
-<p>实际上对于这种体裁，“戏曲”的叫法比“戏剧”更多。“剧”字更突出表演的因素，因此这里还是选择更像西方“歌剧”叫法的“戏剧”。“戏曲”的说法最先出自宋末元初，也称为“戏文”。其中“戏”也指不够高雅之乐曲。而戏剧中“剧”的成分则来源于唐宋交际说唱故事和曲的结合。</p>
-<h4 id="传统戏剧的演变">传统戏剧的演变</h4>
-<p>宋代即有达到代言体的说唱，这已有戏剧的性质了。直到南宋早期《张协状元》，“南戏”开始逐步发展。</p>
-<ul>
-<li><strong>南戏</strong>，发源于南方，用南方曲调演唱，与北剧相对，《张协状元》开头部分，演员以局外人的身份说唱，而后随着情节发展，开始进入演员扮演角色的戏剧性演出。南戏也是后来传奇的起源。</li>
-<li><strong>北剧</strong>，就像我们在元曲一节里说到的，在元代发展兴起，使用“套数”来唱，即固定的节奏重复。南戏就没有这么严格的音乐结构，相反到了明代有更灵活的发展前景。元杂剧从宋代更短的杂剧演变而来，形成了“旦、末、净、外杂”五类角色。因为元代汉族士大夫不受重视，只能以编剧为生，杂剧获得了充分的发展土壤。关汉卿、马致远、白朴、郑光祖被称为四大家。这一时期创作的戏剧，因为可以和演员打成一片，反而具有不加雕琢的自然的美，这是士大夫文学所缺乏的</li>
-<li><strong>传奇</strong>，南戏在明代演变而来的，因为南戏没有北剧那样的严谨结构，反而适合敷演复杂的长篇故事。由于明代士大夫身份回升，这些故事通常是宣扬和儒家伦常适应的家庭道德，呼唤社会稳定，结尾都是苦尽甘来的大结局。编剧身上显然有了“教化”社会的责任。由于编剧身份逐渐脱离群众，剧本逐渐固化，曲牌成了限制。戏剧的唱法开始按照演员自己的腔调来处理，各种地方腔调剧班发展起来，如海盐腔、弋阳腔、昆山腔等。其中昆山腔似乎因为兼具雅俗、易于被各方接受，在明代之后<strong>昆曲</strong>兴盛。</li>
-<li><strong>昆曲和京剧</strong>，汤显祖的临川四梦、孔尚任的《桃花扇》、洪升的《长生殿》就产生在昆曲流行期间，这些作品也壮大了昆曲的生命力。昆曲以外，<strong>京腔</strong>也发展起来，京腔实际上是弋阳腔流传到北方后，改江西土音位北京字音而成，也叫做<strong>高腔</strong>。后来逐步演变为“京剧”。</li>
-</ul>
-<h4 id="互文性">互文性</h4>
-<p>戏剧和纯文本的作品不一样，如果想让观众更快带入故事情节获得更好的演出效果，最好选择观众耳熟能详的故事。因此传统戏剧往往和小说、说唱等俗文学共享同样的故事，形成很高的“<strong>互文性</strong>”。严格意义上，所有文学文本都具有互文性，如《水浒传》里的大刀关胜就是关羽的复制品。“五虎将”的说法也是《三国演义》和《水浒传》共有的。元杂剧还经常搬演水浒故事的作品，直至今日，京剧里还有许多来自水浒故事的剧目。</p>
-<p>相比之下，《西游记》故事的戏剧和百回本小说《西游记》故事里的世界就更形成了互补的关系。《西游记》的人物形象也有出现在《封神演义》里，二郎神、哪吒、观音为主角的故事都另成系列，和《西游记》里的世界联结，组成更广泛的世界。这样的互文情况，在历史题材的作品里就更多了。有的人物联结还借助了“转世”、“下凡”之类的中国特色模式。</p>
-<h4 id="人生如戏">人生如戏</h4>
-<p>“戏台小世界，世界大戏台”。戏剧的情节有如人生的缩影。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/blog/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/blog/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/blog/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -2062,7 +2471,7 @@ id="诗人的历史境遇和自我认同分析杜甫">诗人的历史境遇和�
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">36:27</span>
+    <span title="站点阅读时长">36:49</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
